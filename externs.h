@@ -646,18 +646,31 @@ inline void SetGap(GAP x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsign
   width(x) = xwidth;
 }
 
+/*
 #define GapCopy(x, y)							\
 ( nobreak(x) = nobreak(y), mark(x) = mark(y), join(x) = join(y),	\
   units(x) = units(y), mode(x) = mode(y), width(x) = width(y)		\
 )
+*/
+inline void GapCopy(GAP x, GAP y) {
+    nobreak(x) = nobreak(y);
+    mark(x) = mark(y);
+    join(x) = join(y);
+    units(x) = units(y);
+    mode(x) = mode(y);
+    width(x) = width(y);
+}
 
+/*
 #define GapEqual(x, y)							\
 ( nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)	\
   && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y)	\
 )
-
-#define ClearGap(x)	SetGap(x, FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0)
-
+ */
+inline BOOLEAN GapEqual(GAP x, GAP y) {
+    return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
+             && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -789,14 +802,41 @@ typedef struct
 #define	bfc(x)		(x).obfc
 #define	fc(x)		(x).ofc
 #define	sparec(x)	(x).osparec
+
+/*
 #define	constrained(x)	(bc(x) != MAX_FULL_LENGTH ||			\
 			 bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH)
+*/
+inline BOOLEAN constrained(CONSTRAINT x) {
+    return bc(x) != MAX_FULL_LENGTH || bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH;
+}
 
-#define	SetConstraint(c,x,y,z)	(bc(c) = (x),   bfc(c) = (y),    fc(c) = (z))
-#define	CopyConstraint(x, y)	(bc(x) = bc(y), bfc(x) = bfc(y), fc(x) = fc(y))
-#define	FlipConstraint(x, y)	(bc(x) = fc(y), bfc(x) = bfc(y), fc(x) = bc(y))
-#define FitsConstraint(b, f, c)	(b <= bc(c)  && b + f <= bfc(c) && f <= fc(c))
-#define EqualConstraint(a, b) (bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b) )
+/* #define	SetConstraint(c,x,y,z)	(bc(c) = (x),   bfc(c) = (y),    fc(c) = (z))*/
+inline void SetConstraint(CONSTRAINT c, FULL_LENGTH x, FULL_LENGTH y, FULL_LENGTH z) {
+    bc(c) = (x);
+    bfc(c) = (y);
+    fc(c) = (z);
+}
+/* #define	CopyConstraint(x, y)	(bc(x) = bc(y), bfc(x) = bfc(y), fc(x) = fc(y)) */
+inline CopyConstraint(CONSTRAINT x, CONSTRAINT y) {
+    bc(x) = bc(y);
+    bfc(x) = bfc(y);
+    fc(x) = fc(y);
+}
+/* #define	FlipConstraint(x, y)	(bc(x) = fc(y), bfc(x) = bfc(y), fc(x) = bc(y)) */
+inline FlipConstraint(CONSTRAINT x, CONSTRAINT y) {
+    bc(x) = fc(y);
+    bfc(x) = bfc(y);
+    fc(x) = bc(y);
+}
+/* #define FitsConstraint(b, f, c)	(b <= bc(c)  && b + f <= bfc(c) && f <= fc(c)) */
+inline BOOLEAN FitsConstraint(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT c) {
+    return b <= bc(c)  && b + f <= bfc(c) && f <= fc(c);
+}
+/* #define EqualConstraint(a, b) (bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b) ) */
+inline BOOLEAN EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
+    return bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b);
+}
 
 #define	ig_fnum(x)	bc(constraint(x))
 #define	ig_xtrans(x)	bfc(constraint(x))
@@ -3895,3 +3935,5 @@ extern	struct dbs 	dbg[];
 #define	debug_init(str)	Error(1, 4, "%s - debug flags not implemented", \
 	FATAL, no_fpos, str)
 #endif
+
+#include "inlines.h"
