@@ -1,6 +1,7 @@
 package main
 
-
+// #cgo LDFLAGS: -lz -lm -L. -llout
+//
 // #include <stdio.h>
 // #include <stdlib.h>
 //
@@ -18,5 +19,7 @@ func main() {
 	cs := C.CString("Hello from stdio")
 	C.myprint(cs)
 	C.free(unsafe.Pointer(cs))
+
+	C.PrintUsage(C.stdout)
 }
 
