@@ -266,7 +266,7 @@ DBFIX   = 0
 USESTAT = 1
 SAFEDFT = 0
 
-DEBUGGING = 0
+DEBUGGING = 1
 TRACING =
 
 #DEBUGGING = 1
@@ -301,11 +301,12 @@ LOC_DE	= de
 
 COLLATE	= 1
 
-PDF_COMPRESSION	= 0
+PDF_COMPRESSION	= 1
 ZLIB		=
 ZLIBPATH	=
 
-CC	= gcc
+#CC	= gcc
+CC=clang
 #CC	= bgcc
 
 RCOPY	= cp -r
@@ -315,7 +316,7 @@ MKDIR	= mkdir -p
 # Add WARN to CFLAGS for more checking
 WARN	= -Wpointer-arith -Wclobbered -Wempty-body -Wmissing-parameter-type -Wmissing-field-initializers -Wold-style-declaration -Wtype-limits -Wuninitialized -Winit-self -Wlogical-op -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wbad-function-cast
 
-CFLAGS ?= -ansi -pedantic -Wall -O3 -pipe
+CFLAGS ?= -ansi -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
 
 
 CFLAGS	+= -DOS_UNIX=$(OSUNIX)					\
@@ -349,8 +350,11 @@ OBJS	= z01.o z02.o z03.o z04.o z05.o z06.o z07.o z08.o	\
 	  z41.o z42.o z43.o z44.o z45.o z46.o z47.o z48.o	\
 	  z49.o z50.o z51.o z52.o
 
-lout:	$(OBJS)
-	$(CC) $(LDFLAGS) $(CFLAGS) -o lout $(OBJS) $(ZLIB) -lm
+lout:	liblout.so main.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -o lout main.c $(ZLIB) -L. -llout -lm -lz
+
+liblout.so:	$(OBJS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -shared -o liblout.so $(OBJS) $(ZLIB) -lm -lz
 
 $(OBJS): externs.h
 
@@ -359,7 +363,7 @@ externs.h:
 prg2lout:	prg2lout.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o prg2lout prg2lout.c
 
-all:	lout prg2lout
+all:	liblout.so lout prg2lout
 
 install: lout prg2lout
 	@echo ""
