@@ -879,7 +879,7 @@ static void PDF_LinkCheck(void)
 
 static struct back_end_rec pdf_back = {
   PDF,					/* the code number of the back end   */
-  STR_PDF,				/* string name of the back end       */
+  STR_PDF_MACRO,				/* string name of the back end       */
   TRUE,					/* TRUE if @Scale is available       */
   TRUE,					/* TRUE if @Rotate is available      */
   FALSE,				/* TRUE if @VMirror, @HMirror avail. */

@@ -316,7 +316,7 @@ MKDIR	= mkdir -p
 # Add WARN to CFLAGS for more checking
 WARN	= -Wpointer-arith -Wclobbered -Wempty-body -Wmissing-parameter-type -Wmissing-field-initializers -Wold-style-declaration -Wtype-limits -Wuninitialized -Winit-self -Wlogical-op -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wbad-function-cast
 
-CFLAGS ?= -ansi -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
+CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
 
 
 CFLAGS	+= -DOS_UNIX=$(OSUNIX)					\

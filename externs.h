@@ -167,15 +167,15 @@ extern const FULL_CHAR *const FILTER_ERR;
 /*                                                                           */
 /*****************************************************************************/
 
-extern const char *const READ_FILE;
-extern const char *const WRITE_FILE;
-extern const char *const APPEND_FILE;
-extern const char *const STR_NEWLINE;
-extern const char *const STR_DIR;
-extern const char *const UNCOMPRESS_COM;
-extern const char *const PDFTOPS_COM;
-extern const char *const CONVERT_COM;
-extern const char *const LOUT_EPS;
+extern const char* const READ_FILE;
+extern const char* const WRITE_FILE;
+extern const char* const APPEND_FILE;
+extern const char* const STR_NEWLINE;
+extern const char* const STR_DIR;
+extern const char* const UNCOMPRESS_COM;
+extern const char* const PDFTOPS_COM;
+extern const char* const CONVERT_COM;
+extern const char* const LOUT_EPS;
 
 /*@::Significant limits@******************************************************/
 /*                                                                           */
@@ -515,87 +515,97 @@ typedef void *POINTER;
 /*                                                                           */
 /*****************************************************************************/
 
-extern const char *const STR_EMPTY;
-extern const char *const STR_QUOTE;
-extern const char *const STR_ESCAPE;
-extern const char *const STR_COMMENT;
-extern const char *const STR_SPACE;
-extern const char *const STR_FORMFEED;
-extern const char *const STR_TAB;
-extern const char *const STR_LETTERS_LOWER;
-extern const char *const STR_LETTERS_UPPER;
-extern const char *const STR_LETTERS_SYMSTART;
-extern const char *const STR_LETTERS_UNDERSCORE;
+extern const char* const STR_EMPTY;
+extern const char* const STR_QUOTE;
+extern const char* const STR_ESCAPE;
+extern const char* const STR_COMMENT;
+extern const char* const STR_SPACE;
+extern const char* const STR_FORMFEED;
+extern const char* const STR_TAB;
+extern const char* const STR_LETTERS_LOWER;
+extern const char* const STR_LETTERS_UPPER;
+extern const char* const STR_LETTERS_SYMSTART;
+extern const char* const STR_LETTERS_UNDERSCORE;
 
-extern const char *const STR_LETTERS_EXTRA0;
-extern const char *const STR_LETTERS_EXTRA1;
-extern const char *const STR_LETTERS_EXTRA2;
-extern const char *const STR_LETTERS_EXTRA3;
-extern const char *const STR_LETTERS_EXTRA4;
-extern const char *const STR_LETTERS_EXTRA5;
-extern const char *const STR_LETTERS_EXTRA6;
-extern const char *const STR_LETTERS_EXTRA7;
+extern const char* const STR_LETTERS_EXTRA0;
+extern const char* const STR_LETTERS_EXTRA1;
+extern const char* const STR_LETTERS_EXTRA2;
+extern const char* const STR_LETTERS_EXTRA3;
+extern const char* const STR_LETTERS_EXTRA4;
+extern const char* const STR_LETTERS_EXTRA5;
+extern const char* const STR_LETTERS_EXTRA6;
+extern const char* const STR_LETTERS_EXTRA7;
 
-const char *const STR_STDIN;
-const char *const STR_STDOUT;
-const char *const STR_HYPHEN;
-const char *const STR_EPS;
-const char *const STR_POSTSCRIPT;
-const char *const STR_PLAINTEXT;
-const char *const STR_PDF;
-const char *const STR_ELSE;
-const char *const STR_NOCROSS;
-const char *const STR_BADKEY;
-const char *const STR_NONE;
-const char *const STR_NOCHAR;
-const char *const STR_ZERO;
-const char *const STR_PS_SPACENAME;
-const char *const STR_FONT_RECODE;
-const char *const STR_FONT_NORECODE;
-const char *const STR_COLOUR_NOCHANGE;
-const char *const STR_TEXTURE_NOCHANGE;
+extern const char* const STR_STDIN;
+extern const char* const STR_STDOUT;
+extern const char* const STR_HYPHEN;
+extern const char* const STR_EPS;
 
-const char *const STR_BREAK_HYPHEN;
-const char *const STR_BREAK_NOHYPHEN;
-const char *const STR_BREAK_ADJUST;
-const char *const STR_BREAK_OUTDENT;
-const char *const STR_BREAK_RAGGED;
-const char *const STR_BREAK_CRAGGED;
-const char *const STR_BREAK_RRAGGED;
-const char *const STR_BREAK_ORAGGED;
-const char *const STR_BREAK_LINES;
-const char *const STR_BREAK_CLINES;
-const char *const STR_BREAK_RLINES;
-const char *const STR_BREAK_OLINES;
-const char *const STR_BREAK_SCALE;
-const char *const STR_BREAK_NOFIRST;
-const char *const STR_BREAK_FIRST;
-const char *const STR_BREAK_NOLAST;
-const char *const STR_BREAK_LAST;
-const char *const STR_BREAK_SETOUTDENT;
-const char *const STR_BREAK_MARGINKERNING;
-const char *const STR_BREAK_NOMARGINKERNING;
+extern const char* const STR_POSTSCRIPT;
+// needed in z49.c
+#define STR_POSTSCRIPT_MACRO AsciiToFull("PostScript")
 
-const char *const STR_SPACE_LOUT;
-const char *const STR_SPACE_COMPRESS;
-const char *const STR_SPACE_SEPARATE;
-const char *const STR_SPACE_TROFF;
-const char *const STR_SPACE_TEX;
+extern const char* const STR_PLAINTEXT;
+// needed in z51.c
+#define STR_PLAINTEXT_MACRO AsciiToFull("PlainText")
 
-const char *const STR_SMALL_CAPS_ON;
-const char *const STR_SMALL_CAPS_OFF;
-const char *const STR_SMALL_CAPS_SET;
-const char *const STR_BASELINE_MARK;
-const char *const STR_LIG;
-const char *const STR_NOLIG;
-const char *const STR_XHEIGHT2_MARK;
-const char *const STR_NOSTRUT;
-const char *const STR_STRUT;
+extern const char* const STR_PDF;
+// needed in z50.c
+#define STR_PDF_MACRO AsciiToFull("PDF")
 
-const char *const STR_GAP_RJUSTIFY;
-const char *const STR_GAP_ZERO_HYPH;
+extern const char* const STR_ELSE;
+extern const char* const STR_NOCROSS;
+extern const char* const STR_BADKEY;
+extern const char* const STR_NONE;
+extern const char* const STR_NOCHAR;
+extern const char* const STR_ZERO;
+extern const char* const STR_PS_SPACENAME;
+extern const char* const STR_FONT_RECODE;
+extern const char* const STR_FONT_NORECODE;
+extern const char* const STR_COLOUR_NOCHANGE;
+extern const char* const STR_TEXTURE_NOCHANGE;
 
-const char *const STR_SCALE_DOWN;
+extern const char* const STR_BREAK_HYPHEN;
+extern const char* const STR_BREAK_NOHYPHEN;
+extern const char* const STR_BREAK_ADJUST;
+extern const char* const STR_BREAK_OUTDENT;
+extern const char* const STR_BREAK_RAGGED;
+extern const char* const STR_BREAK_CRAGGED;
+extern const char* const STR_BREAK_RRAGGED;
+extern const char* const STR_BREAK_ORAGGED;
+extern const char* const STR_BREAK_LINES;
+extern const char* const STR_BREAK_CLINES;
+extern const char* const STR_BREAK_RLINES;
+extern const char* const STR_BREAK_OLINES;
+extern const char* const STR_BREAK_SCALE;
+extern const char* const STR_BREAK_NOFIRST;
+extern const char* const STR_BREAK_FIRST;
+extern const char* const STR_BREAK_NOLAST;
+extern const char* const STR_BREAK_LAST;
+extern const char* const STR_BREAK_SETOUTDENT;
+extern const char* const STR_BREAK_MARGINKERNING;
+extern const char* const STR_BREAK_NOMARGINKERNING;
+
+extern const char* const STR_SPACE_LOUT;
+extern const char* const STR_SPACE_COMPRESS;
+extern const char* const STR_SPACE_SEPARATE;
+extern const char* const STR_SPACE_TROFF;
+extern const char* const STR_SPACE_TEX;
+
+extern const char* const STR_SMALL_CAPS_ON;
+extern const char* const STR_SMALL_CAPS_OFF;
+extern const char* const STR_SMALL_CAPS_SET;
+extern const char* const STR_BASELINE_MARK;
+extern const char* const STR_LIG;
+extern const char* const STR_NOLIG;
+extern const char* const STR_XHEIGHT2_MARK;
+extern const char* const STR_NOSTRUT;
+extern const char* const STR_STRUT;
+
+extern const char* const STR_GAP_RJUSTIFY;
+extern const char* const STR_GAP_ZERO_HYPH;
+
+extern const char* const STR_SCALE_DOWN;
 
 
 /*@::GAP, STYLE@**************************************************************/
@@ -613,17 +623,28 @@ typedef struct
   unsigned	omode	 : 3;		/* spacing mode: edge-to-edge, etc   */
 } GAP;
 
-#define	nobreak(x)	(x).onobreak
+/** inline function not possible - also used for setters */
+#define nobreak(x)	(x).onobreak
 #define	mark(x)		(x).omark
 #define	join(x)		(x).ojoin
 #define	units(x)	(x).ounits
 #define	mode(x)		(x).omode
 #define	width(x)	(x).owidth
 
+/*
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( nobreak(x) = xnobreak, mark(x) = xmark, join(x) = xjoin,		\
   units(x) = xunits, mode(x) = xmode, width(x) = xwidth			\
 )
+*/
+inline void SetGap(GAP x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
+  nobreak(x) = xnobreak;
+  mark(x) = xmark;
+  join(x) = xjoin;
+  units(x) = xunits;
+  mode(x) = xmode;
+  width(x) = xwidth;
+}
 
 #define GapCopy(x, y)							\
 ( nobreak(x) = nobreak(y), mark(x) = mark(y), join(x) = join(y),	\

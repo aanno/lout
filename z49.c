@@ -2084,7 +2084,7 @@ static void PS_LinkCheck(void)
 
 static struct back_end_rec ps_back = {
   POSTSCRIPT,				/* the code number of the back end   */
-  STR_POSTSCRIPT,			/* string name of the back end       */
+  STR_POSTSCRIPT_MACRO,			/* string name of the back end       */
   TRUE,					/* TRUE if @Scale is available       */
   TRUE,					/* TRUE if @Rotate is available      */
   TRUE,					/* TRUE if @HMirror, @VMirror avail  */
@@ -2221,7 +2221,7 @@ static void PS_NullLinkCheck(void)
 
 static struct back_end_rec ps_null_back = {
   POSTSCRIPT,				/* the code number of the back end   */
-  STR_POSTSCRIPT,			/* string name of the back end       */
+  STR_POSTSCRIPT_MACRO,			/* string name of the back end       */
   TRUE,					/* TRUE if @Scale is available       */
   TRUE,					/* TRUE if @Rotate is available      */
   TRUE,					/* TRUE if @HMirror, @VMirror avail  */

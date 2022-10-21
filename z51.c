@@ -628,7 +628,7 @@ static void Plain_LinkCheck(void)
 
 static struct back_end_rec plain_back = {
   PLAINTEXT,				/* the code number of the back end   */
-  STR_PLAINTEXT,			/* string name of the back end       */
+  STR_PLAINTEXT_MACRO,			/* string name of the back end       */
   FALSE,				/* TRUE if @Scale is available       */
   FALSE,				/* TRUE if @Rotate is available      */
   FALSE,				/* TRUE if @VMirror, @HMirror avail  */
@@ -759,7 +759,7 @@ static void Plain_NullLinkCheck(void)
 
 static struct back_end_rec plain_null_back = {
   PLAINTEXT,				/* the code number of the back end   */
-  STR_PLAINTEXT,			/* string name of the back end       */
+  STR_PLAINTEXT_MACRO,			/* string name of the back end       */
   FALSE,				/* TRUE if @Scale is available       */
   FALSE,				/* TRUE if @Rotate is available      */
   FALSE,				/* TRUE if @VMirror, @HMirror avail  */
