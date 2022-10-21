@@ -40,9 +40,6 @@
 #endif
 #endif
 
-extern void run(int argc, char *argv[], int run_num, int *runs_to_do,
-  FULL_CHAR *lib);
-
 /*****************************************************************************/
 /*                                                                           */
 /*  main(argc, argv)                                                         */

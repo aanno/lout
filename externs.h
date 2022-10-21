@@ -3225,6 +3225,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*****************************************************************************/
 
 /*****  z01.c	  Supervise		**************************************/
+extern	void	  run(int argc, char *argv[], int run_num, int *runs_to_do, FULL_CHAR *lib);
 extern	void	  PrintUsage(FILE *fp);
 extern	int	  main(int argc, char *argv[]);
 extern	POINTER	  MemCheck;
