@@ -2313,7 +2313,7 @@ typedef enum objtyp {
     EXT_GALL,       /*        an external galley         */
     CR_LIST,        /*        a list of cross references */
     SCOPE_SNAPSHOT, /*        a scope snapshot	     */
-    DISPOSED,       /*        a disposed record          */
+    DISPOSED,       /* 159        a disposed record          */
 } OBJTYPE;
 
 /* #define is_indefinite(x)  ((x) >= CLOSURE && (x) <= HEAD) */
@@ -2377,14 +2377,16 @@ inline BOOLEAN is_cat_op(OBJTYPE x) {
 #define	GAP_DEC	           169		/* decrement, e.g. -3p               */
 
 /* gap modes occupying mode(x) */
-#define	NO_MODE		     0		/* for error detection: no mode      */
-#define	EDGE_MODE	     1		/* edge-to-edge spacing              */
-#define	HYPH_MODE	     2		/* edge-to-edge with hyphenation     */
-#define	MARK_MODE	     3		/* mark-to-mark spacing              */
-#define	OVER_MODE	     4		/* overstrike spacing                */
-#define	KERN_MODE	     5		/* kerning spacing                   */
-#define	TAB_MODE	     6		/* tabulation spacing                */
-#define	ADD_HYPH	     7		/* temp value used by FillObject     */
+typedef enum space_mode {
+    NO_MODE = 0,    /* for error detection: no mode      */
+    EDGE_MODE,      /* edge-to-edge spacing              */
+    HYPH_MODE,      /* edge-to-edge with hyphenation     */
+    MARK_MODE,      /* mark-to-mark spacing              */
+    OVER_MODE,      /* overstrike spacing                */
+    KERN_MODE,      /* kerning spacing                   */
+    TAB_MODE,       /* tabulation spacing                */
+    ADD_HYPH        /* 7  temp value used by FillObject     */
+} SPACE_MODE;
 
 /* hyph_style(style) options                                                 */
 #define	HYPH_UNDEF	     0		/* hyphenation option undefined      */
@@ -2949,6 +2951,7 @@ typedef struct
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define	Append(x, y, dir)						\
 ( zz_res = (x),	zz_hold = (y),						\
   zz_hold == nilobj ? zz_res  :						\
@@ -2960,6 +2963,21 @@ typedef struct
     succ(zz_tmp, dir) = zz_res						\
   )									\
 )
+*/
+inline OBJECT Append(OBJECT x, OBJECT y, int dir) {
+    OBJECT zz_res = (x);
+    OBJECT zz_hold = (y);
+    OBJECT zz_tmp;
+    zz_hold == nilobj ? zz_res  : \
+        zz_res == nilobj ? zz_hold : \
+            ( zz_tmp = pred(zz_hold, dir),
+            pred(zz_hold, dir) = pred(zz_res, dir),
+            succ(pred(zz_res, dir), dir) = zz_hold,
+            pred(zz_res, dir) = zz_tmp,
+            succ(zz_tmp, dir) = zz_res
+            );
+    return zz_res;
+}
 
 
 /*****************************************************************************/
@@ -2970,6 +2988,7 @@ typedef struct
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define Delete(x, dir)							\
 ( zz_hold = (x),							\
   succ(zz_hold, dir) == zz_hold ? nilobj :				\
@@ -2980,6 +2999,19 @@ typedef struct
     zz_res								\
   )									\
 )
+*/
+inline OBJECT Delete(OBJECT x, int dir) {
+    OBJECT zz_hold = (x);
+    OBJECT zz_res;
+    succ(zz_hold, dir) == zz_hold ? nilobj : \
+        ( zz_res = succ(zz_hold, dir),
+        pred(zz_res, dir) = pred(zz_hold, dir),
+        succ(pred(zz_hold, dir), dir) = zz_res,
+        pred(zz_hold, dir) = succ(zz_hold, dir) = zz_hold,
+        zz_res
+        );
+    return zz_res;
+}
 
 #define Down(x)		succ(x, CHILD)
 #define NextDown(x)	succ(x, CHILD)
