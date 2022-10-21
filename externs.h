@@ -95,18 +95,21 @@ extern nl_catd MsgCat;
 /*                                                                           */
 /*****************************************************************************/
 
-#define	LOUT_VERSION   AsciiToFull("Basser Lout Version 3.42 (Dec 2020)")
-#define	CROSS_DB	   AsciiToFull("lout")
-#define	SOURCE_SUFFIX	   AsciiToFull(".lt")
-#define	INDEX_SUFFIX	   AsciiToFull(".li")
-#define	NEW_INDEX_SUFFIX   AsciiToFull(".lix")
-#define	DATA_SUFFIX	   AsciiToFull(".ld")
-#define	NEW_DATA_SUFFIX	   AsciiToFull("x")
-#define	HYPH_SUFFIX	   AsciiToFull(".lh")
-#define	HYPH_PACKED_SUFFIX AsciiToFull(".lp")
-#define	FILTER_IN	   AsciiToFull("louti")
-#define	FILTER_OUT	   AsciiToFull("lout")
-#define	FILTER_ERR	   AsciiToFull("lout.err")
+typedef unsigned char FULL_CHAR;
+#define              AsciiToFull(x)        ( (FULL_CHAR *) (x) )
+
+extern const FULL_CHAR *const LOUT_VERSION;
+extern const FULL_CHAR *const CROSS_DB;
+extern const FULL_CHAR *const SOURCE_SUFFIX;
+extern const FULL_CHAR *const INDEX_SUFFIX;
+extern const FULL_CHAR *const NEW_INDEX_SUFFIX;
+extern const FULL_CHAR *const DATA_SUFFIX;
+extern const FULL_CHAR *const NEW_DATA_SUFFIX;
+extern const FULL_CHAR *const HYPH_SUFFIX;
+extern const FULL_CHAR *const HYPH_PACKED_SUFFIX;
+extern const FULL_CHAR *const FILTER_IN;
+extern const FULL_CHAR *const FILTER_OUT;
+extern const FULL_CHAR *const FILTER_ERR;
 
 
 /*****************************************************************************/
@@ -164,43 +167,15 @@ extern nl_catd MsgCat;
 /*                                                                           */
 /*****************************************************************************/
 
-#if OS_UNIX
-#define	READ_FILE	"r"
-#define	WRITE_FILE	"w"
-#define	APPEND_FILE	"a"
-#define	STR_NEWLINE	AsciiToFull("\n")
-#define	STR_DIR		AsciiToFull("/")
-#define	UNCOMPRESS_COM	"gunzip -c %s > %s"
-#define PDFTOPS_COM	"pdftops -eps '%s' '%s'"
-#define CONVERT_COM	"convert '%s' 'eps2:%s'"
-#define	LOUT_EPS	"lout.eps"
-#else
-#if OS_DOS
-#define	READ_FILE	"rb"
-#define	WRITE_FILE	"wb"
-#define	APPEND_FILE	"ab"
-#define	STR_NEWLINE	AsciiToFull("\r\n")
-#define	STR_DIR		AsciiToFull("/")
-#define	UNCOMPRESS_COM	"gunzip -c %s > %s"
-#define PDFTOPS_COM	"pdftops -eps %s %s"
-#define CONVERT_COM	"convert %s eps2:%s"
-#define	LOUT_EPS	"lout.eps"
-#else
-#if OS_MAC
-#define	READ_FILE	"r"
-#define	WRITE_FILE	"w"
-#define	APPEND_FILE	"a"
-#define	STR_NEWLINE	AsciiToFull("\r")
-#define	STR_DIR		AsciiToFull("/")
-#define	UNCOMPRESS_COM	"gunzip -c %s > %s"
-#define PDFTOPS_COM	"pdftops -eps %s %s"
-#define CONVERT_COM	"convert %s eps2:%s"
-#define	LOUT_EPS	"lout.eps"
-#else
-If you're compiling this, you've got the wrong settings in the makefile!
-#endif
-#endif
-#endif
+extern const char *const READ_FILE;
+extern const char *const WRITE_FILE;
+extern const char *const APPEND_FILE;
+extern const char *const STR_NEWLINE;
+extern const char *const STR_DIR;
+extern const char *const UNCOMPRESS_COM;
+extern const char *const PDFTOPS_COM;
+extern const char *const CONVERT_COM;
+extern const char *const LOUT_EPS;
 
 /*@::Significant limits@******************************************************/
 /*                                                                           */
@@ -434,7 +409,7 @@ typedef char *LINE;
 /*                                                                           */
 /*****************************************************************************/
 
-typedef unsigned char FULL_CHAR;
+/* typedef unsigned char FULL_CHAR; */
 
 /*****************************************************************************/
 /*                                                                           */
@@ -540,98 +515,87 @@ typedef void *POINTER;
 /*                                                                           */
 /*****************************************************************************/
 
-#define	STR_EMPTY		AsciiToFull("")
-#define	STR_QUOTE		AsciiToFull("\"")
-#define	STR_ESCAPE		AsciiToFull("\\")
-#define	STR_COMMENT		AsciiToFull("#")
-#define	STR_SPACE		AsciiToFull(" ")
-#define	STR_FORMFEED		AsciiToFull("\f")
-#define	STR_TAB			AsciiToFull("\t")
-#define	STR_LETTERS_LOWER	AsciiToFull("abcdefghijklmnopqrstuvwxyz")
-#define	STR_LETTERS_UPPER	AsciiToFull("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-#define	STR_LETTERS_SYMSTART	AsciiToFull("@")
-#define	STR_LETTERS_UNDERSCORE	AsciiToFull("_")
+extern const char *const STR_EMPTY;
+extern const char *const STR_QUOTE;
+extern const char *const STR_ESCAPE;
+extern const char *const STR_COMMENT;
+extern const char *const STR_SPACE;
+extern const char *const STR_FORMFEED;
+extern const char *const STR_TAB;
+extern const char *const STR_LETTERS_LOWER;
+extern const char *const STR_LETTERS_UPPER;
+extern const char *const STR_LETTERS_SYMSTART;
+extern const char *const STR_LETTERS_UNDERSCORE;
 
-#if CHAR_IN==0
-#define	STR_LETTERS_EXTRA0	AsciiToFull("")
-#define	STR_LETTERS_EXTRA1	AsciiToFull("")
-#define	STR_LETTERS_EXTRA2	AsciiToFull("")
-#define	STR_LETTERS_EXTRA3	AsciiToFull("")
-#define	STR_LETTERS_EXTRA4	AsciiToFull("")
-#define	STR_LETTERS_EXTRA5	AsciiToFull("")
-#define	STR_LETTERS_EXTRA6	AsciiToFull("")
-#define	STR_LETTERS_EXTRA7	AsciiToFull("")
-#else
-#define	STR_LETTERS_EXTRA0	AsciiToFull("\300\301\302\303\304\305\306\307")
-#define	STR_LETTERS_EXTRA1	AsciiToFull("\310\311\312\313\314\315\316\317")
-#define	STR_LETTERS_EXTRA2	AsciiToFull("\320\321\322\323\324\325\326")
-#define	STR_LETTERS_EXTRA3	AsciiToFull("\330\331\332\333\334\335\336\337")
-#define	STR_LETTERS_EXTRA4	AsciiToFull("\340\341\342\343\344\345\346\347")
-#define	STR_LETTERS_EXTRA5	AsciiToFull("\350\351\352\353\354\355\356\357")
-#define	STR_LETTERS_EXTRA6	AsciiToFull("\360\361\362\363\364\365\366")
-#define	STR_LETTERS_EXTRA7	AsciiToFull("\370\371\372\373\374\375\376\377")
-#endif
+extern const char *const STR_LETTERS_EXTRA0;
+extern const char *const STR_LETTERS_EXTRA1;
+extern const char *const STR_LETTERS_EXTRA2;
+extern const char *const STR_LETTERS_EXTRA3;
+extern const char *const STR_LETTERS_EXTRA4;
+extern const char *const STR_LETTERS_EXTRA5;
+extern const char *const STR_LETTERS_EXTRA6;
+extern const char *const STR_LETTERS_EXTRA7;
 
-#define	STR_STDIN		AsciiToFull("-")
-#define	STR_STDOUT		AsciiToFull("-")
-#define	STR_HYPHEN		AsciiToFull("-")
-#define	STR_EPS			AsciiToFull("EPS")
-#define	STR_POSTSCRIPT		AsciiToFull("PostScript")
-#define	STR_PLAINTEXT		AsciiToFull("PlainText")
-#define	STR_PDF			AsciiToFull("PDF")
-#define	STR_ELSE		AsciiToFull("else")
-#define	STR_NOCROSS		AsciiToFull("??")
-#define	STR_BADKEY		AsciiToFull("badkey")
-#define	STR_NONE		AsciiToFull("none")
-#define	STR_NOCHAR		AsciiToFull("-none-")
-#define	STR_ZERO		AsciiToFull("0")
-#define	STR_PS_SPACENAME	AsciiToFull("space")
-#define	STR_FONT_RECODE		AsciiToFull("Recode")
-#define	STR_FONT_NORECODE	AsciiToFull("NoRecode")
-#define	STR_COLOUR_NOCHANGE	AsciiToFull("nochange")
-#define	STR_TEXTURE_NOCHANGE	AsciiToFull("nochange")
+const char *const STR_STDIN;
+const char *const STR_STDOUT;
+const char *const STR_HYPHEN;
+const char *const STR_EPS;
+const char *const STR_POSTSCRIPT;
+const char *const STR_PLAINTEXT;
+const char *const STR_PDF;
+const char *const STR_ELSE;
+const char *const STR_NOCROSS;
+const char *const STR_BADKEY;
+const char *const STR_NONE;
+const char *const STR_NOCHAR;
+const char *const STR_ZERO;
+const char *const STR_PS_SPACENAME;
+const char *const STR_FONT_RECODE;
+const char *const STR_FONT_NORECODE;
+const char *const STR_COLOUR_NOCHANGE;
+const char *const STR_TEXTURE_NOCHANGE;
 
-#define	STR_BREAK_HYPHEN	AsciiToFull("hyphen")
-#define	STR_BREAK_NOHYPHEN	AsciiToFull("nohyphen")
-#define	STR_BREAK_ADJUST	AsciiToFull("adjust")
-#define	STR_BREAK_OUTDENT	AsciiToFull("outdent")
-#define	STR_BREAK_RAGGED	AsciiToFull("ragged")
-#define	STR_BREAK_CRAGGED	AsciiToFull("cragged")
-#define	STR_BREAK_RRAGGED	AsciiToFull("rragged")
-#define	STR_BREAK_ORAGGED	AsciiToFull("oragged")
-#define	STR_BREAK_LINES		AsciiToFull("lines")
-#define	STR_BREAK_CLINES	AsciiToFull("clines")
-#define	STR_BREAK_RLINES	AsciiToFull("rlines")
-#define	STR_BREAK_OLINES	AsciiToFull("olines")
-#define	STR_BREAK_SCALE		AsciiToFull("blanklinescale")
-#define	STR_BREAK_NOFIRST	AsciiToFull("unbreakablefirst")
-#define	STR_BREAK_FIRST		AsciiToFull("breakablefirst")
-#define	STR_BREAK_NOLAST	AsciiToFull("unbreakablelast")
-#define	STR_BREAK_LAST		AsciiToFull("breakablelast")
-#define	STR_BREAK_SETOUTDENT	AsciiToFull("setoutdent")
-#define STR_BREAK_MARGINKERNING AsciiToFull("marginkerning")
-#define STR_BREAK_NOMARGINKERNING AsciiToFull("nomarginkerning")
+const char *const STR_BREAK_HYPHEN;
+const char *const STR_BREAK_NOHYPHEN;
+const char *const STR_BREAK_ADJUST;
+const char *const STR_BREAK_OUTDENT;
+const char *const STR_BREAK_RAGGED;
+const char *const STR_BREAK_CRAGGED;
+const char *const STR_BREAK_RRAGGED;
+const char *const STR_BREAK_ORAGGED;
+const char *const STR_BREAK_LINES;
+const char *const STR_BREAK_CLINES;
+const char *const STR_BREAK_RLINES;
+const char *const STR_BREAK_OLINES;
+const char *const STR_BREAK_SCALE;
+const char *const STR_BREAK_NOFIRST;
+const char *const STR_BREAK_FIRST;
+const char *const STR_BREAK_NOLAST;
+const char *const STR_BREAK_LAST;
+const char *const STR_BREAK_SETOUTDENT;
+const char *const STR_BREAK_MARGINKERNING;
+const char *const STR_BREAK_NOMARGINKERNING;
 
-#define STR_SPACE_LOUT		AsciiToFull("lout")
-#define STR_SPACE_COMPRESS	AsciiToFull("compress")
-#define STR_SPACE_SEPARATE	AsciiToFull("separate")
-#define STR_SPACE_TROFF		AsciiToFull("troff")
-#define STR_SPACE_TEX		AsciiToFull("tex")
+const char *const STR_SPACE_LOUT;
+const char *const STR_SPACE_COMPRESS;
+const char *const STR_SPACE_SEPARATE;
+const char *const STR_SPACE_TROFF;
+const char *const STR_SPACE_TEX;
 
-#define	STR_SMALL_CAPS_ON	AsciiToFull("smallcaps")
-#define	STR_SMALL_CAPS_OFF	AsciiToFull("nosmallcaps")
-#define	STR_SMALL_CAPS_SET	AsciiToFull("setsmallcaps")
-#define	STR_BASELINE_MARK	AsciiToFull("baselinemark")
-#define	STR_LIG			AsciiToFull("lig")
-#define	STR_NOLIG		AsciiToFull("nolig")
-#define	STR_XHEIGHT2_MARK	AsciiToFull("xheight2mark")
-#define	STR_NOSTRUT		AsciiToFull("nostrut")
-#define	STR_STRUT		AsciiToFull("strut")
+const char *const STR_SMALL_CAPS_ON;
+const char *const STR_SMALL_CAPS_OFF;
+const char *const STR_SMALL_CAPS_SET;
+const char *const STR_BASELINE_MARK;
+const char *const STR_LIG;
+const char *const STR_NOLIG;
+const char *const STR_XHEIGHT2_MARK;
+const char *const STR_NOSTRUT;
+const char *const STR_STRUT;
 
-#define	STR_GAP_RJUSTIFY	AsciiToFull("1rt")
-#define	STR_GAP_ZERO_HYPH	AsciiToFull("0ch")
+const char *const STR_GAP_RJUSTIFY;
+const char *const STR_GAP_ZERO_HYPH;
 
-#define	STR_SCALE_DOWN		AsciiToFull("downifneeded")
+const char *const STR_SCALE_DOWN;
 
 
 /*@::GAP, STYLE@**************************************************************/
@@ -3618,7 +3582,7 @@ extern	BOOLEAN	  MapIsLowerCase(FULL_CHAR ch, MAPPING m);
 
 
 /*****  z39.c	  String Handler        **************************************/
-#define		  AsciiToFull(x)	( (FULL_CHAR *) (x) )
+/* #define		  AsciiToFull(x)	( (FULL_CHAR *) (x) ) */
 #define		  StringEqual(a, b)	(strcmp((char *)(a), (char *)(b))==0)
 extern int	  strcollcmp(char *a, char *b);
 #define		  TabbedStringLessEqual(a, b) \

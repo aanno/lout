@@ -342,7 +342,7 @@ CFLAGS	+= -DOS_UNIX=$(OSUNIX)					\
 	  -DPDF_COMPRESSION=$(PDF_COMPRESSION)			\
 	  $(ZLIBPATH)
 
-OBJS	= z01.o z02.o z03.o z04.o z05.o z06.o z07.o z08.o	\
+OBJS	= z00.o z01.o z02.o z03.o z04.o z05.o z06.o z07.o z08.o	\
 	  z09.o z10.o z11.o z12.o z13.o z14.o z15.o z16.o	\
 	  z17.o z18.o z19.o z20.o z21.o z22.o z23.o z24.o	\
 	  z25.o z26.o z27.o z28.o z29.o z30.o z31.o z32.o	\
