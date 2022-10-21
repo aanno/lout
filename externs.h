@@ -1825,7 +1825,15 @@ typedef union rec
 /*                                                                           */
 /*****************************************************************************/
 
+typedef union rec OBJ;
+
+// no macro - also used as setter
 #define	succ(x, dim)		(x)->os1.olist[dim].osucc
+/*
+inline OBJ* succ(OBJ* x, int dim) {
+    return (x)->os1.olist[dim].osucc;
+}
+*/
 #define	pred(x, dim)		(x)->os1.olist[dim].opred
 
 #define type(x)			(x)->os1.ou1.os11.otype
@@ -2145,176 +2153,205 @@ typedef struct back_end_rec {
 /*                                                                           */
 /*****************************************************************************/
 
-#define	LINK		     0		/*        a link between objects     */
-#define	GAP_OBJ		     1		/*  o     a gap object               */
-#define	CLOSURE		     2		/* to  n  a closure of a symbol      */
-#define	UNDER_REC	     3		/*  o  n  record of underlining      */
-#define	PAGE_LABEL	     4		/* to sn  @PageLabel                 */
-#define	NULL_CLOS	     5		/* to sn  @Null                      */
-#define	CROSS		     6		/* to sn  && (a cross reference obj) */
-#define	FORCE_CROSS	     7		/* to sn  &&& (a forcing cross ref.) */
-#define	LINK_DEST_NULL	     8		/* to sn  @LinkDest (null version)   */
-#define	HEAD		     9		/*  o  n  a galley header            */
-#define	SPLIT		    10		/*  o     @Split                     */
-#define	PAR		    11		/*  o     a parameter of a closure   */
-#define	WORD		    12		/*  o     a word                     */
-#define	QWORD		    13		/*  o     a word (was quoted in i/p) */
-#define	HSPANNER	    14		/*  o     a horizontal spanner       */
-#define	VSPANNER	    15		/*  o     a vertical spanner         */
-#define	ROW_THR		    16		/*  o     a row thread               */
-#define	COL_THR		    17		/*  o     a column thread            */
-#define	ACAT		    18		/* to s   a sequence of &-ed objs    */
-#define	HCAT		    19		/* to s   a sequence of |-ed objs    */
-#define	VCAT		    20		/* to s   a sequence of /-ed objs    */
-#define	BEGIN_HEADER	    21		/* to s   @BeginHeaderComponent      */
-#define	END_HEADER	    22		/* to s   @EndHeaderComponent        */
-#define	SET_HEADER	    23		/* to s   @SetHeaderComponent        */
-#define	CLEAR_HEADER	    24		/* to s   @ClearHeaderComponent      */
-#define	ONE_COL		    25		/* to s   @OneCol                    */
-#define	ONE_ROW		    26		/* to s   @OneRow                    */
-#define	WIDE		    27		/* to s   @Wide                      */
-#define	HIGH		    28		/* to s   @High                      */
-#define	HSHIFT		    29		/* to s   @HShift                    */
-#define	VSHIFT		    30		/* to s   @VShift                    */
-#define	HMIRROR		    31		/* to s   @HScale                    */
-#define	VMIRROR		    32		/* to s   @VScale                    */
-#define	HSCALE		    33		/* to s   @HScale                    */
-#define	VSCALE		    34		/* to s   @VScale                    */
-#define	HCOVER		    35		/* to s   @HCover                    */
-#define	VCOVER		    36		/* to s   @VCover                    */
-#define	SCALE		    37		/* to s   @Scale                     */
-#define	KERN_SHRINK	    38		/* to s   @KernShrink                */
-#define	HCONTRACT	    39		/* to s   @HContract                 */
-#define	VCONTRACT	    40		/* to s   @VContract                 */
-#define	HLIMITED	    41		/* to s   @HLimited                  */
-#define	VLIMITED	    42		/* to s   @VLimited                  */
-#define	HEXPAND		    43		/* to s   @HExpand                   */
-#define	VEXPAND		    44		/* to s   @VExpand                   */
-#define	START_HSPAN	    45		/* to s   @StartHSpan                */
-#define	START_VSPAN 	    46		/* to s   @StartVSpan                */
-#define	START_HVSPAN 	    47		/* to s   @StartHVSpan               */
-#define	HSPAN  		    48		/* to s   @HSpan                     */
-#define	VSPAN  		    49		/* to s   @VSpan                     */
-#define	PADJUST		    50		/* to s   @PAdjust                   */
-#define	HADJUST		    51		/* to s   @HAdjust                   */
-#define	VADJUST		    52		/* to s   @VAdjust                   */
-#define	ROTATE		    53		/* to s   @Rotate                    */
-#define	BACKGROUND	    54		/* to s   @Background                */
-#define	CASE		    55		/* to s   @Case                      */
-#define	VERBATIM	    56		/* to s   @Verbatim                  */
-#define	RAW_VERBATIM	    57		/* to s   @RawVerbatim               */
-#define	YIELD		    58		/* to s   @Yield                     */
-#define	BACKEND		    59		/* to s   @BackEnd                   */
-#define	FILTERED	    60		/* to s   filtered object (no name)  */
-#define	XCHAR		    61		/* to s   @Char                      */
-#define	FONT		    62		/* to s   @Font                      */
-#define	SPACE		    63		/* to s   @Space                     */
-#define	YUNIT		    64		/* to s   @YUnit                     */
-#define	ZUNIT		    65		/* to s   @ZUnit                     */
-#define	SET_CONTEXT	    66		/* to s   @SetContext                */
-#define	GET_CONTEXT	    67		/* to s   @GetContext                */
-#define	BREAK		    68		/* to s   @Break                     */
-#define	UNDERLINE	    69		/* to s   @Underline                 */
-#define	UNDERLINE_COLOUR    70		/* to s   @SetUnderlineColour        */
-#define	COLOUR		    71		/* to s   @SetColour and @SetColor   */
-#define	TEXTURE		    72		/* to s   @SetTexture                */
-#define	OUTLINE		    73		/* to s   @Outline                   */
-#define	LANGUAGE	    74		/* to s   @Language                  */
-#define	CURR_LANG	    75		/* to s   @CurrLang                  */
-#define	CURR_FAMILY	    76		/* to s   @CurrFamily                */
-#define	CURR_FACE	    77		/* to s   @CurrFace                  */
-#define	CURR_YUNIT	    78		/* to s   @CurrYUnit                 */
-#define	CURR_ZUNIT	    79		/* to s   @CurrZUnit                 */
-#define	COMMON		    80		/* to s   @Common                    */
-#define	RUMP		    81		/* to s   @Rump                      */
-#define	MELD		    82		/* to s   @Meld                      */
-#define	INSERT		    83		/* to s   @Insert                    */
-#define	ONE_OF		    84		/* to s   @OneOf                     */
-#define	NEXT		    85		/* to s   @Next                      */
-#define	PLUS		    86		/* to s   @Plus                      */
-#define	MINUS		    87		/* to s   @Minus                     */
-#define	ENV_OBJ		    88		/* to s   object with envt (no name) */
-#define	ENV		    89		/* to s   @LEnv                      */
-#define	ENVA		    90		/* to s   @LEnvA                     */
-#define	ENVB		    91		/* to s   @LEnvB                     */
-#define	ENVC		    92		/* to s   @LEnvC                     */
-#define	ENVD		    93		/* to s   @LEnvD                     */
-#define	CENV		    94		/* to s   @LCEnv                     */
-#define	CLOS		    95		/* to s   @LClos                     */
-#define	LVIS		    96		/* to s   @LVis                      */
-#define	LUSE		    97		/* to s   @LUse                      */
-#define	LEO 		    98		/* to s   @LEO                       */
-#define	OPEN		    99		/* to s   @Open                      */
-#define	TAGGED		   100		/* to s   @Tagged                    */
-#define	INCGRAPHIC	   101		/* to s   @IncludeGraphic            */
-#define	SINCGRAPHIC	   102		/* to s   @SysIncludeGraphic         */
-#define	PLAIN_GRAPHIC	   103		/* to s   @PlainGraphic              */
-#define	GRAPHIC		   104		/* to s   @Graphic                   */
-#define	LINK_SOURCE	   105		/* to s   @LinkSource                */
-#define	LINK_DEST	   106		/* to s   @LinkDest                  */
-#define	LINK_URL	   107		/* to s   @URLLink                   */
-#define	TSPACE		   108		/* t      a space token, parser only */
-#define	TJUXTA		   109		/* t      a juxta token, parser only */
-#define	LBR		   110		/* t  s   left brace token           */
-#define	RBR		   111		/* t  s   right brace token          */
-#define	BEGIN		   112		/* t  s   @Begin token               */
-#define	END		   113		/* t  s   @End token                 */
-#define	USE		   114		/* t  s   @Use                       */
-#define	NOT_REVEALED	   115		/* t  s   @NotRevealed               */
-#define	GSTUB_NONE	   116		/* t      a galley stub, no rpar     */
-#define	GSTUB_INT	   117		/* t      galley stub internal rpar  */
-#define	GSTUB_EXT	   118		/* t      galley stub external rpar  */
-#define	UNEXPECTED_EOF	   119		/* t      unexpected end of file     */
-#define	INCLUDE		   120		/*    s   @Include                   */
-#define	SYS_INCLUDE	   121		/*    s   @SysInclude                */
-#define	PREPEND		   122		/*    s   @Prepend                   */
-#define	SYS_PREPEND	   123		/*    s   @SysPrepend                */
-#define	INCG_REPEATED	   124		/*    s   @IncludeGraphicRepeated    */
-#define	SINCG_REPEATED     125		/*    s   @SysIncludeGraphicRepeated */
-#define	DATABASE	   126		/*    s   @Database                  */
-#define	SYS_DATABASE	   127		/*    s   @SysDatabase               */
-#define	DEAD		   128		/*   i    a dead galley              */
-#define	UNATTACHED	   129		/*   i    an inner, unsized galley   */
-#define	RECEPTIVE	   130		/*   i    a receptive object index   */
-#define	RECEIVING	   131		/*   i    a receiving object index   */
-#define	RECURSIVE	   132		/*   i    a recursive definite obj.  */
-#define	PRECEDES	   133		/*   i    an ordering constraint     */
-#define	FOLLOWS		   134		/*   i    other end of ordering c.   */
-#define	CROSS_LIT	   135		/*   i    literal word cross-ref     */
-#define	CROSS_FOLL	   136		/*   i    following type cross-ref   */
-#define	CROSS_FOLL_OR_PREC 137		/*   i    follorprec type cross-ref  */
-#define	GALL_FOLL	   138		/*   i    galley with &&following    */
-#define	GALL_FOLL_OR_PREC  139		/*   i    galley with &&following    */
-#define	CROSS_TARG	   140		/*   i    value of cross-ref         */
-#define	GALL_TARG	   141		/*   i    target of these galleys    */
-#define	GALL_PREC	   142		/*   i    galley with &&preceding    */
-#define	CROSS_PREC	   143		/*   i    preceding type cross-ref   */
-#define	PAGE_LABEL_IND	   144		/*   i    index of PAGE_LABEL        */
-#define	SCALE_IND	   145		/*   i    index of auto SCALE        */
-#define	COVER_IND	   146		/*   i    index of HCOVER or VCOVER  */
-#define	EXPAND_IND	   147		/*   i    index of HEXPAND or VEXPD  */
-#define	THREAD		   148		/*        a sequence of threads      */
-#define	CROSS_SYM	   149		/*        cross-ref info             */
-#define	CR_ROOT		   150		/*        RootCross                  */
-#define	MACRO	           151		/*        a macro symbol             */
-#define	LOCAL	           152		/*        a local symbol             */
-#define	LPAR	           153		/*        a left parameter           */
-#define	NPAR	           154		/*        a named parameter          */
-#define	RPAR	           155		/*        a right parameter          */
-#define	EXT_GALL           156		/*        an external galley         */
-#define	CR_LIST	           157		/*        a list of cross references */
-#define	SCOPE_SNAPSHOT     158		/*        a scope snapshot	     */
-#define	DISPOSED           159		/*        a disposed record          */
+typedef enum objtyp {
+    LINK = 0,       /*        a link between objects     */
+    GAP_OBJ,        /*  o     a gap object               */
+    CLOSURE,        /* to  n  a closure of a symbol      */
+    UNDER_REC,      /*  o  n  record of underlining      */
+    PAGE_LABEL,     /* to sn  @PageLabel                 */
+    NULL_CLOS,      /* to sn  @Null                      */
+    CROSS,          /* to sn  && (a cross reference obj) */
+    FORCE_CROSS,    /* to sn  &&& (a forcing cross ref.) */
+    LINK_DEST_NULL, /* to sn  @LinkDest (null version)   */
+    HEAD,           /*  o  n  a galley header            */
+    SPLIT,          /*  o     @Split                     */
+    PAR,            /*  o     a parameter of a closure   */
+    WORD,           /*  o     a word                     */
+    QWORD,          /*  o     a word (was quoted in i/p) */
+    HSPANNER,       /*  o     a horizontal spanner       */
+    VSPANNER,       /*  o     a vertical spanner         */
+    ROW_THR,        /*  o     a row thread               */
+    COL_THR,        /*  o     a column thread            */
+    ACAT,           /* to s   a sequence of &-ed objs    */
+    HCAT,           /* to s   a sequence of |-ed objs    */
+    VCAT,           /* to s   a sequence of /-ed objs    */
+    BEGIN_HEADER,   /* to s   @BeginHeaderComponent      */
+    END_HEADER,     /* to s   @EndHeaderComponent        */
+    SET_HEADER,     /* to s   @SetHeaderComponent        */
+    CLEAR_HEADER,   /* to s   @ClearHeaderComponent      */
+    ONE_COL,        /* to s   @OneCol                    */
+    ONE_ROW,        /* to s   @OneRow                    */
+    WIDE,           /* to s   @Wide                      */
+    HIGH,           /* to s   @High                      */
+    HSHIFT,         /* to s   @HShift                    */
+    VSHIFT,         /* to s   @VShift                    */
+    HMIRROR,        /* to s   @HScale                    */
+    VMIRROR,        /* to s   @VScale                    */
+    HSCALE,         /* to s   @HScale                    */
+    VSCALE,         /* to s   @VScale                    */
+    HCOVER,         /* to s   @HCover                    */
+    VCOVER,         /* to s   @VCover                    */
+    SCALE,          /* to s   @Scale                     */
+    KERN_SHRINK,    /* to s   @KernShrink                */
+    HCONTRACT,      /* to s   @HContract                 */
+    VCONTRACT,      /* to s   @VContract                 */
+    HLIMITED,       /* to s   @HLimited                  */
+    VLIMITED,       /* to s   @VLimited                  */
+    HEXPAND,        /* to s   @HExpand                   */
+    VEXPAND,        /* to s   @VExpand                   */
+    START_HSPAN,    /* to s   @StartHSpan                */
+    START_VSPAN,    /* to s   @StartVSpan                */
+    START_HVSPAN,   /* to s   @StartHVSpan               */
+    HSPAN,          /* to s   @HSpan                     */
+    VSPAN,          /* to s   @VSpan                     */
+    PADJUST,        /* to s   @PAdjust                   */
+    HADJUST,        /* to s   @HAdjust                   */
+    VADJUST,        /* to s   @VAdjust                   */
+    ROTATE,         /* to s   @Rotate                    */
+    BACKGROUND,     /* to s   @Background                */
+    CASE,           /* to s   @Case                      */
+    VERBATIM,       /* to s   @Verbatim                  */
+    RAW_VERBATIM,   /* to s   @RawVerbatim               */
+    YIELD,          /* to s   @Yield                     */
+    BACKEND,        /* to s   @BackEnd                   */
+    FILTERED,       /* to s   filtered object (no name)  */
+    XCHAR,          /* to s   @Char                      */
+    FONT,           /* to s   @Font                      */
+    SPACE,          /* to s   @Space                     */
+    YUNIT,          /* to s   @YUnit                     */
+    ZUNIT,          /* to s   @ZUnit                     */
+    SET_CONTEXT,    /* to s   @SetContext                */
+    GET_CONTEXT,    /* to s   @GetContext                */
+    BREAK,          /* to s   @Break                     */
+    UNDERLINE,      /* to s   @Underline                 */
+    UNDERLINE_COLOUR, /* to s   @SetUnderlineColour        */
+    COLOUR,         /* to s   @SetColour and @SetColor   */
+    TEXTURE,        /* to s   @SetTexture                */
+    OUTLINE,        /* to s   @Outline                   */
+    LANGUAGE,       /* to s   @Language                  */
+    CURR_LANG,      /* to s   @CurrLang                  */
+    CURR_FAMILY,    /* to s   @CurrFamily                */
+    CURR_FACE,      /* to s   @CurrFace                  */
+    CURR_YUNIT,     /* to s   @CurrYUnit                 */
+    CURR_ZUNIT,     /* to s   @CurrZUnit                 */
+    COMMON,         /* to s   @Common                    */
+    RUMP,           /* to s   @Rump                      */
+    MELD,           /* to s   @Meld                      */
+    INSERT,         /* to s   @Insert                    */
+    ONE_OF,         /* to s   @OneOf                     */
+    NEXT,           /* to s   @Next                      */
+    PLUS,           /* to s   @Plus                      */
+    MINUS,          /* to s   @Minus                     */
+    ENV_OBJ,        /* to s   object with envt (no name) */
+    ENV,            /* to s   @LEnv                      */
+    ENVA,           /* to s   @LEnvA                     */
+    ENVB,           /* to s   @LEnvB                     */
+    ENVC,           /* to s   @LEnvC                     */
+    ENVD,           /* to s   @LEnvD                     */
+    CENV,           /* to s   @LCEnv                     */
+    CLOS,           /* to s   @LClos                     */
+    LVIS,           /* to s   @LVis                      */
+    LUSE,           /* to s   @LUse                      */
+    LEO,            /* to s   @LEO                       */
+    OPEN,           /* to s   @Open                      */
+    TAGGED,         /* to s   @Tagged                    */
+    INCGRAPHIC,     /* to s   @IncludeGraphic            */
+    SINCGRAPHIC,    /* to s   @SysIncludeGraphic         */
+    PLAIN_GRAPHIC,  /* to s   @PlainGraphic              */
+    GRAPHIC,        /* to s   @Graphic                   */
+    LINK_SOURCE,    /* to s   @LinkSource                */
+    LINK_DEST,      /* to s   @LinkDest                  */
+    LINK_URL,       /* to s   @URLLink                   */
+    TSPACE,         /* t      a space token, parser only */
+    TJUXTA,         /* t      a juxta token, parser only */
+    LBR,            /* t  s   left brace token           */
+    RBR,            /* t  s   right brace token          */
+    BEGIN,          /* t  s   @Begin token               */
+    END,            /* t  s   @End token                 */
+    USE,            /* t  s   @Use                       */
+    NOT_REVEALED,   /* t  s   @NotRevealed               */
+    GSTUB_NONE,     /* t      a galley stub, no rpar     */
+    GSTUB_INT,      /* t      galley stub internal rpar  */
+    GSTUB_EXT,      /* t      galley stub external rpar  */
+    UNEXPECTED_EOF, /* t      unexpected end of file     */
+    INCLUDE,        /*    s   @Include                   */
+    SYS_INCLUDE,    /*    s   @SysInclude                */
+    PREPEND,        /*    s   @Prepend                   */
+    SYS_PREPEND,    /*    s   @SysPrepend                */
+    INCG_REPEATED,  /*    s   @IncludeGraphicRepeated    */
+    SINCG_REPEATED, /*    s   @SysIncludeGraphicRepeated */
+    DATABASE,       /*    s   @Database                  */
+    SYS_DATABASE,   /*    s   @SysDatabase               */
+    DEAD,           /*   i    a dead galley              */
+    UNATTACHED,     /*   i    an inner, unsized galley   */
+    RECEPTIVE,      /*   i    a receptive object index   */
+    RECEIVING,      /*   i    a receiving object index   */
+    RECURSIVE,      /*   i    a recursive definite obj.  */
+    PRECEDES,       /*   i    an ordering constraint     */
+    FOLLOWS,        /*   i    other end of ordering c.   */
+    CROSS_LIT,      /*   i    literal word cross-ref     */
+    CROSS_FOLL,     /*   i    following type cross-ref   */
+    CROSS_FOLL_OR_PREC, /*   i    follorprec type cross-ref  */
+    GALL_FOLL,      /*   i    galley with &&following    */
+    GALL_FOLL_OR_PREC,  /*   i    galley with &&following    */
+    CROSS_TARG,     /*   i    value of cross-ref         */
+    GALL_TARG,      /*   i    target of these galleys    */
+    GALL_PREC,      /*   i    galley with &&preceding    */
+    CROSS_PREC,     /*   i    preceding type cross-ref   */
+    PAGE_LABEL_IND, /*   i    index of PAGE_LABEL        */
+    SCALE_IND,      /*   i    index of auto SCALE        */
+    COVER_IND,      /*   i    index of HCOVER or VCOVER  */
+    EXPAND_IND,     /*   i    index of HEXPAND or VEXPD  */
+    THREAD,         /*        a sequence of threads      */
+    CROSS_SYM,      /*        cross-ref info             */
+    CR_ROOT,        /*        RootCross                  */
+    MACRO,          /*        a macro symbol             */
+    LOCAL,          /*        a local symbol             */
+    LPAR,           /*        a left parameter           */
+    NPAR,           /*        a named parameter          */
+    RPAR,           /*        a right parameter          */
+    EXT_GALL,       /*        an external galley         */
+    CR_LIST,        /*        a list of cross references */
+    SCOPE_SNAPSHOT, /*        a scope snapshot	     */
+    DISPOSED,       /*        a disposed record          */
+} OBJTYPE;
 
-#define is_indefinite(x)  ((x) >= CLOSURE && (x) <= HEAD)
-#define is_header(x)  ((x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER)
-#define is_definite(x) 	 ((x) >= SPLIT && (x) <= LINK_URL)
-#define	is_par(x)	((x) >= LPAR   && (x) <= RPAR)
-#define	is_index(x)	((x) >= DEAD && (x) <= EXPAND_IND)
-#define	is_type(x)	((x) >= LINK && (x) < DISPOSED)
-#define	is_word(x)	((x) == WORD || (x) == QWORD)
-#define	is_cross(x)	((x) == CROSS || (x) == FORCE_CROSS)
-#define is_cat_op(x)    (((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA)
+/* #define is_indefinite(x)  ((x) >= CLOSURE && (x) <= HEAD) */
+inline BOOLEAN is_indefinite(OBJTYPE x) {
+    return (x) >= CLOSURE && x <= HEAD;
+}
+/* #define is_header(x)  ((x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER) */
+inline BOOLEAN is_header(OBJTYPE x) {
+    return (x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER;
+}
+/* #define is_definite(x) 	 ((x) >= SPLIT && (x) <= LINK_URL) */
+inline BOOLEAN is_definite(OBJTYPE x) {
+    return (x) >= SPLIT && (x) <= LINK_URL;
+}
+/* #define	is_par(x)	((x) >= LPAR   && (x) <= RPAR) */
+inline BOOLEAN is_par(OBJTYPE x) {
+    return (x) >= LPAR && (x) <= RPAR;
+}
+/* #define	is_index(x)	((x) >= DEAD && (x) <= EXPAND_IND) */
+inline BOOLEAN is_index(OBJTYPE x) {
+    return (x) >= DEAD && (x) <= EXPAND_IND;
+}
+/* #define	is_type(x)	((x) >= LINK && (x) < DISPOSED) */
+inline BOOLEAN is_type(OBJTYPE x) {
+    return (x) >= LINK && (x) < DISPOSED;
+}
+/* #define	is_word(x)	((x) == WORD || (x) == QWORD) */
+inline BOOLEAN is_word(OBJTYPE x) {
+    return (x) == WORD || (x) == QWORD;
+}
+/* #define	is_cross(x)	((x) == CROSS || (x) == FORCE_CROSS) */
+inline BOOLEAN is_cross(OBJTYPE x) {
+    return (x) == CROSS || (x) == FORCE_CROSS;
+}
+/* #define is_cat_op(x)    (((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA) */
+inline BOOLEAN is_cat_op(OBJTYPE x) {
+    return ((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA;
+}
 
 
 /*@::miscellaneous constants@*************************************************/
