@@ -143,4 +143,3 @@ const FULL_CHAR* const STR_GAP_RJUSTIFY = AsciiToFull("1rt");
 const FULL_CHAR* const STR_GAP_ZERO_HYPH = AsciiToFull("0ch");
 
 const FULL_CHAR* const STR_SCALE_DOWN = AsciiToFull("downifneeded");
-

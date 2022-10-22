@@ -32,6 +32,8 @@
 #include <stdarg.h>
 #include <locale.h>
 
+#define INLINE __attribute__((always_inline)) inline
+
 #if LOCALE_ON
 #include <nl_types.h>
 extern nl_catd MsgCat;
@@ -40,6 +42,58 @@ extern nl_catd MsgCat;
 #define condcatgets(cat, set, msg, s) s
 #endif
 
+/*****************************************************************************/
+/*                                                                           */
+/*  typedef POINTER- name for type of generic pointer                        */
+/*                                                                           */
+/*****************************************************************************/
+
+typedef void *POINTER;
+
+/*****************************************************************************/
+/*                                                                           */
+/*  typedef FILE_NUM - the internal representation of a file.                */
+/*                                                                           */
+/*****************************************************************************/
+
+typedef unsigned short	FILE_NUM;
+#define	NO_FILE		0
+
+
+/*****************************************************************************/
+/*                                                                           */
+/*  typedef FILE_POS - a position in the set of input files.                 */
+/*                                                                           */
+/*****************************************************************************/
+
+typedef	struct
+{ unsigned char	 otype;			/* space for object type field	     */
+  unsigned char	 orec_size;		/* space for object record size      */
+  FILE_NUM	 ofile_num;		/* no. of file this record is from   */
+  unsigned       oline_num  : 20;	/* the line number of this record    */
+  unsigned       ocol_num   : 12;	/* column number this is related to  */
+} FILE_POS;
+
+/* error types */
+#define	INTERN		     0		/* internal error (i.e. bug)         */
+#define	FATAL		     1		/* fatal error, abort now            */
+#define	FATAL_WITH_USAGE     2		/* fatal error, abort now + usage    */
+#define	WARN		     3		/* warning, non-fatal                */
+
+// from z03 header below - but used here
+extern	FILE_POS  *no_fpos;
+// from z36 header below - but used here
+extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS *pos, ...);
+
+#if ASSERT_ON
+#define assert(c, m)							\
+   { if( !(c) )  Error(1, 2, "assert failed in %s", INTERN, no_fpos, m); }
+#define assert1(c, m, p1)						\
+   { if( !(c) )  Error(1, 3, "assert failed in %s %s", INTERN, no_fpos,m, p1); }
+#else
+#define assert(c, m)
+#define assert1(c, m, p1)
+#endif
 
 /*****************************************************************************/
 /*                                                                           */
@@ -410,14 +464,6 @@ typedef char *LINE;
 /*****************************************************************************/
 
 /* typedef unsigned char FULL_CHAR; */
-
-/*****************************************************************************/
-/*                                                                           */
-/*  typedef POINTER- name for type of generic pointer                        */
-/*                                                                           */
-/*****************************************************************************/
-
-typedef void *POINTER;
 
 /*@::Character literals@******************************************************/
 /*                                                                           */
@@ -842,30 +888,6 @@ inline BOOLEAN EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
 #define	ig_xtrans(x)	bfc(constraint(x))
 #define	ig_ytrans(x)	fc(constraint(x))
 
-
-/*****************************************************************************/
-/*                                                                           */
-/*  typedef FILE_NUM - the internal representation of a file.                */
-/*                                                                           */
-/*****************************************************************************/
-
-typedef unsigned short	FILE_NUM;
-#define	NO_FILE		0
-
-
-/*****************************************************************************/
-/*                                                                           */
-/*  typedef FILE_POS - a position in the set of input files.                 */
-/*                                                                           */
-/*****************************************************************************/
-
-typedef	struct
-{ unsigned char	 otype;			/* space for object type field	     */
-  unsigned char	 orec_size;		/* space for object record size      */
-  FILE_NUM	 ofile_num;		/* no. of file this record is from   */
-  unsigned       oline_num  : 20;	/* the line number of this record    */
-  unsigned       ocol_num   : 12;	/* column number this is related to  */
-} FILE_POS;
 
 #define	file_num(x)	(x).ofile_num
 #define	col_num(x)	(x).ocol_num
@@ -2502,12 +2524,6 @@ typedef enum space_mode {
 #define	PDF		     1		/* PDF back end			     */
 #define	PLAINTEXT	     2		/* plain text back end               */
 
-/* error types */
-#define	INTERN		     0		/* internal error (i.e. bug)         */
-#define	FATAL		     1		/* fatal error, abort now            */
-#define	FATAL_WITH_USAGE     2		/* fatal error, abort now + usage    */
-#define	WARN		     3		/* warning, non-fatal                */
-
 /* status values returned by AttachGalley() */
 #define	ATTACH_KILLED	     0
 #define	ATTACH_INPUT	     1
@@ -2933,7 +2949,7 @@ inline void setdisposed() {
   free( malloc_oheader(x) );						\
 }
 */
-inline void PutMem(OBJECT x, int size) {
+INLINE void PutMem(POINTER x, int size) {
     disposecount();
     zz_hold = (x);
     zz_size = (siz);
@@ -2948,7 +2964,7 @@ inline void PutMem(OBJECT x, int size) {
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
 }
 */
-inline void Dispose(OBJECT x) {
+INLINE void Dispose(POINTER x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
@@ -2962,7 +2978,7 @@ inline void Dispose(OBJECT x) {
   free( (x) );								\
 }
 */
-inline void PutMem(OBJECT x , int size) {
+INLINE void PutMem(POINTER x , int size) {
     disposecount();
     free( (x) );
 }
@@ -2974,7 +2990,7 @@ inline void PutMem(OBJECT x , int size) {
   PutMem(zz_hold,0);							\
 }
 */
-inline Dispose(OBJECT x) {
+INLINE Dispose(POINTER x) {
     zz_hold = (x);
     setdisposed();
     PutMem(zz_hold, 0);
@@ -2995,7 +3011,7 @@ inline Dispose(OBJECT x) {
   zz_free[zz_size] = zz_hold;						\
 }
 */
-inline void PutMem(OBJECT x, int size) {
+INLINE void PutMem(POINTER x, int size) {
     disposecount();
     zz_hold = (x);
     zz_size = (size);
@@ -3013,7 +3029,7 @@ inline void PutMem(OBJECT x, int size) {
   setdisposed;								\
 }
 */
-inline void Dispose(OBJECT x) {
+INLINE void Dispose(OBJECT x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
@@ -3043,7 +3059,7 @@ inline void Dispose(OBJECT x) {
   )									\
 )
 */
-inline OBJECT Append(OBJECT x, OBJECT y, int dir) {
+INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
     zz_res = (x);
     zz_hold = (y);
     zz_hold == nilobj ? zz_res  : \
@@ -3078,7 +3094,7 @@ inline OBJECT Append(OBJECT x, OBJECT y, int dir) {
   )									\
 )
 */
-inline OBJECT Delete(OBJECT x, int dir) {
+INLINE OBJECT Delete(OBJECT x, int dir) {
     zz_hold = (x);
     succ(zz_hold, dir) == zz_hold ? nilobj : \
         ( zz_res = succ(zz_hold, dir),
@@ -3436,7 +3452,7 @@ extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos,
 		    BOOLEAN lessskip);
 
 /*****  z03.c	  File Service	        **************************************/
-extern	FILE_POS  *no_fpos;
+// extern	FILE_POS  *no_fpos;
 extern	void	  InitFiles(void);
 extern	void	  AddToPath(int fpath, OBJECT dirname);
 extern	FILE_NUM  DefineFile(FULL_CHAR *str, FULL_CHAR *suffix,
@@ -3655,8 +3671,7 @@ extern	BOOLEAN	  ErrorSeen(void);
 extern	void	  EnterErrorBlock(BOOLEAN ok_to_print);
 extern	void	  LeaveErrorBlock(BOOLEAN commit);
 extern	void	  CheckErrorBlocks(void);
-extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype,
-		    FILE_POS *pos, ...);
+// extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS *pos, ...);
 
 /*****  z29.c	  Symbol Table		**************************************/
 extern	void	  InitSym(void);
@@ -3920,16 +3935,6 @@ extern	FULL_CHAR *TextureCommand(TEXTURE_NUM pnum);
 /*  ASSERT AND DEBUG CODE                                                    */
 /*                                                                           */
 /*****************************************************************************/
-
-#if ASSERT_ON
-#define assert(c, m)							\
-   { if( !(c) )  Error(1, 2, "assert failed in %s", INTERN, no_fpos, m); }
-#define assert1(c, m, p1)						\
-   { if( !(c) )  Error(1, 3, "assert failed in %s %s", INTERN,no_fpos,m, p1); }
-#else
-#define assert(c, m)
-#define assert1(c, m, p1)
-#endif
 
 #if DEBUG_ON
 
