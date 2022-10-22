@@ -15,6 +15,7 @@ package main
 import "C"
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"unsafe"
 )
@@ -31,7 +32,9 @@ func main() {
 		all_in_one.WriteString(v)
 		all_in_one.WriteString(" ")
 	}
-	cs := C.CString(all_in_one.String())
+	args := all_in_one.String()
+	fmt.Println("args in go: " + args)
+	cs := C.CString(args)
 	C.main1(cs)
 	C.free(unsafe.Pointer(cs))
 }
