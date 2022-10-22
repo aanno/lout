@@ -994,7 +994,11 @@ int main1(char* all_in_one) {
     argv[size++] = pch;
     pch = strtok(NULL, " \t");
   }
-  int result = main2(--size, argv);
+  --size;
+  for(int i = 0; i <= size; ++i) {
+    printf("%i arg: %s\n", i, argv[i]);
+  }
+  int result = main2(size, argv);
   // int result = main2(0, NULL);
   exit(result);
   return result;

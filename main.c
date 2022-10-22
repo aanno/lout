@@ -51,44 +51,8 @@
 
 int main(int argc, char *argv[])
 { 
-  FULL_CHAR *lib;			/* name of library directory         */
-  int run_num, runs_to_do;
-#if LOCALE_ON
-  char catname[MAX_BUFF], *loc;
-#endif
-
-  /* find the name of the library directory, from envt or else from -D */
-  lib = AsciiToFull(getenv("LOUTLIB"));
-  if( lib == (FULL_CHAR *) NULL )
-    lib = AsciiToFull(LIB_DIR);
-
-  /* set locale if that's what we are doing */
-#if LOCALE_ON
-  loc = setlocale(LC_MESSAGES, "");
-  if( loc == (char *) NULL )
-  { Error(1, 6, "unable to initialize locale", WARN, no_fpos);
-    loc = "C";
-  }
-  sprintf(catname, "%s/%s/%s/LC_MESSAGES/errors.%s",
-    lib, LOCALE_DIR, loc, loc);
-  MsgCat = catopen(catname, 0);
-#endif
-
-  run_num = 1;  runs_to_do = -1;
-  do
-  {
-    if( run_num > 1 )
-      Error(1, 34, "lout -r beginning run %d:", WARN, no_fpos, run_num);
-    run(argc, argv, run_num, &runs_to_do, lib);
-    run_num++;
-  }
-  while( run_num <= runs_to_do );
-
-#if LOCALE_ON
-  catclose(MsgCat);
-#endif
-
-  exit(0);
-  return 0;
+  int ret = main2(argc, argv);
+  exit(ret);
+  return ret;
 } /* end main */
 
