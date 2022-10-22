@@ -170,8 +170,8 @@ extern const FULL_CHAR *const FILTER_ERR;
 extern const char* const READ_FILE;
 extern const char* const WRITE_FILE;
 extern const char* const APPEND_FILE;
-extern const char* const STR_NEWLINE;
-extern const char* const STR_DIR;
+extern const FULL_CHAR* const STR_NEWLINE;
+extern const FULL_CHAR* const STR_DIR;
 extern const char* const UNCOMPRESS_COM;
 extern const char* const PDFTOPS_COM;
 extern const char* const CONVERT_COM;
@@ -515,97 +515,97 @@ typedef void *POINTER;
 /*                                                                           */
 /*****************************************************************************/
 
-extern const char* const STR_EMPTY;
-extern const char* const STR_QUOTE;
-extern const char* const STR_ESCAPE;
-extern const char* const STR_COMMENT;
-extern const char* const STR_SPACE;
-extern const char* const STR_FORMFEED;
-extern const char* const STR_TAB;
-extern const char* const STR_LETTERS_LOWER;
-extern const char* const STR_LETTERS_UPPER;
-extern const char* const STR_LETTERS_SYMSTART;
-extern const char* const STR_LETTERS_UNDERSCORE;
+extern const FULL_CHAR* const STR_EMPTY;
+extern const FULL_CHAR* const STR_QUOTE;
+extern const FULL_CHAR* const STR_ESCAPE;
+extern const FULL_CHAR* const STR_COMMENT;
+extern const FULL_CHAR* const STR_SPACE;
+extern const FULL_CHAR* const STR_FORMFEED;
+extern const FULL_CHAR* const STR_TAB;
+extern const FULL_CHAR* const STR_LETTERS_LOWER;
+extern const FULL_CHAR* const STR_LETTERS_UPPER;
+extern const FULL_CHAR* const STR_LETTERS_SYMSTART;
+extern const FULL_CHAR* const STR_LETTERS_UNDERSCORE;
 
-extern const char* const STR_LETTERS_EXTRA0;
-extern const char* const STR_LETTERS_EXTRA1;
-extern const char* const STR_LETTERS_EXTRA2;
-extern const char* const STR_LETTERS_EXTRA3;
-extern const char* const STR_LETTERS_EXTRA4;
-extern const char* const STR_LETTERS_EXTRA5;
-extern const char* const STR_LETTERS_EXTRA6;
-extern const char* const STR_LETTERS_EXTRA7;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA0;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA1;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA2;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA3;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA4;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA5;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA6;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA7;
 
-extern const char* const STR_STDIN;
-extern const char* const STR_STDOUT;
-extern const char* const STR_HYPHEN;
-extern const char* const STR_EPS;
+extern const FULL_CHAR* const STR_STDIN;
+extern const FULL_CHAR* const STR_STDOUT;
+extern const FULL_CHAR* const STR_HYPHEN;
+extern const FULL_CHAR* const STR_EPS;
 
-extern const char* const STR_POSTSCRIPT;
+extern const FULL_CHAR* const STR_POSTSCRIPT;
 // needed in z49.c
 #define STR_POSTSCRIPT_MACRO AsciiToFull("PostScript")
 
-extern const char* const STR_PLAINTEXT;
+extern const FULL_CHAR* const STR_PLAINTEXT;
 // needed in z51.c
 #define STR_PLAINTEXT_MACRO AsciiToFull("PlainText")
 
-extern const char* const STR_PDF;
+extern const FULL_CHAR* const STR_PDF;
 // needed in z50.c
 #define STR_PDF_MACRO AsciiToFull("PDF")
 
-extern const char* const STR_ELSE;
-extern const char* const STR_NOCROSS;
-extern const char* const STR_BADKEY;
-extern const char* const STR_NONE;
-extern const char* const STR_NOCHAR;
-extern const char* const STR_ZERO;
-extern const char* const STR_PS_SPACENAME;
-extern const char* const STR_FONT_RECODE;
-extern const char* const STR_FONT_NORECODE;
-extern const char* const STR_COLOUR_NOCHANGE;
-extern const char* const STR_TEXTURE_NOCHANGE;
+extern const FULL_CHAR* const STR_ELSE;
+extern const FULL_CHAR* const STR_NOCROSS;
+extern const FULL_CHAR* const STR_BADKEY;
+extern const FULL_CHAR* const STR_NONE;
+extern const FULL_CHAR* const STR_NOCHAR;
+extern const FULL_CHAR* const STR_ZERO;
+extern const FULL_CHAR* const STR_PS_SPACENAME;
+extern const FULL_CHAR* const STR_FONT_RECODE;
+extern const FULL_CHAR* const STR_FONT_NORECODE;
+extern const FULL_CHAR* const STR_COLOUR_NOCHANGE;
+extern const FULL_CHAR* const STR_TEXTURE_NOCHANGE;
 
-extern const char* const STR_BREAK_HYPHEN;
-extern const char* const STR_BREAK_NOHYPHEN;
-extern const char* const STR_BREAK_ADJUST;
-extern const char* const STR_BREAK_OUTDENT;
-extern const char* const STR_BREAK_RAGGED;
-extern const char* const STR_BREAK_CRAGGED;
-extern const char* const STR_BREAK_RRAGGED;
-extern const char* const STR_BREAK_ORAGGED;
-extern const char* const STR_BREAK_LINES;
-extern const char* const STR_BREAK_CLINES;
-extern const char* const STR_BREAK_RLINES;
-extern const char* const STR_BREAK_OLINES;
-extern const char* const STR_BREAK_SCALE;
-extern const char* const STR_BREAK_NOFIRST;
-extern const char* const STR_BREAK_FIRST;
-extern const char* const STR_BREAK_NOLAST;
-extern const char* const STR_BREAK_LAST;
-extern const char* const STR_BREAK_SETOUTDENT;
-extern const char* const STR_BREAK_MARGINKERNING;
-extern const char* const STR_BREAK_NOMARGINKERNING;
+extern const FULL_CHAR* const STR_BREAK_HYPHEN;
+extern const FULL_CHAR* const STR_BREAK_NOHYPHEN;
+extern const FULL_CHAR* const STR_BREAK_ADJUST;
+extern const FULL_CHAR* const STR_BREAK_OUTDENT;
+extern const FULL_CHAR* const STR_BREAK_RAGGED;
+extern const FULL_CHAR* const STR_BREAK_CRAGGED;
+extern const FULL_CHAR* const STR_BREAK_RRAGGED;
+extern const FULL_CHAR* const STR_BREAK_ORAGGED;
+extern const FULL_CHAR* const STR_BREAK_LINES;
+extern const FULL_CHAR* const STR_BREAK_CLINES;
+extern const FULL_CHAR* const STR_BREAK_RLINES;
+extern const FULL_CHAR* const STR_BREAK_OLINES;
+extern const FULL_CHAR* const STR_BREAK_SCALE;
+extern const FULL_CHAR* const STR_BREAK_NOFIRST;
+extern const FULL_CHAR* const STR_BREAK_FIRST;
+extern const FULL_CHAR* const STR_BREAK_NOLAST;
+extern const FULL_CHAR* const STR_BREAK_LAST;
+extern const FULL_CHAR* const STR_BREAK_SETOUTDENT;
+extern const FULL_CHAR* const STR_BREAK_MARGINKERNING;
+extern const FULL_CHAR* const STR_BREAK_NOMARGINKERNING;
 
-extern const char* const STR_SPACE_LOUT;
-extern const char* const STR_SPACE_COMPRESS;
-extern const char* const STR_SPACE_SEPARATE;
-extern const char* const STR_SPACE_TROFF;
-extern const char* const STR_SPACE_TEX;
+extern const FULL_CHAR* const STR_SPACE_LOUT;
+extern const FULL_CHAR* const STR_SPACE_COMPRESS;
+extern const FULL_CHAR* const STR_SPACE_SEPARATE;
+extern const FULL_CHAR* const STR_SPACE_TROFF;
+extern const FULL_CHAR* const STR_SPACE_TEX;
 
-extern const char* const STR_SMALL_CAPS_ON;
-extern const char* const STR_SMALL_CAPS_OFF;
-extern const char* const STR_SMALL_CAPS_SET;
-extern const char* const STR_BASELINE_MARK;
-extern const char* const STR_LIG;
-extern const char* const STR_NOLIG;
-extern const char* const STR_XHEIGHT2_MARK;
-extern const char* const STR_NOSTRUT;
-extern const char* const STR_STRUT;
+extern const FULL_CHAR* const STR_SMALL_CAPS_ON;
+extern const FULL_CHAR* const STR_SMALL_CAPS_OFF;
+extern const FULL_CHAR* const STR_SMALL_CAPS_SET;
+extern const FULL_CHAR* const STR_BASELINE_MARK;
+extern const FULL_CHAR* const STR_LIG;
+extern const FULL_CHAR* const STR_NOLIG;
+extern const FULL_CHAR* const STR_XHEIGHT2_MARK;
+extern const FULL_CHAR* const STR_NOSTRUT;
+extern const FULL_CHAR* const STR_STRUT;
 
-extern const char* const STR_GAP_RJUSTIFY;
-extern const char* const STR_GAP_ZERO_HYPH;
+extern const FULL_CHAR* const STR_GAP_RJUSTIFY;
+extern const FULL_CHAR* const STR_GAP_ZERO_HYPH;
 
-extern const char* const STR_SCALE_DOWN;
+extern const FULL_CHAR* const STR_SCALE_DOWN;
 
 
 /*@::GAP, STYLE@**************************************************************/
@@ -818,13 +818,13 @@ inline void SetConstraint(CONSTRAINT c, FULL_LENGTH x, FULL_LENGTH y, FULL_LENGT
     fc(c) = (z);
 }
 /* #define	CopyConstraint(x, y)	(bc(x) = bc(y), bfc(x) = bfc(y), fc(x) = fc(y)) */
-inline CopyConstraint(CONSTRAINT x, CONSTRAINT y) {
+inline void CopyConstraint(CONSTRAINT x, CONSTRAINT y) {
     bc(x) = bc(y);
     bfc(x) = bfc(y);
     fc(x) = fc(y);
 }
 /* #define	FlipConstraint(x, y)	(bc(x) = fc(y), bfc(x) = bfc(y), fc(x) = bc(y)) */
-inline FlipConstraint(CONSTRAINT x, CONSTRAINT y) {
+inline void FlipConstraint(CONSTRAINT x, CONSTRAINT y) {
     bc(x) = fc(y);
     bfc(x) = bfc(y);
     fc(x) = bc(y);
@@ -2739,6 +2739,12 @@ typedef enum space_mode {
 /*                      size, type and allocation point of each object.      */
 /*****************************************************************************/
 
+#include "z31.h"
+// from z01 headers below - but used here
+extern	POINTER	  MemCheck;
+// from z26 headers below - but used here
+extern	FULL_CHAR *Image(unsigned int c);
+
 #define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
 
@@ -2871,29 +2877,54 @@ typedef struct
 /*                                                                           */
 /*****************************************************************************/
 #if DEBUG_ON
-#define disposecount zz_disposecount++; zz_listcount++;
+/* #define disposecount zz_disposecount++; zz_listcount++; */
+inline void disposecount() {
+    zz_disposecount++;
+    zz_listcount++;
+}
 
+/*
 #define disposecheck							\
 { assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );	\
 }
- 
+*/
+inline void disposecheck() {
+    assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );
+}
+
+/*
 #define	setdisposed							\
 { if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )		\
     fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,		\
       Image(type(zz_hold)), STR_NEWLINE);				\
   type(zz_hold) = DISPOSED;						\
 }
+*/
+inline void setdisposed() {
+    if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )
+        fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,
+            Image(type(zz_hold)), STR_NEWLINE);
+    type(zz_hold) = DISPOSED;
+}
 
 #else
-#define disposecount
-#define disposecheck
-#define	setdisposed
+/* #define disposecount */
+inline void disposecount() {
+}
+/* #define disposecheck */
+inline void disposecheck() {
+}
+/* #define	setdisposed */
+inline void setdisposed() {
+}
+
 #endif
 
 #if USE_SYSTEM_MALLOC
 
 #if USE_MALLOC_DEBUG
 
+/*
 #define	PutMem(x, siz)							\
 { disposecount;								\
   zz_hold = (x);							\
@@ -2901,30 +2932,59 @@ typedef struct
   mallocheadercheck(zz_hold,zz_size);					\
   free( malloc_oheader(x) );						\
 }
+*/
+inline void PutMem(OBJECT x, int size) {
+    disposecount();
+    zz_hold = (x);
+    zz_size = (siz);
+    mallocheadercheck(zz_hold,zz_size);
+    free( malloc_oheader(x) );
+}
 
+/*
 #define Dispose(x)							\
 { zz_hold = (x);							\
   PutMem(zz_hold, is_word(type(zz_hold)) ?				\
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
 }
+*/
+inline void Dispose(OBJECT x) {
+    zz_hold = (x);
+    PutMem(zz_hold, is_word(type(zz_hold)) ?
+        rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
+}
 
 #else
 
+/*
 #define	PutMem(x, siz)							\
 { disposecount;								\
   free( (x) );								\
 }
+*/
+inline void PutMem(OBJECT x , int size) {
+    disposecount();
+    free( (x) );
+}
 
+/*
 #define	Dispose(x)							\
 { zz_hold = (x);							\
   setdisposed;								\
   PutMem(zz_hold,0);							\
+}
+*/
+inline Dispose(OBJECT x) {
+    zz_hold = (x);
+    setdisposed();
+    PutMem(zz_hold, 0);
 }
 
 #endif
 
 #else
 
+/*
 #define PutMem(x, siz)							\
 { disposecount;								\
   zz_hold = (x);							\
@@ -2934,13 +2994,32 @@ typedef struct
   pred(zz_hold, CHILD) = zz_free[zz_size];				\
   zz_free[zz_size] = zz_hold;						\
 }
+*/
+inline void PutMem(OBJECT x, int size) {
+    disposecount();
+    zz_hold = (x);
+    zz_size = (size);
+    mallocheadercheck(zz_hold,zz_size);
+    disposecheck();
+    pred(zz_hold, CHILD) = zz_free[zz_size];
+    zz_free[zz_size] = zz_hold;
+}
 
+/*
 #define Dispose(x)							\
 { zz_hold = (x);							\
   PutMem(zz_hold, is_word(type(zz_hold)) ?				\
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
   setdisposed;								\
 }
+*/
+inline void Dispose(OBJECT x) {
+    zz_hold = (x);
+    PutMem(zz_hold, is_word(type(zz_hold)) ?
+        rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
+    setdisposed();
+}
+
 #endif
 
 /*@::Append(), Delete()@******************************************************/
@@ -2965,9 +3044,8 @@ typedef struct
 )
 */
 inline OBJECT Append(OBJECT x, OBJECT y, int dir) {
-    OBJECT zz_res = (x);
-    OBJECT zz_hold = (y);
-    OBJECT zz_tmp;
+    zz_res = (x);
+    zz_hold = (y);
     zz_hold == nilobj ? zz_res  : \
         zz_res == nilobj ? zz_hold : \
             ( zz_tmp = pred(zz_hold, dir),
@@ -3001,8 +3079,7 @@ inline OBJECT Append(OBJECT x, OBJECT y, int dir) {
 )
 */
 inline OBJECT Delete(OBJECT x, int dir) {
-    OBJECT zz_hold = (x);
-    OBJECT zz_res;
+    zz_hold = (x);
     succ(zz_hold, dir) == zz_hold ? nilobj : \
         ( zz_res = succ(zz_hold, dir),
         pred(zz_res, dir) = pred(zz_hold, dir),
@@ -3322,7 +3399,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 extern	void	  run(int argc, char *argv[], int run_num, int *runs_to_do, FULL_CHAR *lib);
 extern	void	  PrintUsage(FILE *fp);
 extern	int	  main(int argc, char *argv[]);
-extern	POINTER	  MemCheck;
+// extern	POINTER	  MemCheck;
 extern	OBJECT	  StartSym;
 extern	OBJECT	  GalleySym;
 extern	OBJECT	  ForceGalleySym;
@@ -3559,7 +3636,7 @@ extern	void	  BeginString(void);
 extern	void	  AppendString(FULL_CHAR *str);
 extern	FULL_CHAR *EndString(void);
 extern	FULL_CHAR *EchoLength(int len);
-extern	FULL_CHAR *Image(unsigned int c);
+// extern	FULL_CHAR *Image(unsigned int c);
 extern	void	  SetLengthDim(int dim);
 
 /*****	z27.c	  Debug Service		**************************************/
@@ -3617,23 +3694,6 @@ extern	void	  FlattenUses(void);
 extern	BOOLEAN	  SearchUses(OBJECT x, OBJECT y);
 extern	OBJECT	  FirstExternTarget(OBJECT sym, OBJECT *cont);
 extern	OBJECT	  NextExternTarget(OBJECT sym, OBJECT *cont);
-
-/*****  z31.c	  Memory Allocator	**************************************/
-extern	void	  DebugRegisterUsage(int typ, int delta_num, int delta_size);
-extern	void	  DebugMemory(void);
-extern	void	  MemInit(void);
-extern	OBJECT	  GetMemory(int siz, FILE_POS *pos);
-extern	OBJECT	  zz_free[];
-extern	unsigned char	zz_lengths[];
-extern	int	  zz_newcount;
-extern	int	  zz_disposecount;
-extern	int	  zz_listcount;
-extern	OBJECT	  zz_hold;
-extern	OBJECT	  zz_tmp;
-extern	OBJECT	  zz_res;
-extern	int	  zz_size;
-extern	OBJECT	  xx_link, xx_tmp;
-extern	OBJECT	  xx_hold, xx_res;
 
 /*****  z32.c	  Counter Service           **********************************/
 extern	OBJECT	  Next(OBJECT x, int inc, BOOLEAN *done);

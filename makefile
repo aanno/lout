@@ -314,7 +314,11 @@ RCOPY	= cp -r
 MKDIR	= mkdir -p
 
 # Add WARN to CFLAGS for more checking
-WARN	= -Wpointer-arith -Wclobbered -Wempty-body -Wmissing-parameter-type -Wmissing-field-initializers -Wold-style-declaration -Wtype-limits -Wuninitialized -Winit-self -Wlogical-op -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wbad-function-cast
+WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
+  -Wtype-limits -Wuninitialized -Winit-self -Wlogical-op -Wmissing-prototypes \
+  -Wmissing-declarations -Wnested-externs -Wbad-function-cast
+# unknown:
+# -Wclobbered -Wmissing-parameter-type -Wold-style-declaration
 
 CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
 
