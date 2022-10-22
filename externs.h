@@ -2562,177 +2562,177 @@ typedef enum space_mode {
 /*                                                                           */
 /*****************************************************************************/
 
-#define	KW_START		AsciiToFull("\\Start")
-#define	KW_PRINT		AsciiToFull("\\Print")
-#define	KW_OPTGALL		AsciiToFull("@OptGall")
-#define	KW_DEF			AsciiToFull("def")
-#define	KW_FONTDEF		AsciiToFull("@FontDef")
-#define	KW_FAMILY		AsciiToFull("@Family")
-#define	KW_FACE			AsciiToFull("@Face")
-#define	KW_NAME			AsciiToFull("@Name")
-#define	KW_METRICS		AsciiToFull("@Metrics")
-#define	KW_EXTRA_METRICS	AsciiToFull("@ExtraMetrics")
-#define	KW_MAPPING		AsciiToFull("@Mapping")
-#define	KW_RECODE		AsciiToFull("@Recode")
-#define	KW_LANGDEF		AsciiToFull("langdef")
-#define	KW_FORCE		AsciiToFull("force")
-#define	KW_HORIZ		AsciiToFull("horizontally")
-#define	KW_INTO			AsciiToFull("into")
-#define	KW_EXTEND		AsciiToFull("extend")
-#define	KW_IMPORT		AsciiToFull("import")
-#define	KW_EXPORT		AsciiToFull("export")
-#define	KW_PRECEDENCE		AsciiToFull("precedence")
-#define	KW_ASSOC		AsciiToFull("associativity")
-#define	KW_LEFT			AsciiToFull("left")
-#define	KW_RIGHT		AsciiToFull("right")
-#define	KW_BODY			AsciiToFull("body")
-#define	KW_FILTER		AsciiToFull("@Filter")
-#define	KW_FILTERIN		AsciiToFull("@FilterIn")
-#define	KW_FILTEROUT		AsciiToFull("@FilterOut")
-#define	KW_FILTERERR		AsciiToFull("@FilterErr")
-#define	KW_MACRO		AsciiToFull("macro")
-#define	KW_NAMED		AsciiToFull("named")
-#define	KW_COMPULSORY		AsciiToFull("compulsory")
-#define	KW_COMMON		AsciiToFull("@Common")
-#define	KW_RUMP			AsciiToFull("@Rump")
-#define	KW_MELD			AsciiToFull("@Meld")
-#define	KW_INSERT		AsciiToFull("@Insert")
-#define	KW_ONE_OF		AsciiToFull("@OneOf")
-#define	KW_NEXT			AsciiToFull("@Next")
-#define	KW_PLUS			AsciiToFull("@Plus")
-#define	KW_MINUS		AsciiToFull("@Minus")
-#define	KW_WIDE			AsciiToFull("@Wide")
-#define	KW_HIGH			AsciiToFull("@High")
-#define	KW_HSHIFT		AsciiToFull("@HShift")
-#define	KW_VSHIFT		AsciiToFull("@VShift")
-#define	KW_BEGIN_HEADER		AsciiToFull("@BeginHeaderComponent")
-#define	KW_END_HEADER		AsciiToFull("@EndHeaderComponent")
-#define	KW_SET_HEADER		AsciiToFull("@SetHeaderComponent")
-#define	KW_CLEAR_HEADER		AsciiToFull("@ClearHeaderComponent")
-#define	KW_ONE_COL		AsciiToFull("@OneCol")
-#define	KW_ONE_ROW		AsciiToFull("@OneRow")
-#define	KW_HMIRROR		AsciiToFull("@HMirror")
-#define	KW_VMIRROR		AsciiToFull("@VMirror")
-#define	KW_HSCALE		AsciiToFull("@HScale")
-#define	KW_VSCALE		AsciiToFull("@VScale")
-#define	KW_HCOVER		AsciiToFull("@HCover")
-#define	KW_VCOVER		AsciiToFull("@VCover")
-#define	KW_SCALE		AsciiToFull("@Scale")
-#define	KW_KERN_SHRINK		AsciiToFull("@KernShrink")
-#define	KW_HCONTRACT		AsciiToFull("@HContract")
-#define	KW_VCONTRACT		AsciiToFull("@VContract")
-#define	KW_HLIMITED		AsciiToFull("@HLimited")
-#define	KW_VLIMITED		AsciiToFull("@VLimited")
-#define	KW_HEXPAND		AsciiToFull("@HExpand")
-#define	KW_VEXPAND		AsciiToFull("@VExpand")
-#define	KW_STARTHVSPAN		AsciiToFull("@StartHVSpan")
-#define	KW_STARTHSPAN		AsciiToFull("@StartHSpan")
-#define	KW_STARTVSPAN		AsciiToFull("@StartVSpan")
-#define	KW_HSPAN		AsciiToFull("@HSpan")
-#define	KW_VSPAN		AsciiToFull("@VSpan")
-#define	KW_PADJUST		AsciiToFull("@PAdjust")
-#define	KW_HADJUST		AsciiToFull("@HAdjust")
-#define	KW_VADJUST		AsciiToFull("@VAdjust")
-#define	KW_ROTATE		AsciiToFull("@Rotate")
-#define	KW_BACKGROUND		AsciiToFull("@Background")
-#define	KW_INCGRAPHIC		AsciiToFull("@IncludeGraphic")
-#define	KW_SINCGRAPHIC		AsciiToFull("@SysIncludeGraphic")
-#define	KW_GRAPHIC		AsciiToFull("@Graphic")
-#define	KW_LINK_SOURCE		AsciiToFull("@LinkSource")
-#define	KW_LINK_DEST		AsciiToFull("@LinkDest")
-#define	KW_LINK_URL		AsciiToFull("@URLLink")
-#define	KW_PLAINGRAPHIC		AsciiToFull("@PlainGraphic")
-#define	KW_VERBATIM		AsciiToFull("@Verbatim")
-#define	KW_RAWVERBATIM		AsciiToFull("@RawVerbatim")
-#define	KW_CASE			AsciiToFull("@Case")
-#define	KW_YIELD		AsciiToFull("@Yield")
-#define	KW_BACKEND		AsciiToFull("@BackEnd")
-#define	KW_XCHAR		AsciiToFull("@Char")
-#define	KW_FONT			AsciiToFull("@Font")
-#define	KW_SPACE		AsciiToFull("@Space")
-#define	KW_YUNIT		AsciiToFull("@YUnit")
-#define	KW_ZUNIT		AsciiToFull("@ZUnit")
-#define	KW_BREAK		AsciiToFull("@Break")
-#define	KW_UNDERLINE		AsciiToFull("@Underline")
-#define	KW_COLOUR		AsciiToFull("@SetColour")
-#define	KW_COLOR		AsciiToFull("@SetColor")
-#define	KW_UNDERLINE_COLOUR	AsciiToFull("@SetUnderlineColour")
-#define	KW_UNDERLINE_COLOR	AsciiToFull("@SetUnderlineColor")
-#define	KW_TEXTURE		AsciiToFull("@SetTexture")
-#define	KW_OUTLINE		AsciiToFull("@Outline")
-#define	KW_LANGUAGE		AsciiToFull("@Language")
-#define	KW_CURR_LANG		AsciiToFull("@CurrLang")
-#define	KW_CURR_FAMILY		AsciiToFull("@CurrFamily")
-#define	KW_CURR_FACE		AsciiToFull("@CurrFace")
-#define	KW_CURR_YUNIT		AsciiToFull("@CurrYUnit")
-#define	KW_CURR_ZUNIT		AsciiToFull("@CurrZUnit")
-#define	KW_ENV			AsciiToFull("@LEnv")
-#define	KW_ENVA			AsciiToFull("@@A")
-#define	KW_ENVB			AsciiToFull("@@B")
-#define	KW_ENVC			AsciiToFull("@@C")
-#define	KW_ENVD			AsciiToFull("@@D")
-#define	KW_CENV			AsciiToFull("@@E")
-#define	KW_CLOS			AsciiToFull("@LClos")
-#define	KW_LVIS			AsciiToFull("@@V")
-#define	KW_LUSE			AsciiToFull("@LUse")
-#define	KW_LEO			AsciiToFull("@LEO")
-#define	KW_OPEN			AsciiToFull("@Open")
-#define	KW_USE			AsciiToFull("@Use")
-#define	KW_NOT_REVEALED		AsciiToFull("@NotRevealed")
-#define	KW_TAGGED		AsciiToFull("@Tagged")
-#define	KW_DATABASE		AsciiToFull("@Database")
-#define	KW_SYSDATABASE		AsciiToFull("@SysDatabase")
-#define	KW_INCLUDE		AsciiToFull("@Include")
-#define	KW_SYSINCLUDE		AsciiToFull("@SysInclude")
-#define	KW_INCG_REPEATED	AsciiToFull("@IncludeGraphicRepeated")
-#define	KW_SINCG_REPEATED	AsciiToFull("@SysIncludeGraphicRepeated")
-#define	KW_PREPEND		AsciiToFull("@PrependGraphic")
-#define	KW_SYSPREPEND		AsciiToFull("@SysPrependGraphic")
-#define	KW_TARGET		AsciiToFull("@Target")
-#define	KW_FOLLOWING		AsciiToFull("following")
-#define	KW_PRECEDING		AsciiToFull("preceding")
-#define	KW_FOLL_OR_PREC		AsciiToFull("foll_or_prec")
-#define	KW_NOW			AsciiToFull("now")
-#define	KW_NULL			AsciiToFull("@Null")
-#define	KW_PAGE_LABEL		AsciiToFull("@PageLabel")
-#define	KW_GALLEY		AsciiToFull("@Galley")
-#define	KW_FORCE_GALLEY		AsciiToFull("@ForceGalley")
-#define	KW_INPUT		AsciiToFull("@LInput")
-#define	KW_SPLIT		AsciiToFull("@Split")
-#define	KW_TAG			AsciiToFull("@Tag")
-#define	KW_KEY			AsciiToFull("@Key")
-#define	KW_OPTIMIZE		AsciiToFull("@Optimize")
-#define	KW_MERGE		AsciiToFull("@Merge")
-#define	KW_ENCLOSE		AsciiToFull("@Enclose")
-#define	KW_CROSS		AsciiToFull("&&")
-#define	KW_FORCE_CROSS		AsciiToFull("&&&")
-#define	KW_LBR			AsciiToFull("{")
-#define	KW_RBR			AsciiToFull("}")
-#define	KW_BEGIN		AsciiToFull("@Begin")
-#define	KW_END			AsciiToFull("@End")
-#define	KW_VCAT_NN		AsciiToFull("//")
-#define	KW_VCAT_MN		AsciiToFull("^//")
-#define	KW_VCAT_NJ		AsciiToFull("/")
-#define	KW_VCAT_MJ		AsciiToFull("^/")
-#define	KW_HCAT_NN		AsciiToFull("||")
-#define	KW_HCAT_MN		AsciiToFull("^||")
-#define	KW_HCAT_NJ		AsciiToFull("|")
-#define	KW_HCAT_MJ		AsciiToFull("^|")
-#define	KW_ACAT_NJ		AsciiToFull("&")
-#define	KW_ACAT_MJ		AsciiToFull("^&")
-#define	KW_MOMENT		AsciiToFull("@Moment")
-#define	KW_SECOND		AsciiToFull("@Second")
-#define	KW_MINUTE		AsciiToFull("@Minute")
-#define	KW_HOUR			AsciiToFull("@Hour")
-#define	KW_DAY			AsciiToFull("@Day")
-#define	KW_MONTH		AsciiToFull("@Month")
-#define	KW_YEAR			AsciiToFull("@Year")
-#define	KW_CENTURY		AsciiToFull("@Century")
-#define	KW_WEEKDAY		AsciiToFull("@WeekDay")
-#define	KW_YEARDAY		AsciiToFull("@YearDay")
-#define	KW_DAYLIGHTSAVING	AsciiToFull("@DaylightSaving")
-#define	KW_SET_CONTEXT		AsciiToFull("@SetContext")
-#define	KW_GET_CONTEXT		AsciiToFull("@GetContext")
+extern const FULL_CHAR* const KW_START;
+extern const FULL_CHAR* const KW_PRINT;
+extern const FULL_CHAR* const KW_OPTGALL;
+extern const FULL_CHAR* const KW_DEF;
+extern const FULL_CHAR* const KW_FONTDEF;
+extern const FULL_CHAR* const KW_FAMILY;
+extern const FULL_CHAR* const KW_FACE;
+extern const FULL_CHAR* const KW_NAME;
+extern const FULL_CHAR* const KW_METRICS;
+extern const FULL_CHAR* const KW_EXTRA_METRICS;
+extern const FULL_CHAR* const KW_MAPPING;
+extern const FULL_CHAR* const KW_RECODE;
+extern const FULL_CHAR* const KW_LANGDEF;
+extern const FULL_CHAR* const KW_FORCE;
+extern const FULL_CHAR* const KW_HORIZ;
+extern const FULL_CHAR* const KW_INTO;
+extern const FULL_CHAR* const KW_EXTEND;
+extern const FULL_CHAR* const KW_IMPORT;
+extern const FULL_CHAR* const KW_EXPORT;
+extern const FULL_CHAR* const KW_PRECEDENCE;
+extern const FULL_CHAR* const KW_ASSOC;
+extern const FULL_CHAR* const KW_LEFT;
+extern const FULL_CHAR* const KW_RIGHT;
+extern const FULL_CHAR* const KW_BODY;
+extern const FULL_CHAR* const KW_FILTER;
+extern const FULL_CHAR* const KW_FILTERIN;
+extern const FULL_CHAR* const KW_FILTEROUT;
+extern const FULL_CHAR* const KW_FILTERERR;
+extern const FULL_CHAR* const KW_MACRO;
+extern const FULL_CHAR* const KW_NAMED;
+extern const FULL_CHAR* const KW_COMPULSORY;
+extern const FULL_CHAR* const KW_COMMON;
+extern const FULL_CHAR* const KW_RUMP;
+extern const FULL_CHAR* const KW_MELD;
+extern const FULL_CHAR* const KW_INSERT;
+extern const FULL_CHAR* const KW_ONE_OF;
+extern const FULL_CHAR* const KW_NEXT;
+extern const FULL_CHAR* const KW_PLUS;
+extern const FULL_CHAR* const KW_MINUS;
+extern const FULL_CHAR* const KW_WIDE;
+extern const FULL_CHAR* const KW_HIGH;
+extern const FULL_CHAR* const KW_HSHIFT;
+extern const FULL_CHAR* const KW_VSHIFT;
+extern const FULL_CHAR* const KW_BEGIN_HEADER;
+extern const FULL_CHAR* const KW_END_HEADER;
+extern const FULL_CHAR* const KW_SET_HEADER;
+extern const FULL_CHAR* const KW_CLEAR_HEADER;
+extern const FULL_CHAR* const KW_ONE_COL;
+extern const FULL_CHAR* const KW_ONE_ROW;
+extern const FULL_CHAR* const KW_HMIRROR;
+extern const FULL_CHAR* const KW_VMIRROR;
+extern const FULL_CHAR* const KW_HSCALE;
+extern const FULL_CHAR* const KW_VSCALE;
+extern const FULL_CHAR* const KW_HCOVER;
+extern const FULL_CHAR* const KW_VCOVER;
+extern const FULL_CHAR* const KW_SCALE;
+extern const FULL_CHAR* const KW_KERN_SHRINK;
+extern const FULL_CHAR* const KW_HCONTRACT;
+extern const FULL_CHAR* const KW_VCONTRACT;
+extern const FULL_CHAR* const KW_HLIMITED;
+extern const FULL_CHAR* const KW_VLIMITED;
+extern const FULL_CHAR* const KW_HEXPAND;
+extern const FULL_CHAR* const KW_VEXPAND;
+extern const FULL_CHAR* const KW_STARTHVSPAN;
+extern const FULL_CHAR* const KW_STARTHSPAN;
+extern const FULL_CHAR* const KW_STARTVSPAN;
+extern const FULL_CHAR* const KW_HSPAN;
+extern const FULL_CHAR* const KW_VSPAN;
+extern const FULL_CHAR* const KW_PADJUST;
+extern const FULL_CHAR* const KW_HADJUST;
+extern const FULL_CHAR* const KW_VADJUST;
+extern const FULL_CHAR* const KW_ROTATE;
+extern const FULL_CHAR* const KW_BACKGROUND;
+extern const FULL_CHAR* const KW_INCGRAPHIC;
+extern const FULL_CHAR* const KW_SINCGRAPHIC;
+extern const FULL_CHAR* const KW_GRAPHIC;
+extern const FULL_CHAR* const KW_LINK_SOURCE;
+extern const FULL_CHAR* const KW_LINK_DEST;
+extern const FULL_CHAR* const KW_LINK_URL;
+extern const FULL_CHAR* const KW_PLAINGRAPHIC;
+extern const FULL_CHAR* const KW_VERBATIM;
+extern const FULL_CHAR* const KW_RAWVERBATIM;
+extern const FULL_CHAR* const KW_CASE;
+extern const FULL_CHAR* const KW_YIELD;
+extern const FULL_CHAR* const KW_BACKEND;
+extern const FULL_CHAR* const KW_XCHAR;
+extern const FULL_CHAR* const KW_FONT;
+extern const FULL_CHAR* const KW_SPACE;
+extern const FULL_CHAR* const KW_YUNIT;
+extern const FULL_CHAR* const KW_ZUNIT;
+extern const FULL_CHAR* const KW_BREAK;
+extern const FULL_CHAR* const KW_UNDERLINE;
+extern const FULL_CHAR* const KW_COLOUR;
+extern const FULL_CHAR* const KW_COLOR;
+extern const FULL_CHAR* const KW_UNDERLINE_COLOUR;
+extern const FULL_CHAR* const KW_UNDERLINE_COLOR;
+extern const FULL_CHAR* const KW_TEXTURE;
+extern const FULL_CHAR* const KW_OUTLINE;
+extern const FULL_CHAR* const KW_LANGUAGE;
+extern const FULL_CHAR* const KW_CURR_LANG;
+extern const FULL_CHAR* const KW_CURR_FAMILY;
+extern const FULL_CHAR* const KW_CURR_FACE;
+extern const FULL_CHAR* const KW_CURR_YUNIT;
+extern const FULL_CHAR* const KW_CURR_ZUNIT;
+extern const FULL_CHAR* const KW_ENV;
+extern const FULL_CHAR* const KW_ENVA;
+extern const FULL_CHAR* const KW_ENVB;
+extern const FULL_CHAR* const KW_ENVC;
+extern const FULL_CHAR* const KW_ENVD;
+extern const FULL_CHAR* const KW_CENV;
+extern const FULL_CHAR* const KW_CLOS;
+extern const FULL_CHAR* const KW_LVIS;
+extern const FULL_CHAR* const KW_LUSE;
+extern const FULL_CHAR* const KW_LEO;
+extern const FULL_CHAR* const KW_OPEN;
+extern const FULL_CHAR* const KW_USE;
+extern const FULL_CHAR* const KW_NOT_REVEALED;
+extern const FULL_CHAR* const KW_TAGGED;
+extern const FULL_CHAR* const KW_DATABASE;
+extern const FULL_CHAR* const KW_SYSDATABASE;
+extern const FULL_CHAR* const KW_INCLUDE;
+extern const FULL_CHAR* const KW_SYSINCLUDE;
+extern const FULL_CHAR* const KW_INCG_REPEATED;
+extern const FULL_CHAR* const KW_SINCG_REPEATED;
+extern const FULL_CHAR* const KW_PREPEND;
+extern const FULL_CHAR* const KW_SYSPREPEND;
+extern const FULL_CHAR* const KW_TARGET;
+extern const FULL_CHAR* const KW_FOLLOWING;
+extern const FULL_CHAR* const KW_PRECEDING;
+extern const FULL_CHAR* const KW_FOLL_OR_PREC;
+extern const FULL_CHAR* const KW_NOW;
+extern const FULL_CHAR* const KW_NULL;
+extern const FULL_CHAR* const KW_PAGE_LABEL;
+extern const FULL_CHAR* const KW_GALLEY;
+extern const FULL_CHAR* const KW_FORCE_GALLEY;
+extern const FULL_CHAR* const KW_INPUT;
+extern const FULL_CHAR* const KW_SPLIT;
+extern const FULL_CHAR* const KW_TAG;
+extern const FULL_CHAR* const KW_KEY;
+extern const FULL_CHAR* const KW_OPTIMIZE;
+extern const FULL_CHAR* const KW_MERGE;
+extern const FULL_CHAR* const KW_ENCLOSE;
+extern const FULL_CHAR* const KW_CROSS;
+extern const FULL_CHAR* const KW_FORCE_CROSS;
+extern const FULL_CHAR* const KW_LBR;
+extern const FULL_CHAR* const KW_RBR;
+extern const FULL_CHAR* const KW_BEGIN;
+extern const FULL_CHAR* const KW_END;
+extern const FULL_CHAR* const KW_VCAT_NN;
+extern const FULL_CHAR* const KW_VCAT_MN;
+extern const FULL_CHAR* const KW_VCAT_NJ;
+extern const FULL_CHAR* const KW_VCAT_MJ;
+extern const FULL_CHAR* const KW_HCAT_NN;
+extern const FULL_CHAR* const KW_HCAT_MN;
+extern const FULL_CHAR* const KW_HCAT_NJ;
+extern const FULL_CHAR* const KW_HCAT_MJ;
+extern const FULL_CHAR* const KW_ACAT_NJ;
+extern const FULL_CHAR* const KW_ACAT_MJ;
+extern const FULL_CHAR* const KW_MOMENT;
+extern const FULL_CHAR* const KW_SECOND;
+extern const FULL_CHAR* const KW_MINUTE;
+extern const FULL_CHAR* const KW_HOUR;
+extern const FULL_CHAR* const KW_DAY;
+extern const FULL_CHAR* const KW_MONTH;
+extern const FULL_CHAR* const KW_YEAR;
+extern const FULL_CHAR* const KW_CENTURY;
+extern const FULL_CHAR* const KW_WEEKDAY;
+extern const FULL_CHAR* const KW_YEARDAY;
+extern const FULL_CHAR* const KW_DAYLIGHTSAVING;
+extern const FULL_CHAR* const KW_SET_CONTEXT;
+extern const FULL_CHAR* const KW_GET_CONTEXT;
 
 /*@::GetMem(), New(), NewWord()@**********************************************/
 /*                                                                           */
