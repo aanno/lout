@@ -985,8 +985,7 @@ int main2(int argc, char *argv[])
 
 int main1(char* all_in_one) {
   printf("hello, world\n");
-  /*
-  printf("arg line: %100s\n", all_in_one);
+  printf("%100s\n", all_in_one);
   int size = 0;
   char* argv[100];
   char* pch = strtok(all_in_one," \t");
@@ -995,9 +994,8 @@ int main1(char* all_in_one) {
     argv[size++] = pch;
     pch = strtok(NULL, " \t");
   }
-  int result = main2(argv, --size);
-  */
-  int result = main2(NULL, 0);
+  int result = main2(--size, argv);
+  // int result = main2(0, NULL);
   exit(result);
   return result;
 }
