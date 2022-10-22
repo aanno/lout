@@ -90,7 +90,9 @@ static void ParentFlush(BOOLEAN prnt_flush, OBJECT dest_index, BOOLEAN kill)
     debug0(DGF, DD, "  calling FlushGalley from ParentFlush");
     FlushGalley(prnt);
   }
-  else if( kill )  DeleteNode(dest_index)
+  else if( kill ) {
+    DeleteNode(dest_index);
+  }
   debug0(DGF, DD, "ParentFlush returning.");
 } /* end ParentFlush */
 

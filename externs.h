@@ -1838,8 +1838,10 @@ typedef union rec
   {  LIST	olist[1];
   } os10;
 
-} *OBJECT;
+} REAL_OBJECT;
 
+// Attention: OBJECT is a pointer type!
+typedef REAL_OBJECT* OBJECT;
 
 /*@::macros for fields of OBJECT@*********************************************/
 /*                                                                           */
@@ -3115,12 +3117,15 @@ INLINE OBJECT Delete(OBJECT x, int dir) {
 #define	LastUp(x)	pred(x, PARENT)
 #define	PrevUp(x)	pred(x, PARENT)
 
+// cannot inline
 #define	Child(y, link)							\
 for( y = pred(link, PARENT);  type(y) == LINK;  y = pred(y, PARENT) )
 
+// cannot inline
 #define CountChild(y, link, i)                                          \
 for( y=pred(link, PARENT), i=1; type(y)==LINK;  y = pred(y, PARENT), i++ )
 
+// cannot inline
 #define	Parent(y, link)							\
 for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 
@@ -3134,7 +3139,9 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// cannot inline
 #define UpDim(x, dim)	( (dim) == COLM ? succ(x, PARENT) : pred(x, PARENT) )
+// cannot inline
 #define DownDim(x, dim)	( (dim) == COLM ? succ(x, CHILD) : pred(x, CHILD) )
 
 
@@ -3147,12 +3154,22 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// from c07 headers below - but used here
+extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
+
+/*
 #define Link(x, y)							\
 { New(xx_link, LINK);							\
   Append(xx_link, (x), CHILD);						\
   Append(xx_link, (y), PARENT);						\
 }
-
+*/
+INLINE OBJECT Link(OBJECT x, OBJECT y) {
+    OBJECT xx_link;
+    New(xx_link, LINK);
+    Append(xx_link, (x), CHILD);
+    return Append(xx_link, (y), PARENT);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3163,13 +3180,20 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define DeleteLink(link)						\
 { xx_link = (link);							\
   Delete(xx_link, PARENT);						\
   Delete(xx_link, CHILD);						\
   Dispose(xx_link);							\
 }
-
+*/
+INLINE void DeleteLink(OBJECT link) {
+    OBJECT xx_link = (link);
+    Delete(xx_link, PARENT);
+    Delete(xx_link, CHILD);
+    Dispose(xx_link);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3179,14 +3203,21 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define DisposeChild(link)						\
 { xx_link = (link);							\
   xx_tmp = Delete(xx_link, PARENT);					\
   Delete(xx_link, CHILD);						\
   Dispose(xx_link);							\
   if( succ(xx_tmp, PARENT) == xx_tmp )  DisposeObject(xx_tmp);		\
-} /* end DisposeChild */
-
+} */ /* end DisposeChild */
+INLINE void DisposeChild(OBJECT link) {
+    OBJECT xx_link = (link);
+    OBJECT xx_tmp = Delete(xx_link, PARENT);
+    Delete(xx_link, CHILD);
+    Dispose(xx_link);
+    if( succ(xx_tmp, PARENT) == xx_tmp )  DisposeObject(xx_tmp);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3196,12 +3227,17 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define MoveLink(link, x, dir)						\
 ( xx_link = (link),							\
   Delete(xx_link, 1 - (dir) ),						\
   Append(xx_link, (x), 1 - (dir) )					\
-) /* end MoveLink */
-
+)*/ /* end MoveLink */
+INLINE OBJECT MoveLink(OBJECT link, OBJECT x, int dir) {
+    OBJECT xx_link = (link);
+    Delete(xx_link, 1 - (dir) );
+    return Append(xx_link, (x), 1 - (dir) );
+}
 
 /*@::TransferLinks(), DeleteNode(), etc.@*************************************/
 /*                                                                           */
@@ -3212,15 +3248,24 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define TransferLinks(start_link, stop_link, dest_link)			\
 { OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;	\
   if( xxstart != xxstop )						\
   {	assert( type(xxstart) == LINK, "TransferLinks: start_link!" );	\
-	Append(xxstart, xxstop, CHILD); /* actually a split */		\
+	Append(xxstart, xxstop, CHILD); / actually a split /		\
 	Append(xxstart, xxdest, CHILD);					\
   }									\
+}*/
+INLINE void TransferLinks(OBJECT start_link, OBJECT stop_link, OBJECT dest_link) {
+    OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;
+    if( xxstart != xxstop )
+    {
+        assert( type(xxstart) == LINK, "TransferLinks: start_link!" );	\
+        Append(xxstart, xxstop, CHILD); /* actually a split */
+        Append(xxstart, xxdest, CHILD);
+    }
 }
-
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3230,13 +3275,20 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define DeleteNode(x)							\
 { xx_hold = (x);							\
   while( Up(xx_hold)   != xx_hold ) DeleteLink( Up(xx_hold) );		\
   while( Down(xx_hold) != xx_hold ) DeleteLink( Down(xx_hold) );	\
   Dispose(xx_hold);							\
 }
-
+*/
+INLINE void DeleteNode(OBJECT x) {
+    OBJECT xx_hold = (x);
+    while( Up(xx_hold) != xx_hold ) DeleteLink( Up(xx_hold) );
+    while( Down(xx_hold) != xx_hold ) DeleteLink( Down(xx_hold) );
+    Dispose(xx_hold);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3247,6 +3299,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define MergeNode(x, y)							\
 { xx_res = (x); xx_hold = (y);						\
   xx_tmp = Delete(xx_hold, PARENT);					\
@@ -3254,8 +3307,16 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
   xx_tmp = Delete(xx_hold, CHILD);					\
   Append(xx_res, xx_tmp, CHILD);					\
   Dispose(xx_hold);							\
-}  /* end MergeNode */
-
+} */ /* end MergeNode */
+INLINE void MergeNode(OBJECT x, OBJECT y) {
+    OBJECT xx_res = (x);
+    OBJECT xx_hold = (y);
+    OBJECT xx_tmp = Delete(xx_hold, PARENT);
+    Append(xx_res, xx_tmp, PARENT);
+    xx_tmp = Delete(xx_hold, CHILD);
+    Append(xx_res, xx_tmp, CHILD);
+    Dispose(xx_hold);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3265,11 +3326,15 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define ReplaceNode(x, y)						\
 ( xx_tmp = Delete((y), PARENT),						\
   Append((x), xx_tmp, PARENT)						\
-) /* end ReplaceNode */
-
+) */ /* end ReplaceNode */
+INLINE void ReplaceNode(OBJECT x, OBJECT y) {
+    OBJECT xx_tmp = Delete((y), PARENT);
+    Append((x), xx_tmp, PARENT);
+}
 
 /*@::FirstDefinite(), NextDefinite(), etc.@***********************************/
 /*                                                                           */
@@ -3288,6 +3353,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// cannot inline
 #define FirstDefinite(x, link, y, jn)					\
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
@@ -3297,7 +3363,6 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
       break;								\
   }									\
 } /* end FirstDefinite */
-
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3314,14 +3379,21 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
-#define NextDefinite(x, link, y)					\
+/* #define NextDefinite(x, link, y)					\
 { for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
     if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )	\
 	break;								\
   }									\
-} /* end NextDefinite */
-
+} */ /* end NextDefinite */
+INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
+    for( link = NextDown(link);  link != x;  link = NextDown(link) )
+    {
+        Child(y, link);
+        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+            break;
+    }
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3341,6 +3413,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// cannot inline
 #define NextDefiniteWithGap(x, link, y, g, jn)				\
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
@@ -3372,14 +3445,21 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
-#define LastDefinite(x, link, y)					\
+/* #define LastDefinite(x, link, y)					\
 { for( link = LastDown(x);  link != x;  link = PrevDown(link) )		\
   { Child(y, link);							\
     if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )	\
 	break;								\
   }									\
-} /* end LastDefinite */
-
+} */ /* end LastDefinite */
+INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
+    for( link = LastDown(x);  link != x;  link = PrevDown(link) )
+    {
+        Child(y, link);
+        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+            break;
+    }
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3396,13 +3476,21 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
-#define PrevDefinite(x, link, y)					\
+/* #define PrevDefinite(x, link, y)					\
 { for( link = PrevDown(link);  link != x;  link = PrevDown(link) )	\
   { Child(y, link);							\
     if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )	\
 	break;								\
   }									\
-} /* end PrevDefinite */
+} */ /* end PrevDefinite */
+INLINE PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
+    for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
+    {
+        Child(y, link);
+        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+            break;
+    }
+}
 
 
 /*@::Module Declarations@*****************************************************/
@@ -3499,7 +3587,7 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 		    BOOLEAN transfer_allowed);
 
 /*****  z07.c	  Object Service	**************************************/
-extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
+// extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 extern	int	  DisposeObject(OBJECT x);
 extern	OBJECT	  MakeWord(unsigned typ, FULL_CHAR *str, FILE_POS *pos);
 extern	OBJECT	  MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2,
