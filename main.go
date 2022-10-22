@@ -13,13 +13,34 @@ package main
 // }
 //
 import "C"
-import "unsafe"
+import (
+	"os"
+	"unsafe"
+)
 
-func main() {
+
+
+func main3() {
+	// TODO:
+	// adhere to LOCALE, run_num, runs_to_do, LIB_DIR
+
+	argc := len(os.Args)
+	cargs := make([]C.char, argc, argc)
+	for i, v := range os.Args {
+		cargs[i] = C.CString(v)
+	}
+
+	lib_dir := "/usr/local/share/lout-3.42/lib"
+	runs_to_do := -1
+	run_num := 1
+
+	// C.run(C.Arargc, argv, run_num, &runs_to_do, C.CString(lib_dir))
+}
+
+func main2() {
 	cs := C.CString("Hello from stdio")
 	C.myprint(cs)
 	C.free(unsafe.Pointer(cs))
 
 	C.PrintUsage(C.stdout)
 }
-
