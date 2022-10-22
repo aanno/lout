@@ -30,6 +30,8 @@
 /*****************************************************************************/
 #include "externs.h"
 #include <signal.h>
+// for main1
+#include <string.h>
 
 /* On DOS/Win32 we need to set binary mode on stdout (Uwe) */
 #if OS_DOS
@@ -928,3 +930,71 @@ void run(int argc, char *argv[], int run_num, int *runs_to_do,
 
 } /* end run */
 
+
+/*****************************************************************************/
+/*                                                                           */
+/*  main(argc, argv)                                                         */
+/*                                                                           */
+/*  Read command line, initialise everything, read definitions, read         */
+/*  galleys, clean up and exit.                                              */
+/*                                                                           */
+/*****************************************************************************/
+
+int main2(int argc, char *argv[])
+{ 
+  FULL_CHAR *lib;			/* name of library directory         */
+  int run_num, runs_to_do;
+#if LOCALE_ON
+  char catname[MAX_BUFF], *loc;
+#endif
+
+  /* find the name of the library directory, from envt or else from -D */
+  lib = AsciiToFull(getenv("LOUTLIB"));
+  if( lib == (FULL_CHAR *) NULL )
+    lib = AsciiToFull(LIB_DIR);
+
+  /* set locale if that's what we are doing */
+#if LOCALE_ON
+  loc = setlocale(LC_MESSAGES, "");
+  if( loc == (char *) NULL )
+  { Error(1, 6, "unable to initialize locale", WARN, no_fpos);
+    loc = "C";
+  }
+  sprintf(catname, "%s/%s/%s/LC_MESSAGES/errors.%s",
+    lib, LOCALE_DIR, loc, loc);
+  MsgCat = catopen(catname, 0);
+#endif
+
+  run_num = 1;  runs_to_do = -1;
+  do
+  {
+    if( run_num > 1 )
+      Error(1, 34, "lout -r beginning run %d:", WARN, no_fpos, run_num);
+    run(argc, argv, run_num, &runs_to_do, lib);
+    run_num++;
+  }
+  while( run_num <= runs_to_do );
+
+#if LOCALE_ON
+  catclose(MsgCat);
+#endif
+
+  exit(0);
+  return 0;
+} /* end main */
+
+int main1(char* all_in_one) {
+  printf("hello, world\n");
+  printf("arg line: %s\n", all_in_one);
+  int size = 0;
+  char* argv[100];
+  char* pch = strtok(all_in_one," \t");
+  while (pch != NULL && size < 100)
+  {
+    argv[size++] = pch;
+    pch = strtok(NULL, " \t");
+  }
+  int result = main2(argv, --size);
+  exit(result);
+  return result;
+}

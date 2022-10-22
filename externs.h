@@ -3502,7 +3502,9 @@ INLINE PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
 /*****  z01.c	  Supervise		**************************************/
 extern	void	  run(int argc, char *argv[], int run_num, int *runs_to_do, FULL_CHAR *lib);
 extern	void	  PrintUsage(FILE *fp);
-extern	int	  main(int argc, char *argv[]);
+extern	int	  main2(int argc, char *argv[]);
+// for use from go lang
+extern  int   main1(char* all_in_one);
 // extern	POINTER	  MemCheck;
 extern	OBJECT	  StartSym;
 extern	OBJECT	  GalleySym;

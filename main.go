@@ -14,27 +14,26 @@ package main
 //
 import "C"
 import (
+	"bytes"
 	"os"
 	"unsafe"
 )
 
-
-
-func main3() {
-	// TODO:
-	// adhere to LOCALE, run_num, runs_to_do, LIB_DIR
-
-	argc := len(os.Args)
-	cargs := make([]C.char, argc, argc)
-	for i, v := range os.Args {
-		cargs[i] = C.CString(v)
+func main() {
+	total_len := 0
+	// argc := len(os.Args)
+	for _, v := range os.Args {
+		// add 1 for space
+		total_len += len(v) + 1
 	}
-
-	lib_dir := "/usr/local/share/lout-3.42/lib"
-	runs_to_do := -1
-	run_num := 1
-
-	// C.run(C.Arargc, argv, run_num, &runs_to_do, C.CString(lib_dir))
+	var all_in_one bytes.Buffer
+	for _, v := range os.Args {
+		all_in_one.WriteString(v)
+		all_in_one.WriteString(" ")
+	}
+	cs := C.CString(all_in_one.String())
+	C.main1(cs)
+	C.free(unsafe.Pointer(cs))
 }
 
 func main2() {

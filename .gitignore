@@ -1,8 +1,12 @@
 _obj/
+.idea/
+lout.iml
 
-liblout.so
-lout
-prg2lout
+/main
+/liblout.so
+/lout
+/prg2lout
+
 *.ld
 *.li
 *.ps
