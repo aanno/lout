@@ -143,8 +143,7 @@ BOOLEAN LexLegalName(FULL_CHAR *str)
 /*                                                                           */
 /*****************************************************************************/
 
-static void initchtbl(val, str)
-int val;  FULL_CHAR *str;
+static void initchtbl(int val, const FULL_CHAR* str)
 { int i;
   for( i = 0;  str[i] != '\0';  i++ )
     chtbl[ str[i] ] = val;
@@ -629,7 +628,9 @@ OBJECT LexGetToken(void)
       case LETTER:
       
 	col_num(file_pos) = (startpos = p-1) - startline;
-	while( chtbl[*p++] == LETTER );  --p;
+	while( chtbl[*p++] == LETTER )
+	;  
+	--p;
 	res = SearchSym(startpos, p - startpos);
 
 	MORE: if( res == nilobj )
