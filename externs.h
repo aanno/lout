@@ -681,19 +681,42 @@ typedef struct
 ( nobreak(x) = xnobreak, mark(x) = xmark, join(x) = xjoin,		\
   units(x) = xunits, mode(x) = xmode, width(x) = xwidth			\
 )
+/*
+inline void SetGap(GAP x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
+  nobreak(x) = xnobreak;
+  mark(x) = xmark;
+  join(x) = xjoin;
+  units(x) = xunits;
+  mode(x) = xmode;
+  width(x) = xwidth;
+}
+*/
 
 #define GapCopy(x, y)							\
 ( nobreak(x) = nobreak(y), mark(x) = mark(y), join(x) = join(y),	\
   units(x) = units(y), mode(x) = mode(y), width(x) = width(y)		\
 )
+/*
+inline void GapCopy(GAP x, GAP y) {
+    nobreak(x) = nobreak(y);
+    mark(x) = mark(y);
+    join(x) = join(y);
+    units(x) = units(y);
+    mode(x) = mode(y);
+    width(x) = width(y);
+}
+*/
 
 #define GapEqual(x, y)							\
 ( nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)	\
   && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y)	\
 )
-
-#define ClearGap(x)	SetGap(x, FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0)
-
+/*
+inline BOOLEAN GapEqual(GAP x, GAP y) {
+    return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
+             && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -825,14 +848,51 @@ typedef struct
 #define	bfc(x)		(x).obfc
 #define	fc(x)		(x).ofc
 #define	sparec(x)	(x).osparec
+
 #define	constrained(x)	(bc(x) != MAX_FULL_LENGTH ||			\
 			 bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH)
+/*
+inline BOOLEAN constrained(CONSTRAINT x) {
+    return bc(x) != MAX_FULL_LENGTH || bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH;
+}
+*/
 
 #define	SetConstraint(c,x,y,z)	(bc(c) = (x),   bfc(c) = (y),    fc(c) = (z))
+/*
+inline void SetConstraint(CONSTRAINT c, FULL_LENGTH x, FULL_LENGTH y, FULL_LENGTH z) {
+    bc(c) = (x);
+    bfc(c) = (y);
+    fc(c) = (z);
+}
+*/
 #define	CopyConstraint(x, y)	(bc(x) = bc(y), bfc(x) = bfc(y), fc(x) = fc(y))
+/*
+inline void CopyConstraint(CONSTRAINT x, CONSTRAINT y) {
+    bc(x) = bc(y);
+    bfc(x) = bfc(y);
+    fc(x) = fc(y);
+}
+*/
 #define	FlipConstraint(x, y)	(bc(x) = fc(y), bfc(x) = bfc(y), fc(x) = bc(y))
+/*
+inline void FlipConstraint(CONSTRAINT x, CONSTRAINT y) {
+    bc(x) = fc(y);
+    bfc(x) = bfc(y);
+    fc(x) = bc(y);
+}
+*/
 #define FitsConstraint(b, f, c)	(b <= bc(c)  && b + f <= bfc(c) && f <= fc(c))
+/*
+inline BOOLEAN FitsConstraint(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT c) {
+    return b <= bc(c)  && b + f <= bfc(c) && f <= fc(c);
+}
+*/
 #define EqualConstraint(a, b) (bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b) )
+/*
+inline BOOLEAN EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
+    return bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b);
+}
+*/
 
 #define	ig_fnum(x)	bc(constraint(x))
 #define	ig_xtrans(x)	bfc(constraint(x))
@@ -2283,14 +2343,58 @@ typedef enum objtyp {
 } OBJTYPE;
 
 #define is_indefinite(x)  ((x) >= CLOSURE && (x) <= HEAD)
+/*
+inline BOOLEAN is_indefinite(OBJTYPE x) {
+    return (x) >= CLOSURE && x <= HEAD;
+}
+*/
 #define is_header(x)  ((x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER)
+/*
+inline BOOLEAN is_header(OBJTYPE x) {
+    return (x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER;
+}
+*/
 #define is_definite(x) 	 ((x) >= SPLIT && (x) <= LINK_URL)
+/*
+inline BOOLEAN is_definite(OBJTYPE x) {
+    return (x) >= SPLIT && (x) <= LINK_URL;
+}
+*/
 #define	is_par(x)	((x) >= LPAR   && (x) <= RPAR)
+/*
+inline BOOLEAN is_par(OBJTYPE x) {
+    return (x) >= LPAR && (x) <= RPAR;
+}
+*/
 #define	is_index(x)	((x) >= DEAD && (x) <= EXPAND_IND)
+/*
+inline BOOLEAN is_index(OBJTYPE x) {
+    return (x) >= DEAD && (x) <= EXPAND_IND;
+}
+*/
 #define	is_type(x)	((x) >= LINK && (x) < DISPOSED)
+/*
+inline BOOLEAN is_type(OBJTYPE x) {
+    return (x) >= LINK && (x) < DISPOSED;
+}
+*/
 #define	is_word(x)	((x) == WORD || (x) == QWORD)
+/*
+inline BOOLEAN is_word(OBJTYPE x) {
+    return (x) == WORD || (x) == QWORD;
+}
+*/
 #define	is_cross(x)	((x) == CROSS || (x) == FORCE_CROSS)
+/*inline BOOLEAN is_cross(OBJTYPE x) {
+    return (x) == CROSS || (x) == FORCE_CROSS;
+}
+*/
 #define is_cat_op(x)    (((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA)
+/*
+inline BOOLEAN is_cat_op(OBJTYPE x) {
+    return ((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA;
+}
+*/
 
 
 /*@::miscellaneous constants@*************************************************/
@@ -2811,17 +2915,36 @@ typedef struct
 /*****************************************************************************/
 #if DEBUG_ON
 #define disposecount zz_disposecount++; zz_listcount++;
+/*
+inline void disposecount() {
+    zz_disposecount++;
+    zz_listcount++;
+}
+*/
 
 #define disposecheck							\
 { assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );	\
 }
- 
+/*
+inline void disposecheck() {
+    assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );
+}
+*/
+
 #define	setdisposed							\
 { if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )		\
     fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,		\
       Image(type(zz_hold)), STR_NEWLINE);				\
   type(zz_hold) = DISPOSED;						\
 }
+/*
+inline void setdisposed() {
+    if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )
+        fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,
+            Image(type(zz_hold)), STR_NEWLINE);
+    type(zz_hold) = DISPOSED;
+}
+*/
 
 #else
 #define disposecount
@@ -2840,12 +2963,28 @@ typedef struct
   mallocheadercheck(zz_hold,zz_size);					\
   free( malloc_oheader(x) );						\
 }
+/*
+INLINE void PutMem(POINTER x, int size) {
+    disposecount();
+    zz_hold = (x);
+    zz_size = (siz);
+    mallocheadercheck(zz_hold,zz_size);
+    free( malloc_oheader(x) );
+}
+*/
 
 #define Dispose(x)							\
 { zz_hold = (x);							\
   PutMem(zz_hold, is_word(type(zz_hold)) ?				\
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
 }
+/*
+INLINE void Dispose(POINTER x) {
+    zz_hold = (x);
+    PutMem(zz_hold, is_word(type(zz_hold)) ?
+        rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
+}
+*/
 
 #else
 
@@ -2853,12 +2992,25 @@ typedef struct
 { disposecount;								\
   free( (x) );								\
 }
+/*
+INLINE void PutMem(POINTER x , int size) {
+    disposecount();
+    free( (x) );
+}
+*/
 
 #define	Dispose(x)							\
 { zz_hold = (x);							\
   setdisposed;								\
   PutMem(zz_hold,0);							\
 }
+/*
+INLINE Dispose(POINTER x) {
+    zz_hold = (x);
+    setdisposed();
+    PutMem(zz_hold, 0);
+}
+*/
 
 #endif
 
@@ -2873,6 +3025,17 @@ typedef struct
   pred(zz_hold, CHILD) = zz_free[zz_size];				\
   zz_free[zz_size] = zz_hold;						\
 }
+/*
+INLINE void PutMem(POINTER x, int size) {
+    disposecount();
+    zz_hold = (x);
+    zz_size = (size);
+    mallocheadercheck(zz_hold,zz_size);
+    disposecheck();
+    pred(zz_hold, CHILD) = zz_free[zz_size];
+    zz_free[zz_size] = zz_hold;
+}
+*/
 
 #define Dispose(x)							\
 { zz_hold = (x);							\
@@ -2880,6 +3043,15 @@ typedef struct
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
   setdisposed;								\
 }
+/*
+INLINE void Dispose(OBJECT x) {
+    zz_hold = (x);
+    PutMem(zz_hold, is_word(type(zz_hold)) ?
+        rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
+    setdisposed();
+}
+*/
+
 #endif
 
 /*@::Append(), Delete()@******************************************************/
@@ -2901,6 +3073,21 @@ typedef struct
     succ(zz_tmp, dir) = zz_res						\
   )									\
 )
+/*
+INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
+    zz_res = (x);
+    zz_hold = (y);
+    zz_hold == nilobj ? zz_res  : \
+        zz_res == nilobj ? zz_hold : \
+            ( zz_tmp = pred(zz_hold, dir),
+            pred(zz_hold, dir) = pred(zz_res, dir),
+            succ(pred(zz_res, dir), dir) = zz_hold,
+            pred(zz_res, dir) = zz_tmp,
+            succ(zz_tmp, dir) = zz_res
+            );
+    return zz_res;
+}
+*/
 
 
 /*****************************************************************************/
@@ -2921,6 +3108,19 @@ typedef struct
     zz_res								\
   )									\
 )
+/*
+INLINE OBJECT Delete(OBJECT x, int dir) {
+    zz_hold = (x);
+    succ(zz_hold, dir) == zz_hold ? nilobj : \
+        ( zz_res = succ(zz_hold, dir),
+        pred(zz_res, dir) = pred(zz_hold, dir),
+        succ(pred(zz_hold, dir), dir) = zz_res,
+        pred(zz_hold, dir) = succ(zz_hold, dir) = zz_hold,
+        zz_res
+        );
+    return zz_res;
+}
+*/
 
 #define Down(x)		succ(x, CHILD)
 #define NextDown(x)	succ(x, CHILD)
@@ -2976,7 +3176,14 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
   Append(xx_link, (x), CHILD);						\
   Append(xx_link, (y), PARENT);						\
 }
-
+/*
+INLINE OBJECT Link(OBJECT x, OBJECT y) {
+    OBJECT xx_link;
+    New(xx_link, LINK);
+    Append(xx_link, (x), CHILD);
+    return Append(xx_link, (y), PARENT);
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -2993,7 +3200,14 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
   Delete(xx_link, CHILD);						\
   Dispose(xx_link);							\
 }
-
+/*
+INLINE void DeleteLink(OBJECT link) {
+    OBJECT xx_link = (link);
+    Delete(xx_link, PARENT);
+    Delete(xx_link, CHILD);
+    Dispose(xx_link);
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3010,7 +3224,15 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
   Dispose(xx_link);							\
   if( succ(xx_tmp, PARENT) == xx_tmp )  DisposeObject(xx_tmp);		\
 } /* end DisposeChild */
-
+/*
+INLINE void DisposeChild(OBJECT link) {
+    OBJECT xx_link = (link);
+    OBJECT xx_tmp = Delete(xx_link, PARENT);
+    Delete(xx_link, CHILD);
+    Dispose(xx_link);
+    if( succ(xx_tmp, PARENT) == xx_tmp )  DisposeObject(xx_tmp);
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3025,7 +3247,13 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
   Delete(xx_link, 1 - (dir) ),						\
   Append(xx_link, (x), 1 - (dir) )					\
 ) /* end MoveLink */
-
+/*
+INLINE OBJECT MoveLink(OBJECT link, OBJECT x, int dir) {
+    OBJECT xx_link = (link);
+    Delete(xx_link, 1 - (dir) );
+    return Append(xx_link, (x), 1 - (dir) );
+}
+*/
 
 /*@::TransferLinks(), DeleteNode(), etc.@*************************************/
 /*                                                                           */
@@ -3044,7 +3272,17 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 	Append(xxstart, xxdest, CHILD);					\
   }									\
 }
-
+/*
+INLINE void TransferLinks(OBJECT start_link, OBJECT stop_link, OBJECT dest_link) {
+    OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;
+    if( xxstart != xxstop )
+    {
+        assert( type(xxstart) == LINK, "TransferLinks: start_link!" );	\
+        Append(xxstart, xxstop, CHILD); / actually a split /
+        Append(xxstart, xxdest, CHILD);
+    }
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3060,7 +3298,14 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
   while( Down(xx_hold) != xx_hold ) DeleteLink( Down(xx_hold) );	\
   Dispose(xx_hold);							\
 }
-
+/*
+INLINE void DeleteNode(OBJECT x) {
+    OBJECT xx_hold = (x);
+    while( Up(xx_hold) != xx_hold ) DeleteLink( Up(xx_hold) );
+    while( Down(xx_hold) != xx_hold ) DeleteLink( Down(xx_hold) );
+    Dispose(xx_hold);
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3079,7 +3324,17 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
   Append(xx_res, xx_tmp, CHILD);					\
   Dispose(xx_hold);							\
 }  /* end MergeNode */
-
+/*
+INLINE void MergeNode(OBJECT x, OBJECT y) {
+    OBJECT xx_res = (x);
+    OBJECT xx_hold = (y);
+    OBJECT xx_tmp = Delete(xx_hold, PARENT);
+    Append(xx_res, xx_tmp, PARENT);
+    xx_tmp = Delete(xx_hold, CHILD);
+    Append(xx_res, xx_tmp, CHILD);
+    Dispose(xx_hold);
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3093,7 +3348,12 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 ( xx_tmp = Delete((y), PARENT),						\
   Append((x), xx_tmp, PARENT)						\
 ) /* end ReplaceNode */
-
+/*
+INLINE void ReplaceNode(OBJECT x, OBJECT y) {
+    OBJECT xx_tmp = Delete((y), PARENT);
+    Append((x), xx_tmp, PARENT);
+}
+*/
 
 /*@::FirstDefinite(), NextDefinite(), etc.@***********************************/
 /*                                                                           */
@@ -3146,7 +3406,16 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 	break;								\
   }									\
 } /* end NextDefinite */
-
+/*
+INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
+    for( link = NextDown(link);  link != x;  link = NextDown(link) )
+    {
+        Child(y, link);
+        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+            break;
+    }
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3205,7 +3474,16 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 	break;								\
   }									\
 } /* end LastDefinite */
-
+/*
+INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
+    for( link = LastDown(x);  link != x;  link = PrevDown(link) )
+    {
+        Child(y, link);
+        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+            break;
+    }
+}
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3229,6 +3507,16 @@ extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 	break;								\
   }									\
 } /* end PrevDefinite */
+/* 
+INLINE PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
+    for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
+    {
+        Child(y, link);
+        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+            break;
+    }
+}
+*/
 
 
 /*@::Module Declarations@*****************************************************/
