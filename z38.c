@@ -59,7 +59,7 @@
 MAP_VEC	MapTable[MAX_MAP];		/* the mappings                      */
 
 static	OBJECT	notdef_word;		/* notdef word                       */
-static	MAPPING	maptop;			/* first free slot in MapTable[]     */
+static	int	maptop;			/* first free slot in MapTable[]     */
 					/* save 0 for "no mapping"           */
 
 
@@ -86,7 +86,7 @@ void MapInit(void)
 /*****************************************************************************/
 
 #define hash(str, pos)							\
-{ const FULL_CHAR *p = str;							\
+{ FULL_CHAR *p = str;							\
   for( pos = 2 * *p++;  *p;  pos += *p++);				\
   pos = pos % MAX_CHASH;						\
 }
@@ -100,9 +100,8 @@ static void NameInsert(FULL_CHAR *cname, int ccode, MAP_VEC map)
   map->hash_table[pos] = ccode;
 } /* end NameInsert */
 
-static FULL_CHAR NameRetrieve(const FULL_CHAR *cname, MAP_VEC map)
-{ int pos;
-  FULL_CHAR ch;
+static FULL_CHAR NameRetrieve(FULL_CHAR *cname, MAP_VEC map)
+{ int pos;  FULL_CHAR ch;
   hash(cname, pos);
   while( (ch = map->hash_table[pos]) != (FULL_CHAR) '\0' )
   {
@@ -129,8 +128,8 @@ static FULL_CHAR NameRetrieve(const FULL_CHAR *cname, MAP_VEC map)
 
 MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
 { FILE *fp;  MAP_VEC map;  MAPPING res;
-  int i, m, curr_line_num, line_pos, count;
-  MAPPING oc, dc, prev_code;
+  int i, m, curr_line_num, line_pos, prev_code, dc, count;
+  unsigned int oc;
   int status;
   FULL_CHAR buff[MAX_BUFF], cn[MAX_BUFF], ch, mapname[MAX_BUFF],
   mapval[MAX_BUFF];
