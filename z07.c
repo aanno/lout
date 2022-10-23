@@ -336,8 +336,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       {	Child(y, link);
 	Link(res, y);	/* do not copy children of FILTERED */
       }
-      debug3(DFH, D, "copying FILTERED %d into %d %s",
-	(int) x, (int) res, EchoObject(res));
+      debug3(DFH, D, "copying FILTERED %p into %p %s", x, res, EchoObject(res));
       break;
 
 
