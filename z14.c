@@ -1058,8 +1058,10 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       Child(lgap, llink);
       if( mode(gap(lgap)) == ADD_HYPH )
       { OBJECT z, tmp;
-	FONT_NUM font;
+        FONT_NUM font;
+        #pragma clang diagnostic ignored "-Wunused-but-set-variable"
         FULL_CHAR *unacc = NULL, *word_content;
+        #pragma clang diagnostic ignored "-Wunused-but-set-variable"
         unsigned word_len;
 
 	/* find word hyphen attaches to, since need its underline and font */
