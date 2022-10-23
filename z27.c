@@ -124,6 +124,7 @@ void DebugInit(FULL_CHAR *str)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 void Debug(int category, int urgency, char *str, ...)
 { static BOOLEAN first_message = TRUE;
   va_list ap;

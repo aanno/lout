@@ -70,6 +70,18 @@ static	int		sym_count;			/* symbol count      */
   while( --rlen )  val += *x++;						\
   val %= MAX_TAB;							\
 }
+/*
+not possible - val is register
+#define hash(str, len, val) ( hashOnRef(str, len, &(val)) )
+INLINE int hashOnRef(const FULL_CHAR* str, int len, int* val) {
+  int rlen = len;
+  const FULL_CHAR* x    = str;
+  *val  = *x++;
+  while( --rlen )  *val += *x++;
+  *val %= MAX_TAB;
+  return val;
+}
+*/
 
 
 /*@::InitSym(), PushScope(), PopScope(), SuppressVisible(), etc.@*************/
@@ -330,7 +342,7 @@ OBJECT InsertSym(const FULL_CHAR *str, unsigned char xtype, FILE_POS *xfpos,
 unsigned char xprecedence, BOOLEAN xindefinite, BOOLEAN xrecursive,
 unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
 { register int sum, rlen;
-  register unsigned char *x;
+  register const FULL_CHAR *x;
   OBJECT p, q, s, tmp, link, entry, plink;  int len;
 
   debug3(DST, DD, "InsertSym( %s, %s, in %s )",

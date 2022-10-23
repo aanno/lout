@@ -93,7 +93,10 @@ void DebugRegisterUsage(int typ, int delta_num, int delta_size)
 /*****************************************************************************/
 
 void DebugMemory(void)
-{ int i, j;  OBJECT p;  int recs_free, bytes_free;
+{ int i, j;
+  OBJECT p;
+  #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+  int recs_free, bytes_free;
 
   recs_free = bytes_free = 0;
   for( i = 0;  i < MAX_OBJECT_REC;  i++ )

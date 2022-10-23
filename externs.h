@@ -2729,7 +2729,7 @@ extern const FULL_CHAR* const KW_GET_CONTEXT;
 // from z01 headers below - but used here
 extern	POINTER	  MemCheck;
 // from z26 headers below - but used here
-extern	FULL_CHAR *Image(unsigned int c);
+extern	const FULL_CHAR *Image(unsigned int c);
 
 #define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
@@ -3430,7 +3430,7 @@ extern	nl_catd	  MsgCat;
 #endif
 
 /*****  z02.c	  Lexical Analyser	**************************************/
-extern	BOOLEAN	  LexLegalName(FULL_CHAR *str);
+extern	BOOLEAN	  LexLegalName(const FULL_CHAR *str);
 extern	void	  LexInit(void);
 extern	void	  LexPush(FILE_NUM x, int offs, int ftyp, int lnum, BOOLEAN same);
 extern	void	  LexPop(void);

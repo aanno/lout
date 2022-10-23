@@ -103,7 +103,7 @@ static struct {
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN LexLegalName(FULL_CHAR *str)
+BOOLEAN LexLegalName(const FULL_CHAR *str)
 { int i;  BOOLEAN res;
   debug1(DLA, DDD, "LexLegalName( %s )", str);
   switch( chtbl[str[0]] )

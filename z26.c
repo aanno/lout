@@ -141,7 +141,7 @@ FULL_CHAR *EchoLength(int len)
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_CHAR *Image(unsigned int c)
+const FULL_CHAR *Image(unsigned int c)
 { static FULL_CHAR b[20];
   switch(c)
   {
