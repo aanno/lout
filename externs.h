@@ -3292,6 +3292,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
   }									\
 } /* end NextDefinite */
 /*
+not working!
 INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = NextDown(link);  link != x;  link = NextDown(link) )
     {
@@ -3352,14 +3353,6 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define LastDefinite(x, link, y)					\
-{ for( link = LastDown(x);  link != x;  link = PrevDown(link) )		\
-  { Child(y, link);							\
-    if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )	\
-	break;								\
-  }									\
-} /* end LastDefinite */
-/*
 INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = LastDown(x);  link != x;  link = PrevDown(link) )
     {
@@ -3368,7 +3361,6 @@ INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
             break;
     }
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3385,14 +3377,6 @@ INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define PrevDefinite(x, link, y)					\
-{ for( link = PrevDown(link);  link != x;  link = PrevDown(link) )	\
-  { Child(y, link);							\
-    if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )	\
-	break;								\
-  }									\
-} /* end PrevDefinite */
-/* 
 INLINE PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
     {
@@ -3401,7 +3385,6 @@ INLINE PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
             break;
     }
 }
-*/
 
 
 /*@::Module Declarations@*****************************************************/
