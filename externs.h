@@ -3120,6 +3120,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 
 // from c07 headers below - but used here
 extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
+extern	int	  DisposeObject(OBJECT x);
 
 INLINE OBJECT Link(OBJECT x, OBJECT y) {
     OBJECT xx_link;
@@ -3377,7 +3378,7 @@ INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
 /*                                                                           */
 /*****************************************************************************/
 
-INLINE PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
+INLINE void PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
     {
         Child(y, link);
@@ -3484,7 +3485,7 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 
 /*****  z07.c	  Object Service	**************************************/
 // extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
-extern	int	  DisposeObject(OBJECT x);
+// extern	int	  DisposeObject(OBJECT x);
 extern	OBJECT	  MakeWord(unsigned typ, FULL_CHAR *str, FILE_POS *pos);
 extern	OBJECT	  MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2,
 		    FILE_POS *pos);
