@@ -6,7 +6,7 @@ package main
 // #include <stdlib.h>
 //
 // #include "go_linux_64.h"
-// #include "externs.h"
+// #include "./externs.h"
 //
 // static void myprint(char* s) {
 //   printf("%s\n", s);

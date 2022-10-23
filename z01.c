@@ -994,7 +994,8 @@ int main1(char* all_in_one) {
     argv[size++] = pch;
     pch = strtok(NULL, " \t");
   }
-  --size;
+  argv[size] = NULL;
+  printf("size: %i\n", size);
   for(int i = 0; i <= size; ++i) {
     printf("%i arg: %s\n", i, argv[i]);
   }
