@@ -108,6 +108,7 @@ static void Plain_PrintLength(FULL_CHAR *buff, int length, int length_dim)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintPageSetupForFont(OBJECT face, int font_curr_page,
   FULL_CHAR *font_name, FULL_CHAR *first_size_str)
 {
@@ -126,6 +127,7 @@ static void Plain_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)
 {
   /* nothing to do here */
@@ -141,6 +143,7 @@ static void Plain_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintMapping(MAPPING m)
 {
   /* nothing to do here */
@@ -157,6 +160,7 @@ static void Plain_PrintMapping(MAPPING m)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 { int i, j;
@@ -187,6 +191,7 @@ static void Plain_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 { int new_hsize, new_vsize, i, j, jmax;
@@ -201,7 +206,8 @@ static void Plain_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
   );
   for( i = vsize - 1;  i >= 0;  i-- )
   { ifdebug(DPT, D, putc('|', out_fp));
-    for( jmax = hsize-1;  jmax >= 0 && page[i*hsize+jmax] == ' ';  jmax--);
+    for( jmax = hsize-1;  jmax >= 0 && page[i*hsize+jmax] == ' ';  jmax--)
+    ;
     ifdebug(DPT, D, jmax = hsize - 1);
     for( j = 0;  j <= jmax;  j++ )
       putc(page[i*hsize + j], out_fp);
@@ -344,6 +350,7 @@ static void Plain_PrintPlainGraphic(OBJECT x, FULL_LENGTH xmk,
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintUnderline(FONT_NUM fnum, COLOUR_NUM col,
   TEXTURE_NUM pat, FULL_LENGTH xstart, FULL_LENGTH xstop, FULL_LENGTH ymk)
 {
@@ -378,7 +385,8 @@ static void Plain_PrintAfterLastPage(void)
     );
     for( i = vsize - 1;  i >= 0;  i-- )
     { ifdebug(DPT, D, putc('|', out_fp));
-      for( jmax = hsize-1;  jmax >= 0 && page[i*hsize+jmax] == ' ';  jmax--);
+      for( jmax = hsize-1;  jmax >= 0 && page[i*hsize+jmax] == ' ';  jmax--)
+      ;
       ifdebug(DPT, D, jmax = hsize - 1);
       for( j = 0;  j <= jmax;  j++ )
         putc(page[i*hsize + j], out_fp);
@@ -434,6 +442,7 @@ static void Plain_CoordRotate(FULL_LENGTH amount)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_CoordScale(float hfactor, float vfactor)
 {
   assert(FALSE, "Plain_CoordScale: should never be called!");
@@ -449,6 +458,7 @@ static void Plain_CoordScale(float hfactor, float vfactor)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_SaveGraphicState(OBJECT x)
 { debug0(DPT, D, "Plain_SaveGraphicState()");
   assert(FALSE, "Plain_SaveGraphicState: should never be called!" );
@@ -520,6 +530,7 @@ static void Plain_DefineGraphicNames(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
   FULL_LENGTH ydist)
 {
@@ -535,6 +546,7 @@ static void Plain_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_PrintGraphicInclude(OBJECT x, FULL_LENGTH colmark,
   FULL_LENGTH rowmark)
 {
@@ -677,24 +689,30 @@ BACK_END Plain_BackEnd = &plain_back;
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintInitialize(FILE *fp, BOOLEAN enc)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintPageSetupForFont(OBJECT face, int font_curr_page,
   FULL_CHAR *font_name, FULL_CHAR *short_name)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintPageResourceForFont(FULL_CHAR *font_name,
   BOOLEAN first)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintMapping(MAPPING m)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 {}
@@ -702,54 +720,69 @@ static void Plain_NullPrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
 static void Plain_NullPrintAfterLastPage(void)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintWord(OBJECT x, int hpos, int vpos)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintPlainGraphic(OBJECT x, FULL_LENGTH xmk,
   FULL_LENGTH ymk, OBJECT z)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintUnderline(FONT_NUM fnum, COLOUR_NUM col,
   TEXTURE_NUM pat, FULL_LENGTH xstart, FULL_LENGTH xstop, FULL_LENGTH ymk)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullCoordTranslate(FULL_LENGTH xdist, FULL_LENGTH ydist)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullCoordRotate(FULL_LENGTH amount)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullCoordScale(float hfactor, float vfactor)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullSaveGraphicState(OBJECT x)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullRestoreGraphicState(void)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintGraphicObject(OBJECT x)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullDefineGraphicNames(OBJECT x)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullSaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
   FULL_LENGTH ydist)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintGraphicInclude(OBJECT x, FULL_LENGTH colmark,
   FULL_LENGTH rowmark)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullLinkSource(OBJECT name, FULL_LENGTH llx, FULL_LENGTH lly,
   FULL_LENGTH urx, FULL_LENGTH ury)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullLinkDest(OBJECT name, FULL_LENGTH llx, FULL_LENGTH lly,
   FULL_LENGTH urx, FULL_LENGTH ury)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullLinkURL(OBJECT url, FULL_LENGTH llx, FULL_LENGTH lly,
   FULL_LENGTH urx, FULL_LENGTH ury)
 {}

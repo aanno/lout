@@ -128,6 +128,7 @@ static void PDF_PrintInitialize(FILE *fp, BOOLEAN enc)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PDF_PrintLength(FULL_CHAR *buff, int length, int length_dim)
 {
   sprintf( (char *) buff, "%.3fc", (float) length/CM);
@@ -149,6 +150,7 @@ static void PDF_PrintLength(FULL_CHAR *buff, int length, int length_dim)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PDF_PrintPageSetupForFont(OBJECT face, int font_curr_page,
   FULL_CHAR *font_name, FULL_CHAR *first_size_str)
 {
@@ -179,6 +181,7 @@ static void PDF_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PDF_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)
 {
   /* JK: this was always commented out */
@@ -214,6 +217,7 @@ static void PDF_PrintMapping(MAPPING m)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PDF_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 {
@@ -236,6 +240,7 @@ static void PDF_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PDF_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 {
@@ -295,6 +300,7 @@ static void PDF_PrintWord(OBJECT x, int hpos, int vpos)
   unsigned short *composite; COMPOSITE *cmp;
   *** */
   static int last_hpos;	/* does not need to be initialised */
+  #pragma clang diagnostic ignored "-Wunused-but-set-variable"
   static int next_hpos = -1;
 #if 0
   struct metrics *fnt;
