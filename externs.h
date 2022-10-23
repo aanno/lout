@@ -3201,20 +3201,12 @@ INLINE void TransferLinks(OBJECT start_link, OBJECT stop_link, OBJECT dest_link)
 /*                                                                           */
 /*****************************************************************************/
 
-#define DeleteNode(x)							\
-{ xx_hold = (x);							\
-  while( Up(xx_hold)   != xx_hold ) DeleteLink( Up(xx_hold) );		\
-  while( Down(xx_hold) != xx_hold ) DeleteLink( Down(xx_hold) );	\
-  Dispose(xx_hold);							\
-}
-/*
 INLINE void DeleteNode(OBJECT x) {
     OBJECT xx_hold = (x);
     while( Up(xx_hold) != xx_hold ) DeleteLink( Up(xx_hold) );
     while( Down(xx_hold) != xx_hold ) DeleteLink( Down(xx_hold) );
     Dispose(xx_hold);
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3225,15 +3217,6 @@ INLINE void DeleteNode(OBJECT x) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define MergeNode(x, y)							\
-{ xx_res = (x); xx_hold = (y);						\
-  xx_tmp = Delete(xx_hold, PARENT);					\
-  Append(xx_res, xx_tmp, PARENT);					\
-  xx_tmp = Delete(xx_hold, CHILD);					\
-  Append(xx_res, xx_tmp, CHILD);					\
-  Dispose(xx_hold);							\
-}  /* end MergeNode */
-/*
 INLINE void MergeNode(OBJECT x, OBJECT y) {
     OBJECT xx_res = (x);
     OBJECT xx_hold = (y);
@@ -3243,7 +3226,6 @@ INLINE void MergeNode(OBJECT x, OBJECT y) {
     Append(xx_res, xx_tmp, CHILD);
     Dispose(xx_hold);
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3253,16 +3235,10 @@ INLINE void MergeNode(OBJECT x, OBJECT y) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define ReplaceNode(x, y)						\
-( xx_tmp = Delete((y), PARENT),						\
-  Append((x), xx_tmp, PARENT)						\
-) /* end ReplaceNode */
-/*
 INLINE void ReplaceNode(OBJECT x, OBJECT y) {
     OBJECT xx_tmp = Delete((y), PARENT);
     Append((x), xx_tmp, PARENT);
 }
-*/
 
 /*@::FirstDefinite(), NextDefinite(), etc.@***********************************/
 /*                                                                           */
