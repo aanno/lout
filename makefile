@@ -315,10 +315,10 @@ MKDIR	= mkdir -p
 
 # Add WARN to CFLAGS for more checking
 WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
-  -Wtype-limits -Wuninitialized -Winit-self -Wlogical-op -Wmissing-prototypes \
+  -Wtype-limits -Wuninitialized -Winit-self -Wmissing-prototypes \
   -Wmissing-declarations -Wnested-externs -Wbad-function-cast
 # unknown:
-# -Wclobbered -Wmissing-parameter-type -Wold-style-declaration
+# -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
 
 CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
 

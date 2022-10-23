@@ -204,8 +204,11 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
       continue;
     }
     if( type(s1) == WIDE || type(s1) == ONE_COL )
-      Child(s2, Down(s1));
-    else s2 = s1;
+    { Child(s2, Down(s1));
+    }
+    else 
+    { s2 = s1;
+    }
     assert( type(s2) == SPLIT, "EncloseInHcat: type(s2) != SPLIT!" );
     Child(sh, DownDim(s2, COLM));
     New(new_s2, SPLIT);
@@ -287,8 +290,11 @@ BOOLEAN VerticalHyphenate(OBJECT y)
 
     /* check that s2 is a SPLIT object whose children look right */
     if( type(s1) == WIDE || type(s1) == ONE_COL )
-      Child(s2, Down(s1));
-    else s2 = s1;
+    { Child(s2, Down(s1));
+    }
+    else 
+    { s2 = s1;
+    }
     if( type(s2) != SPLIT )
     { debug0(DVH, D, "] VerticalHyphenate returning FALSE (child not SPLIT)");
       return FALSE;

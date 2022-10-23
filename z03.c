@@ -245,7 +245,7 @@ void AddToPath(int fpath, OBJECT dirname)
 /*                                                                           */
 /*****************************************************************************/
 
-FILE_NUM DefineFile(FULL_CHAR *str, FULL_CHAR *suffix,
+FILE_NUM DefineFile(FULL_CHAR *str, const FULL_CHAR *suffix,
 FILE_POS *xfpos, int ftype, int fpath)
 { register int i;
   OBJECT fname;

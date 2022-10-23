@@ -285,7 +285,7 @@ OBJECT DbCreate(OBJECT x)
 /*****************************************************************************/
 
 void DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, FULL_CHAR *tag,
-FILE_POS *tagfpos, FULL_CHAR *seq, FILE_NUM dfnum, long dfpos, int dlnum,
+FILE_POS *tagfpos, const FULL_CHAR *seq, FILE_NUM dfnum, long dfpos, int dlnum,
 BOOLEAN check)
 { int symnum;  OBJECT chk;
   FULL_CHAR buff[MAX_BUFF];

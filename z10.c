@@ -566,7 +566,8 @@ OBJECT *crs, OBJECT *res_env)
 
 void CrossSequence(OBJECT x)
 { OBJECT sym, tag, val, tmp, cs, par, key, hold_key, link, y, env, hold_env;
-  unsigned ctype;  FULL_CHAR buff[MAX_BUFF], *seq;
+  unsigned ctype;  FULL_CHAR buff[MAX_BUFF];
+  const FULL_CHAR* seq;
   FILE_NUM dfnum;  int dfpos, dlnum;
 
   /* if suppressing cross-referencing, dispose x and quit */
@@ -718,10 +719,11 @@ void CrossSequence(OBJECT x)
 
 	    debug4(DCR, D, "  inserting galley (%s) %s&%s %s",
 	      Image(cs_type(y)), SymName(sym), string(gall_tag(cs)), string(y));
-	    if( Down(y) != y )
+	    if( Down(y) != y ) {
 	      Child(val, Down(y));
-            else
+      } else {
 	      val = nilobj;
+      }
 	    DbInsert(NewCrossDb, TRUE, sym, string(gall_tag(cs)), no_fpos,
 	      string(y), cs_fnum(y), (long) cs_pos(y), cs_lnum(y), FALSE);
 	    link = PrevDown(link);

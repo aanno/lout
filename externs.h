@@ -87,7 +87,7 @@ extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS 
 
 #if ASSERT_ON
 #define assert(c, m)							\
-   { if( !(c) )  Error(1, 2, "assert failed in %s", INTERN, no_fpos, m); }
+{ if( !(c) )  Error(1, 2, "assert failed in %s", INTERN, no_fpos, m); }
 #define assert1(c, m, p1)						\
    { if( !(c) )  Error(1, 3, "assert failed in %s %s", INTERN, no_fpos,m, p1); }
 #else
@@ -337,7 +337,7 @@ extern const char* const LOUT_EPS;
 #define	MAX_FILES	65535
 #define MAX_LINE        2048
 #define MAX_WORD        2048
-#define	MAX_OBJECT_REC	ceiling(sizeof(struct word_type)+MAX_WORD,sizeof(ALIGN))
+#define	MAX_OBJECT_REC	((int) ceiling(sizeof(struct word_type)+MAX_WORD,sizeof(ALIGN)))
 #define MAX_BUFF        512
 #define MAX_FONT	65535
 #define MAX_COLOUR	65535
@@ -3083,15 +3083,18 @@ INLINE OBJECT Delete(OBJECT x, int dir) {
 
 // cannot inline
 #define	Child(y, link)							\
-for( y = pred(link, PARENT);  type(y) == LINK;  y = pred(y, PARENT) )
+for( y = pred(link, PARENT);  type(y) == LINK;  y = pred(y, PARENT) ) \
+;
 
 // cannot inline
 #define CountChild(y, link, i)                                          \
-for( y=pred(link, PARENT), i=1; type(y)==LINK;  y = pred(y, PARENT), i++ )
+for( y=pred(link, PARENT), i=1; type(y)==LINK;  y = pred(y, PARENT), i++ ) \
+;
 
 // cannot inline
 #define	Parent(y, link)							\
-for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
+for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) ) \
+;
 
 
 /*@::UpDim(), DownDim(), Link(), DeleteLink(), etc.@**************************/
@@ -3440,7 +3443,7 @@ extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos,
 // extern	FILE_POS  *no_fpos;
 extern	void	  InitFiles(void);
 extern	void	  AddToPath(int fpath, OBJECT dirname);
-extern	FILE_NUM  DefineFile(FULL_CHAR *str, FULL_CHAR *suffix,
+extern	FILE_NUM  DefineFile(FULL_CHAR *str, const FULL_CHAR *suffix,
 		    FILE_POS *xfpos, int ftype, int fpath);
 extern	FILE_NUM  FirstFile(int ftype);
 extern	FILE_NUM  NextFile(FILE_NUM i);
@@ -3486,7 +3489,7 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 /*****  z07.c	  Object Service	**************************************/
 // extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 // extern	int	  DisposeObject(OBJECT x);
-extern	OBJECT	  MakeWord(unsigned typ, FULL_CHAR *str, FILE_POS *pos);
+extern	OBJECT	  MakeWord(unsigned typ, const FULL_CHAR *str, FILE_POS *pos);
 extern	OBJECT	  MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2,
 		    FILE_POS *pos);
 extern	OBJECT	  MakeWordThree(FULL_CHAR *s1, FULL_CHAR *s2, FULL_CHAR *s3);
@@ -3704,7 +3707,7 @@ extern	OBJECT	  NewCrossDb;
 extern	void	  DbInit(void);
 extern	OBJECT	  DbCreate(OBJECT x);
 extern	void	  DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, FULL_CHAR *tag,
-		    FILE_POS *tagfpos, FULL_CHAR *seq, FILE_NUM dfnum,
+		    FILE_POS *tagfpos, const FULL_CHAR *seq, FILE_NUM dfnum,
 		    long dfpos, int dlnum, BOOLEAN check);
 extern	void	  DbConvert(OBJECT db, BOOLEAN full_name);
 extern	void	  DbClose(OBJECT db);
