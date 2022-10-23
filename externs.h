@@ -32,6 +32,8 @@
 #include <stdarg.h>
 #include <locale.h>
 
+#define INLINE __attribute__((always_inline)) inline
+
 #if LOCALE_ON
 #include <nl_types.h>
 extern nl_catd MsgCat;
@@ -40,6 +42,58 @@ extern nl_catd MsgCat;
 #define condcatgets(cat, set, msg, s) s
 #endif
 
+/*****************************************************************************/
+/*                                                                           */
+/*  typedef POINTER- name for type of generic pointer                        */
+/*                                                                           */
+/*****************************************************************************/
+
+typedef void *POINTER;
+
+/*****************************************************************************/
+/*                                                                           */
+/*  typedef FILE_NUM - the internal representation of a file.                */
+/*                                                                           */
+/*****************************************************************************/
+
+typedef unsigned short	FILE_NUM;
+#define	NO_FILE		0
+
+
+/*****************************************************************************/
+/*                                                                           */
+/*  typedef FILE_POS - a position in the set of input files.                 */
+/*                                                                           */
+/*****************************************************************************/
+
+typedef	struct
+{ unsigned char	 otype;			/* space for object type field	     */
+  unsigned char	 orec_size;		/* space for object record size      */
+  FILE_NUM	 ofile_num;		/* no. of file this record is from   */
+  unsigned       oline_num  : 20;	/* the line number of this record    */
+  unsigned       ocol_num   : 12;	/* column number this is related to  */
+} FILE_POS;
+
+/* error types */
+#define	INTERN		     0		/* internal error (i.e. bug)         */
+#define	FATAL		     1		/* fatal error, abort now            */
+#define	FATAL_WITH_USAGE     2		/* fatal error, abort now + usage    */
+#define	WARN		     3		/* warning, non-fatal                */
+
+// from z03 header below - but used here
+extern	FILE_POS  *no_fpos;
+// from z36 header below - but used here
+extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS *pos, ...);
+
+#if ASSERT_ON
+#define assert(c, m)							\
+   { if( !(c) )  Error(1, 2, "assert failed in %s", INTERN, no_fpos, m); }
+#define assert1(c, m, p1)						\
+   { if( !(c) )  Error(1, 3, "assert failed in %s %s", INTERN, no_fpos,m, p1); }
+#else
+#define assert(c, m)
+#define assert1(c, m, p1)
+#endif
 
 /*****************************************************************************/
 /*                                                                           */
@@ -95,18 +149,21 @@ extern nl_catd MsgCat;
 /*                                                                           */
 /*****************************************************************************/
 
-#define	LOUT_VERSION   AsciiToFull("Basser Lout Version 3.42 (Dec 2020)")
-#define	CROSS_DB	   AsciiToFull("lout")
-#define	SOURCE_SUFFIX	   AsciiToFull(".lt")
-#define	INDEX_SUFFIX	   AsciiToFull(".li")
-#define	NEW_INDEX_SUFFIX   AsciiToFull(".lix")
-#define	DATA_SUFFIX	   AsciiToFull(".ld")
-#define	NEW_DATA_SUFFIX	   AsciiToFull("x")
-#define	HYPH_SUFFIX	   AsciiToFull(".lh")
-#define	HYPH_PACKED_SUFFIX AsciiToFull(".lp")
-#define	FILTER_IN	   AsciiToFull("louti")
-#define	FILTER_OUT	   AsciiToFull("lout")
-#define	FILTER_ERR	   AsciiToFull("lout.err")
+typedef unsigned char FULL_CHAR;
+#define              AsciiToFull(x)        ( (FULL_CHAR *) (x) )
+
+extern const FULL_CHAR *const LOUT_VERSION;
+extern const FULL_CHAR *const CROSS_DB;
+extern const FULL_CHAR *const SOURCE_SUFFIX;
+extern const FULL_CHAR *const INDEX_SUFFIX;
+extern const FULL_CHAR *const NEW_INDEX_SUFFIX;
+extern const FULL_CHAR *const DATA_SUFFIX;
+extern const FULL_CHAR *const NEW_DATA_SUFFIX;
+extern const FULL_CHAR *const HYPH_SUFFIX;
+extern const FULL_CHAR *const HYPH_PACKED_SUFFIX;
+extern const FULL_CHAR *const FILTER_IN;
+extern const FULL_CHAR *const FILTER_OUT;
+extern const FULL_CHAR *const FILTER_ERR;
 
 
 /*****************************************************************************/
@@ -164,43 +221,15 @@ extern nl_catd MsgCat;
 /*                                                                           */
 /*****************************************************************************/
 
-#if OS_UNIX
-#define	READ_FILE	"r"
-#define	WRITE_FILE	"w"
-#define	APPEND_FILE	"a"
-#define	STR_NEWLINE	AsciiToFull("\n")
-#define	STR_DIR		AsciiToFull("/")
-#define	UNCOMPRESS_COM	"gunzip -c %s > %s"
-#define PDFTOPS_COM	"pdftops -eps '%s' '%s'"
-#define CONVERT_COM	"convert '%s' 'eps2:%s'"
-#define	LOUT_EPS	"lout.eps"
-#else
-#if OS_DOS
-#define	READ_FILE	"rb"
-#define	WRITE_FILE	"wb"
-#define	APPEND_FILE	"ab"
-#define	STR_NEWLINE	AsciiToFull("\r\n")
-#define	STR_DIR		AsciiToFull("/")
-#define	UNCOMPRESS_COM	"gunzip -c %s > %s"
-#define PDFTOPS_COM	"pdftops -eps %s %s"
-#define CONVERT_COM	"convert %s eps2:%s"
-#define	LOUT_EPS	"lout.eps"
-#else
-#if OS_MAC
-#define	READ_FILE	"r"
-#define	WRITE_FILE	"w"
-#define	APPEND_FILE	"a"
-#define	STR_NEWLINE	AsciiToFull("\r")
-#define	STR_DIR		AsciiToFull("/")
-#define	UNCOMPRESS_COM	"gunzip -c %s > %s"
-#define PDFTOPS_COM	"pdftops -eps %s %s"
-#define CONVERT_COM	"convert %s eps2:%s"
-#define	LOUT_EPS	"lout.eps"
-#else
-If you're compiling this, you've got the wrong settings in the makefile!
-#endif
-#endif
-#endif
+extern const char* const READ_FILE;
+extern const char* const WRITE_FILE;
+extern const char* const APPEND_FILE;
+extern const FULL_CHAR* const STR_NEWLINE;
+extern const FULL_CHAR* const STR_DIR;
+extern const char* const UNCOMPRESS_COM;
+extern const char* const PDFTOPS_COM;
+extern const char* const CONVERT_COM;
+extern const char* const LOUT_EPS;
 
 /*@::Significant limits@******************************************************/
 /*                                                                           */
@@ -434,15 +463,7 @@ typedef char *LINE;
 /*                                                                           */
 /*****************************************************************************/
 
-typedef unsigned char FULL_CHAR;
-
-/*****************************************************************************/
-/*                                                                           */
-/*  typedef POINTER- name for type of generic pointer                        */
-/*                                                                           */
-/*****************************************************************************/
-
-typedef void *POINTER;
+/* typedef unsigned char FULL_CHAR; */
 
 /*@::Character literals@******************************************************/
 /*                                                                           */
@@ -540,98 +561,97 @@ typedef void *POINTER;
 /*                                                                           */
 /*****************************************************************************/
 
-#define	STR_EMPTY		AsciiToFull("")
-#define	STR_QUOTE		AsciiToFull("\"")
-#define	STR_ESCAPE		AsciiToFull("\\")
-#define	STR_COMMENT		AsciiToFull("#")
-#define	STR_SPACE		AsciiToFull(" ")
-#define	STR_FORMFEED		AsciiToFull("\f")
-#define	STR_TAB			AsciiToFull("\t")
-#define	STR_LETTERS_LOWER	AsciiToFull("abcdefghijklmnopqrstuvwxyz")
-#define	STR_LETTERS_UPPER	AsciiToFull("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-#define	STR_LETTERS_SYMSTART	AsciiToFull("@")
-#define	STR_LETTERS_UNDERSCORE	AsciiToFull("_")
+extern const FULL_CHAR* const STR_EMPTY;
+extern const FULL_CHAR* const STR_QUOTE;
+extern const FULL_CHAR* const STR_ESCAPE;
+extern const FULL_CHAR* const STR_COMMENT;
+extern const FULL_CHAR* const STR_SPACE;
+extern const FULL_CHAR* const STR_FORMFEED;
+extern const FULL_CHAR* const STR_TAB;
+extern const FULL_CHAR* const STR_LETTERS_LOWER;
+extern const FULL_CHAR* const STR_LETTERS_UPPER;
+extern const FULL_CHAR* const STR_LETTERS_SYMSTART;
+extern const FULL_CHAR* const STR_LETTERS_UNDERSCORE;
 
-#if CHAR_IN==0
-#define	STR_LETTERS_EXTRA0	AsciiToFull("")
-#define	STR_LETTERS_EXTRA1	AsciiToFull("")
-#define	STR_LETTERS_EXTRA2	AsciiToFull("")
-#define	STR_LETTERS_EXTRA3	AsciiToFull("")
-#define	STR_LETTERS_EXTRA4	AsciiToFull("")
-#define	STR_LETTERS_EXTRA5	AsciiToFull("")
-#define	STR_LETTERS_EXTRA6	AsciiToFull("")
-#define	STR_LETTERS_EXTRA7	AsciiToFull("")
-#else
-#define	STR_LETTERS_EXTRA0	AsciiToFull("\300\301\302\303\304\305\306\307")
-#define	STR_LETTERS_EXTRA1	AsciiToFull("\310\311\312\313\314\315\316\317")
-#define	STR_LETTERS_EXTRA2	AsciiToFull("\320\321\322\323\324\325\326")
-#define	STR_LETTERS_EXTRA3	AsciiToFull("\330\331\332\333\334\335\336\337")
-#define	STR_LETTERS_EXTRA4	AsciiToFull("\340\341\342\343\344\345\346\347")
-#define	STR_LETTERS_EXTRA5	AsciiToFull("\350\351\352\353\354\355\356\357")
-#define	STR_LETTERS_EXTRA6	AsciiToFull("\360\361\362\363\364\365\366")
-#define	STR_LETTERS_EXTRA7	AsciiToFull("\370\371\372\373\374\375\376\377")
-#endif
+extern const FULL_CHAR* const STR_LETTERS_EXTRA0;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA1;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA2;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA3;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA4;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA5;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA6;
+extern const FULL_CHAR* const STR_LETTERS_EXTRA7;
 
-#define	STR_STDIN		AsciiToFull("-")
-#define	STR_STDOUT		AsciiToFull("-")
-#define	STR_HYPHEN		AsciiToFull("-")
-#define	STR_EPS			AsciiToFull("EPS")
-#define	STR_POSTSCRIPT		AsciiToFull("PostScript")
-#define	STR_PLAINTEXT		AsciiToFull("PlainText")
-#define	STR_PDF			AsciiToFull("PDF")
-#define	STR_ELSE		AsciiToFull("else")
-#define	STR_NOCROSS		AsciiToFull("??")
-#define	STR_BADKEY		AsciiToFull("badkey")
-#define	STR_NONE		AsciiToFull("none")
-#define	STR_NOCHAR		AsciiToFull("-none-")
-#define	STR_ZERO		AsciiToFull("0")
-#define	STR_PS_SPACENAME	AsciiToFull("space")
-#define	STR_FONT_RECODE		AsciiToFull("Recode")
-#define	STR_FONT_NORECODE	AsciiToFull("NoRecode")
-#define	STR_COLOUR_NOCHANGE	AsciiToFull("nochange")
-#define	STR_TEXTURE_NOCHANGE	AsciiToFull("nochange")
+extern const FULL_CHAR* const STR_STDIN;
+extern const FULL_CHAR* const STR_STDOUT;
+extern const FULL_CHAR* const STR_HYPHEN;
+extern const FULL_CHAR* const STR_EPS;
 
-#define	STR_BREAK_HYPHEN	AsciiToFull("hyphen")
-#define	STR_BREAK_NOHYPHEN	AsciiToFull("nohyphen")
-#define	STR_BREAK_ADJUST	AsciiToFull("adjust")
-#define	STR_BREAK_OUTDENT	AsciiToFull("outdent")
-#define	STR_BREAK_RAGGED	AsciiToFull("ragged")
-#define	STR_BREAK_CRAGGED	AsciiToFull("cragged")
-#define	STR_BREAK_RRAGGED	AsciiToFull("rragged")
-#define	STR_BREAK_ORAGGED	AsciiToFull("oragged")
-#define	STR_BREAK_LINES		AsciiToFull("lines")
-#define	STR_BREAK_CLINES	AsciiToFull("clines")
-#define	STR_BREAK_RLINES	AsciiToFull("rlines")
-#define	STR_BREAK_OLINES	AsciiToFull("olines")
-#define	STR_BREAK_SCALE		AsciiToFull("blanklinescale")
-#define	STR_BREAK_NOFIRST	AsciiToFull("unbreakablefirst")
-#define	STR_BREAK_FIRST		AsciiToFull("breakablefirst")
-#define	STR_BREAK_NOLAST	AsciiToFull("unbreakablelast")
-#define	STR_BREAK_LAST		AsciiToFull("breakablelast")
-#define	STR_BREAK_SETOUTDENT	AsciiToFull("setoutdent")
-#define STR_BREAK_MARGINKERNING AsciiToFull("marginkerning")
-#define STR_BREAK_NOMARGINKERNING AsciiToFull("nomarginkerning")
+extern const FULL_CHAR* const STR_POSTSCRIPT;
+// needed in z49.c
+#define STR_POSTSCRIPT_MACRO AsciiToFull("PostScript")
 
-#define STR_SPACE_LOUT		AsciiToFull("lout")
-#define STR_SPACE_COMPRESS	AsciiToFull("compress")
-#define STR_SPACE_SEPARATE	AsciiToFull("separate")
-#define STR_SPACE_TROFF		AsciiToFull("troff")
-#define STR_SPACE_TEX		AsciiToFull("tex")
+extern const FULL_CHAR* const STR_PLAINTEXT;
+// needed in z51.c
+#define STR_PLAINTEXT_MACRO AsciiToFull("PlainText")
 
-#define	STR_SMALL_CAPS_ON	AsciiToFull("smallcaps")
-#define	STR_SMALL_CAPS_OFF	AsciiToFull("nosmallcaps")
-#define	STR_SMALL_CAPS_SET	AsciiToFull("setsmallcaps")
-#define	STR_BASELINE_MARK	AsciiToFull("baselinemark")
-#define	STR_LIG			AsciiToFull("lig")
-#define	STR_NOLIG		AsciiToFull("nolig")
-#define	STR_XHEIGHT2_MARK	AsciiToFull("xheight2mark")
-#define	STR_NOSTRUT		AsciiToFull("nostrut")
-#define	STR_STRUT		AsciiToFull("strut")
+extern const FULL_CHAR* const STR_PDF;
+// needed in z50.c
+#define STR_PDF_MACRO AsciiToFull("PDF")
 
-#define	STR_GAP_RJUSTIFY	AsciiToFull("1rt")
-#define	STR_GAP_ZERO_HYPH	AsciiToFull("0ch")
+extern const FULL_CHAR* const STR_ELSE;
+extern const FULL_CHAR* const STR_NOCROSS;
+extern const FULL_CHAR* const STR_BADKEY;
+extern const FULL_CHAR* const STR_NONE;
+extern const FULL_CHAR* const STR_NOCHAR;
+extern const FULL_CHAR* const STR_ZERO;
+extern const FULL_CHAR* const STR_PS_SPACENAME;
+extern const FULL_CHAR* const STR_FONT_RECODE;
+extern const FULL_CHAR* const STR_FONT_NORECODE;
+extern const FULL_CHAR* const STR_COLOUR_NOCHANGE;
+extern const FULL_CHAR* const STR_TEXTURE_NOCHANGE;
 
-#define	STR_SCALE_DOWN		AsciiToFull("downifneeded")
+extern const FULL_CHAR* const STR_BREAK_HYPHEN;
+extern const FULL_CHAR* const STR_BREAK_NOHYPHEN;
+extern const FULL_CHAR* const STR_BREAK_ADJUST;
+extern const FULL_CHAR* const STR_BREAK_OUTDENT;
+extern const FULL_CHAR* const STR_BREAK_RAGGED;
+extern const FULL_CHAR* const STR_BREAK_CRAGGED;
+extern const FULL_CHAR* const STR_BREAK_RRAGGED;
+extern const FULL_CHAR* const STR_BREAK_ORAGGED;
+extern const FULL_CHAR* const STR_BREAK_LINES;
+extern const FULL_CHAR* const STR_BREAK_CLINES;
+extern const FULL_CHAR* const STR_BREAK_RLINES;
+extern const FULL_CHAR* const STR_BREAK_OLINES;
+extern const FULL_CHAR* const STR_BREAK_SCALE;
+extern const FULL_CHAR* const STR_BREAK_NOFIRST;
+extern const FULL_CHAR* const STR_BREAK_FIRST;
+extern const FULL_CHAR* const STR_BREAK_NOLAST;
+extern const FULL_CHAR* const STR_BREAK_LAST;
+extern const FULL_CHAR* const STR_BREAK_SETOUTDENT;
+extern const FULL_CHAR* const STR_BREAK_MARGINKERNING;
+extern const FULL_CHAR* const STR_BREAK_NOMARGINKERNING;
+
+extern const FULL_CHAR* const STR_SPACE_LOUT;
+extern const FULL_CHAR* const STR_SPACE_COMPRESS;
+extern const FULL_CHAR* const STR_SPACE_SEPARATE;
+extern const FULL_CHAR* const STR_SPACE_TROFF;
+extern const FULL_CHAR* const STR_SPACE_TEX;
+
+extern const FULL_CHAR* const STR_SMALL_CAPS_ON;
+extern const FULL_CHAR* const STR_SMALL_CAPS_OFF;
+extern const FULL_CHAR* const STR_SMALL_CAPS_SET;
+extern const FULL_CHAR* const STR_BASELINE_MARK;
+extern const FULL_CHAR* const STR_LIG;
+extern const FULL_CHAR* const STR_NOLIG;
+extern const FULL_CHAR* const STR_XHEIGHT2_MARK;
+extern const FULL_CHAR* const STR_NOSTRUT;
+extern const FULL_CHAR* const STR_STRUT;
+
+extern const FULL_CHAR* const STR_GAP_RJUSTIFY;
+extern const FULL_CHAR* const STR_GAP_ZERO_HYPH;
+
+extern const FULL_CHAR* const STR_SCALE_DOWN;
 
 
 /*@::GAP, STYLE@**************************************************************/
@@ -649,6 +669,7 @@ typedef struct
   unsigned	omode	 : 3;		/* spacing mode: edge-to-edge, etc   */
 } GAP;
 
+/** inline function not possible - also used for setters */
 #define	nobreak(x)	(x).onobreak
 #define	mark(x)		(x).omark
 #define	join(x)		(x).ojoin
@@ -817,30 +838,6 @@ typedef struct
 #define	ig_xtrans(x)	bfc(constraint(x))
 #define	ig_ytrans(x)	fc(constraint(x))
 
-
-/*****************************************************************************/
-/*                                                                           */
-/*  typedef FILE_NUM - the internal representation of a file.                */
-/*                                                                           */
-/*****************************************************************************/
-
-typedef unsigned short	FILE_NUM;
-#define	NO_FILE		0
-
-
-/*****************************************************************************/
-/*                                                                           */
-/*  typedef FILE_POS - a position in the set of input files.                 */
-/*                                                                           */
-/*****************************************************************************/
-
-typedef	struct
-{ unsigned char	 otype;			/* space for object type field	     */
-  unsigned char	 orec_size;		/* space for object record size      */
-  FILE_NUM	 ofile_num;		/* no. of file this record is from   */
-  unsigned       oline_num  : 20;	/* the line number of this record    */
-  unsigned       ocol_num   : 12;	/* column number this is related to  */
-} FILE_POS;
 
 #define	file_num(x)	(x).ofile_num
 #define	col_num(x)	(x).ocol_num
@@ -1791,8 +1788,10 @@ typedef union rec
   {  LIST	olist[1];
   } os10;
 
-} *OBJECT;
+} REAL_OBJECT;
 
+// Attention: OBJECT is a pointer type!
+typedef REAL_OBJECT* OBJECT;
 
 /*@::macros for fields of OBJECT@*********************************************/
 /*                                                                           */
@@ -2120,166 +2119,168 @@ typedef struct back_end_rec {
 /*                                                                           */
 /*****************************************************************************/
 
-#define	LINK		     0		/*        a link between objects     */
-#define	GAP_OBJ		     1		/*  o     a gap object               */
-#define	CLOSURE		     2		/* to  n  a closure of a symbol      */
-#define	UNDER_REC	     3		/*  o  n  record of underlining      */
-#define	PAGE_LABEL	     4		/* to sn  @PageLabel                 */
-#define	NULL_CLOS	     5		/* to sn  @Null                      */
-#define	CROSS		     6		/* to sn  && (a cross reference obj) */
-#define	FORCE_CROSS	     7		/* to sn  &&& (a forcing cross ref.) */
-#define	LINK_DEST_NULL	     8		/* to sn  @LinkDest (null version)   */
-#define	HEAD		     9		/*  o  n  a galley header            */
-#define	SPLIT		    10		/*  o     @Split                     */
-#define	PAR		    11		/*  o     a parameter of a closure   */
-#define	WORD		    12		/*  o     a word                     */
-#define	QWORD		    13		/*  o     a word (was quoted in i/p) */
-#define	HSPANNER	    14		/*  o     a horizontal spanner       */
-#define	VSPANNER	    15		/*  o     a vertical spanner         */
-#define	ROW_THR		    16		/*  o     a row thread               */
-#define	COL_THR		    17		/*  o     a column thread            */
-#define	ACAT		    18		/* to s   a sequence of &-ed objs    */
-#define	HCAT		    19		/* to s   a sequence of |-ed objs    */
-#define	VCAT		    20		/* to s   a sequence of /-ed objs    */
-#define	BEGIN_HEADER	    21		/* to s   @BeginHeaderComponent      */
-#define	END_HEADER	    22		/* to s   @EndHeaderComponent        */
-#define	SET_HEADER	    23		/* to s   @SetHeaderComponent        */
-#define	CLEAR_HEADER	    24		/* to s   @ClearHeaderComponent      */
-#define	ONE_COL		    25		/* to s   @OneCol                    */
-#define	ONE_ROW		    26		/* to s   @OneRow                    */
-#define	WIDE		    27		/* to s   @Wide                      */
-#define	HIGH		    28		/* to s   @High                      */
-#define	HSHIFT		    29		/* to s   @HShift                    */
-#define	VSHIFT		    30		/* to s   @VShift                    */
-#define	HMIRROR		    31		/* to s   @HScale                    */
-#define	VMIRROR		    32		/* to s   @VScale                    */
-#define	HSCALE		    33		/* to s   @HScale                    */
-#define	VSCALE		    34		/* to s   @VScale                    */
-#define	HCOVER		    35		/* to s   @HCover                    */
-#define	VCOVER		    36		/* to s   @VCover                    */
-#define	SCALE		    37		/* to s   @Scale                     */
-#define	KERN_SHRINK	    38		/* to s   @KernShrink                */
-#define	HCONTRACT	    39		/* to s   @HContract                 */
-#define	VCONTRACT	    40		/* to s   @VContract                 */
-#define	HLIMITED	    41		/* to s   @HLimited                  */
-#define	VLIMITED	    42		/* to s   @VLimited                  */
-#define	HEXPAND		    43		/* to s   @HExpand                   */
-#define	VEXPAND		    44		/* to s   @VExpand                   */
-#define	START_HSPAN	    45		/* to s   @StartHSpan                */
-#define	START_VSPAN 	    46		/* to s   @StartVSpan                */
-#define	START_HVSPAN 	    47		/* to s   @StartHVSpan               */
-#define	HSPAN  		    48		/* to s   @HSpan                     */
-#define	VSPAN  		    49		/* to s   @VSpan                     */
-#define	PADJUST		    50		/* to s   @PAdjust                   */
-#define	HADJUST		    51		/* to s   @HAdjust                   */
-#define	VADJUST		    52		/* to s   @VAdjust                   */
-#define	ROTATE		    53		/* to s   @Rotate                    */
-#define	BACKGROUND	    54		/* to s   @Background                */
-#define	CASE		    55		/* to s   @Case                      */
-#define	VERBATIM	    56		/* to s   @Verbatim                  */
-#define	RAW_VERBATIM	    57		/* to s   @RawVerbatim               */
-#define	YIELD		    58		/* to s   @Yield                     */
-#define	BACKEND		    59		/* to s   @BackEnd                   */
-#define	FILTERED	    60		/* to s   filtered object (no name)  */
-#define	XCHAR		    61		/* to s   @Char                      */
-#define	FONT		    62		/* to s   @Font                      */
-#define	SPACE		    63		/* to s   @Space                     */
-#define	YUNIT		    64		/* to s   @YUnit                     */
-#define	ZUNIT		    65		/* to s   @ZUnit                     */
-#define	SET_CONTEXT	    66		/* to s   @SetContext                */
-#define	GET_CONTEXT	    67		/* to s   @GetContext                */
-#define	BREAK		    68		/* to s   @Break                     */
-#define	UNDERLINE	    69		/* to s   @Underline                 */
-#define	UNDERLINE_COLOUR    70		/* to s   @SetUnderlineColour        */
-#define	COLOUR		    71		/* to s   @SetColour and @SetColor   */
-#define	TEXTURE		    72		/* to s   @SetTexture                */
-#define	OUTLINE		    73		/* to s   @Outline                   */
-#define	LANGUAGE	    74		/* to s   @Language                  */
-#define	CURR_LANG	    75		/* to s   @CurrLang                  */
-#define	CURR_FAMILY	    76		/* to s   @CurrFamily                */
-#define	CURR_FACE	    77		/* to s   @CurrFace                  */
-#define	CURR_YUNIT	    78		/* to s   @CurrYUnit                 */
-#define	CURR_ZUNIT	    79		/* to s   @CurrZUnit                 */
-#define	COMMON		    80		/* to s   @Common                    */
-#define	RUMP		    81		/* to s   @Rump                      */
-#define	MELD		    82		/* to s   @Meld                      */
-#define	INSERT		    83		/* to s   @Insert                    */
-#define	ONE_OF		    84		/* to s   @OneOf                     */
-#define	NEXT		    85		/* to s   @Next                      */
-#define	PLUS		    86		/* to s   @Plus                      */
-#define	MINUS		    87		/* to s   @Minus                     */
-#define	ENV_OBJ		    88		/* to s   object with envt (no name) */
-#define	ENV		    89		/* to s   @LEnv                      */
-#define	ENVA		    90		/* to s   @LEnvA                     */
-#define	ENVB		    91		/* to s   @LEnvB                     */
-#define	ENVC		    92		/* to s   @LEnvC                     */
-#define	ENVD		    93		/* to s   @LEnvD                     */
-#define	CENV		    94		/* to s   @LCEnv                     */
-#define	CLOS		    95		/* to s   @LClos                     */
-#define	LVIS		    96		/* to s   @LVis                      */
-#define	LUSE		    97		/* to s   @LUse                      */
-#define	LEO 		    98		/* to s   @LEO                       */
-#define	OPEN		    99		/* to s   @Open                      */
-#define	TAGGED		   100		/* to s   @Tagged                    */
-#define	INCGRAPHIC	   101		/* to s   @IncludeGraphic            */
-#define	SINCGRAPHIC	   102		/* to s   @SysIncludeGraphic         */
-#define	PLAIN_GRAPHIC	   103		/* to s   @PlainGraphic              */
-#define	GRAPHIC		   104		/* to s   @Graphic                   */
-#define	LINK_SOURCE	   105		/* to s   @LinkSource                */
-#define	LINK_DEST	   106		/* to s   @LinkDest                  */
-#define	LINK_URL	   107		/* to s   @URLLink                   */
-#define	TSPACE		   108		/* t      a space token, parser only */
-#define	TJUXTA		   109		/* t      a juxta token, parser only */
-#define	LBR		   110		/* t  s   left brace token           */
-#define	RBR		   111		/* t  s   right brace token          */
-#define	BEGIN		   112		/* t  s   @Begin token               */
-#define	END		   113		/* t  s   @End token                 */
-#define	USE		   114		/* t  s   @Use                       */
-#define	NOT_REVEALED	   115		/* t  s   @NotRevealed               */
-#define	GSTUB_NONE	   116		/* t      a galley stub, no rpar     */
-#define	GSTUB_INT	   117		/* t      galley stub internal rpar  */
-#define	GSTUB_EXT	   118		/* t      galley stub external rpar  */
-#define	UNEXPECTED_EOF	   119		/* t      unexpected end of file     */
-#define	INCLUDE		   120		/*    s   @Include                   */
-#define	SYS_INCLUDE	   121		/*    s   @SysInclude                */
-#define	PREPEND		   122		/*    s   @Prepend                   */
-#define	SYS_PREPEND	   123		/*    s   @SysPrepend                */
-#define	INCG_REPEATED	   124		/*    s   @IncludeGraphicRepeated    */
-#define	SINCG_REPEATED     125		/*    s   @SysIncludeGraphicRepeated */
-#define	DATABASE	   126		/*    s   @Database                  */
-#define	SYS_DATABASE	   127		/*    s   @SysDatabase               */
-#define	DEAD		   128		/*   i    a dead galley              */
-#define	UNATTACHED	   129		/*   i    an inner, unsized galley   */
-#define	RECEPTIVE	   130		/*   i    a receptive object index   */
-#define	RECEIVING	   131		/*   i    a receiving object index   */
-#define	RECURSIVE	   132		/*   i    a recursive definite obj.  */
-#define	PRECEDES	   133		/*   i    an ordering constraint     */
-#define	FOLLOWS		   134		/*   i    other end of ordering c.   */
-#define	CROSS_LIT	   135		/*   i    literal word cross-ref     */
-#define	CROSS_FOLL	   136		/*   i    following type cross-ref   */
-#define	CROSS_FOLL_OR_PREC 137		/*   i    follorprec type cross-ref  */
-#define	GALL_FOLL	   138		/*   i    galley with &&following    */
-#define	GALL_FOLL_OR_PREC  139		/*   i    galley with &&following    */
-#define	CROSS_TARG	   140		/*   i    value of cross-ref         */
-#define	GALL_TARG	   141		/*   i    target of these galleys    */
-#define	GALL_PREC	   142		/*   i    galley with &&preceding    */
-#define	CROSS_PREC	   143		/*   i    preceding type cross-ref   */
-#define	PAGE_LABEL_IND	   144		/*   i    index of PAGE_LABEL        */
-#define	SCALE_IND	   145		/*   i    index of auto SCALE        */
-#define	COVER_IND	   146		/*   i    index of HCOVER or VCOVER  */
-#define	EXPAND_IND	   147		/*   i    index of HEXPAND or VEXPD  */
-#define	THREAD		   148		/*        a sequence of threads      */
-#define	CROSS_SYM	   149		/*        cross-ref info             */
-#define	CR_ROOT		   150		/*        RootCross                  */
-#define	MACRO	           151		/*        a macro symbol             */
-#define	LOCAL	           152		/*        a local symbol             */
-#define	LPAR	           153		/*        a left parameter           */
-#define	NPAR	           154		/*        a named parameter          */
-#define	RPAR	           155		/*        a right parameter          */
-#define	EXT_GALL           156		/*        an external galley         */
-#define	CR_LIST	           157		/*        a list of cross references */
-#define	SCOPE_SNAPSHOT     158		/*        a scope snapshot	     */
-#define	DISPOSED           159		/*        a disposed record          */
+typedef enum objtyp {
+    LINK = 0,       /*        a link between objects     */
+    GAP_OBJ,        /*  o     a gap object               */
+    CLOSURE,        /* to  n  a closure of a symbol      */
+    UNDER_REC,      /*  o  n  record of underlining      */
+    PAGE_LABEL,     /* to sn  @PageLabel                 */
+    NULL_CLOS,      /* to sn  @Null                      */
+    CROSS,          /* to sn  && (a cross reference obj) */
+    FORCE_CROSS,    /* to sn  &&& (a forcing cross ref.) */
+    LINK_DEST_NULL, /* to sn  @LinkDest (null version)   */
+    HEAD,           /*  o  n  a galley header            */
+    SPLIT,          /*  o     @Split                     */
+    PAR,            /*  o     a parameter of a closure   */
+    WORD,           /*  o     a word                     */
+    QWORD,          /*  o     a word (was quoted in i/p) */
+    HSPANNER,       /*  o     a horizontal spanner       */
+    VSPANNER,       /*  o     a vertical spanner         */
+    ROW_THR,        /*  o     a row thread               */
+    COL_THR,        /*  o     a column thread            */
+    ACAT,           /* to s   a sequence of &-ed objs    */
+    HCAT,           /* to s   a sequence of |-ed objs    */
+    VCAT,           /* to s   a sequence of /-ed objs    */
+    BEGIN_HEADER,   /* to s   @BeginHeaderComponent      */
+    END_HEADER,     /* to s   @EndHeaderComponent        */
+    SET_HEADER,     /* to s   @SetHeaderComponent        */
+    CLEAR_HEADER,   /* to s   @ClearHeaderComponent      */
+    ONE_COL,        /* to s   @OneCol                    */
+    ONE_ROW,        /* to s   @OneRow                    */
+    WIDE,           /* to s   @Wide                      */
+    HIGH,           /* to s   @High                      */
+    HSHIFT,         /* to s   @HShift                    */
+    VSHIFT,         /* to s   @VShift                    */
+    HMIRROR,        /* to s   @HScale                    */
+    VMIRROR,        /* to s   @VScale                    */
+    HSCALE,         /* to s   @HScale                    */
+    VSCALE,         /* to s   @VScale                    */
+    HCOVER,         /* to s   @HCover                    */
+    VCOVER,         /* to s   @VCover                    */
+    SCALE,          /* to s   @Scale                     */
+    KERN_SHRINK,    /* to s   @KernShrink                */
+    HCONTRACT,      /* to s   @HContract                 */
+    VCONTRACT,      /* to s   @VContract                 */
+    HLIMITED,       /* to s   @HLimited                  */
+    VLIMITED,       /* to s   @VLimited                  */
+    HEXPAND,        /* to s   @HExpand                   */
+    VEXPAND,        /* to s   @VExpand                   */
+    START_HSPAN,    /* to s   @StartHSpan                */
+    START_VSPAN,    /* to s   @StartVSpan                */
+    START_HVSPAN,   /* to s   @StartHVSpan               */
+    HSPAN,          /* to s   @HSpan                     */
+    VSPAN,          /* to s   @VSpan                     */
+    PADJUST,        /* to s   @PAdjust                   */
+    HADJUST,        /* to s   @HAdjust                   */
+    VADJUST,        /* to s   @VAdjust                   */
+    ROTATE,         /* to s   @Rotate                    */
+    BACKGROUND,     /* to s   @Background                */
+    CASE,           /* to s   @Case                      */
+    VERBATIM,       /* to s   @Verbatim                  */
+    RAW_VERBATIM,   /* to s   @RawVerbatim               */
+    YIELD,          /* to s   @Yield                     */
+    BACKEND,        /* to s   @BackEnd                   */
+    FILTERED,       /* to s   filtered object (no name)  */
+    XCHAR,          /* to s   @Char                      */
+    FONT,           /* to s   @Font                      */
+    SPACE,          /* to s   @Space                     */
+    YUNIT,          /* to s   @YUnit                     */
+    ZUNIT,          /* to s   @ZUnit                     */
+    SET_CONTEXT,    /* to s   @SetContext                */
+    GET_CONTEXT,    /* to s   @GetContext                */
+    BREAK,          /* to s   @Break                     */
+    UNDERLINE,      /* to s   @Underline                 */
+    UNDERLINE_COLOUR, /* to s   @SetUnderlineColour        */
+    COLOUR,         /* to s   @SetColour and @SetColor   */
+    TEXTURE,        /* to s   @SetTexture                */
+    OUTLINE,        /* to s   @Outline                   */
+    LANGUAGE,       /* to s   @Language                  */
+    CURR_LANG,      /* to s   @CurrLang                  */
+    CURR_FAMILY,    /* to s   @CurrFamily                */
+    CURR_FACE,      /* to s   @CurrFace                  */
+    CURR_YUNIT,     /* to s   @CurrYUnit                 */
+    CURR_ZUNIT,     /* to s   @CurrZUnit                 */
+    COMMON,         /* to s   @Common                    */
+    RUMP,           /* to s   @Rump                      */
+    MELD,           /* to s   @Meld                      */
+    INSERT,         /* to s   @Insert                    */
+    ONE_OF,         /* to s   @OneOf                     */
+    NEXT,           /* to s   @Next                      */
+    PLUS,           /* to s   @Plus                      */
+    MINUS,          /* to s   @Minus                     */
+    ENV_OBJ,        /* to s   object with envt (no name) */
+    ENV,            /* to s   @LEnv                      */
+    ENVA,           /* to s   @LEnvA                     */
+    ENVB,           /* to s   @LEnvB                     */
+    ENVC,           /* to s   @LEnvC                     */
+    ENVD,           /* to s   @LEnvD                     */
+    CENV,           /* to s   @LCEnv                     */
+    CLOS,           /* to s   @LClos                     */
+    LVIS,           /* to s   @LVis                      */
+    LUSE,           /* to s   @LUse                      */
+    LEO,            /* to s   @LEO                       */
+    OPEN,           /* to s   @Open                      */
+    TAGGED,         /* to s   @Tagged                    */
+    INCGRAPHIC,     /* to s   @IncludeGraphic            */
+    SINCGRAPHIC,    /* to s   @SysIncludeGraphic         */
+    PLAIN_GRAPHIC,  /* to s   @PlainGraphic              */
+    GRAPHIC,        /* to s   @Graphic                   */
+    LINK_SOURCE,    /* to s   @LinkSource                */
+    LINK_DEST,      /* to s   @LinkDest                  */
+    LINK_URL,       /* to s   @URLLink                   */
+    TSPACE,         /* t      a space token, parser only */
+    TJUXTA,         /* t      a juxta token, parser only */
+    LBR,            /* t  s   left brace token           */
+    RBR,            /* t  s   right brace token          */
+    BEGIN,          /* t  s   @Begin token               */
+    END,            /* t  s   @End token                 */
+    USE,            /* t  s   @Use                       */
+    NOT_REVEALED,   /* t  s   @NotRevealed               */
+    GSTUB_NONE,     /* t      a galley stub, no rpar     */
+    GSTUB_INT,      /* t      galley stub internal rpar  */
+    GSTUB_EXT,      /* t      galley stub external rpar  */
+    UNEXPECTED_EOF, /* t      unexpected end of file     */
+    INCLUDE,        /*    s   @Include                   */
+    SYS_INCLUDE,    /*    s   @SysInclude                */
+    PREPEND,        /*    s   @Prepend                   */
+    SYS_PREPEND,    /*    s   @SysPrepend                */
+    INCG_REPEATED,  /*    s   @IncludeGraphicRepeated    */
+    SINCG_REPEATED, /*    s   @SysIncludeGraphicRepeated */
+    DATABASE,       /*    s   @Database                  */
+    SYS_DATABASE,   /*    s   @SysDatabase               */
+    DEAD,           /*   i    a dead galley              */
+    UNATTACHED,     /*   i    an inner, unsized galley   */
+    RECEPTIVE,      /*   i    a receptive object index   */
+    RECEIVING,      /*   i    a receiving object index   */
+    RECURSIVE,      /*   i    a recursive definite obj.  */
+    PRECEDES,       /*   i    an ordering constraint     */
+    FOLLOWS,        /*   i    other end of ordering c.   */
+    CROSS_LIT,      /*   i    literal word cross-ref     */
+    CROSS_FOLL,     /*   i    following type cross-ref   */
+    CROSS_FOLL_OR_PREC, /*   i    follorprec type cross-ref  */
+    GALL_FOLL,      /*   i    galley with &&following    */
+    GALL_FOLL_OR_PREC,  /*   i    galley with &&following    */
+    CROSS_TARG,     /*   i    value of cross-ref         */
+    GALL_TARG,      /*   i    target of these galleys    */
+    GALL_PREC,      /*   i    galley with &&preceding    */
+    CROSS_PREC,     /*   i    preceding type cross-ref   */
+    PAGE_LABEL_IND, /*   i    index of PAGE_LABEL        */
+    SCALE_IND,      /*   i    index of auto SCALE        */
+    COVER_IND,      /*   i    index of HCOVER or VCOVER  */
+    EXPAND_IND,     /*   i    index of HEXPAND or VEXPD  */
+    THREAD,         /*        a sequence of threads      */
+    CROSS_SYM,      /*        cross-ref info             */
+    CR_ROOT,        /*        RootCross                  */
+    MACRO,          /*        a macro symbol             */
+    LOCAL,          /*        a local symbol             */
+    LPAR,           /*        a left parameter           */
+    NPAR,           /*        a named parameter          */
+    RPAR,           /*        a right parameter          */
+    EXT_GALL,       /*        an external galley         */
+    CR_LIST,        /*        a list of cross references */
+    SCOPE_SNAPSHOT, /*        a scope snapshot	     */
+    DISPOSED,       /* 159        a disposed record          */
+} OBJTYPE;
 
 #define is_indefinite(x)  ((x) >= CLOSURE && (x) <= HEAD)
 #define is_header(x)  ((x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER)
@@ -2315,14 +2316,16 @@ typedef struct back_end_rec {
 #define	GAP_DEC	           169		/* decrement, e.g. -3p               */
 
 /* gap modes occupying mode(x) */
-#define	NO_MODE		     0		/* for error detection: no mode      */
-#define	EDGE_MODE	     1		/* edge-to-edge spacing              */
-#define	HYPH_MODE	     2		/* edge-to-edge with hyphenation     */
-#define	MARK_MODE	     3		/* mark-to-mark spacing              */
-#define	OVER_MODE	     4		/* overstrike spacing                */
-#define	KERN_MODE	     5		/* kerning spacing                   */
-#define	TAB_MODE	     6		/* tabulation spacing                */
-#define	ADD_HYPH	     7		/* temp value used by FillObject     */
+typedef enum space_mode {
+    NO_MODE = 0,    /* for error detection: no mode      */
+    EDGE_MODE,      /* edge-to-edge spacing              */
+    HYPH_MODE,      /* edge-to-edge with hyphenation     */
+    MARK_MODE,      /* mark-to-mark spacing              */
+    OVER_MODE,      /* overstrike spacing                */
+    KERN_MODE,      /* kerning spacing                   */
+    TAB_MODE,       /* tabulation spacing                */
+    ADD_HYPH        /* 7  temp value used by FillObject     */
+} SPACE_MODE;
 
 /* hyph_style(style) options                                                 */
 #define	HYPH_UNDEF	     0		/* hyphenation option undefined      */
@@ -2438,12 +2441,6 @@ typedef struct back_end_rec {
 #define	PDF		     1		/* PDF back end			     */
 #define	PLAINTEXT	     2		/* plain text back end               */
 
-/* error types */
-#define	INTERN		     0		/* internal error (i.e. bug)         */
-#define	FATAL		     1		/* fatal error, abort now            */
-#define	FATAL_WITH_USAGE     2		/* fatal error, abort now + usage    */
-#define	WARN		     3		/* warning, non-fatal                */
-
 /* status values returned by AttachGalley() */
 #define	ATTACH_KILLED	     0
 #define	ATTACH_INPUT	     1
@@ -2480,177 +2477,177 @@ typedef struct back_end_rec {
 /*                                                                           */
 /*****************************************************************************/
 
-#define	KW_START		AsciiToFull("\\Start")
-#define	KW_PRINT		AsciiToFull("\\Print")
-#define	KW_OPTGALL		AsciiToFull("@OptGall")
-#define	KW_DEF			AsciiToFull("def")
-#define	KW_FONTDEF		AsciiToFull("@FontDef")
-#define	KW_FAMILY		AsciiToFull("@Family")
-#define	KW_FACE			AsciiToFull("@Face")
-#define	KW_NAME			AsciiToFull("@Name")
-#define	KW_METRICS		AsciiToFull("@Metrics")
-#define	KW_EXTRA_METRICS	AsciiToFull("@ExtraMetrics")
-#define	KW_MAPPING		AsciiToFull("@Mapping")
-#define	KW_RECODE		AsciiToFull("@Recode")
-#define	KW_LANGDEF		AsciiToFull("langdef")
-#define	KW_FORCE		AsciiToFull("force")
-#define	KW_HORIZ		AsciiToFull("horizontally")
-#define	KW_INTO			AsciiToFull("into")
-#define	KW_EXTEND		AsciiToFull("extend")
-#define	KW_IMPORT		AsciiToFull("import")
-#define	KW_EXPORT		AsciiToFull("export")
-#define	KW_PRECEDENCE		AsciiToFull("precedence")
-#define	KW_ASSOC		AsciiToFull("associativity")
-#define	KW_LEFT			AsciiToFull("left")
-#define	KW_RIGHT		AsciiToFull("right")
-#define	KW_BODY			AsciiToFull("body")
-#define	KW_FILTER		AsciiToFull("@Filter")
-#define	KW_FILTERIN		AsciiToFull("@FilterIn")
-#define	KW_FILTEROUT		AsciiToFull("@FilterOut")
-#define	KW_FILTERERR		AsciiToFull("@FilterErr")
-#define	KW_MACRO		AsciiToFull("macro")
-#define	KW_NAMED		AsciiToFull("named")
-#define	KW_COMPULSORY		AsciiToFull("compulsory")
-#define	KW_COMMON		AsciiToFull("@Common")
-#define	KW_RUMP			AsciiToFull("@Rump")
-#define	KW_MELD			AsciiToFull("@Meld")
-#define	KW_INSERT		AsciiToFull("@Insert")
-#define	KW_ONE_OF		AsciiToFull("@OneOf")
-#define	KW_NEXT			AsciiToFull("@Next")
-#define	KW_PLUS			AsciiToFull("@Plus")
-#define	KW_MINUS		AsciiToFull("@Minus")
-#define	KW_WIDE			AsciiToFull("@Wide")
-#define	KW_HIGH			AsciiToFull("@High")
-#define	KW_HSHIFT		AsciiToFull("@HShift")
-#define	KW_VSHIFT		AsciiToFull("@VShift")
-#define	KW_BEGIN_HEADER		AsciiToFull("@BeginHeaderComponent")
-#define	KW_END_HEADER		AsciiToFull("@EndHeaderComponent")
-#define	KW_SET_HEADER		AsciiToFull("@SetHeaderComponent")
-#define	KW_CLEAR_HEADER		AsciiToFull("@ClearHeaderComponent")
-#define	KW_ONE_COL		AsciiToFull("@OneCol")
-#define	KW_ONE_ROW		AsciiToFull("@OneRow")
-#define	KW_HMIRROR		AsciiToFull("@HMirror")
-#define	KW_VMIRROR		AsciiToFull("@VMirror")
-#define	KW_HSCALE		AsciiToFull("@HScale")
-#define	KW_VSCALE		AsciiToFull("@VScale")
-#define	KW_HCOVER		AsciiToFull("@HCover")
-#define	KW_VCOVER		AsciiToFull("@VCover")
-#define	KW_SCALE		AsciiToFull("@Scale")
-#define	KW_KERN_SHRINK		AsciiToFull("@KernShrink")
-#define	KW_HCONTRACT		AsciiToFull("@HContract")
-#define	KW_VCONTRACT		AsciiToFull("@VContract")
-#define	KW_HLIMITED		AsciiToFull("@HLimited")
-#define	KW_VLIMITED		AsciiToFull("@VLimited")
-#define	KW_HEXPAND		AsciiToFull("@HExpand")
-#define	KW_VEXPAND		AsciiToFull("@VExpand")
-#define	KW_STARTHVSPAN		AsciiToFull("@StartHVSpan")
-#define	KW_STARTHSPAN		AsciiToFull("@StartHSpan")
-#define	KW_STARTVSPAN		AsciiToFull("@StartVSpan")
-#define	KW_HSPAN		AsciiToFull("@HSpan")
-#define	KW_VSPAN		AsciiToFull("@VSpan")
-#define	KW_PADJUST		AsciiToFull("@PAdjust")
-#define	KW_HADJUST		AsciiToFull("@HAdjust")
-#define	KW_VADJUST		AsciiToFull("@VAdjust")
-#define	KW_ROTATE		AsciiToFull("@Rotate")
-#define	KW_BACKGROUND		AsciiToFull("@Background")
-#define	KW_INCGRAPHIC		AsciiToFull("@IncludeGraphic")
-#define	KW_SINCGRAPHIC		AsciiToFull("@SysIncludeGraphic")
-#define	KW_GRAPHIC		AsciiToFull("@Graphic")
-#define	KW_LINK_SOURCE		AsciiToFull("@LinkSource")
-#define	KW_LINK_DEST		AsciiToFull("@LinkDest")
-#define	KW_LINK_URL		AsciiToFull("@URLLink")
-#define	KW_PLAINGRAPHIC		AsciiToFull("@PlainGraphic")
-#define	KW_VERBATIM		AsciiToFull("@Verbatim")
-#define	KW_RAWVERBATIM		AsciiToFull("@RawVerbatim")
-#define	KW_CASE			AsciiToFull("@Case")
-#define	KW_YIELD		AsciiToFull("@Yield")
-#define	KW_BACKEND		AsciiToFull("@BackEnd")
-#define	KW_XCHAR		AsciiToFull("@Char")
-#define	KW_FONT			AsciiToFull("@Font")
-#define	KW_SPACE		AsciiToFull("@Space")
-#define	KW_YUNIT		AsciiToFull("@YUnit")
-#define	KW_ZUNIT		AsciiToFull("@ZUnit")
-#define	KW_BREAK		AsciiToFull("@Break")
-#define	KW_UNDERLINE		AsciiToFull("@Underline")
-#define	KW_COLOUR		AsciiToFull("@SetColour")
-#define	KW_COLOR		AsciiToFull("@SetColor")
-#define	KW_UNDERLINE_COLOUR	AsciiToFull("@SetUnderlineColour")
-#define	KW_UNDERLINE_COLOR	AsciiToFull("@SetUnderlineColor")
-#define	KW_TEXTURE		AsciiToFull("@SetTexture")
-#define	KW_OUTLINE		AsciiToFull("@Outline")
-#define	KW_LANGUAGE		AsciiToFull("@Language")
-#define	KW_CURR_LANG		AsciiToFull("@CurrLang")
-#define	KW_CURR_FAMILY		AsciiToFull("@CurrFamily")
-#define	KW_CURR_FACE		AsciiToFull("@CurrFace")
-#define	KW_CURR_YUNIT		AsciiToFull("@CurrYUnit")
-#define	KW_CURR_ZUNIT		AsciiToFull("@CurrZUnit")
-#define	KW_ENV			AsciiToFull("@LEnv")
-#define	KW_ENVA			AsciiToFull("@@A")
-#define	KW_ENVB			AsciiToFull("@@B")
-#define	KW_ENVC			AsciiToFull("@@C")
-#define	KW_ENVD			AsciiToFull("@@D")
-#define	KW_CENV			AsciiToFull("@@E")
-#define	KW_CLOS			AsciiToFull("@LClos")
-#define	KW_LVIS			AsciiToFull("@@V")
-#define	KW_LUSE			AsciiToFull("@LUse")
-#define	KW_LEO			AsciiToFull("@LEO")
-#define	KW_OPEN			AsciiToFull("@Open")
-#define	KW_USE			AsciiToFull("@Use")
-#define	KW_NOT_REVEALED		AsciiToFull("@NotRevealed")
-#define	KW_TAGGED		AsciiToFull("@Tagged")
-#define	KW_DATABASE		AsciiToFull("@Database")
-#define	KW_SYSDATABASE		AsciiToFull("@SysDatabase")
-#define	KW_INCLUDE		AsciiToFull("@Include")
-#define	KW_SYSINCLUDE		AsciiToFull("@SysInclude")
-#define	KW_INCG_REPEATED	AsciiToFull("@IncludeGraphicRepeated")
-#define	KW_SINCG_REPEATED	AsciiToFull("@SysIncludeGraphicRepeated")
-#define	KW_PREPEND		AsciiToFull("@PrependGraphic")
-#define	KW_SYSPREPEND		AsciiToFull("@SysPrependGraphic")
-#define	KW_TARGET		AsciiToFull("@Target")
-#define	KW_FOLLOWING		AsciiToFull("following")
-#define	KW_PRECEDING		AsciiToFull("preceding")
-#define	KW_FOLL_OR_PREC		AsciiToFull("foll_or_prec")
-#define	KW_NOW			AsciiToFull("now")
-#define	KW_NULL			AsciiToFull("@Null")
-#define	KW_PAGE_LABEL		AsciiToFull("@PageLabel")
-#define	KW_GALLEY		AsciiToFull("@Galley")
-#define	KW_FORCE_GALLEY		AsciiToFull("@ForceGalley")
-#define	KW_INPUT		AsciiToFull("@LInput")
-#define	KW_SPLIT		AsciiToFull("@Split")
-#define	KW_TAG			AsciiToFull("@Tag")
-#define	KW_KEY			AsciiToFull("@Key")
-#define	KW_OPTIMIZE		AsciiToFull("@Optimize")
-#define	KW_MERGE		AsciiToFull("@Merge")
-#define	KW_ENCLOSE		AsciiToFull("@Enclose")
-#define	KW_CROSS		AsciiToFull("&&")
-#define	KW_FORCE_CROSS		AsciiToFull("&&&")
-#define	KW_LBR			AsciiToFull("{")
-#define	KW_RBR			AsciiToFull("}")
-#define	KW_BEGIN		AsciiToFull("@Begin")
-#define	KW_END			AsciiToFull("@End")
-#define	KW_VCAT_NN		AsciiToFull("//")
-#define	KW_VCAT_MN		AsciiToFull("^//")
-#define	KW_VCAT_NJ		AsciiToFull("/")
-#define	KW_VCAT_MJ		AsciiToFull("^/")
-#define	KW_HCAT_NN		AsciiToFull("||")
-#define	KW_HCAT_MN		AsciiToFull("^||")
-#define	KW_HCAT_NJ		AsciiToFull("|")
-#define	KW_HCAT_MJ		AsciiToFull("^|")
-#define	KW_ACAT_NJ		AsciiToFull("&")
-#define	KW_ACAT_MJ		AsciiToFull("^&")
-#define	KW_MOMENT		AsciiToFull("@Moment")
-#define	KW_SECOND		AsciiToFull("@Second")
-#define	KW_MINUTE		AsciiToFull("@Minute")
-#define	KW_HOUR			AsciiToFull("@Hour")
-#define	KW_DAY			AsciiToFull("@Day")
-#define	KW_MONTH		AsciiToFull("@Month")
-#define	KW_YEAR			AsciiToFull("@Year")
-#define	KW_CENTURY		AsciiToFull("@Century")
-#define	KW_WEEKDAY		AsciiToFull("@WeekDay")
-#define	KW_YEARDAY		AsciiToFull("@YearDay")
-#define	KW_DAYLIGHTSAVING	AsciiToFull("@DaylightSaving")
-#define	KW_SET_CONTEXT		AsciiToFull("@SetContext")
-#define	KW_GET_CONTEXT		AsciiToFull("@GetContext")
+extern const FULL_CHAR* const KW_START;
+extern const FULL_CHAR* const KW_PRINT;
+extern const FULL_CHAR* const KW_OPTGALL;
+extern const FULL_CHAR* const KW_DEF;
+extern const FULL_CHAR* const KW_FONTDEF;
+extern const FULL_CHAR* const KW_FAMILY;
+extern const FULL_CHAR* const KW_FACE;
+extern const FULL_CHAR* const KW_NAME;
+extern const FULL_CHAR* const KW_METRICS;
+extern const FULL_CHAR* const KW_EXTRA_METRICS;
+extern const FULL_CHAR* const KW_MAPPING;
+extern const FULL_CHAR* const KW_RECODE;
+extern const FULL_CHAR* const KW_LANGDEF;
+extern const FULL_CHAR* const KW_FORCE;
+extern const FULL_CHAR* const KW_HORIZ;
+extern const FULL_CHAR* const KW_INTO;
+extern const FULL_CHAR* const KW_EXTEND;
+extern const FULL_CHAR* const KW_IMPORT;
+extern const FULL_CHAR* const KW_EXPORT;
+extern const FULL_CHAR* const KW_PRECEDENCE;
+extern const FULL_CHAR* const KW_ASSOC;
+extern const FULL_CHAR* const KW_LEFT;
+extern const FULL_CHAR* const KW_RIGHT;
+extern const FULL_CHAR* const KW_BODY;
+extern const FULL_CHAR* const KW_FILTER;
+extern const FULL_CHAR* const KW_FILTERIN;
+extern const FULL_CHAR* const KW_FILTEROUT;
+extern const FULL_CHAR* const KW_FILTERERR;
+extern const FULL_CHAR* const KW_MACRO;
+extern const FULL_CHAR* const KW_NAMED;
+extern const FULL_CHAR* const KW_COMPULSORY;
+extern const FULL_CHAR* const KW_COMMON;
+extern const FULL_CHAR* const KW_RUMP;
+extern const FULL_CHAR* const KW_MELD;
+extern const FULL_CHAR* const KW_INSERT;
+extern const FULL_CHAR* const KW_ONE_OF;
+extern const FULL_CHAR* const KW_NEXT;
+extern const FULL_CHAR* const KW_PLUS;
+extern const FULL_CHAR* const KW_MINUS;
+extern const FULL_CHAR* const KW_WIDE;
+extern const FULL_CHAR* const KW_HIGH;
+extern const FULL_CHAR* const KW_HSHIFT;
+extern const FULL_CHAR* const KW_VSHIFT;
+extern const FULL_CHAR* const KW_BEGIN_HEADER;
+extern const FULL_CHAR* const KW_END_HEADER;
+extern const FULL_CHAR* const KW_SET_HEADER;
+extern const FULL_CHAR* const KW_CLEAR_HEADER;
+extern const FULL_CHAR* const KW_ONE_COL;
+extern const FULL_CHAR* const KW_ONE_ROW;
+extern const FULL_CHAR* const KW_HMIRROR;
+extern const FULL_CHAR* const KW_VMIRROR;
+extern const FULL_CHAR* const KW_HSCALE;
+extern const FULL_CHAR* const KW_VSCALE;
+extern const FULL_CHAR* const KW_HCOVER;
+extern const FULL_CHAR* const KW_VCOVER;
+extern const FULL_CHAR* const KW_SCALE;
+extern const FULL_CHAR* const KW_KERN_SHRINK;
+extern const FULL_CHAR* const KW_HCONTRACT;
+extern const FULL_CHAR* const KW_VCONTRACT;
+extern const FULL_CHAR* const KW_HLIMITED;
+extern const FULL_CHAR* const KW_VLIMITED;
+extern const FULL_CHAR* const KW_HEXPAND;
+extern const FULL_CHAR* const KW_VEXPAND;
+extern const FULL_CHAR* const KW_STARTHVSPAN;
+extern const FULL_CHAR* const KW_STARTHSPAN;
+extern const FULL_CHAR* const KW_STARTVSPAN;
+extern const FULL_CHAR* const KW_HSPAN;
+extern const FULL_CHAR* const KW_VSPAN;
+extern const FULL_CHAR* const KW_PADJUST;
+extern const FULL_CHAR* const KW_HADJUST;
+extern const FULL_CHAR* const KW_VADJUST;
+extern const FULL_CHAR* const KW_ROTATE;
+extern const FULL_CHAR* const KW_BACKGROUND;
+extern const FULL_CHAR* const KW_INCGRAPHIC;
+extern const FULL_CHAR* const KW_SINCGRAPHIC;
+extern const FULL_CHAR* const KW_GRAPHIC;
+extern const FULL_CHAR* const KW_LINK_SOURCE;
+extern const FULL_CHAR* const KW_LINK_DEST;
+extern const FULL_CHAR* const KW_LINK_URL;
+extern const FULL_CHAR* const KW_PLAINGRAPHIC;
+extern const FULL_CHAR* const KW_VERBATIM;
+extern const FULL_CHAR* const KW_RAWVERBATIM;
+extern const FULL_CHAR* const KW_CASE;
+extern const FULL_CHAR* const KW_YIELD;
+extern const FULL_CHAR* const KW_BACKEND;
+extern const FULL_CHAR* const KW_XCHAR;
+extern const FULL_CHAR* const KW_FONT;
+extern const FULL_CHAR* const KW_SPACE;
+extern const FULL_CHAR* const KW_YUNIT;
+extern const FULL_CHAR* const KW_ZUNIT;
+extern const FULL_CHAR* const KW_BREAK;
+extern const FULL_CHAR* const KW_UNDERLINE;
+extern const FULL_CHAR* const KW_COLOUR;
+extern const FULL_CHAR* const KW_COLOR;
+extern const FULL_CHAR* const KW_UNDERLINE_COLOUR;
+extern const FULL_CHAR* const KW_UNDERLINE_COLOR;
+extern const FULL_CHAR* const KW_TEXTURE;
+extern const FULL_CHAR* const KW_OUTLINE;
+extern const FULL_CHAR* const KW_LANGUAGE;
+extern const FULL_CHAR* const KW_CURR_LANG;
+extern const FULL_CHAR* const KW_CURR_FAMILY;
+extern const FULL_CHAR* const KW_CURR_FACE;
+extern const FULL_CHAR* const KW_CURR_YUNIT;
+extern const FULL_CHAR* const KW_CURR_ZUNIT;
+extern const FULL_CHAR* const KW_ENV;
+extern const FULL_CHAR* const KW_ENVA;
+extern const FULL_CHAR* const KW_ENVB;
+extern const FULL_CHAR* const KW_ENVC;
+extern const FULL_CHAR* const KW_ENVD;
+extern const FULL_CHAR* const KW_CENV;
+extern const FULL_CHAR* const KW_CLOS;
+extern const FULL_CHAR* const KW_LVIS;
+extern const FULL_CHAR* const KW_LUSE;
+extern const FULL_CHAR* const KW_LEO;
+extern const FULL_CHAR* const KW_OPEN;
+extern const FULL_CHAR* const KW_USE;
+extern const FULL_CHAR* const KW_NOT_REVEALED;
+extern const FULL_CHAR* const KW_TAGGED;
+extern const FULL_CHAR* const KW_DATABASE;
+extern const FULL_CHAR* const KW_SYSDATABASE;
+extern const FULL_CHAR* const KW_INCLUDE;
+extern const FULL_CHAR* const KW_SYSINCLUDE;
+extern const FULL_CHAR* const KW_INCG_REPEATED;
+extern const FULL_CHAR* const KW_SINCG_REPEATED;
+extern const FULL_CHAR* const KW_PREPEND;
+extern const FULL_CHAR* const KW_SYSPREPEND;
+extern const FULL_CHAR* const KW_TARGET;
+extern const FULL_CHAR* const KW_FOLLOWING;
+extern const FULL_CHAR* const KW_PRECEDING;
+extern const FULL_CHAR* const KW_FOLL_OR_PREC;
+extern const FULL_CHAR* const KW_NOW;
+extern const FULL_CHAR* const KW_NULL;
+extern const FULL_CHAR* const KW_PAGE_LABEL;
+extern const FULL_CHAR* const KW_GALLEY;
+extern const FULL_CHAR* const KW_FORCE_GALLEY;
+extern const FULL_CHAR* const KW_INPUT;
+extern const FULL_CHAR* const KW_SPLIT;
+extern const FULL_CHAR* const KW_TAG;
+extern const FULL_CHAR* const KW_KEY;
+extern const FULL_CHAR* const KW_OPTIMIZE;
+extern const FULL_CHAR* const KW_MERGE;
+extern const FULL_CHAR* const KW_ENCLOSE;
+extern const FULL_CHAR* const KW_CROSS;
+extern const FULL_CHAR* const KW_FORCE_CROSS;
+extern const FULL_CHAR* const KW_LBR;
+extern const FULL_CHAR* const KW_RBR;
+extern const FULL_CHAR* const KW_BEGIN;
+extern const FULL_CHAR* const KW_END;
+extern const FULL_CHAR* const KW_VCAT_NN;
+extern const FULL_CHAR* const KW_VCAT_MN;
+extern const FULL_CHAR* const KW_VCAT_NJ;
+extern const FULL_CHAR* const KW_VCAT_MJ;
+extern const FULL_CHAR* const KW_HCAT_NN;
+extern const FULL_CHAR* const KW_HCAT_MN;
+extern const FULL_CHAR* const KW_HCAT_NJ;
+extern const FULL_CHAR* const KW_HCAT_MJ;
+extern const FULL_CHAR* const KW_ACAT_NJ;
+extern const FULL_CHAR* const KW_ACAT_MJ;
+extern const FULL_CHAR* const KW_MOMENT;
+extern const FULL_CHAR* const KW_SECOND;
+extern const FULL_CHAR* const KW_MINUTE;
+extern const FULL_CHAR* const KW_HOUR;
+extern const FULL_CHAR* const KW_DAY;
+extern const FULL_CHAR* const KW_MONTH;
+extern const FULL_CHAR* const KW_YEAR;
+extern const FULL_CHAR* const KW_CENTURY;
+extern const FULL_CHAR* const KW_WEEKDAY;
+extern const FULL_CHAR* const KW_YEARDAY;
+extern const FULL_CHAR* const KW_DAYLIGHTSAVING;
+extern const FULL_CHAR* const KW_SET_CONTEXT;
+extern const FULL_CHAR* const KW_GET_CONTEXT;
 
 /*@::GetMem(), New(), NewWord()@**********************************************/
 /*                                                                           */
@@ -2674,6 +2671,12 @@ typedef struct back_end_rec {
 /* USE_MALLOC_DEBUG     Add additional memory debugging that tracks the      */
 /*                      size, type and allocation point of each object.      */
 /*****************************************************************************/
+
+#include "z31.h"
+// from z01 headers below - but used here
+extern	POINTER	  MemCheck;
+// from z26 headers below - but used here
+extern	FULL_CHAR *Image(unsigned int c);
 
 #define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
@@ -2928,12 +2931,15 @@ typedef struct
 #define	LastUp(x)	pred(x, PARENT)
 #define	PrevUp(x)	pred(x, PARENT)
 
+// cannot inline
 #define	Child(y, link)							\
 for( y = pred(link, PARENT);  type(y) == LINK;  y = pred(y, PARENT) )
 
+// cannot inline
 #define CountChild(y, link, i)                                          \
 for( y=pred(link, PARENT), i=1; type(y)==LINK;  y = pred(y, PARENT), i++ )
 
+// cannot inline
 #define	Parent(y, link)							\
 for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 
@@ -2947,7 +2953,9 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// cannot inline
 #define UpDim(x, dim)	( (dim) == COLM ? succ(x, PARENT) : pred(x, PARENT) )
+// cannot inline
 #define DownDim(x, dim)	( (dim) == COLM ? succ(x, CHILD) : pred(x, CHILD) )
 
 
@@ -2959,6 +2967,9 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*  The link node is returned.                                               */
 /*                                                                           */
 /*****************************************************************************/
+
+// from c07 headers below - but used here
+extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 
 #define Link(x, y)							\
 { New(xx_link, LINK);							\
@@ -3101,6 +3112,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// cannot inline
 #define FirstDefinite(x, link, y, jn)					\
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
@@ -3154,6 +3166,7 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*                                                                           */
 /*****************************************************************************/
 
+// cannot inline
 #define NextDefiniteWithGap(x, link, y, g, jn)				\
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
@@ -3225,9 +3238,12 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 /*****************************************************************************/
 
 /*****  z01.c	  Supervise		**************************************/
+extern	void	  run(int argc, char *argv[], int run_num, int *runs_to_do, FULL_CHAR *lib);
 extern	void	  PrintUsage(FILE *fp);
-extern	int	  main(int argc, char *argv[]);
-extern	POINTER	  MemCheck;
+extern	int	  main2(int argc, char *argv[]);
+// for use from go lang
+extern  int   main1(char* all_in_one);
+// extern	POINTER	  MemCheck;
 extern	OBJECT	  StartSym;
 extern	OBJECT	  GalleySym;
 extern	OBJECT	  ForceGalleySym;
@@ -3264,7 +3280,7 @@ extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos,
 		    BOOLEAN lessskip);
 
 /*****  z03.c	  File Service	        **************************************/
-extern	FILE_POS  *no_fpos;
+// extern	FILE_POS  *no_fpos;
 extern	void	  InitFiles(void);
 extern	void	  AddToPath(int fpath, OBJECT dirname);
 extern	FILE_NUM  DefineFile(FULL_CHAR *str, FULL_CHAR *suffix,
@@ -3311,7 +3327,7 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 		    BOOLEAN transfer_allowed);
 
 /*****  z07.c	  Object Service	**************************************/
-extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
+// extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 extern	int	  DisposeObject(OBJECT x);
 extern	OBJECT	  MakeWord(unsigned typ, FULL_CHAR *str, FILE_POS *pos);
 extern	OBJECT	  MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2,
@@ -3464,7 +3480,7 @@ extern	void	  BeginString(void);
 extern	void	  AppendString(FULL_CHAR *str);
 extern	FULL_CHAR *EndString(void);
 extern	FULL_CHAR *EchoLength(int len);
-extern	FULL_CHAR *Image(unsigned int c);
+// extern	FULL_CHAR *Image(unsigned int c);
 extern	void	  SetLengthDim(int dim);
 
 /*****	z27.c	  Debug Service		**************************************/
@@ -3483,8 +3499,7 @@ extern	BOOLEAN	  ErrorSeen(void);
 extern	void	  EnterErrorBlock(BOOLEAN ok_to_print);
 extern	void	  LeaveErrorBlock(BOOLEAN commit);
 extern	void	  CheckErrorBlocks(void);
-extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype,
-		    FILE_POS *pos, ...);
+// extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS *pos, ...);
 
 /*****  z29.c	  Symbol Table		**************************************/
 extern	void	  InitSym(void);
@@ -3522,23 +3537,6 @@ extern	void	  FlattenUses(void);
 extern	BOOLEAN	  SearchUses(OBJECT x, OBJECT y);
 extern	OBJECT	  FirstExternTarget(OBJECT sym, OBJECT *cont);
 extern	OBJECT	  NextExternTarget(OBJECT sym, OBJECT *cont);
-
-/*****  z31.c	  Memory Allocator	**************************************/
-extern	void	  DebugRegisterUsage(int typ, int delta_num, int delta_size);
-extern	void	  DebugMemory(void);
-extern	void	  MemInit(void);
-extern	OBJECT	  GetMemory(int siz, FILE_POS *pos);
-extern	OBJECT	  zz_free[];
-extern	unsigned char	zz_lengths[];
-extern	int	  zz_newcount;
-extern	int	  zz_disposecount;
-extern	int	  zz_listcount;
-extern	OBJECT	  zz_hold;
-extern	OBJECT	  zz_tmp;
-extern	OBJECT	  zz_res;
-extern	int	  zz_size;
-extern	OBJECT	  xx_link, xx_tmp;
-extern	OBJECT	  xx_hold, xx_res;
 
 /*****  z32.c	  Counter Service           **********************************/
 extern	OBJECT	  Next(OBJECT x, int inc, BOOLEAN *done);
@@ -3617,7 +3615,7 @@ extern	BOOLEAN	  MapIsLowerCase(FULL_CHAR ch, MAPPING m);
 
 
 /*****  z39.c	  String Handler        **************************************/
-#define		  AsciiToFull(x)	( (FULL_CHAR *) (x) )
+/* #define		  AsciiToFull(x)	( (FULL_CHAR *) (x) ) */
 #define		  StringEqual(a, b)	(strcmp((char *)(a), (char *)(b))==0)
 extern int	  strcollcmp(char *a, char *b);
 #define		  TabbedStringLessEqual(a, b) \
@@ -3766,16 +3764,6 @@ extern	FULL_CHAR *TextureCommand(TEXTURE_NUM pnum);
 /*                                                                           */
 /*****************************************************************************/
 
-#if ASSERT_ON
-#define assert(c, m)							\
-   { if( !(c) )  Error(1, 2, "assert failed in %s", INTERN, no_fpos, m); }
-#define assert1(c, m, p1)						\
-   { if( !(c) )  Error(1, 3, "assert failed in %s %s", INTERN,no_fpos,m, p1); }
-#else
-#define assert(c, m)
-#define assert1(c, m, p1)
-#endif
-
 #if DEBUG_ON
 
 struct dbs
@@ -3909,3 +3897,5 @@ extern	struct dbs 	dbg[];
 #define	debug_init(str)	Error(1, 4, "%s - debug flags not implemented", \
 	FATAL, no_fpos, str)
 #endif
+
+#include "inlines.h"

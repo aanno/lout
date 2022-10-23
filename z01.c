@@ -24,12 +24,14 @@
 /*                                                                           */
 /*  FILE:         z01.c                                                      */
 /*  MODULE:       Supervise                                                  */
-/*  EXTERNS:      main(), StartSym, GalleySym, ForceGalleySym, InputSym,     */
+/*  EXTERNS:      StartSym, GalleySym, ForceGalleySym, InputSym,     */
 /*                PrintSym, AllowCrossDb                                     */
 /*                                                                           */
 /*****************************************************************************/
 #include "externs.h"
 #include <signal.h>
+// for main1
+#include <string.h>
 
 /* On DOS/Win32 we need to set binary mode on stdout (Uwe) */
 #if OS_DOS
@@ -239,7 +241,7 @@ typedef enum {
   BE_PDF
 } BE_TYPE;
 
-static void run(int argc, char *argv[], int run_num, int *runs_to_do,
+void run(int argc, char *argv[], int run_num, int *runs_to_do,
   FULL_CHAR *lib)
 { int i, len;  FULL_CHAR *arg;
   OBJECT t, y, res, s;			/* current token, parser output      */
@@ -938,7 +940,7 @@ static void run(int argc, char *argv[], int run_num, int *runs_to_do,
 /*                                                                           */
 /*****************************************************************************/
 
-int main(int argc, char *argv[])
+int main2(int argc, char *argv[])
 { 
   FULL_CHAR *lib;			/* name of library directory         */
   int run_num, runs_to_do;
@@ -980,3 +982,24 @@ int main(int argc, char *argv[])
   exit(0);
   return 0;
 } /* end main */
+
+int main1(char* all_in_one) {
+  printf("hello, world\n");
+  printf("%100s\n", all_in_one);
+  int size = 0;
+  char* argv[100];
+  char* pch = strtok(all_in_one," \t");
+  while (pch != NULL && size < 100)
+  {
+    argv[size++] = pch;
+    pch = strtok(NULL, " \t");
+  }
+  --size;
+  for(int i = 0; i <= size; ++i) {
+    printf("%i arg: %s\n", i, argv[i]);
+  }
+  int result = main2(size, argv);
+  // int result = main2(0, NULL);
+  exit(result);
+  return result;
+}
