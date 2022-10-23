@@ -66,7 +66,10 @@ void FilterInit(void)
 /*****************************************************************************/
 
 OBJECT FilterCreate(BOOLEAN use_begin, OBJECT act, FILE_POS *xfpos)
-{ FULL_CHAR buff[MAX_LINE];  FILE *fp;  OBJECT x, res, junk;
+{ FULL_CHAR buff[MAX_LINE];
+  FILE *fp;
+  #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+  OBJECT x, res, junk;
   debug3(DFH, D, "FilterCreate(%s, %s, %s)", bool(use_begin),
     SymName(act), EchoFilePos(xfpos));
   New(res, FILTERED);
@@ -90,7 +93,7 @@ OBJECT FilterCreate(BOOLEAN use_begin, OBJECT act, FILE_POS *xfpos)
   x = GetScopeSnapshot();
   if( has_body(act) )  PopScope();
   Link(res, x);
-  debug2(DFH, D, "FilterCreate returning %d %s", (int) res, EchoObject(res));
+  debug2(DFH, D, "FilterCreate returning %p %s", res, EchoObject(res));
   return res;
 } /* end FilterCreate */
 
@@ -108,7 +111,7 @@ void FilterSetFileNames(OBJECT x)
 { OBJECT y;
   assert( type(x) == FILTERED, "FilterSetFileNames: type(x)!" );
   assert( Down(x) != x, "FilterSetFileNames: x has no children!" );
-  debug2(DFH, D, "FilterSetFileNames(%d %s)", (int) x, EchoObject(x));
+  debug2(DFH, D, "FilterSetFileNames(%p %s)", x, EchoObject(x));
   Child(y, Down(x));
   assert( type(y) == WORD, "FilterSetFileNames: type(y)!" );
   sym_body(FilterInSym) = y;
@@ -133,7 +136,7 @@ OBJECT FilterExecute(OBJECT x, FULL_CHAR *command, OBJECT env)
 
   assert( type(x) == FILTERED, "FilterExecute: type(x)!" );
   assert( type(env) == ENV, "FilterExecute: type(env)!" );
-  debug4(DFH, D, "FilterExecute(%d %s, \"%s\", %s)", (int) x, EchoObject(x),
+  debug4(DFH, D, "FilterExecute(%p %s, \"%s\", %s)", x, EchoObject(x),
     command, EchoObject(env));
 
   /* reset FilterInSym since Manifest of @Filter is now complete */
@@ -200,7 +203,7 @@ OBJECT FilterExecute(OBJECT x, FULL_CHAR *command, OBJECT env)
 void FilterWrite(OBJECT x, FILE *fp, int *linecount)
 { FILE *in_fp;  OBJECT y;  int ch;
   assert( type(x) == FILTERED, "FilterWrite: type(x)!" );
-  debug2(DFH, D, "[ FilterWrite(%d %s, fp)", (int) x, EchoObject(x));
+  debug2(DFH, D, "[ FilterWrite(%p %s, fp)", x, EchoObject(x));
   Child(y, Down(x));
   in_fp = StringFOpen(string(y), READ_FILE);
   if( in_fp == NULL )
