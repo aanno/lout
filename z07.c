@@ -74,7 +74,8 @@ static void DisposeSplitObject(OBJECT x)
     /* find corresponding child link out of y and delete that link */
     for( link = Down(y), uplink = Up(y), i = 1;
          link != y && uplink != y && i < count;
-         link = NextDown(link), uplink = NextUp(uplink), i++ );
+         link = NextDown(link), uplink = NextUp(uplink), i++ )
+         ;
     assert( link != y && uplink != y, "DisposeSplitObject: link (a)!" );
     DisposeChild(link);
   }
@@ -87,7 +88,8 @@ static void DisposeSplitObject(OBJECT x)
     /* find corresponding child link out of y and delete that link */
     for( link = Down(y), uplink = Up(y), i = 1;
          link != y && uplink != y && i < count;
-         link = NextDown(link), uplink = NextUp(uplink), i++ );
+         link = NextDown(link), uplink = NextUp(uplink), i++ )
+         ;
     assert( link != y && uplink != y, "DisposeSplitObject: link (b)!" );
     DisposeChild(link);
   }
@@ -152,7 +154,7 @@ OBJECT MakeWord(unsigned typ, const FULL_CHAR *str, FILE_POS *pos)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2, FILE_POS *pos)
+OBJECT MakeWordTwo(unsigned typ, const FULL_CHAR *str1, const FULL_CHAR *str2, FILE_POS *pos)
 { int len1 = StringLength(str1);
   int len2 = StringLength(str2);
   OBJECT res;
@@ -176,7 +178,7 @@ OBJECT MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2, FILE_POS *pos
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT MakeWordThree(FULL_CHAR *s1, FULL_CHAR *s2, FULL_CHAR *s3)
+OBJECT MakeWordThree(const FULL_CHAR *s1, const FULL_CHAR *s2, const FULL_CHAR *s3)
 { int len1 = StringLength(s1);
   int len2 = StringLength(s2);
   int len3 = StringLength(s3);

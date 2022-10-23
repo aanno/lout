@@ -3443,11 +3443,11 @@ extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos,
 // extern	FILE_POS  *no_fpos;
 extern	void	  InitFiles(void);
 extern	void	  AddToPath(int fpath, OBJECT dirname);
-extern	FILE_NUM  DefineFile(FULL_CHAR *str, const FULL_CHAR *suffix,
+extern	FILE_NUM  DefineFile(const FULL_CHAR *str, const FULL_CHAR *suffix,
 		    FILE_POS *xfpos, int ftype, int fpath);
 extern	FILE_NUM  FirstFile(int ftype);
 extern	FILE_NUM  NextFile(FILE_NUM i);
-extern	FILE_NUM  FileNum(FULL_CHAR *str, FULL_CHAR *suffix);
+extern	FILE_NUM  FileNum(FULL_CHAR *str, const FULL_CHAR *suffix);
 extern	FILE_NUM  DatabaseFileNum(FILE_POS *xfpos);
 extern	FULL_CHAR *FileName(FILE_NUM fnum);
 extern	FULL_CHAR *FullFileName(FILE_NUM fnum);
@@ -3490,9 +3490,9 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 // extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 // extern	int	  DisposeObject(OBJECT x);
 extern	OBJECT	  MakeWord(unsigned typ, const FULL_CHAR *str, FILE_POS *pos);
-extern	OBJECT	  MakeWordTwo(unsigned typ, FULL_CHAR *str1, FULL_CHAR *str2,
+extern	OBJECT	  MakeWordTwo(unsigned typ, const FULL_CHAR *str1, const FULL_CHAR *str2,
 		    FILE_POS *pos);
-extern	OBJECT	  MakeWordThree(FULL_CHAR *s1, FULL_CHAR *s2, FULL_CHAR *s3);
+extern	OBJECT	  MakeWordThree(const FULL_CHAR *s1, const FULL_CHAR *s2, const FULL_CHAR *s3);
 extern	OBJECT	  CopyObject(OBJECT x, FILE_POS *pos);
 extern	OBJECT	  InsertObject(OBJECT x, OBJECT *ins, STYLE *style);
 extern	OBJECT	  Meld(OBJECT x, OBJECT y);
@@ -3788,10 +3788,10 @@ extern int	  strcollcmp(char *a, char *b);
 #define		  StringFPuts(a, b)	fputs( (char *) (a), (b) )
 #define		  StringRemove(a)	remove((char *)(a))
 #define		  StringRename(a, b)	rename((char *)(a),(char *)(b))
-extern	BOOLEAN	  StringBeginsWith(FULL_CHAR *str, FULL_CHAR *pattern);
-extern	BOOLEAN	  StringBeginsWithWord(FULL_CHAR *str, FULL_CHAR *pattern);
-extern	BOOLEAN	  StringEndsWith(FULL_CHAR *str, FULL_CHAR *pattern);
-extern	BOOLEAN	  StringContains(FULL_CHAR *str, FULL_CHAR *pattern);
+extern	BOOLEAN	  StringBeginsWith(FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringBeginsWithWord(FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringEndsWith(FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringContains(FULL_CHAR *str, const FULL_CHAR *pattern);
 extern	FULL_CHAR *StringInt(int i);
 extern	FULL_CHAR *StringFiveInt(int i);
 extern	FULL_CHAR *StringQuotedWord(OBJECT x);

@@ -247,8 +247,8 @@ void run(int argc, char *argv[], int run_num, int *runs_to_do,
   OBJECT t, y, res, s;			/* current token, parser output      */
   BOOLEAN stdin_seen;			/* TRUE when stdin file seen         */
   int source_file_count;		/* number of source files in command */
-  FULL_CHAR *cross_db;			/* name of cross reference database  */
-  FULL_CHAR *outfile;			/* name of output file               */
+  const FULL_CHAR *cross_db;			/* name of cross reference database  */
+  const FULL_CHAR *outfile;			/* name of output file               */
   FILE *out_fp;
   long MemCheckLong;
   FULL_CHAR oname[MAX_BUFF], oval[MAX_BUFF], buff[MAX_BUFF], *p;
