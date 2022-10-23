@@ -3706,7 +3706,7 @@ extern	OBJECT	  OldCrossDb;
 extern	OBJECT	  NewCrossDb;
 extern	void	  DbInit(void);
 extern	OBJECT	  DbCreate(OBJECT x);
-extern	void	  DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, FULL_CHAR *tag,
+extern	void	  DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, const FULL_CHAR *tag,
 		    FILE_POS *tagfpos, const FULL_CHAR *seq, FILE_NUM dfnum,
 		    long dfpos, int dlnum, BOOLEAN check);
 extern	void	  DbConvert(OBJECT db, BOOLEAN full_name);
