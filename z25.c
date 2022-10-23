@@ -48,7 +48,7 @@ static	FILE	*fp;			/* current output file               */
 /*                                                                           */
 /*****************************************************************************/
 
-static void cprint(FULL_CHAR *x)
+static void cprint(const FULL_CHAR *x)
 { col += StringLength(x);
   if( fp == null ) AppendString(x);
   else StringFPuts(x, fp);
@@ -115,7 +115,7 @@ static void newline(void)
 /*                                                                           */
 /*****************************************************************************/
 
-static int DiffChildrenParents(OBJECT x)
+static unsigned DiffChildrenParents(OBJECT x)
 {
   int pcount, ccount;
   OBJECT link;
@@ -142,11 +142,11 @@ static int DiffChildrenParents(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-static void echo(OBJECT x, unsigned outer_prec, int count)
+static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 { OBJECT link, y, tmp, sym, z;
-  char *op;  int prec, i, childcount, ycount;
+  char *op;  unsigned prec, i, childcount, ycount;
   BOOLEAN npar_seen, name_printed, lbr_printed, braces_needed;
-  int cpcount;
+  unsigned cpcount;
 
   switch( type(x) )
   {
@@ -251,7 +251,8 @@ static void echo(OBJECT x, unsigned outer_prec, int count)
 	cpcount = DiffChildrenParents(x);
 	printnum(cpcount);
 	aprint(" ");
-	for( i=0, link = Down(x);  link != x && i < count ;  link = NextDown(link), i++ );
+	for( i=0, link = Down(x);  link != x && i < count ;  link = NextDown(link), i++ )
+	;
 	if( link != x )
 	{ CountChild(y, link, count);
 	  echo(y, VCAT_PREC, count);
@@ -1058,12 +1059,12 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
   { Child(y, link);
     if( y == pinpt || link == pinpt )
     {
-      debug2(ANY, D, "++ %d %s ", (int) y, Image(type(y)));
+      debug2(ANY, D, "++ %p %s ", y, Image(type(y)));
       DebugObject(y);
     }
     else if( type(y) == GAP_OBJ )
     {
-      debug4(ANY, D, "| %d %-7s %20s %s", (int) y, "gap_obj",
+      debug4(ANY, D, "| %p %-7s %20s %s", y, "gap_obj",
 	Image(type(y)), EchoGap(&gap(y)));
     }
     else if( type(y) == EXPAND_IND )
@@ -1076,12 +1077,12 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
       }
       if( z == nilobj )
       {
-        debug4(ANY, D, "| %d %-7s %20s %s", (int) y, "index",
+        debug4(ANY, D, "| %p %-7s %20s %s", y, "index",
 	  Image(type(y)), Image(type(actual(y))));
       }
       else
       {
-        debug5(ANY, D, "| %d %-7s %20s %s \"%s\"", (int) y, "index",
+        debug5(ANY, D, "| %p %-7s %20s %s \"%s\"", y, "index",
 	  Image(type(y)), Image(type(actual(y))), string(z));
       }
       assert( type(actual(y)) == VEXPAND || type(actual(y)) == HEXPAND,
@@ -1089,12 +1090,12 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
     }
     else if( is_index(type(y)) )
     {
-      debug4(ANY, D, "| %d %-7s %20s %s", (int) y, "index",
+      debug4(ANY, D, "| %p %-7s %20s %s", y, "index",
 	Image(type(y)), "");
     }
     else if( is_definite(type(y)) )
     {
-      debug5(ANY, D, "| %d %-7s %20s %s width %s", (int) y, "def_obj",
+      debug5(ANY, D, "| %p %-7s %20s %s width %s", y, "def_obj",
 	Image(type(y)), is_word(type(y)) ? string(y):STR_EMPTY,
 	EchoLength(size(y, COLM)));
       if( size(y, COLM) > 25 * CM )
@@ -1106,12 +1107,12 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
     }
     else if( is_indefinite(type(y)) )
     {
-      debug4(ANY, D, "| %d %-7s %20s %s", (int) y, "indefin",
+      debug4(ANY, D, "| %p %-7s %20s %s", y, "indefin",
 	Image(type(y)), type(y) == CLOSURE ? SymName(actual(y)) : STR_EMPTY);
     }
     else
     {
-      debug4(ANY, D, "| %d %-7s %20s %s", (int) y, "unknown",
+      debug4(ANY, D, "| %p %-7s %20s %s", y, "unknown",
 	Image(type(y)), "");
     }
   }

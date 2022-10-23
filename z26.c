@@ -63,7 +63,7 @@ void BeginString(void)
 /*                                                                           */
 /*****************************************************************************/
 
-void AppendString(FULL_CHAR *str)
+void AppendString(const FULL_CHAR *str)
 { int len;
   assert(instring, "AppendString: no current string");
   assert( 0 <= curr && curr < MULTI, "BeginString: curr!" );

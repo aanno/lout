@@ -3637,7 +3637,7 @@ extern	void	  DebugGalley(OBJECT hd, OBJECT pinpt, int indent);
 
 /*****  z26.c	  Echo Service	        **************************************/
 extern	void	  BeginString(void);
-extern	void	  AppendString(FULL_CHAR *str);
+extern	void	  AppendString(const FULL_CHAR *str);
 extern	FULL_CHAR *EndString(void);
 extern	FULL_CHAR *EchoLength(int len);
 // extern	FULL_CHAR *Image(unsigned int c);
