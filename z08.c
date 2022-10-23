@@ -288,6 +288,7 @@ static OBJECT nenclose = nilobj;		/* constant nilobj enclose  */
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static OBJECT ManifestCat(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
 OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
 OBJECT *enclose, BOOLEAN fcr)
@@ -447,6 +448,7 @@ OBJECT *enclose, BOOLEAN fcr)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static OBJECT ManifestCase(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
 OBJECT fthr[2], OBJECT *target,  OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
 OBJECT *enclose, BOOLEAN fcr)
@@ -561,6 +563,7 @@ OBJECT *enclose, BOOLEAN fcr)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static OBJECT ManifestTg(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
 OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
 OBJECT *enclose, BOOLEAN fcr)
@@ -910,7 +913,10 @@ OBJECT *enclose, BOOLEAN fcr)
   OBJECT res = nilobj, res_env, res_env2, hold_env, hold_env2, z, prev;
   OBJECT link1, link2, x1, x2, y1, y2, vc, value_env, key, value;
   int i, par, num1, num2;  GAP res_gap;  unsigned res_inc;  STYLE new_style;
-  BOOLEAN done, multiline;  FULL_CHAR ch;  float scale_factor;
+  #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+  BOOLEAN done, multiline;
+  FULL_CHAR ch;
+  float scale_factor;
   static int depth = 0;
 #if DEBUG_ON
   static unsigned int debug_type[MAX_DEPTH];
@@ -1190,7 +1196,8 @@ OBJECT *enclose, BOOLEAN fcr)
 		/* if preceding object is a word, check for end sentence */
 		if( is_word(type(z)) )
 		{
-		  for( p = string(z);  *p != '\0';  p++ );
+		  for( p = string(z);  *p != '\0';  p++ )
+      ;
 		  debug4(DLS, DD, "  prev = %s, last = %c, LSE = %s, LWES = %s",
 		    EchoObject(z), *(p-1), bool(LanguageSentenceEnds[*(p-1)]),
 		    bool(LanguageWordEndsSentence(z, FALSE)));
@@ -1222,7 +1229,8 @@ OBJECT *enclose, BOOLEAN fcr)
 	        /* one extra space if preceding is word ending sentence */
 	        if( is_word(type(z)) )
 	        {
-		  for( p = string(z);  *p != '\0';  p++ );
+		  for( p = string(z);  *p != '\0';  p++ )
+      ;
 		  debug4(DLS, DD, "  prev = %s, last = %c, LSE = %s, LWES = %s",
 		      EchoObject(z), *(p-1), bool(LanguageSentenceEnds[*(p-1)]),
 		      bool(LanguageWordEndsSentence(z, TRUE)));
