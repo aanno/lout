@@ -301,8 +301,8 @@ void SpannerAvailableSpace(OBJECT y, int dim, FULL_LENGTH *resb,
 /*                                                                           */
 /*****************************************************************************/
 
-static FULL_CHAR *IndexType(OBJECT index)
-{ FULL_CHAR *res;
+static const FULL_CHAR *IndexType(OBJECT index)
+{ const FULL_CHAR *res;
   debug1(DVH, DD, "IndexType(%s)", Image(type(index)));
   switch( type(index) )
   {
@@ -373,8 +373,8 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
   debug2(DSF, DD, "[ MinSize( %s, %s, extras )", EchoObject(x), dimen(dim));
   debugcond4(DSF, D, dim == COLM && debug_depth++ < debug_depth_max,
-    "%*s[ MinSize(COLM, %s %d)", (debug_depth-1)*2, " ",
-    Image(type(x)), (int) x);
+    "%*s[ MinSize(COLM, %s %p)", (debug_depth-1)*2, " ",
+    Image(type(x)), x);
   ifdebug(DSF, DDD, DebugObject(x));
 
   switch( type(x) )
@@ -1367,8 +1367,8 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
   } /* end switch */
   debugcond6(DSF, D, dim == COLM && --debug_depth < debug_depth_max,
-    "%*s] MinSize(COLM, %s %d) = (%s, %s)", debug_depth*2, " ", Image(type(x)),
-    (int) x, EchoLength(back(x, dim)), EchoLength(fwd(x, dim)));
+    "%*s] MinSize(COLM, %s %p) = (%s, %s)", debug_depth*2, " ", Image(type(x)),
+    x, EchoLength(back(x, dim)), EchoLength(fwd(x, dim)));
   debug1(DSF, DD,  "] MinSize returning, x = %s", EchoObject(x));
   debug3(DSF, DD, "  (%s size is %s, %s)", dimen(dim),
 		EchoLength(back(x, dim)), EchoLength(fwd(x, dim)) );
