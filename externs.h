@@ -3469,8 +3469,8 @@ extern	OBJECT	  NewToken(unsigned char xtype, FILE_POS *xfpos,
 		    unsigned char xvspace, unsigned char xhspace,
 		    unsigned char xprec, OBJECT xactual);
 extern	OBJECT	  CopyTokenList(OBJECT x, FILE_POS *pos);
-extern	FULL_CHAR *EchoCatOp(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin);
-extern	FULL_CHAR *EchoToken(OBJECT x);
+extern	const FULL_CHAR *EchoCatOp(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin);
+extern	const FULL_CHAR *EchoToken(OBJECT x);
 
 /*****  z05.c	  Read Definitions  	**************************************/
 extern	void	  ReadPrependDef(unsigned typ, OBJECT encl);

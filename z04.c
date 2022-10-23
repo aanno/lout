@@ -82,7 +82,7 @@ OBJECT CopyTokenList(OBJECT x, FILE_POS *pos)
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_CHAR *EchoCatOp(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin)
+const FULL_CHAR *EchoCatOp(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin)
 { switch( xtype )
   {
     case VCAT:	return	(xmark ? xjoin ? KW_VCAT_MJ : KW_VCAT_MN
@@ -110,7 +110,7 @@ FULL_CHAR *EchoCatOp(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin)
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_CHAR *EchoToken(OBJECT x)
+const FULL_CHAR *EchoToken(OBJECT x)
 { switch( type(x) )
   {
     case WORD:
