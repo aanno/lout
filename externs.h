@@ -678,34 +678,26 @@ typedef struct
 #define	width(x)	(x).owidth
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
-( nobreak(x) = xnobreak, mark(x) = xmark, join(x) = xjoin,		\
-  units(x) = xunits, mode(x) = xmode, width(x) = xwidth			\
-)
-/*
-inline void SetGap(GAP x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
-  nobreak(x) = xnobreak;
-  mark(x) = xmark;
-  join(x) = xjoin;
-  units(x) = xunits;
-  mode(x) = xmode;
-  width(x) = xwidth;
+( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
+INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
+  nobreak(*x) = xnobreak;
+  mark(*x) = xmark;
+  join(*x) = xjoin;
+  units(*x) = xunits;
+  mode(*x) = xmode;
+  width(*x) = xwidth;
 }
-*/
 
 #define GapCopy(x, y)							\
-( nobreak(x) = nobreak(y), mark(x) = mark(y), join(x) = join(y),	\
-  units(x) = units(y), mode(x) = mode(y), width(x) = width(y)		\
-)
-/*
-inline void GapCopy(GAP x, GAP y) {
-    nobreak(x) = nobreak(y);
-    mark(x) = mark(y);
-    join(x) = join(y);
-    units(x) = units(y);
-    mode(x) = mode(y);
-    width(x) = width(y);
+( GapCopyOnRef( &(x), &(y) ) )
+INLINE void GapCopyOnRef(GAP* x, GAP* y) {
+    nobreak(*x) = nobreak(*y);
+    mark(*x) = mark(*y);
+    join(*x) = join(*y);
+    units(*x) = units(*y);
+    mode(*x) = mode(*y);
+    width(*x) = width(*y);
 }
-*/
 
 inline BOOLEAN GapEqual(GAP x, GAP y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
@@ -843,46 +835,39 @@ typedef struct
 #define	fc(x)		(x).ofc
 #define	sparec(x)	(x).osparec
 
-inline BOOLEAN constrained(CONSTRAINT x) {
+INLINE BOOLEAN constrained(CONSTRAINT x) {
     return bc(x) != MAX_FULL_LENGTH || bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH;
 }
 
-#define	SetConstraint(c,x,y,z)	(bc(c) = (x),   bfc(c) = (y),    fc(c) = (z))
-/*
-inline void SetConstraint(CONSTRAINT c, FULL_LENGTH x, FULL_LENGTH y, FULL_LENGTH z) {
-    bc(c) = (x);
-    bfc(c) = (y);
-    fc(c) = (z);
+#define	SetConstraint(c,x,y,z)	( SetConstraintOnRef(&(c), x, y, z) )
+INLINE void SetConstraintOnRef(CONSTRAINT* c, FULL_LENGTH x, FULL_LENGTH y, FULL_LENGTH z) {
+    bc(*c) = (x);
+    bfc(*c) = (y);
+    fc(*c) = (z);
 }
-*/
-#define	CopyConstraint(x, y)	(bc(x) = bc(y), bfc(x) = bfc(y), fc(x) = fc(y))
-/*
-inline void CopyConstraint(CONSTRAINT x, CONSTRAINT y) {
-    bc(x) = bc(y);
-    bfc(x) = bfc(y);
-    fc(x) = fc(y);
+
+#define	CopyConstraint(x, y)	( CopyConstraintOnRef( &(x), &(y)) )
+INLINE void CopyConstraintOnRef(CONSTRAINT* x, CONSTRAINT* y) {
+    bc(*x) = bc(*y);
+    bfc(*x) = bfc(*y);
+    fc(*x) = fc(*y);
 }
-*/
-#define	FlipConstraint(x, y)	(bc(x) = fc(y), bfc(x) = bfc(y), fc(x) = bc(y))
-/*
-inline void FlipConstraint(CONSTRAINT x, CONSTRAINT y) {
-    bc(x) = fc(y);
-    bfc(x) = bfc(y);
-    fc(x) = bc(y);
+
+#define	FlipConstraint(x, y)	( FlipConstraintOnRef( &(x), &(y)) )
+INLINE void FlipConstraintOnRef(CONSTRAINT* x, CONSTRAINT* y) {
+    bc(*x) = fc(*y);
+    bfc(*x) = bfc(*y);
+    fc(*x) = bc(*y);
 }
-*/
-#define FitsConstraint(b, f, c)	(b <= bc(c)  && b + f <= bfc(c) && f <= fc(c))
-/*
-inline BOOLEAN FitsConstraint(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT c) {
-    return b <= bc(c)  && b + f <= bfc(c) && f <= fc(c);
+
+#define FitsConstraint(b, f, c)	( FitsConstraintOnRef(b, f, &(c)) )
+INLINE BOOLEAN FitsConstraintOnRef(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT* c) {
+    return b <= bc(*c)  && b + f <= bfc(*c) && f <= fc(*c);
 }
-*/
-#define EqualConstraint(a, b) (bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b) )
-/*
-inline BOOLEAN EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
+
+INLINE BOOLEAN EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
     return bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b);
 }
-*/
 
 #define	ig_fnum(x)	bc(constraint(x))
 #define	ig_xtrans(x)	bfc(constraint(x))
