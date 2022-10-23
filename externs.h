@@ -3765,7 +3765,7 @@ extern	FULL_LENGTH FontGlyphWidth(FONT_NUM fnum, FULL_CHAR chr);
 extern	MAP_VEC	  MapTable[];
 extern	void	  MapInit(void);
 extern	MAPPING	  MapLoad(OBJECT filename, BOOLEAN recoded);
-extern	FULL_CHAR MapCharEncoding(FULL_CHAR *str, MAPPING m);
+extern	FULL_CHAR MapCharEncoding(const FULL_CHAR *str, MAPPING m);
 extern	FULL_CHAR *MapEncodingName(MAPPING m);
 extern	void	  MapPrintEncodings(void);
 extern	void	  MapEnsurePrinted(MAPPING m, int curr_page);

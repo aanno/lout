@@ -161,7 +161,7 @@ static	OBJECT		fd_recode;		/* @FontDef @Recode entry    */
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT load(FULL_CHAR *name, unsigned dtype, OBJECT encl, BOOLEAN compulsory)
+static OBJECT load(const FULL_CHAR *name, unsigned dtype, OBJECT encl, BOOLEAN compulsory)
 { OBJECT res;
   res = InsertSym(name, dtype, no_fpos, DEFAULT_PREC, FALSE, FALSE, 0, encl,
     MakeWord(WORD, STR_EMPTY, no_fpos));
@@ -1615,7 +1615,10 @@ FULL_LENGTH FontKernLength(FONT_NUM fnum, FULL_CHAR *unacc_map,
 /*****************************************************************************/
 
 void FontWordSize(OBJECT x)
-{ FULL_CHAR *p, *q, *a, *b, *lig, *unacc, *acc;  OBJECT tmp;
+{ 
+  #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+  FULL_CHAR *p, *q, *a, *b, *lig, *unacc, *acc;
+  OBJECT tmp;
   FULL_CHAR buff[MAX_BUFF];  MAPPING m;
   int r, u, d, ksize; struct metrics *fnt;
   debug2(DFT, DD, "FontWordSize( %s ), font = %d", string(x), word_font(x));
@@ -1910,6 +1913,7 @@ void FontPrintAll(FILE *fp)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 void FontPrintPageSetup(FILE *fp)
 { OBJECT face, first_size, ps_name, link;
   assert(font_root!=nilobj && type(font_root)==ACAT, "FontDebug: font_root!");
@@ -1941,6 +1945,7 @@ void FontPrintPageSetup(FILE *fp)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 void FontPrintPageResources(FILE *fp)
 { OBJECT face, ps_name, link, pface, pname, plink;
   BOOLEAN first;

@@ -286,7 +286,7 @@ MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_CHAR MapCharEncoding(FULL_CHAR *str, MAPPING m)
+FULL_CHAR MapCharEncoding(const FULL_CHAR *str, MAPPING m)
 { MAP_VEC map;
   map = MapTable[m];
   return (FULL_CHAR) NameRetrieve(str, map);

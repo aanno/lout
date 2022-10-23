@@ -58,7 +58,7 @@ typedef struct
 #define	dtab_item(S, i)	(S)->dbchecktab_item[i]
 
 #define hash(pos, sym, tag, S)						\
-{ FULL_CHAR *p = tag;							\
+{ const FULL_CHAR *p = tag;							\
   pos = (unsigned long) sym;						\
   while( *p ) pos += *p++;						\
   pos = pos % dtab_size(S);						\
@@ -117,7 +117,7 @@ static void dtab_insert(OBJECT x, DBCHECK_TABLE *S)
   Link(dtab_item(*S, pos), x);
 } /* end dtab_insert */
 
-static OBJECT dtab_retrieve(OBJECT sym, FULL_CHAR *tag, DBCHECK_TABLE S)
+static OBJECT dtab_retrieve(OBJECT sym, const FULL_CHAR *tag, DBCHECK_TABLE S)
 { OBJECT x, link, y;  unsigned long pos;
   hash(pos, sym, tag, S);
   x = dtab_item(S, pos);
