@@ -3458,7 +3458,7 @@ extern	FULL_CHAR *EchoFileSource(FILE_NUM fnum);
 extern	FULL_CHAR *EchoFileLine(FILE_POS *pos);
 extern	FILE_POS  *PosOfFile(FILE_NUM fnum);
 extern	FILE	  *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt);
-extern	FILE	  *OpenIncGraphicFile(FULL_CHAR *str, unsigned char typ,
+extern	FILE	  *OpenIncGraphicFile(const FULL_CHAR *str, unsigned char typ,
 		    OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed);
 extern	void	  FileSetUpdated(FILE_NUM fnum, int newlines);
 extern	int	  FileGetLineCount(FILE_NUM fnum);

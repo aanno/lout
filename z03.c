@@ -657,8 +657,8 @@ FILE_POS *PosOfFile(FILE_NUM fnum)
 /*                                                                           */
 /*****************************************************************************/
 
-static FILE *SearchPath(FULL_CHAR *str, OBJECT fpath, BOOLEAN check_ld,
-BOOLEAN check_lt, OBJECT *full_name, FILE_POS *xfpos, char *read_mode,
+static FILE *SearchPath(const FULL_CHAR *str, OBJECT fpath, BOOLEAN check_ld,
+BOOLEAN check_lt, OBJECT *full_name, FILE_POS *xfpos, const char *read_mode,
 BOOLEAN *used_source_suffix)
 { FULL_CHAR buff[MAX_BUFF], buff2[MAX_BUFF];
   OBJECT link, y = nilobj, cpath;  FILE *fp, *fp2;
@@ -841,7 +841,7 @@ FILE *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt)
 static char *compress_suffixes[MAX_COMPRESSED]
   = { ".gz", "-gz", ".z", "-z", "_z", ".Z" };
 
-FILE *OpenIncGraphicFile(FULL_CHAR *str, unsigned char typ,
+FILE *OpenIncGraphicFile(const FULL_CHAR *str, unsigned char typ,
 OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed)
 { FILE *fp = NULL;  int p, i;  BOOLEAN used_source_suffix;
   FULL_CHAR sort_name[128];  int sort_start = 0, sort_end = 0;
@@ -852,7 +852,7 @@ OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed)
   if (str[0] == '@')
   {
     /* parse @name@start:end */
-    int len = 0;
+    unsigned int len = 0;
     i = 1;
     while (str[i] != '\0' && str[i] != '@' && len < sizeof(sort_name) - 1)
     {
