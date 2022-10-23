@@ -3023,6 +3023,7 @@ INLINE void Dispose(OBJECT x) {
   )									\
 )
 /*
+not working!
 INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
     zz_res = (x);
     zz_hold = (y);
@@ -3120,19 +3121,12 @@ for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) )
 // from c07 headers below - but used here
 extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 
-#define Link(x, y)							\
-{ New(xx_link, LINK);							\
-  Append(xx_link, (x), CHILD);						\
-  Append(xx_link, (y), PARENT);						\
-}
-/*
 INLINE OBJECT Link(OBJECT x, OBJECT y) {
     OBJECT xx_link;
     New(xx_link, LINK);
     Append(xx_link, (x), CHILD);
     return Append(xx_link, (y), PARENT);
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3143,20 +3137,12 @@ INLINE OBJECT Link(OBJECT x, OBJECT y) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define DeleteLink(link)						\
-{ xx_link = (link);							\
-  Delete(xx_link, PARENT);						\
-  Delete(xx_link, CHILD);						\
-  Dispose(xx_link);							\
-}
-/*
 INLINE void DeleteLink(OBJECT link) {
     OBJECT xx_link = (link);
     Delete(xx_link, PARENT);
     Delete(xx_link, CHILD);
     Dispose(xx_link);
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3166,14 +3152,6 @@ INLINE void DeleteLink(OBJECT link) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define DisposeChild(link)						\
-{ xx_link = (link);							\
-  xx_tmp = Delete(xx_link, PARENT);					\
-  Delete(xx_link, CHILD);						\
-  Dispose(xx_link);							\
-  if( succ(xx_tmp, PARENT) == xx_tmp )  DisposeObject(xx_tmp);		\
-} /* end DisposeChild */
-/*
 INLINE void DisposeChild(OBJECT link) {
     OBJECT xx_link = (link);
     OBJECT xx_tmp = Delete(xx_link, PARENT);
@@ -3181,7 +3159,6 @@ INLINE void DisposeChild(OBJECT link) {
     Dispose(xx_link);
     if( succ(xx_tmp, PARENT) == xx_tmp )  DisposeObject(xx_tmp);
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3191,18 +3168,11 @@ INLINE void DisposeChild(OBJECT link) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define MoveLink(link, x, dir)						\
-( xx_link = (link),							\
-  Delete(xx_link, 1 - (dir) ),						\
-  Append(xx_link, (x), 1 - (dir) )					\
-) /* end MoveLink */
-/*
 INLINE OBJECT MoveLink(OBJECT link, OBJECT x, int dir) {
     OBJECT xx_link = (link);
     Delete(xx_link, 1 - (dir) );
     return Append(xx_link, (x), 1 - (dir) );
 }
-*/
 
 /*@::TransferLinks(), DeleteNode(), etc.@*************************************/
 /*                                                                           */
@@ -3213,25 +3183,15 @@ INLINE OBJECT MoveLink(OBJECT link, OBJECT x, int dir) {
 /*                                                                           */
 /*****************************************************************************/
 
-#define TransferLinks(start_link, stop_link, dest_link)			\
-{ OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;	\
-  if( xxstart != xxstop )						\
-  {	assert( type(xxstart) == LINK, "TransferLinks: start_link!" );	\
-	Append(xxstart, xxstop, CHILD); /* actually a split */		\
-	Append(xxstart, xxdest, CHILD);					\
-  }									\
-}
-/*
 INLINE void TransferLinks(OBJECT start_link, OBJECT stop_link, OBJECT dest_link) {
     OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;
     if( xxstart != xxstop )
     {
         assert( type(xxstart) == LINK, "TransferLinks: start_link!" );	\
-        Append(xxstart, xxstop, CHILD); / actually a split /
+        Append(xxstart, xxstop, CHILD); /* actually a split */
         Append(xxstart, xxdest, CHILD);
     }
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
