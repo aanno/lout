@@ -707,16 +707,10 @@ inline void GapCopy(GAP x, GAP y) {
 }
 */
 
-#define GapEqual(x, y)							\
-( nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)	\
-  && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y)	\
-)
-/*
 inline BOOLEAN GapEqual(GAP x, GAP y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
              && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -849,13 +843,9 @@ typedef struct
 #define	fc(x)		(x).ofc
 #define	sparec(x)	(x).osparec
 
-#define	constrained(x)	(bc(x) != MAX_FULL_LENGTH ||			\
-			 bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH)
-/*
 inline BOOLEAN constrained(CONSTRAINT x) {
     return bc(x) != MAX_FULL_LENGTH || bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH;
 }
-*/
 
 #define	SetConstraint(c,x,y,z)	(bc(c) = (x),   bfc(c) = (y),    fc(c) = (z))
 /*
@@ -2342,59 +2332,33 @@ typedef enum objtyp {
     DISPOSED,       /* 159        a disposed record          */
 } OBJTYPE;
 
-#define is_indefinite(x)  ((x) >= CLOSURE && (x) <= HEAD)
-/*
 inline BOOLEAN is_indefinite(OBJTYPE x) {
     return (x) >= CLOSURE && x <= HEAD;
 }
-*/
-#define is_header(x)  ((x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER)
-/*
 inline BOOLEAN is_header(OBJTYPE x) {
     return (x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER;
 }
-*/
-#define is_definite(x) 	 ((x) >= SPLIT && (x) <= LINK_URL)
-/*
 inline BOOLEAN is_definite(OBJTYPE x) {
     return (x) >= SPLIT && (x) <= LINK_URL;
 }
-*/
-#define	is_par(x)	((x) >= LPAR   && (x) <= RPAR)
-/*
 inline BOOLEAN is_par(OBJTYPE x) {
     return (x) >= LPAR && (x) <= RPAR;
 }
-*/
-#define	is_index(x)	((x) >= DEAD && (x) <= EXPAND_IND)
-/*
 inline BOOLEAN is_index(OBJTYPE x) {
     return (x) >= DEAD && (x) <= EXPAND_IND;
 }
-*/
-#define	is_type(x)	((x) >= LINK && (x) < DISPOSED)
-/*
 inline BOOLEAN is_type(OBJTYPE x) {
     return (x) >= LINK && (x) < DISPOSED;
 }
-*/
-#define	is_word(x)	((x) == WORD || (x) == QWORD)
-/*
 inline BOOLEAN is_word(OBJTYPE x) {
     return (x) == WORD || (x) == QWORD;
 }
-*/
-#define	is_cross(x)	((x) == CROSS || (x) == FORCE_CROSS)
-/*inline BOOLEAN is_cross(OBJTYPE x) {
+inline BOOLEAN is_cross(OBJTYPE x) {
     return (x) == CROSS || (x) == FORCE_CROSS;
 }
-*/
-#define is_cat_op(x)    (((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA)
-/*
 inline BOOLEAN is_cat_op(OBJTYPE x) {
     return ((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA;
 }
-*/
 
 
 /*@::miscellaneous constants@*************************************************/
