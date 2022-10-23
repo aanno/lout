@@ -444,7 +444,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
 OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 { OBJECT link, y;  CONSTRAINT yc;  FULL_LENGTH f;  BOOLEAN junk;
   debugcond4(DOB, D, debug_depth++ < debug_depth_max,
-    "%*s[ BreakObject(%s %d)", (debug_depth-1)*2, " ", Image(type(x)), (int) x);
+    "%*s[ BreakObject(%s %p)", (debug_depth-1)*2, " ", Image(type(x)), x);
   debug4(DOB, DD,  "[ BreakObject(%s (%s,%s),  %s), x =",
     Image(type(x)), EchoLength(back(x, COLM)), EchoLength(fwd(x, COLM)),
     EchoConstraint(c));
@@ -461,8 +461,8 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     DisposeObject(x);
     x = y;
     debugcond6(DOB, D, --debug_depth < debug_depth_max,
-      "%*s] BreakObject(%s %d) (neg!) = (%s, %s)", debug_depth*2, " ",
-      Image(type(x)), (int) x, EchoLength(back(x, COLM)),
+      "%*s] BreakObject(%s %p) (neg!) = (%s, %s)", debug_depth*2, " ",
+      Image(type(x)), x, EchoLength(back(x, COLM)),
       EchoLength(fwd(x, COLM)));
     debug0(DOB, DD, "] BreakObject returning (negative constraint).");
     return x;
@@ -472,8 +472,8 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
   if( FitsConstraint(back(x, COLM), fwd(x, COLM), *c) )
   { debug0(DOB, DD, "] BreakObject returning (fits).");
     debugcond6(DOB, D, --debug_depth < debug_depth_max,
-      "%*s] BreakObject(%s %d) (fits) = (%s, %s)", debug_depth*2, " ",
-      Image(type(x)), (int) x, EchoLength(back(x, COLM)),
+      "%*s] BreakObject(%s %p) (fits) = (%s, %s)", debug_depth*2, " ",
+      Image(type(x)), x, EchoLength(back(x, COLM)),
       EchoLength(fwd(x, COLM)));
     return x;
   }
@@ -803,8 +803,8 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
   assert( back(x, COLM) >= 0, "BreakObject: back(x, COLM) < 0!" );
   assert( fwd(x, COLM) >= 0, "BreakObject: fwd(x, COLM) < 0!" );
   debugcond6(DOB, D, --debug_depth < debug_depth_max,
-    "%*s] BreakObject(%s %d) = (%s, %s)", debug_depth*2, " ", Image(type(x)),
-    (int) x, EchoLength(back(x, COLM)), EchoLength(fwd(x, COLM)));
+    "%*s] BreakObject(%s %p) = (%s, %s)", debug_depth*2, " ", Image(type(x)),
+    x, EchoLength(back(x, COLM)), EchoLength(fwd(x, COLM)));
   debug2(DOB, DD,  "] BreakObject returning %s,%s, x =",
     EchoLength(back(x, COLM)), EchoLength(fwd(x, COLM)));
   ifdebug(DOB, DD,  DebugObject(x));
