@@ -326,7 +326,7 @@ void ClearScopeSnapshot(OBJECT ss)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT InsertSym(FULL_CHAR *str, unsigned char xtype, FILE_POS *xfpos,
+OBJECT InsertSym(const FULL_CHAR *str, unsigned char xtype, FILE_POS *xfpos,
 unsigned char xprecedence, BOOLEAN xindefinite, BOOLEAN xrecursive,
 unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
 { register int sum, rlen;

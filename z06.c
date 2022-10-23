@@ -711,7 +711,7 @@ void SetScope(OBJECT env, int *count, BOOLEAN vis_only)
 /*                                                                           */
 /*****************************************************************************/
 
-void InitParser(FULL_CHAR *cross_db)
+void InitParser(const FULL_CHAR *cross_db)
 {
   otop = -1;
   ttop = -1;

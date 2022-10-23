@@ -110,7 +110,7 @@ int TotalWordCount;
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT load(FULL_CHAR *xstr, unsigned xpre,
+static OBJECT load(const FULL_CHAR *xstr, unsigned xpre,
 BOOLEAN xleft, BOOLEAN xright, BOOLEAN xindef, unsigned char xprec)
 { OBJECT s;
   s = InsertSym(xstr, LOCAL, no_fpos, xprec, xindef, FALSE, xpre,

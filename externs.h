@@ -3482,7 +3482,7 @@ extern	void	  ReadDefinitions(OBJECT *token, OBJECT encl,
 /*****  z06.c	  Object Parser	        **************************************/
 extern	BOOLEAN	  InDefinitions;
 extern	void	  SetScope(OBJECT env, int *count, BOOLEAN vis_only);
-extern	void	  InitParser(FULL_CHAR *cross_db);
+extern	void	  InitParser(const FULL_CHAR *cross_db);
 extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 		    BOOLEAN transfer_allowed);
 
@@ -3676,7 +3676,7 @@ extern	void	  BodyParNotAllowed(void);
 extern	OBJECT	  GetScopeSnapshot(void);
 extern	void	  LoadScopeSnapshot(OBJECT ss);
 extern	void	  ClearScopeSnapshot(OBJECT ss);
-extern	OBJECT	  InsertSym(FULL_CHAR *str, unsigned char xtype,
+extern	OBJECT	  InsertSym(const FULL_CHAR *str, unsigned char xtype,
 		    FILE_POS *xfpos, unsigned char xprecedence,
 		    BOOLEAN xindefinite, BOOLEAN xrecursive,
 		    unsigned xpredefined, OBJECT xenclosing, OBJECT xbody);
@@ -3788,10 +3788,10 @@ extern int	  strcollcmp(char *a, char *b);
 #define		  StringFPuts(a, b)	fputs( (char *) (a), (b) )
 #define		  StringRemove(a)	remove((char *)(a))
 #define		  StringRename(a, b)	rename((char *)(a),(char *)(b))
-extern	BOOLEAN	  StringBeginsWith(FULL_CHAR *str, const FULL_CHAR *pattern);
-extern	BOOLEAN	  StringBeginsWithWord(FULL_CHAR *str, const FULL_CHAR *pattern);
-extern	BOOLEAN	  StringEndsWith(FULL_CHAR *str, const FULL_CHAR *pattern);
-extern	BOOLEAN	  StringContains(FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringBeginsWith(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringBeginsWithWord(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN	  StringContains(const FULL_CHAR *str, const FULL_CHAR *pattern);
 extern	FULL_CHAR *StringInt(int i);
 extern	FULL_CHAR *StringFiveInt(int i);
 extern	FULL_CHAR *StringQuotedWord(OBJECT x);
