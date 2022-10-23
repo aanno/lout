@@ -478,12 +478,12 @@ static BOOLEAN g_valid_text_matrix;	/* true when BT...ET block open */
 
 /* expressions */
 static int g_expr_depth = 0;
-static int g_expr_index;
+static size_t g_expr_index;
 static t_tempbuf g_expr;
 
 /* links */
 static int g_link_depth = 0;
-static int g_link_index;
+static size_t g_link_index;
 static t_tempbuf g_link;
 static PDF_LINK_KEYWORD g_link_keyword;
 
@@ -1039,6 +1039,7 @@ static PDF_OBJECT_NUM PDFFont_FindFontEncoding(
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 void PDFFont_AddFont(FILE* in_fp, const FULL_CHAR* in_short_font_name,
   const FULL_CHAR* in_real_font_name, const FULL_CHAR* in_font_encoding_name)
 {
@@ -1760,6 +1761,7 @@ void PDFText_Kern(FILE* in_fp, int in_kern)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 void PDFText_Close(FILE* in_fp)
 {
   /* PDFPage_Begin(in_fp); - shouldn't be needed */
@@ -2267,7 +2269,7 @@ static FULL_CHAR *PDFPage_GetFloat(FULL_CHAR* in_str, float* out_value)
 /*                                                                           */
 /*****************************************************************************/
 
-static int PDFKeyword_Find(int in_number_of_array_elements,
+static int PDFKeyword_Find(unsigned in_number_of_array_elements,
   char* in_keyword_array[], FULL_CHAR* in_str)
 {
   unsigned int i;
@@ -2790,6 +2792,7 @@ static FULL_CHAR *PDFPage_CollectExpr(FULL_CHAR* charPtr, BOOLEAN* outHasResult,
       if (g_expr_depth == 0)
       {
 	g_expr[g_expr_index] = '\0';	/* terminate the string */
+  #pragma clang diagnostic ignored "-Wunused-value"
 	(char*) PDFPage_EvalExpr(g_expr, outResult);
 	*outHasResult = TRUE;
 	break;	/* exit while */
@@ -3435,7 +3438,7 @@ static void PDFFile_WritePagesObject(FILE* in_fp)
 
 static PDF_FILE_OFFSET PDFFile_WriteXREF(FILE* in_fp)
 {
-  int i;
+  PDF_OBJECT_NUM i;
   PDF_FILE_OFFSET xref_start;
   t_offset_block_ptr the_block = g_obj_offset_list;
 
@@ -3579,7 +3582,7 @@ void PDFFile_Cleanup(FILE* in_fp)
   form, this is the name of the application that created the original document.
   Producer string (Optional) The name of the application that converted the document from its native
   format to PDF.
-  Title string (Optional) The documentÕs title.
+  Title string (Optional) The documentï¿½s title.
   Subject string (Optional) The subject of the document.
   Keywords string (Optional) Keywords associated with the document.
 

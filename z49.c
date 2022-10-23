@@ -116,7 +116,7 @@ static void SetBaseLineMarkAndFont(BOOLEAN blm, FONT_NUM f)
     if( currentfont != NO_FONT )
     {
       currentxheight2 = currentbaselinemark ? 0 : FontHalfXHeight(currentfont);
-      fprintf(out_fp, "%hd %s", FontSize(currentfont, nilobj),
+      fprintf(out_fp, "%d %s", FontSize(currentfont, nilobj),
         FontName(currentfont));
       if( ++wordcount >= 5 )
       { pnl;
@@ -277,6 +277,7 @@ static OBJECT ltab_retrieve(FULL_CHAR *str, LINK_DEST_TABLE S)
 } /* end ltab_retrieve */
 
 #if DEBUG_ON
+#pragma clang diagnostic ignored "-Wunused-function"
 static void ltab_debug(LINK_DEST_TABLE S, FILE *fp)
 { int i;  OBJECT x, link, y;
   fprintf(fp, "  table size: %d;  current number of keys: %d%s",
@@ -356,6 +357,7 @@ static void PS_PrintInitialize(FILE *fp, BOOLEAN enc)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_PrintLength(FULL_CHAR *buff, int length, int length_dim)
 {
   sprintf( (char *) buff, "%.3fc", (float) length/CM);
@@ -1117,7 +1119,11 @@ static void PS_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
 
   /* print one PostScript form for each @IncludeGraphicRepeated entry */
   if( incg_files != nilobj )
-  { int fnum;  FILE *fp;  BOOLEAN junk, cp;  OBJECT link, x, full_name;
+  { int fnum;
+    FILE *fp;
+    #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+    BOOLEAN junk, cp;
+    OBJECT link, x, full_name;
     p0("<< /MaxFormItem currentsystemparams /MaxFormCache get >> setuserparams");
     pnl;
     fnum = 1;
@@ -1318,7 +1324,7 @@ static void PrintComposite(COMPOSITE *cp, BOOLEAN outline, FILE *fp)
 { debug1(DPO, DD, "PrintComposite(cp, %s, fp)", bool(outline));
   while( cp->char_code != '\0' )
   {
-    debug4(DPO, DD, "  cp = %d printing code %d (%d, %d)", (int) cp,
+    debug4(DPO, DD, "  cp = %p printing code %d (%d, %d)", cp,
       cp->char_code, cp->x_offset, cp->y_offset);
     fprintf(fp, "%d %d (%c)%s ", cp->x_offset, cp->y_offset,
       cp->char_code, outline ? "co" : "c");
@@ -1449,6 +1455,7 @@ static void PS_PrintWord(OBJECT x, int hpos, int vpos)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_PrintPlainGraphic(OBJECT x, FULL_LENGTH xmk,
   FULL_LENGTH ymk, OBJECT z)
 {
@@ -2133,85 +2140,109 @@ BACK_END PS_BackEnd = &ps_back;
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintInitialize(FILE *fp, BOOLEAN enc)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintPageSetupForFont(OBJECT face, int font_curr_page,
   FULL_CHAR *font_name, FULL_CHAR *short_name)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintPageResourceForFont(FULL_CHAR *font_name,
   BOOLEAN first)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintMapping(MAPPING m)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
   FULL_CHAR *label)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintAfterLastPage(void)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintWord(OBJECT x, int hpos, int vpos)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintPlainGraphic(OBJECT x, FULL_LENGTH xmk,
   FULL_LENGTH ymk, OBJECT z)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintUnderline(FONT_NUM fnum, COLOUR_NUM col,
   TEXTURE_NUM pat, FULL_LENGTH xstart, FULL_LENGTH xstop, FULL_LENGTH ymk)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullCoordTranslate(FULL_LENGTH xdist, FULL_LENGTH ydist)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullCoordRotate(FULL_LENGTH amount)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullCoordScale(float hfactor, float vfactor)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullCoordHMirror(void)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullCoordVMirror(void)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullSaveGraphicState(OBJECT x)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullRestoreGraphicState(void)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintGraphicObject(OBJECT x)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullDefineGraphicNames(OBJECT x)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullSaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
   FULL_LENGTH ydist)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintGraphicInclude(OBJECT x, FULL_LENGTH colmark,
   FULL_LENGTH rowmark)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullLinkSource(OBJECT name, FULL_LENGTH llx, FULL_LENGTH lly,
   FULL_LENGTH urx, FULL_LENGTH ury)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullLinkDest(OBJECT name, FULL_LENGTH llx, FULL_LENGTH lly,
   FULL_LENGTH urx, FULL_LENGTH ury)
 {}
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullLinkURL(OBJECT url, FULL_LENGTH llx, FULL_LENGTH lly,
   FULL_LENGTH urx, FULL_LENGTH ury)
 {}
