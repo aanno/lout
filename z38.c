@@ -59,7 +59,7 @@
 MAP_VEC	MapTable[MAX_MAP];		/* the mappings                      */
 
 static	OBJECT	notdef_word;		/* notdef word                       */
-static	int	maptop;			/* first free slot in MapTable[]     */
+static	MAPPING	maptop;			/* first free slot in MapTable[]     */
 					/* save 0 for "no mapping"           */
 
 
@@ -86,12 +86,12 @@ void MapInit(void)
 /*****************************************************************************/
 
 #define hash(str, pos)							\
-{ FULL_CHAR *p = str;							\
+{ const FULL_CHAR *p = str;							\
   for( pos = 2 * *p++;  *p;  pos += *p++);				\
   pos = pos % MAX_CHASH;						\
 }
 
-static void NameInsert(FULL_CHAR *cname, int ccode, MAP_VEC map)
+static void NameInsert(const FULL_CHAR *cname, int ccode, MAP_VEC map)
 { int pos;
   hash(cname, pos);
   while( map->hash_table[pos] != (FULL_CHAR) '\0' )
@@ -100,7 +100,7 @@ static void NameInsert(FULL_CHAR *cname, int ccode, MAP_VEC map)
   map->hash_table[pos] = ccode;
 } /* end NameInsert */
 
-static FULL_CHAR NameRetrieve(FULL_CHAR *cname, MAP_VEC map)
+static FULL_CHAR NameRetrieve(const FULL_CHAR *cname, MAP_VEC map)
 { int pos;  FULL_CHAR ch;
   hash(cname, pos);
   while( (ch = map->hash_table[pos]) != (FULL_CHAR) '\0' )
@@ -205,6 +205,8 @@ MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
     if( count < 2 )
       Error(38, 4, "character code(s) missing in mapping file (line %d)",
 	FATAL, &fpos(file_name), curr_line_num);
+    // Extremely delicate to change types the right way! Always test after trying!
+    #pragma clang diagnostic ignored "-Wsign-compare"
     if( dc != oc )
       Error(38, 5, "decimal and octal codes disagree in mapping file (line %d)",
 	FATAL, &fpos(file_name), curr_line_num);
