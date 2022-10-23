@@ -408,7 +408,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  }
 	  Child(tmp, Down(z));
 	  debug2(DGA, D, "SizeGalley %s%s", actual(tmp) == NULL ? "null" :
-	    SymName(actual(tmp)), after_target ? " (after_target)" : "");
+	    (char*) SymName(actual(tmp)), after_target ? " (after_target)" : "");
 	  break;
 
 		

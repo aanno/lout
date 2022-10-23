@@ -1376,7 +1376,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       assert( (type(x) == COL_THR) == (dim == COLM), "FixAndPrintObject: thr!" );
       for( link = Down(x), uplink = Up(x), i = 1;
 	link != x && uplink != x && i < count;
-	link = NextDown(link), uplink = NextUp(uplink), i++ );
+	link = NextDown(link), uplink = NextUp(uplink), i++ )
+	;
       assert( link != x && uplink != x, "FixAndPrintObject: link or uplink!" );
       CountChild(y, link, count);
       debug7(DGP, DD, "  fapo of %s (%s,%s) child %d %s (%s,%s)",

@@ -756,8 +756,8 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  if( !FitsConstraint(back(z, dim), fwd(z, dim), c) )
 	  { BOOLEAN scaled;
 
-	    debug2(DGA, DD, "  why     = %d %s", (int) why, EchoObject(why));
-	    debug2(DGA, DD, "  limiter = %d %s", (int) limiter(hd),
+	    debug2(DGA, DD, "  why     = %p %s", why, EchoObject(why));
+	    debug2(DGA, DD, "  limiter = %p %s", limiter(hd),
 	      EchoObject(limiter(hd)));
 
 	    /* if forcing galley doesn't fit, try scaling z */
@@ -784,8 +784,8 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    if( !scaled )
 	    { char num1[20], num2[20];
 	      limiter(hd) = why;
-	      debug3(DGA, D, "  set limiter(%s) = %d %s", SymName(actual(hd)),
-		(int) limiter(hd), EchoObject(limiter(hd)));
+	      debug3(DGA, D, "  set limiter(%s) = %p %s", SymName(actual(hd)),
+		limiter(hd), EchoObject(limiter(hd)));
 	      debug3(DGA, D, "  reject: size was %s,%s in %s; y =",
 		EchoLength(back(z, dim)), EchoLength(fwd(z, dim)),
 		EchoConstraint(&c));
@@ -804,8 +804,8 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    }
 	  }
 	  limiter(hd) = why;
-	  debug3(DGA, DD, "  set limiter(%s) = %d %s", SymName(actual(hd)),
-	    (int) limiter(hd), EchoObject(limiter(hd)));
+	  debug3(DGA, DD, "  set limiter(%s) = %p %s", SymName(actual(hd)),
+	    limiter(hd), EchoObject(limiter(hd)));
 
 	  /* now check perpendicular space for target_galley in target */
 	  Constrained(target, &c, 1-dim, &junk);
