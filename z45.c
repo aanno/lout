@@ -269,10 +269,10 @@ LINE *ReadLines(FILE *fp, FULL_CHAR *fname, FULL_CHAR *first_line, int *len)
   *lp++ = bp;
   while( (ch = getc(fp)) != EOF )
   {
-    debug4(DEX, DD, "lines: [%d  %d(%d)  %d]",
-      (int) lines, (int) (lp-1), (int) *(lp-1), (int) lines_top -1);
-    debug3(DEX, DD, " buff: [%d   bp %d   %d]",
-      (int) buff, (int) bp, (int) buff_top - 1);
+    debug4(DEX, DD, "lines: [%p  %p(%p)  %p]",
+      lines, (lp-1), *(lp-1), lines_top -1);
+    debug3(DEX, DD, " buff: [%p   bp %p   %p]",
+      buff, bp, buff_top - 1);
     assert( (long) buff >= (long) lines_top ||
 	    (long) buff_top <= (long) lines,
 	    "ReadLines: lines and buff overlap!" );

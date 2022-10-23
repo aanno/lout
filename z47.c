@@ -92,7 +92,7 @@ void EnvInit(void)
 
 BOOLEAN EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset, int *lnum)
 { unsigned int pos;  OBJECT link, y, z;
-  debug2(DET, DD, "EnvWriteRetrieve(env %d, %s)", (int) env, FileName(fnum));
+  debug2(DET, DD, "EnvWriteRetrieve(env %p, %s)", env, FileName(fnum));
   debug1(DET, DDD, "  %s", EchoObject(env));
   stat_writes++;
   hash1(pos, env, fnum);
@@ -128,7 +128,7 @@ BOOLEAN EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset, int *lnum)
 
 void EnvWriteInsert(OBJECT env, FILE_NUM fnum, int offset, int lnum)
 { unsigned int pos;  OBJECT loser, x;
-  debug3(DET, DD, "EnvWriteInsert(env %d, %s, %d)", (int) env,
+  debug3(DET, DD, "EnvWriteInsert(env %p, %s, %d)", env,
     FileName(fnum), offset);
 
   /* to limit the cache size, remove least recently used entry if full */
@@ -181,7 +181,7 @@ BOOLEAN EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env)
       { MoveLink(LastUp(y), env_cache, PARENT);
 	Child(*env, Down(y));
 	stat_read_hits++;
-        debug1(DET, DD, "EnvReadRetrieve returning env %d", (int) *env);
+        debug1(DET, DD, "EnvReadRetrieve returning env %p", *env);
 	  return TRUE;
       }
     }
@@ -202,8 +202,8 @@ BOOLEAN EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env)
 
 void EnvReadInsert(FILE_NUM fnum, int offset, OBJECT env)
 { int pos; OBJECT x, loser;
-  debug3(DET, DD, "EnvReadInsert(%s, %d, env %d)",
-    FileName(fnum), offset, (int) env);
+  debug3(DET, DD, "EnvReadInsert(%s, %d, env %p)",
+    FileName(fnum), offset, env);
 
   /* to limit the cache size, remove least recently used entry if full */
   if( cache_count >= MAX_CACHE )

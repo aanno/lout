@@ -407,6 +407,7 @@ void CalculateOptimize(OBJECT hd)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-function"
 static void DebugOptimizedAcat(OBJECT x)
 { OBJECT link, y;
   assert( type(x) == ACAT, "DebugOptimizedAcat!" );
