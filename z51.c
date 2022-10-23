@@ -256,7 +256,8 @@ static void Plain_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
 /*****************************************************************************/
 
 static void Plain_PrintWord(OBJECT x, int hpos, int vpos)
-{ FULL_CHAR *p;  int i, h, v;
+{ FULL_CHAR *p;
+  int i, h, v;
 
   debug6(DPT, DD, "Plain_PrintWord( %s, %d, %d ) font %d colour %d%s",
     string(x), hpos, vpos, word_font(x), word_colour(x),
@@ -266,7 +267,7 @@ static void Plain_PrintWord(OBJECT x, int hpos, int vpos)
   h = ((float) hpos / PlainCharWidth) + 0.5;
   v = ((float) vpos / PlainCharHeight);
   debug3(DPT, DD, "PrintWord(%s at h = %d, v = %d)", string(x), h, v);
-  if( h >= 0 && h + StringLength(string(x)) < hsize && v >= 0 && v < vsize )
+  if( h >= 0 && h + ((int) StringLength(string(x))) < hsize && v >= 0 && v < vsize )
   {
     assert( h >= 0,     "PrintWord:  h < 0!" );
     assert( h <  hsize, "PrintWord:  h >= hsize!" );
