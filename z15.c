@@ -202,7 +202,7 @@ CONSTRAINT *hc, CONSTRAINT *vc, int dim)
 
   /* determine theta, c1, and c2 depending on which quadrant we are in */
   if( theta <= M_PI / 2.0 )   /* first quadrant */
-  { theta = theta;
+  { // theta = theta;
     CopyConstraint(c1, *hc);
     CopyConstraint(c2, *vc);
   }
