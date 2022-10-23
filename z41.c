@@ -289,7 +289,9 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
 /*****************************************************************************/
 
 static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
-{ OBJECT link, y, z, gap_obj, sym, env;  FULL_CHAR *name; int offset, lnum;
+{ OBJECT link, y, z, gap_obj, sym, env;
+  const FULL_CHAR *name;
+  int offset, lnum;
   int prec, i, last_prec;  BOOLEAN braces_needed;
   debug2(DIO, D, "[ WriteObject(%s %s)", Image(type(x)), EchoObject(x));
   switch( type(x) )

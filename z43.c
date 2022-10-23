@@ -145,8 +145,8 @@ static void ltab_debug(LANGUAGE_TABLE S, FILE *fp)
 static	LANGUAGE_TABLE	names_tab;		/* the language names        */
 static	OBJECT		*hyph_tab;		/* arry of hyph filenames    */
 static	OBJECT		*canonical_tab;		/* array of lang names       */
-static	int		lang_tabsize;		/* size of prev two arrays   */
-static	int		lang_count;		/* number of languages       */
+static	unsigned		lang_tabsize;		/* size of prev two arrays   */
+static	unsigned		lang_count;		/* number of languages       */
 static	OBJECT		lang_ends[MAX_LANGUAGE];/* sentence endings        */
 
 /*@@**************************************************************************/
@@ -196,7 +196,10 @@ void LanguageInit(void)
 /*****************************************************************************/
 
 void LanguageDefine(OBJECT names, OBJECT inside)
-{ OBJECT link, y, hyph_file;  BOOLEAN junk;  FULL_CHAR ch;
+{ OBJECT link, y, hyph_file;
+  #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+  BOOLEAN junk;
+  FULL_CHAR ch;
   int len;
   assert( names != nilobj && type(names) == ACAT, "LanguageDefine: names!");
   assert( Down(names) != names, "LanguageDefine: names is empty!");

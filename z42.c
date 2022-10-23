@@ -182,7 +182,7 @@ void ColourInit(void)
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN ColChange(OBJECT x, unsigned char *keyword, COLOUR_NUM *res)
+static BOOLEAN ColChange(OBJECT x, const unsigned char *keyword, COLOUR_NUM *res)
 { OBJECT cname;
   debug2(DCO, D, "ColChange(%s, %s)", EchoObject(x), keyword);
 
