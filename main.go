@@ -1,6 +1,6 @@
 package main
 
-// #cgo LDFLAGS: -lz -lm -L. -llout
+// #cgo LDFLAGS: -lz -lm -Lclout -llout
 //
 // #include <stdio.h>
 // #include <stdlib.h>
