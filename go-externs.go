@@ -1,6 +1,16 @@
 package main
 
-// #cgo LDFLAGS: -lz -lm -L. -llout
+// #cgo LDFLAGS: -lz -lm -Lclout -llout
+//
+// #cgo CFLAGS: -std=c99 -pedantic -Wall -Wextra -O3 -pipe -fPIC -Wpointer-arith
+// #cgo CFLAGS: -Wempty-body -Wmissing-field-initializers -Wtype-limits -Wuninitialized
+// #cgo CFLAGS: -Winit-self -Wmissing-prototypes -Wmissing-declarations -Wnested-externs
+// #cgo CFLAGS: -Wbad-function-cast -DOS_UNIX=1 -DOS_DOS=0 -DOS_MAC=0 -DDB_FIX=0
+// #cgo CFLAGS: -DUSE_STAT=1 -DSAFE_DFT=0 -DCOLLATE=1
+//// co CFLAGS: -DLIB_DIR="/usr/local/share/lout-3.42/lib" -DFONT_DIR="font"
+//// co CFLAGS: -DMAPS_DIR="maps" -DINCL_DIR="include" -DDATA_DIR="data"
+//// co CFLAGS: -DHYPH_DIR="hyph" -DLOCALE_DIR="locale" -DCHAR_IN=1 -DCHAR_OUT=0
+// #cgo CFLAGS: -DLOCALE_ON=1 -DASSERT_ON=1 -DDEBUG_ON=1  -DPDF_COMPRESSION=1
 //
 // #include <stdio.h>
 // #include <stdlib.h>
@@ -37,6 +47,8 @@ type gap_t struct {
 	ounits uint8		/* :3 units of measurement: fixed, etc  */
 	omode uint8			/* :3 spacing mode: edge-to-edge, etc   */
 }
+
+type GAP = gap_t
 
 /* A key-value pair.  */
 type context_t struct {
@@ -77,4 +89,18 @@ type style_t struct {
 	ocontext context_t		/* context stack		     */
 }
 
+// export SetGapOnRef
+func SetGapOnRef(x *GAP, xnobreak bool, xmark bool, xjoin bool, 
+	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
 
+}
+
+// export GapCopyOnRef
+func GapCopyOnRef(x, y *GAP) {
+
+}
+
+// GapEqualOnRef
+func GapEqualOnRef(x, y *GAP) bool {
+	return false;
+}
