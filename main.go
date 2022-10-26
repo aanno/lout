@@ -46,3 +46,8 @@ func main2() {
 
 	C.PrintUsage(C.stdout)
 }
+
+// e// xport test_export
+func test_export() {
+
+}
