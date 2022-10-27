@@ -21,7 +21,7 @@ func generatePointer()unsafe.Pointer {
 }
 
 type map_gopointer[C unsafe.Pointer, G any] struct {
-	abstract_map_gopointer
+	abstract_map_gopointer[C, G]
 	generate func()unsafe.Pointer
 }
 
