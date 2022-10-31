@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
-LOUT="../../main"
-# LOUT="../../lout"
+LOUT="../../example"
+# LOUT="../../clount/lout"
 
 rm *.ps
 pushd "doc"
