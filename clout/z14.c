@@ -184,11 +184,11 @@ typedef struct {
     if( I.cwid != nilobj )  etc_width = bfc(constraint(I.cwid));	\
     if( mode(gap(newg)) == TAB_MODE )					\
     { save_space(newg) = ActualGap(0, back(foll,COLM), fwd(foll,COLM),	\
-	  &gap(newg), etc_width, 0) - back(foll, COLM);			\
+	  gap(newg), etc_width, 0) - back(foll, COLM);			\
     }									\
     else								\
     { save_space(newg) = ActualGap(fwd(right, COLM), back(foll, COLM),	\
-	  fwd(foll,COLM), &gap(newg), etc_width,			\
+	  fwd(foll,COLM), gap(newg), etc_width,			\
 	  I.nat_width - fwd(right,COLM))				\
 	  - back(foll, COLM) - fwd(right, COLM);			\
     }									\
@@ -199,10 +199,10 @@ typedef struct {
 	Child(tmp, Down(newg));						\
 	debug5(DOF, DDD, "newg %s: %s %s, gap = %s, save_space = %s",	\
 	Image(type(newg)), Image(type(tmp)), EchoObject(tmp),		\
-	EchoGap(&gap(newg)), EchoLength(save_space(newg)));		\
+	EchoGap(gap(newg)), EchoLength(save_space(newg)));		\
       }									\
       else debug3(DOF, DDD, "newg %s: gap = %s, save_space = %s",	\
-	Image(type(newg)), EchoGap(&gap(newg)),				\
+	Image(type(newg)), EchoGap(gap(newg)),				\
 	EchoLength(save_space(newg)));					\
     )									\
 									\
@@ -238,7 +238,7 @@ typedef struct {
 	      FontWordSize(hyph_word);					\
 	    }								\
 									\
-	    mode(gap(newg)) = ADD_HYPH;					\
+	    setMode(gap(newg), ADD_HYPH);					\
 	    if( !marginkerning(save_style(x)) )				\
 	      I.nat_width += size(hyph_word, COLM);			\
 	    debug0(DOF, DDD, "   adding hyph_word from nat_width");	\
@@ -859,11 +859,11 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     while( link != x )
     {
       /* add unbreakableness if gap is overshadowed by a previous one */
-      f += MinGap(fwd(prev, COLM), back(y, COLM), fwd(y, COLM), &gap(g))
+      f += MinGap(fwd(prev, COLM), back(y, COLM), fwd(y, COLM), gap(g))
 	     - fwd(prev, COLM) + back(y, COLM);
       if( f < max_f )
       { if( units(gap(g)) == FIXED_UNIT )
-	  nobreak(gap(g)) = TRUE;
+	  setNobreak(gap(g), TRUE);
       }
       else
       { max_f = f;
@@ -1174,12 +1174,12 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     if( nobreakfirst(save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, NextDown(Down(res)));
       assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (a)!" );
-      nobreak(gap(gp)) = TRUE;
+      setNobreak(gap(gp), TRUE);
     }
     if( nobreaklast(save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, PrevDown(LastDown(res)));
       assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (b)!" );
-      nobreak(gap(gp)) = TRUE;
+      setNobreak(gap(gp), TRUE);
     }
 
     /* recalculate the width of the last line, since it may now be smaller */
@@ -1191,7 +1191,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     NextDefiniteWithGap(y, link, z, gp, jn);
     while( link != y )
     {
-      f += MinGap(fwd(prev, COLM), back(z, COLM), fwd(z, COLM), &gap(gp));
+      f += MinGap(fwd(prev, COLM), back(z, COLM), fwd(z, COLM), gap(gp));
       prev = z;
       NextDefiniteWithGap(y, link, z, gp, jn);
     }
