@@ -505,7 +505,8 @@ void HandleHeader(OBJECT hd, OBJECT header)
         underline(g) = FALSE;
 	Link(g, CopyObject(gap_obj, &fpos(gap_obj)));
         GapCopy(gap(g), line_gap(save_style(header)));
-        mark(gap(g)) = join(gap(g)) = FALSE;
+        setMark(gap(g), FALSE);
+        setJoin(gap(g), FALSE);
 
         /* move header and gap into headers() */
         MoveLink(NextDown(Down(header)), headers(hd, i), PARENT);
@@ -635,14 +636,14 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	if( last == nilobj )
 	{
 	  /* do nothing, gap cannot separate definite objects */
-	  debug1(DOG, DD, "  skipping initial GAP_OBJ %s", EchoGap(&gap(y)));
+	  debug1(DOG, DD, "  skipping initial GAP_OBJ %s", EchoGap(gap(y)));
 	}
 	else if( type(last) == GAP_OBJ )
 	{
 	  /* previous gap must have preceded an indefinite, so overwrite it */
 	  FposCopy(fpos(last), fpos(y));
 	  debug2(DOG, DD, "  overwriting GAP_OBJ %s with %s",
-	    EchoGap(&gap(last)), EchoGap(&gap(y)));
+	    EchoGap(gap(last)), EchoGap(&gap(y)));
 	  GapCopy(gap(last), gap(y));
 	  if( Down(last) != last )  DisposeChild(Down(last));
 	  if( Down(y) != y )
@@ -650,7 +651,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	    tmp = CopyObject(tmp, no_fpos);
 	    Link(last, tmp);
 	  }
-	  join(gap(last)) = TRUE;  /* irrelevant but improves debug output */
+	  setJoin(gap(last), TRUE);  /* irrelevant but improves debug output */
 	}
 	else
 	{
@@ -659,11 +660,11 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  New(last, GAP_OBJ);
 	  FposCopy(fpos(last), fpos(y));
 	  GapCopy(gap(last), gap(y));
-	  join(gap(last)) = TRUE;  /* irrelevant but improves debug output */
+	  setJoin(gap(last), TRUE);  /* irrelevant but improves debug output */
 	  hspace(last) = 1;
 	  vspace(last) = 0;
 	  Link(opt_components(hd), last);
-	  debug1(DOG, DD, "  adding GAP_OBJ %s", EchoGap(&gap(last)));
+	  debug1(DOG, DD, "  adding GAP_OBJ %s", EchoGap(gap(last)));
 	}
       }
       else if( is_word(type(y)) )

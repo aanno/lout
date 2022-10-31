@@ -2453,13 +2453,13 @@ typedef enum space_mode {
 #define	NEXT_UNIT	     5		/* w unit (inners)                   */
  
 /* units of distance as multiples of the basic unit */
-#define UNIT_TYPE float
-#define	CM	  (UNIT_TYPE) (72*20/2.54)		/* 1 centimetre                      */
-#define	IN	          (UNIT_TYPE) 1440		/* 1 inch                            */
-#define	EM	           (UNIT_TYPE) 120		/* 1 em (= 1/12 inch)                */
-#define	PT		    (UNIT_TYPE) 20		/* 1 point (= 1/72 inch)             */
-#define	FR	          (UNIT_TYPE) 4096		/* virtual unit for frame units      */
-#define	DG	           (UNIT_TYPE) 128		/* virtual unit for degrees          */
+// #define UNIT_TYPE float
+#define	CM	  (72*20/2.54)		/* 1 centimetre                      */
+#define	IN	          1440		/* 1 inch                            */
+#define	EM	           120		/* 1 em (= 1/12 inch)                */
+#define	PT		    20		/* 1 point (= 1/72 inch)             */
+#define	FR	          4096		/* virtual unit for frame units      */
+#define	DG	           128		/* virtual unit for degrees          */
 #ifdef ALT_SCALE_FACTOR_SHIFT
 #define	SF (1 << ALT_SCALE_FACTOR_SHIFT) /* virtual unit for @Scale factors  */
 #else
