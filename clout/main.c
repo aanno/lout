@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #include <signal.h>
 
 /* On DOS/Win32 we need to set binary mode on stdout (Uwe) */
