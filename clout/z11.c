@@ -51,7 +51,7 @@ FULL_CHAR *EchoStyle(STYLE *style)
 
   StringCopy(res, AsciiToFull("["));
   StringCat(res, EchoCatOp(VCAT,mark(line_gap(*style)),join(line_gap(*style))));
-  StringCat(res, EchoGap(&line_gap(*style)));
+  StringCat(res, EchoGap(line_gap(*style)));
   StringCat(res, AsciiToFull(", "));
   if( font(*style) == 0 )
     StringCat(res, AsciiToFull("nofont"));
@@ -64,7 +64,7 @@ FULL_CHAR *EchoStyle(STYLE *style)
   StringCat(res, AsciiToFull(" ("));
   StringCat(res, AsciiToFull(spacewords[space_style(*style)]));
   StringCat(res, AsciiToFull(" "));
-  StringCat(res, EchoGap(&space_gap(*style)));
+  StringCat(res, EchoGap(space_gap(*style)));
   StringCat(res, AsciiToFull("), "));
   StringCat(res, AsciiToFull(hyph_style(*style) < 3 ?
 		    hyphwords[hyph_style(*style)] : "?"));
@@ -125,17 +125,17 @@ static void changespace(STYLE *style, OBJECT x)
 	   WARN, &fpos(x), KW_SPACE, string(x));
   }
   else /* should be a new space gap */
-  { GetGap(x, style, &res_gap, &gap_inc);
+  { GetGap(x, style, res_gap, &gap_inc);
     if( gap_inc != GAP_ABS && units(res_gap) != units(space_gap(*style)) )
     { Error(11, 2, "spacing %s is not compatible with current spacing",
 	WARN, &fpos(x), string(x));
     }
     else
-    { units(space_gap(*style)) = units(res_gap);
-      mode(space_gap(*style))  = mode(res_gap);
-      width(space_gap(*style)) = gap_inc == GAP_ABS ? width(res_gap) :
+    { setUnits(space_gap(*style), units(res_gap));
+      setMode(space_gap(*style), mode(res_gap));
+      seWidth(space_gap(*style), gap_inc == GAP_ABS ? width(res_gap) :
 	     gap_inc == GAP_INC ? width(space_gap(*style)) + width(res_gap) :
-	     find_max(width(space_gap(*style)) - width(res_gap), 0);
+	     find_max(width(space_gap(*style)) - width(res_gap), 0));
     }
   }
   debug1(DSS, D, "SpaceChange returning %s", EchoStyle(style));
@@ -230,16 +230,16 @@ static void changebreak(STYLE *style, OBJECT x)
 	   WARN, &fpos(x), KW_BREAK, string(x));
   }
   else /* should be a new inter-line gap */
-  { GetGap(x, style, &res_gap, &gap_inc);
+  { GetGap(x, style, res_gap, &gap_inc);
     if( gap_inc != GAP_ABS && units(res_gap) != units(line_gap(*style)) )
       Error(11, 6, "line spacing %s is not compatible with current spacing",
         WARN, &fpos(x), string(x));
     else
-    { units(line_gap(*style)) = units(res_gap);
-      mode(line_gap(*style))  = mode(res_gap);
-      width(line_gap(*style)) = gap_inc == GAP_ABS ? width(res_gap) :
+    { setUnits(line_gap(*style), units(res_gap));
+      setMode(line_gap(*style), mode(res_gap));
+      setWidth(line_gap(*style), gap_inc == GAP_ABS ? width(res_gap) :
 	gap_inc == GAP_INC ? width(line_gap(*style)) + width(res_gap) :
-	find_max(width(line_gap(*style)) - width(res_gap), 0);
+	find_max(width(line_gap(*style)) - width(res_gap), 0));
     }
   }
   debug0(DSS, D, "] changebreak");
