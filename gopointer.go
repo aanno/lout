@@ -22,14 +22,26 @@ func generatePointer()unsafe.Pointer {
 
 type map_gopointer[C unsafe.Pointer, G any] struct {
 	abstract_map_gopointer[C, G]
-	generate func()unsafe.Pointer
+	generate func()C
 }
 
-func (gp map_gopointer[C,G]) assoc(goland G)C {
+type gp[G any] map_gopointer[unsafe.Pointer, G]
+
+func (gp gp[G]) assoc(goland G)unsafe.Pointer {
 	c := gp.generate()
+	// c := generatePointer()
 	gp.m[c] = goland
 	return c
 }
+
+/*
+func assoc[G any](gp gp[G], goland G)unsafe.Pointer {
+	c := gp.generate()
+	// c := generatePointer()
+	gp.m[c] = goland
+	return c
+}
+*/
 
 func (gp abstract_map_gopointer[C,G]) ref(cland C)G {
 	return gp.m[cland]
