@@ -19,9 +19,9 @@ type abstract_map_gopointer[C comparable, G any] struct {
 
 var ptr0 = uintptr(0)
 
-func generatePointer()uintptr {
+func generatePointer()ptr {
 	ptr0++
-	return ptr0
+	return ptr(ptr0)
 }
 
 type map_gopointer[C ptr, G any] struct {
@@ -47,7 +47,7 @@ func (gp abstract_map_gopointer[C,G]) free(cland C) {
 }
 
 
-
+// testing
 
 type testStruct struct {
 	a int
@@ -59,6 +59,9 @@ type testStructCtr gp[testStruct]
 
 func main() {
 	mapGp := gp[testStruct]{}
+	mapGp.m = make(map[ptr]testStruct)
+	mapGp.generate = generatePointer
+
 	var ts1 = testStruct{1, "test"}
 	var ts2 = testStruct{2, "test2"}
 	var c1 = mapGp.assoc(ts1)
