@@ -83,7 +83,7 @@ func GapCopyOnGoRef(x, y GAP) {
 
 }
 
-//export GapEqualOnGoRef
-func GapEqualOnGoRef(x, y GAP) bool {
+//export GapEqualOnRef
+func GapEqualOnRef(x, y GAP) bool {
 	return false
 }
