@@ -133,7 +133,7 @@ static void changespace(STYLE *style, OBJECT x)
     else
     { setUnits(space_gap(*style), units(res_gap));
       setMode(space_gap(*style), mode(res_gap));
-      seWidth(space_gap(*style), gap_inc == GAP_ABS ? width(res_gap) :
+      setWidth(space_gap(*style), gap_inc == GAP_ABS ? width(res_gap) :
 	     gap_inc == GAP_INC ? width(space_gap(*style)) + width(res_gap) :
 	     find_max(width(space_gap(*style)) - width(res_gap), 0));
     }
