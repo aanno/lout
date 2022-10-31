@@ -27,7 +27,8 @@
 /*  EXTERNS:      FlushGalley()                                              */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 
 #if DEBUG_ON
 FULL_CHAR *DebugInnersNames(OBJECT inners)

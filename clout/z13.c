@@ -27,7 +27,8 @@
 /*  EXTERNS:      BreakObject()                                              */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define	broken(x)	back(x, ROWM)	/* OK since no vertical sizes yet    */
 
 #if DEBUG_ON

@@ -30,7 +30,8 @@
 /*                EchoFileFrom()                                             */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #if USE_STAT
 #include <sys/types.h>
 #include <sys/stat.h>

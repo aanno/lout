@@ -28,7 +28,8 @@
 /*                CrossExpand(), CrossSequence(), CrossClose()               */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define	NO_TARGET	0
 #define	SEEN_TARGET	1
 #define	WRITTEN_TARGET	2

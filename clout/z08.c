@@ -27,7 +27,8 @@
 /*  EXTERNS:      Manifest()                                                 */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define line_breaker(g)							\
   (vspace(g) > 0 || (units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR))
 

@@ -27,7 +27,8 @@
 /*  EXTERNS:      NewToken(), CopyTokenList(), EchoCatOp(), EchoToken()      */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 
 
 /*****************************************************************************/

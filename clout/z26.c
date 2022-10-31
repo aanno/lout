@@ -28,7 +28,8 @@
 /*                EchoLength(), Image()                                      */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 
 #if DEBUG_ON
 #define	MULTI	  7			/* max no of simultaneous calls      */

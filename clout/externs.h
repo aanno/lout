@@ -670,13 +670,14 @@ typedef struct
 } GAP;
 
 /** inline function not possible - also used for setters */
-#define	nobreak(x)	(x).onobreak
-#define	mark(x)		(x).omark
-#define	join(x)		(x).ojoin
-#define	units(x)	(x).ounits
-#define	mode(x)		(x).omode
-#define	width(x)	(x).owidth
+#define	nobreak(x)	(x)->onobreak
+#define	mark(x)		(x)->omark
+#define	join(x)		(x)->ojoin
+#define	units(x)	(x)->ounits
+#define	mode(x)		(x)->omode
+#define	width(x)	(x)->owidth
 
+/*
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
@@ -703,6 +704,7 @@ inline BOOLEAN GapEqual(GAP x, GAP y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
              && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
 }
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -726,8 +728,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP		oline_gap;		/* separation between lines          */
-  GAP		ospace_gap;		/* separation induced by white space */
+  GAP*		oline_gap;		/* separation between lines          */
+  GAP*		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -1754,7 +1756,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP		ogap;
+     GAP*		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */

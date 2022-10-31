@@ -27,7 +27,8 @@
 /*  EXTERNS:      FillObject()                                               */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define TOO_TIGHT_BAD	1048576	/* 2^21; badness of a too tight line         */
 #define TOO_LOOSE_BAD	  65536	/* 2^16; the max badness of a too loose line */
 #define	TIGHT_BAD	   4096	/* 2^12; the max badness of a tight line     */

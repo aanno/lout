@@ -28,7 +28,8 @@
 /*                FilterExecute(), FilterWrite(), FilterScavenge()           */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 
 
 static int	filter_count;		/* number of filter files            */

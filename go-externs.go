@@ -88,8 +88,8 @@ func freeGap(gap GAP) {
 	mapGap.free(gap)
 }
 
-//export SetGapOnGoRef
-func SetGapOnGoRef(x GAP, xnobreak bool, xmark bool, xjoin bool,
+//export SetGap
+func SetGap(x GAP, xnobreak bool, xmark bool, xjoin bool,
 	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
 
 	gap := mapGap.ref(x)
@@ -102,8 +102,8 @@ func SetGapOnGoRef(x GAP, xnobreak bool, xmark bool, xjoin bool,
 	gap.owidth = xwidth
 }
 
-//export GapCopyOnGoRef
-func GapCopyOnGoRef(x, y GAP) {
+//export GapCopy
+func GapCopy(x, y GAP) {
 
 	xgap := mapGap.ref(x)
 	ygap := mapGap.ref(y)
@@ -116,8 +116,8 @@ func GapCopyOnGoRef(x, y GAP) {
 	xgap.owidth = ygap.owidth
 }
 
-//export GapEqualOnRef
-func GapEqualOnRef(x, y GAP) bool {
+//export GapEqual
+func GapEqual(x, y GAP) bool {
 
 	xgap := mapGap.ref(x)
 	ygap := mapGap.ref(y)

@@ -27,7 +27,8 @@
 /*  EXTERNS:      TextureChange(), TextureCommand()                          */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define INIT_TEXTURE_NUM	100
 
 

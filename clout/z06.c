@@ -27,7 +27,8 @@
 /*  EXTERNS:      InitParser(), Parse()                                      */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define	LEFT_ASSOC	0
 #define	RIGHT_ASSOC	1
 

@@ -27,7 +27,8 @@
 /*  EXTERNS:      PS_BackEnd                                                 */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 
 #define pnl fputs((char *) STR_NEWLINE, out_fp)
 #define p0(str)                 { fputs(str, out_fp);                   pnl; }

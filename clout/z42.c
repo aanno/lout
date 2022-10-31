@@ -27,7 +27,8 @@
 /*  EXTERNS:      ColourChange(), ColourCommand()                            */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define INIT_COLOUR_NUM	100
 
 

@@ -27,7 +27,8 @@
 /*  EXTERNS:      FixAndPrintObject()                                        */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define	NO_SUPPRESS	FALSE
 #define	SUPPRESS	TRUE
 #define word_equal(x, str)  (is_word(type(x)) && StringEqual(string(x), str))

@@ -28,7 +28,8 @@
 /*                MapPrintEncodings(), MapPrintResources(), MapSmallCaps()   */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "../go-externs.h"
 #define MAX_MAP		 20		/* max number of lcm files           */
 
 /*****************************************************************************/
