@@ -14,8 +14,8 @@ type testStructCtr Gp[testStruct]
 func TestSimple(t *testing.T) {
 	var mapGp *Gp[testStruct] = NewGp[testStruct]()
 	// var mapGp *Gp[testStruct] = &Gp[testStruct]{}
-	mapGp.m = make(map[Ptr]testStruct)
-	mapGp.generate = GeneratePointer
+	// mapGp.m = make(map[Ptr]testStruct)
+	// mapGp.generate = GeneratePointer
 
 	ts1 := testStruct{1, "test"}
 	ts2 := testStruct{2, "test2"}

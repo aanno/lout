@@ -21,7 +21,7 @@ type LANGUAGE_NUM = uint32
 /*                                                                           */
 /*****************************************************************************/
 
-type gap_t struct {
+type Gap_t struct {
 	owidth   FULL_LENGTH /* width of the gap                  */
 	onobreak bool        /* TRUE if this gap is unbreakable   */
 	omark    bool        /* TRUE if this gap is marked        */
@@ -30,19 +30,20 @@ type gap_t struct {
 	omode    uint8       /* :3 spacing mode: edge-to-edge, etc   */
 }
 
-type GAP = gap_t
+// type GAP = gap_t
+type GAP = uintptr
 
 /* A key-value pair.  */
-type context_t struct {
+type Context_t struct {
 	okey   *OBJECT  /* name of a context variable        */
 	ovalue *OBJECT  /* associated value		     */
 	oenv   *OBJECT  /* environment for this value        */
-	ostyle *style_t /* style for this value              */
+	ostyle *Style_t /* style for this value              */
 }
 
-type style_t struct {
-	oline_gap         gap_t        /* separation between lines          */
-	ospace_gap        gap_t        /* separation induced by white space */
+type Style_t struct {
+	oline_gap         Gap_t        /* separation between lines          */
+	ospace_gap        Gap_t        /* separation induced by white space */
 	oyunit            FULL_LENGTH  /* value of y unit of measurement    */
 	ozunit            FULL_LENGTH  /* value of z unit of measurement    */
 	ooutdent_len      FULL_LENGTH  /* amount to outdent in outdent style*/
@@ -68,23 +69,21 @@ type style_t struct {
 	ostrut            bool         /* :1 strut char metrics                */
 	oligatures        bool         /* :1 use ligatures                     */
 	omarginkerning    bool         /* :1 perform margin kerning            */
-	ocontext          context_t    /* context stack		     */
+	ocontext          Context_t    /* context stack		     */
 }
 
-/*
-//export SetGapOnRef
-func SetGapOnRef(x *GAP, xnobreak bool, xmark bool, xjoin bool,
+//export SetGapOnGoRef
+func SetGapOnGoRef(x GAP, xnobreak bool, xmark bool, xjoin bool,
 	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
 
 }
 
-//export GapCopyOnRef
-func GapCopyOnRef(x, y *GAP) {
+//export GapCopyOnGoRef
+func GapCopyOnGoRef(x, y GAP) {
 
 }
 
-//export GapEqualOnRef
-func GapEqualOnRef(x, y *GAP) bool {
+//export GapEqualOnGoRef
+func GapEqualOnGoRef(x, y GAP) bool {
 	return false
 }
-*/
