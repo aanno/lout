@@ -189,7 +189,7 @@ int GetWidth(OBJECT x, STYLE *style)
 /*  If there is an error, GetGap prints a message and returns 0ie.           */
 /*                                                                           */
 /*****************************************************************************/
-#define setwidths(x, y) w = x; units(*res_gap) = y;  break;
+#define setwidths(x, y) w = x; setUnits(res_gap, y);  break;
 
 void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
 { int w;  float num; 
@@ -198,9 +198,11 @@ void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
   debug2(DGW, D, "GetGap( %s, %s, res_gap, res_inc )",
 	EchoObject(x), EchoStyle(style));
 
-  nobreak(*res_gap) = FALSE;
-  width(*res_gap) = 0;  units(*res_gap) = FIXED_UNIT;
-  mode(*res_gap)  = EDGE_MODE;  *res_inc = GAP_ABS;
+  setNobreak(res_gap, FALSE);
+  setWidth(res_gap, 0);
+  setUnits(res_gap, FIXED_UNIT);
+  setMode(res_gap, EDGE_MODE);
+  *res_inc = GAP_ABS;
 
   /* make sure we have a WORD or QWORD argument */
   if( !is_word(type(x)) )
@@ -259,7 +261,7 @@ void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
 		return;
   }
 
-  if( units(*res_gap) == AVAIL_UNIT && w > FR )
+  if( units(res_gap) == AVAIL_UNIT && w > FR )
   { Error(17, 5, "%.1fr too large (1.0r substituted)", WARN, &fpos(x), num);
     w = FR;
   }
@@ -268,19 +270,19 @@ void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
     Error(17, 5, "%s exceeds maximum allowed gap size", INTERN, &fpos(x),
       string(x));
   *** */
-  width(*res_gap) = w;
+  setWidth(res_gap, w);
 
   /* read the optional gap mode */
   switch( *str )
   {
     case CH_NOBREAK:
-    case '\0':		mode(*res_gap) = EDGE_MODE;          break;
-    case CH_MODE_EDGE:	mode(*res_gap) = EDGE_MODE;  str++;  break;
-    case CH_MODE_HYPH:	mode(*res_gap) = HYPH_MODE;  str++;  break;
-    case CH_MODE_MARK:	mode(*res_gap) = MARK_MODE;  str++;  break;
-    case CH_MODE_OVER:	mode(*res_gap) = OVER_MODE;  str++;  break;
-    case CH_MODE_KERN:	mode(*res_gap) = KERN_MODE;  str++;  break;
-    case CH_MODE_TABL:	mode(*res_gap) = TAB_MODE;   str++;  break;
+    case '\0':		setMode(res_gap, EDGE_MODE);          break;
+    case CH_MODE_EDGE:	setMode(res_gap, EDGE_MODE);  str++;  break;
+    case CH_MODE_HYPH:	setMode(res_gap, HYPH_MODE);  str++;  break;
+    case CH_MODE_MARK:	setMode(res_gap, MARK_MODE);  str++;  break;
+    case CH_MODE_OVER:	setMode(res_gap, OVER_MODE);  str++;  break;
+    case CH_MODE_KERN:	setMode(res_gap, KERN_MODE);  str++;  break;
+    case CH_MODE_TABL:	setMode(res_gap, TAB_MODE);   str++;  break;
 
     default:	Error(17, 7, "unknown gap mode in %s",
 		  WARN, &fpos(x), string(x));
@@ -291,10 +293,10 @@ void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
   /* read the optional nobreak */
   if( *str == CH_NOBREAK )
   {
-    if( mode(*res_gap) == HYPH_MODE )
+    if( mode(res_gap) == HYPH_MODE )
       Error(17, 9, "replacing self-contradictory gap %s by breakable version",
 	WARN, &fpos(x), string(x));
-    else nobreak(*res_gap) = TRUE;
+    else setNobreak(res_gap, TRUE);
     str++;
   }
 
@@ -319,9 +321,9 @@ void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
 
 FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap)
 { FULL_LENGTH res;  int w = 0;
-  switch( units(*xgap) )
+  switch( units(xgap) )
   {
-    case FIXED_UNIT:	w = width(*xgap);
+    case FIXED_UNIT:	w = width(xgap);
 			break;
 
     case FRAME_UNIT:	w = 0;
@@ -330,13 +332,13 @@ FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap)
     case AVAIL_UNIT:	w = 0;
 			break;
 
-    case NEXT_UNIT:	w = width(*xgap) * (b + c) / FR;
+    case NEXT_UNIT:	w = width(xgap) * (b + c) / FR;
 			break;
 
     default:		assert(FALSE, "MinGap: units");
 			break;
   }
-  switch( mode(*xgap) )
+  switch( mode(xgap) )
   {
     case NO_MODE:	assert(FALSE, "MinGap: NO_MODE");
 			res = 0;
@@ -387,8 +389,8 @@ FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap)
 
 FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP xgap, int dir)
 { FULL_LENGTH tmp, res;
-  FULL_LENGTH w = units(*xgap) == FIXED_UNIT ? width(*xgap) : 0;
-  switch( mode(*xgap) )
+  FULL_LENGTH w = units(xgap) == FIXED_UNIT ? width(xgap) : 0;
+  switch( mode(xgap) )
   {
     case NO_MODE:	assert(FALSE, "ExtraGap: NO_MODE");
 			res = 0;
@@ -440,28 +442,28 @@ FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP xgap, int dir)
 FULL_LENGTH ActualGap(FULL_LENGTH prevf, FULL_LENGTH b, FULL_LENGTH f,
   GAP xgap, FULL_LENGTH frame_size, FULL_LENGTH mk)
 { FULL_LENGTH res;  int w = 0, w2;
-  switch( units(*xgap) )
+  switch( units(xgap) )
   {
-    case FIXED_UNIT:	w = width(*xgap);
+    case FIXED_UNIT:	w = width(xgap);
 			break;
 
-    case FRAME_UNIT:	if( width(*xgap) > FR )
+    case FRAME_UNIT:	if( width(xgap) > FR )
 			  w = MAX_FULL_LENGTH;
 			else
-			  w = (width(*xgap) * frame_size) / FR;
+			  w = (width(xgap) * frame_size) / FR;
 			break;
 
-    case AVAIL_UNIT:	w = (width(*xgap) * (frame_size - b - f)) / FR;
+    case AVAIL_UNIT:	w = (width(xgap) * (frame_size - b - f)) / FR;
 			w = find_max(w, 0);
 			break;
 
-    case NEXT_UNIT:	w = width(*xgap) * (b + f) / FR;
+    case NEXT_UNIT:	w = width(xgap) * (b + f) / FR;
 			break;
 
     default:		assert(FALSE, "ActualGap: units");
 			break;
   }
-  switch( mode(*xgap) )
+  switch( mode(xgap) )
   {
     case NO_MODE:	Error(17, 10, "cannot continue after previous error(s)", FATAL, no_fpos);
 			assert(FALSE, "ActualGap: NO_MODE");
@@ -515,27 +517,27 @@ FULL_CHAR *EchoGap(GAP xgap)
   char *u;
   static int i = 0;
   static char buff[3][20];
-  c = mode(*xgap) <= 7 ? letter[mode(*xgap)] : '?';
-  c = letter[mode(*xgap)];
-  u = nobreak(*xgap) ? "u" : "";
-  switch( units(*xgap) )
+  c = mode(xgap) <= 7 ? letter[mode(xgap)] : '?';
+  c = letter[mode(xgap)];
+  u = nobreak(xgap) ? "u" : "";
+  switch( units(xgap) )
   {
     case 0:	     sprintf(buff[i], "(none)%c", c);
 		     break;
 
-    case FIXED_UNIT: sprintf(buff[i], "%.1fc%c%s", (float) width(*xgap)/CM, c,u);
+    case FIXED_UNIT: sprintf(buff[i], "%.1fc%c%s", (float) width(xgap)/CM, c,u);
 		     break;
 
-    case NEXT_UNIT:  sprintf(buff[i], "%.1fw%c%s", (float) width(*xgap)/FR, c,u);
+    case NEXT_UNIT:  sprintf(buff[i], "%.1fw%c%s", (float) width(xgap)/FR, c,u);
 		     break;
 
-    case FRAME_UNIT: sprintf(buff[i], "%.1fb%c%s", (float) width(*xgap)/FR, c,u);
+    case FRAME_UNIT: sprintf(buff[i], "%.1fb%c%s", (float) width(xgap)/FR, c,u);
 		     break;
 
-    case AVAIL_UNIT: sprintf(buff[i], "%.1fr%c%s", (float) width(*xgap)/FR, c,u);
+    case AVAIL_UNIT: sprintf(buff[i], "%.1fr%c%s", (float) width(xgap)/FR, c,u);
 		     break;
 
-    case DEG_UNIT:   sprintf(buff[i], "%.1fd", (float) width(*xgap) / DG);
+    case DEG_UNIT:   sprintf(buff[i], "%.1fd", (float) width(xgap) / DG);
 		     break;
 
     default:	     assert(FALSE, "EchoGap: units");
