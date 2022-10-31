@@ -32,7 +32,8 @@
 /*                DeleteEverySym()                                           */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 #define	MAX_STACK	300		/* size of scope stack               */
 #define	MAX_TAB		1783		/* size of hash table                */

@@ -27,7 +27,8 @@
 /*  EXTERNS:      Hyphenate()                                                */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define	NODE_MULT	4		/* what to multiply node indexes by  */
 #define MAX_CHAR	256		/* max chars represented in one char */
 #define TRIE_MAGIC	5361534
@@ -1091,7 +1092,7 @@ OBJECT Hyphenate(OBJECT x)
     {
       if( type(y) == GAP_OBJ && mode(gap(y)) == HYPH_MODE )
       {
-	nobreak(gap(y)) = FALSE;
+	setNobreak(gap(y), FALSE);
 
 	/* don't hyphenate a word following &<len>h */
 	if( NextDown(link) != x )

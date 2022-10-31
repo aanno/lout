@@ -27,7 +27,8 @@
 /*  EXTERNS:      ErrorInit(), Error(), ErrorSeen()                          */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 #define	MAX_BLOCKS	 20		/* max number of error blocks        */
 #define	MAX_ERRORS	 20		/* max number of held error messages */

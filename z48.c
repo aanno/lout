@@ -37,7 +37,8 @@
 /*                PDFText_Close(), PDFHasValidTextMatrix()                   */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 /* ANSI headers */
 #include <ctype.h>

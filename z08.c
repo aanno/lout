@@ -27,7 +27,8 @@
 /*  EXTERNS:      Manifest()                                                 */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define line_breaker(g)							\
   (vspace(g) > 0 || (units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR))
 
@@ -1155,7 +1156,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	    case SPACE_LOUT:
 
 	      /* usual Lout spacing, the number of white space characters */
-	      width(gap(g)) = width(gap(g)) * (vspace(g) + hspace(g));
+	      setWidth(gap(g), width(gap(g)) * (vspace(g) + hspace(g)));
 	      break;
 
 
@@ -1163,7 +1164,7 @@ OBJECT *enclose, BOOLEAN fcr)
 
 	      /* either zero or one space */
 	      if( vspace(g) + hspace(g) == 0 )
-	      { width(gap(g)) = 0;
+	      { setWidth(gap(g), 0);
 	      }
 	      else
 	      { /* else width is like one space, so OK as is */
@@ -1180,7 +1181,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	    case SPACE_TROFF:
 
 	      /* Lout spacing plus one extra space for sentence end at eoln */
-	      width(gap(g)) = width(gap(g)) * (vspace(g) + hspace(g));
+	      setWidth(gap(g), width(gap(g)) * (vspace(g) + hspace(g)));
 	      debugcond2(DLS, DD, vspace(g) > 0, "  prev = %s %s",
 		Image(type(prev)), EchoObject(prev));
 	      if( vspace(g) > 0 )
@@ -1203,7 +1204,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		    bool(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
-		    width(gap(g)) += width(space_gap(*style));
+		    setWidth(gap(g), width(gap(g)) + width(space_gap(*style)));
 		}
 	      }
 	      break;
@@ -1214,7 +1215,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	      if( vspace(g) + hspace(g) == 0 )
 	      {
 		/* zero spaces gives zero result, as for compress above */
-		width(gap(g)) = 0;
+		setWidth(gap(g), 0);
 	      }
 	      else
 	      {
@@ -1236,7 +1237,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		      bool(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
-		    width(gap(g)) += width(space_gap(*style));
+		    setWidth(gap(g), width(gap(g)) + width(space_gap(*style)));
 	        }
 	      }
 	      break;
@@ -1247,7 +1248,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	      assert(FALSE, "Manifest: unexpected space_style!");
 	      break;
 	  }
-	  nobreak(gap(g)) = (width(gap(g)) == 0);
+	  setNobreak(gap(g), (width(gap(g)) == 0));
 	  if( line_breaker(g) && is_definite(type(y)) )  multiline = TRUE;
 	}
         debug1(DOM, DD, "  in ACAT, gap = %s", EchoLength(width(gap(g))));
@@ -1337,15 +1338,15 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &shift_gap(x), &res_inc);
-      shift_type(x) = res_inc;
+      setShift_type(x, res_inc);
       if( mode(shift_gap(x)) != EDGE_MODE || 
 	  (units(shift_gap(x))!=FIXED_UNIT && units(shift_gap(x))!=NEXT_UNIT) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
-	shift_type(x) = GAP_INC;
-	units(shift_gap(x)) = FIXED_UNIT;
-	width(shift_gap(x)) = 0;
-	mode(shift_gap(x)) = EDGE_MODE;
+	setShift_type(x, GAP_INC);
+	setUnits(shift_gap(x), FIXED_UNIT);
+	setWidth(shift_gap(x), 0);
+	setMode(shift_gap(x), EDGE_MODE);
       }
       DisposeChild(Down(x));
       goto ETC;		/* next case down from here */
@@ -1397,8 +1398,8 @@ OBJECT *enclose, BOOLEAN fcr)
       {
 	/* make new gap object and link to vc */
 	New(g, GAP_OBJ);
-	mark(gap(g)) = FALSE;
-	join(gap(g)) = TRUE;
+	setMark(gap(g), FALSE);
+	setJoin(gap(g), TRUE);
 	FposCopy(fpos(g), fpos(y));
 	gword = MakeWord(WORD, STR_EMPTY, &fpos(g));
 	Link(g, gword);
@@ -1459,8 +1460,8 @@ OBJECT *enclose, BOOLEAN fcr)
 		units(res_gap) != DEG_UNIT )
       {	Error(8, 28, "replacing invalid left parameter of %s by 0d",
 	  WARN, &fpos(y), Image(type(x)) );
-	units(res_gap) = DEG_UNIT;
-	width(res_gap) = 0;
+	setUnits(res_gap, DEG_UNIT);
+	setWidth(res_gap, 0);
       }
       sparec(constraint(x)) = width(res_gap);
       DisposeChild(Down(x));

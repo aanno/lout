@@ -28,7 +28,8 @@
 /*                FilterExecute(), FilterWrite(), FilterScavenge()           */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 
 static int	filter_count;		/* number of filter files            */

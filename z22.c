@@ -29,7 +29,8 @@
 /*                SetTarget(), CheckComponentOrder()                         */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 /* these three variables refer to the root galley only */
 static BOOLEAN first = TRUE;		  /* if first component unwritten    */
@@ -504,7 +505,8 @@ void HandleHeader(OBJECT hd, OBJECT header)
         underline(g) = FALSE;
 	Link(g, CopyObject(gap_obj, &fpos(gap_obj)));
         GapCopy(gap(g), line_gap(save_style(header)));
-        mark(gap(g)) = join(gap(g)) = FALSE;
+        setMark(gap(g), FALSE);
+        setJoin(gap(g), FALSE);
 
         /* move header and gap into headers() */
         MoveLink(NextDown(Down(header)), headers(hd, i), PARENT);
@@ -649,7 +651,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	    tmp = CopyObject(tmp, no_fpos);
 	    Link(last, tmp);
 	  }
-	  join(gap(last)) = TRUE;  /* irrelevant but improves debug output */
+	  setJoin(gap(last), TRUE);  /* irrelevant but improves debug output */
 	}
 	else
 	{
@@ -658,7 +660,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  New(last, GAP_OBJ);
 	  FposCopy(fpos(last), fpos(y));
 	  GapCopy(gap(last), gap(y));
-	  join(gap(last)) = TRUE;  /* irrelevant but improves debug output */
+	  setJoin(gap(last), TRUE);  /* irrelevant but improves debug output */
 	  hspace(last) = 1;
 	  vspace(last) = 0;
 	  Link(opt_components(hd), last);

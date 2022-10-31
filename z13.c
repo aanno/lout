@@ -27,7 +27,8 @@
 /*  EXTERNS:      BreakObject()                                              */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define	broken(x)	back(x, ROWM)	/* OK since no vertical sizes yet    */
 
 #if DEBUG_ON
@@ -758,7 +759,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	for( link = Down(x);  link != x;  link = NextDown(link) )
 	{ Child(y, link);
 	  if( type(y) == GAP_OBJ && mark(gap(y)) )
-	  { mark(gap(y)) = FALSE;
+	  { setMark(gap(y), FALSE);
 	    rpos = y;
 	  }
 	}

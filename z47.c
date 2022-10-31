@@ -28,7 +28,8 @@
 /*                EnvReadRetrieve(), EnvReadInsert()                         */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define	TAB_SIZE	211
 #define	MAX_CACHE	180
 

@@ -27,7 +27,8 @@
 /*  EXTERNS:      FixAndPrintObject()                                        */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define	NO_SUPPRESS	FALSE
 #define	SUPPRESS	TRUE
 #define word_equal(x, str)  (is_word(type(x)) && StringEqual(string(x), str))
@@ -796,8 +797,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    /* NB state change here */
 	    fwd(prev, dim) += xb - back(x, dim);
 	    back(x, dim) = xb;
-	    mode(gap(g)) = EDGE_MODE;
-	    units(gap(g)) = FIXED_UNIT;
+	    setMode(gap(g), EDGE_MODE);
+	    setUnits(gap(g), FIXED_UNIT);
 	  }
 	  FirstDefinite(x, link, prev, jn);  /* not LDN since already done */
 

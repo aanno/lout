@@ -27,7 +27,8 @@
 /*  EXTERNS:      FillObject()                                               */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define TOO_TIGHT_BAD	1048576	/* 2^21; badness of a too tight line         */
 #define TOO_LOOSE_BAD	  65536	/* 2^16; the max badness of a too loose line */
 #define	TIGHT_BAD	   4096	/* 2^12; the max badness of a tight line     */
@@ -237,7 +238,7 @@ typedef struct {
 	      FontWordSize(hyph_word);					\
 	    }								\
 									\
-	    mode(gap(newg)) = ADD_HYPH;					\
+	    setMode(gap(newg), ADD_HYPH);					\
 	    if( !marginkerning(save_style(x)) )				\
 	      I.nat_width += size(hyph_word, COLM);			\
 	    debug0(DOF, DDD, "   adding hyph_word from nat_width");	\
@@ -862,7 +863,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	     - fwd(prev, COLM) + back(y, COLM);
       if( f < max_f )
       { if( units(gap(g)) == FIXED_UNIT )
-	  nobreak(gap(g)) = TRUE;
+	  setNobreak(gap(g), TRUE);
       }
       else
       { max_f = f;
@@ -1173,12 +1174,12 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     if( nobreakfirst(save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, NextDown(Down(res)));
       assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (a)!" );
-      nobreak(gap(gp)) = TRUE;
+      setNobreak(gap(gp), TRUE);
     }
     if( nobreaklast(save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, PrevDown(LastDown(res)));
       assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (b)!" );
-      nobreak(gap(gp)) = TRUE;
+      setNobreak(gap(gp), TRUE);
     }
 
     /* recalculate the width of the last line, since it may now be smaller */
