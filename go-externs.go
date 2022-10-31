@@ -72,18 +72,71 @@ type Style_t struct {
 	ocontext          Context_t    /* context stack		     */
 }
 
+type GapCptr = *Gp[Gap_t]
+
+var mapGap GapCptr = NewGp[Gap_t]()
+
+
+//export newGap
+func newGap()GAP {
+	gap := Gap_t{}
+	return mapGap.assoc(gap)
+}
+
+//export freeGap
+func freeGap(gap GAP) {
+	mapGap.free(gap)
+}
+
 //export SetGapOnGoRef
 func SetGapOnGoRef(x GAP, xnobreak bool, xmark bool, xjoin bool,
 	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
 
+	gap := mapGap.ref(x)
+
+	gap.onobreak = xnobreak
+	gap.omark = xmark
+	gap.ojoin = xjoin
+	gap.ounits = xunits
+	gap.omode = xmode
+	gap.owidth = xwidth
 }
 
 //export GapCopyOnGoRef
 func GapCopyOnGoRef(x, y GAP) {
 
+	xgap := mapGap.ref(x)
+	ygap := mapGap.ref(y)
+
+	xgap.onobreak = ygap.onobreak
+	xgap.omark = ygap.omark
+	xgap.ojoin = ygap.ojoin
+	xgap.ounits = ygap.ounits
+	xgap.omode = ygap.omode
+	xgap.owidth = ygap.owidth
 }
 
 //export GapEqualOnRef
 func GapEqualOnRef(x, y GAP) bool {
-	return false
+
+	xgap := mapGap.ref(x)
+	ygap := mapGap.ref(y)
+
+	return xgap.onobreak == ygap.onobreak &&
+		xgap.omark == ygap.omark &&
+		xgap.ojoin == ygap.ojoin &&
+		xgap.ounits == ygap.ounits &&
+		xgap.omode == ygap.omode &&
+		xgap.owidth == ygap.owidth
 }
+
+/*****  z17.c	  Gap Widths		*************************************
+extern	int	  GetWidth(OBJECT x, STYLE *style);
+extern	void	  GetGap(OBJECT x, STYLE *style, GAP *res_gap,
+		    unsigned *res_inc);
+extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap);
+extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir);
+extern	FULL_LENGTH  ActualGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c,
+		       GAP *xgap, FULL_LENGTH f, FULL_LENGTH mk);
+extern	FULL_CHAR *EchoGap(GAP *xgap);
+*/

@@ -4,10 +4,11 @@ _obj/
 .idea/
 lout.iml
 
-main
-liblout.so
-lout
-prg2lout
+/main
+/example
+/clout/liblout.so
+/clout/lout
+/clout/prg2lout
 
 *.ld
 *.li

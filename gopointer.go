@@ -2,7 +2,7 @@ package main
 
 import ()
 
-type Ptr uintptr
+type Ptr = uintptr
 
 type gopointer[C any, G any] interface {
 	generate() C
