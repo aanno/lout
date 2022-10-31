@@ -266,11 +266,11 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
     { if( prev == nilobj )  fcount = 1;
       else if( mark(gap(g)) )
       {	bcount += fcount;
-	bwidth += fwidth + MinGap(0, 0, 0, &gap(g));
+	bwidth += fwidth + MinGap(0, 0, 0, gap(g));
 	fcount  = 1;  fwidth = 0;
       }
       else
-      {	fwidth += MinGap(0, 0, 0, &gap(g));
+      {	fwidth += MinGap(0, 0, 0, gap(g));
 	fcount += 1;
       }
       prev = y;
@@ -323,9 +323,9 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
     SetNeighbours(mlink, ratm, &pg, &prec_def, &sg, &succ_def, &mside);
     debug2(DOB, DD, "my (%s): %s", Image(mside), EchoObject(my));
     pd_extra = pg == nilobj ? 0 :
-      ExtraGap(broken(prec_def) ? fwd(prec_def,COLM) : 0, 0, &gap(pg), BACK);
+      ExtraGap(broken(prec_def) ? fwd(prec_def,COLM) : 0, 0, gap(pg), BACK);
     sd_extra = sg == nilobj ? 0 :
-      ExtraGap(0, broken(succ_def) ? back(succ_def,COLM) : 0, &gap(sg), FWD);
+      ExtraGap(0, broken(succ_def) ? back(succ_def,COLM) : 0, gap(sg), FWD);
     debug2(DOB, DD, "pd_extra:   %s;  sd_extra:      %s",
 		EchoLength(pd_extra), EchoLength(sd_extra) );
 
@@ -391,16 +391,16 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
     /* calculate the effect of accepting my on bwidth and fwidth */
     if( pg != nilobj )
     { tmp = broken(prec_def) ? fwd(prec_def, COLM) : 0;
-      beffect = MinGap(tmp, back(my, COLM), fwd(my, COLM), &gap(pg)) -
-	        MinGap(tmp, 0,             0,            &gap(pg));
+      beffect = MinGap(tmp, back(my, COLM), fwd(my, COLM), gap(pg)) -
+	        MinGap(tmp, 0,             0,            gap(pg));
     }
     else beffect = back(my, COLM);
 
     if( sg != nilobj )
     { tmp = broken(succ_def) ? back(succ_def, COLM) : 0;
       tmp2 = broken(succ_def) ? fwd(succ_def, COLM) : 0;
-      feffect = MinGap(fwd(my, COLM), tmp, tmp2, &gap(sg)) -
-	        MinGap(0,            tmp, tmp2, &gap(sg));
+      feffect = MinGap(fwd(my, COLM), tmp, tmp2, gap(sg)) -
+	        MinGap(0,            tmp, tmp2, gap(sg));
     }
     else feffect = fwd(my, COLM);
 
@@ -759,7 +759,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	for( link = Down(x);  link != x;  link = NextDown(link) )
 	{ Child(y, link);
 	  if( type(y) == GAP_OBJ && mark(gap(y)) )
-	  { mark(gap(y)) = FALSE;
+	  { setMark(gap(y), FALSE);
 	    rpos = y;
 	  }
 	}
