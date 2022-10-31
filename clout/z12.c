@@ -203,7 +203,7 @@ static BOOLEAN FindSpannerGap(OBJECT thr, unsigned dim, unsigned cat_op,
   else if( type(x) == HEAD && gall_dir(x)==dim && type(PrevDown(link))==LINK )
   { Child(*res, PrevDown(link));
     assert(type(*res) == GAP_OBJ, "FindSpannerGap (HEAD): type(*res)!" );
-    nobreak(gap(*res)) = TRUE;
+    setNobreak(gap(*res), TRUE);
   }
   else *res = nilobj;
 
@@ -263,7 +263,7 @@ void SpannerAvailableSpace(OBJECT y, int dim, FULL_LENGTH *resb,
       else if( FindSpannerGap(thr, dim, cat_type, &gp) )
       {
         /* this is a subquent column spanned over */
-        b += MinGap(fwd(prevthr, dim), back(thr, dim), fwd(thr, dim), &gap(gp));
+        b += MinGap(fwd(prevthr, dim), back(thr, dim), fwd(thr, dim), gap(gp));
 	f = fwd(thr, dim);
         debug5(DSF, DD, "  later component %s,%s: gp = %s, b = %s, f = %s",
           EchoLength(back(thr, dim)), EchoLength(fwd(thr, dim)), EchoObject(gp),
@@ -974,9 +974,9 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		underline(z) = UNDER_OFF;
 		GapCopy(gap(z), space_gap(save_style(x)));
 		if( display_style(save_style(x)) == DISPLAY_ORAGGED )
-		  width(gap(z)) = outdent_len(save_style(x));
+		  setWidth(gap(z), outdent_len(save_style(x)));
 		else
-		  width(gap(z)) *= hspace(z);
+		  setWidth(gap(z), width(gap(z)) * hspace(z));
 		Link(NextDown(Down(x)), z);
 
 		debug2(DSF, D, "  hspace(g) = %d, width(gap(z)) = %s",
@@ -990,8 +990,8 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      width(gap(g)) *= find_max(1, vspace(g));
 	      *** */
 	      if( vspace(g) > 1 )
-	        width(gap(g)) +=
-		 (width(gap(g))*blanklinescale(save_style(x))*(vspace(g)-1))/SF;
+	        setWidth(gap(g),
+		  width(gap(g)) + (width(gap(g))*blanklinescale(save_style(x))*(vspace(g)-1))/SF);
 	    }
 	    NextDefiniteWithGap(x, link, y, g, jn);
 	  }
@@ -1111,15 +1111,15 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      if( g != nilobj && mark(gap(g)) )
 	      {	Error(12, 3, "^ deleted (it may not precede this object)",
 		  WARN, &fpos(y));
-		mark(gap(g)) = FALSE;
+		setMark(gap(g), FALSE);
 	      }
 
 	      /* error if next unit is used in preceding gap */
 	      if( g != nilobj && units(gap(g)) == NEXT_UNIT )
 	      {	Error(12, 4, "gap replaced by 0i (%c unit not allowed here)",
 		  WARN, &fpos(y), CH_UNIT_WD);
-		units(gap(g)) = FIXED_UNIT;
-		width(gap(g)) = 0;
+		setUnits(gap(g), FIXED_UNIT);
+		setWidth(gap(g), 0);
 	      }
 	    }
 	    else
@@ -1128,7 +1128,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      if( prev == nilobj )  b = back(y, dim), f = 0;
 	      else
 	      { FULL_LENGTH tmp;
-		tmp = MinGap(fwd(prev,dim), back(y,dim), fwd(y, dim), &gap(g));
+		tmp = MinGap(fwd(prev,dim), back(y,dim), fwd(y, dim), gap(g));
 		assert(g!=nilobj && mode(gap(g))!=NO_MODE, "MinSize: NO_MODE!");
 		if( units(gap(g)) == FIXED_UNIT && mode(gap(g)) == TAB_MODE )
 		{
