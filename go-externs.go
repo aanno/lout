@@ -1,7 +1,7 @@
 package main
 
 // #include "go_linux_64.h"
-// #include "./externs.h"
+// #include "clout/externs.h"
 //
 import "C"
 import (
