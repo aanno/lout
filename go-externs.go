@@ -71,6 +71,7 @@ type style_t struct {
 	ocontext          context_t    /* context stack		     */
 }
 
+/*
 //export SetGapOnRef
 func SetGapOnRef(x *GAP, xnobreak bool, xmark bool, xjoin bool,
 	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
@@ -86,3 +87,4 @@ func GapCopyOnRef(x, y *GAP) {
 func GapEqualOnRef(x, y *GAP) bool {
 	return false
 }
+*/

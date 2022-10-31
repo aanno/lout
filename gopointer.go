@@ -51,29 +51,3 @@ func NewGp[G any]()*Gp[G] {
 	result.generate = GeneratePointer
 	return result
 } 
-
-
-// testing
-
-/*
-type testStruct struct {
-	a int
-	b string
-}
-
-type testStructCtr gp[testStruct]
-
-func main() {
-	var mapGp *gp[testStruct] = NewGp[testStruct]()
-	// var mapGp *gp[testStruct] = &gp[testStruct]{}
-	mapGp.m = make(map[Ptr]testStruct)
-	mapGp.generate = GeneratePointer
-
-	var ts1 = testStruct{1, "test"}
-	var ts2 = testStruct{2, "test2"}
-	var c1 = mapGp.assoc(ts1)
-	var c2 =  mapGp.assoc(ts2)
-	fmt.Println(mapGp.ref(c1))
-	fmt.Println(mapGp.ref(c2))
-}
-*/
