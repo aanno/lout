@@ -9,7 +9,7 @@ type gopointer[C any,G any] interface {
 	generate()C
 	assoc(goland G)C
 	ref(cland C)G
-	free(cland C)
+	free(clands ...C)
 }
 
 type abstract_map_gopointer[C comparable, G any] struct {
@@ -41,8 +41,10 @@ func (gp abstract_map_gopointer[C,G]) ref(cland C)G {
 	return gp.m[cland]
 }
 
-func (gp abstract_map_gopointer[C,G]) free(cland C) {
-	delete(gp.m, cland)
+func (gp abstract_map_gopointer[C,G]) free(clands ...C) {
+	for _, cland := range clands {
+		delete(gp.m, cland)
+	}
 }
 
 func NewGp[G any]()*Gp[G] {

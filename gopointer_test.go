@@ -22,8 +22,7 @@ func TestSimple(t *testing.T) {
 	c1 := mapGp.assoc(ts1)
 	c2 :=  mapGp.assoc(ts2)
 
-	defer mapGp.free(c1)
-	defer mapGp.free(c2)
+	defer mapGp.free(c1, c2)
 
 	t1 := mapGp.ref(c1)
 	t.Log(t1)
