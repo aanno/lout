@@ -29,7 +29,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define	NO_TARGET	0
 #define	SEEN_TARGET	1
 #define	WRITTEN_TARGET	2

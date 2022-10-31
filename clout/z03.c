@@ -31,7 +31,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #if USE_STAT
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -670,6 +670,7 @@ typedef struct
   unsigned	omode	 : 3;		/ spacing mode: edge-to-edge, etc   /
 } GAP;
 */
+#pragma clang diagnostic ignored "-Wtypedef-redefinition"
 typedef size_t GoUintptr;
 typedef GoUintptr GAP; 
 

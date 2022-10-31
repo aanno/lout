@@ -29,7 +29,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #define	MAX_DEPTH  	30			/* max depth of galleys      */
 static OBJECT		root_galley;		/* the root galley           */

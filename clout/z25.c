@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #if DEBUG_ON
 
 static	int	limit;			/* column where newline is needed    */

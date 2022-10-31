@@ -31,7 +31,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #define BUFF_SIZE	4096		/* size of one memory buffer */
 #define LINES_GUESS     2000		/* initial guess of number of lines */

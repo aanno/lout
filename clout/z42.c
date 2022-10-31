@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define INIT_COLOUR_NUM	100
 
 

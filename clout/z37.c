@@ -33,7 +33,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define DEFAULT_XHEIGHT 500	/* the default XHeight if font has none      */
 #define	NO_FONT		  0	/* the not-a-font font number                */
 #define SZ_DFT	       1000	/* default lout size is 50p                  */

@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define	LEFT_ASSOC	0
 #define	RIGHT_ASSOC	1
 

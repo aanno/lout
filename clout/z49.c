@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #define pnl fputs((char *) STR_NEWLINE, out_fp)
 #define p0(str)                 { fputs(str, out_fp);                   pnl; }

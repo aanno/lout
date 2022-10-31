@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define	NODE_MULT	4		/* what to multiply node indexes by  */
 #define MAX_CHAR	256		/* max chars represented in one char */
 #define TRIE_MAGIC	5361534

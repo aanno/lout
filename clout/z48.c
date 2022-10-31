@@ -38,7 +38,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 /* ANSI headers */
 #include <ctype.h>

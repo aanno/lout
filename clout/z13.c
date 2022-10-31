@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define	broken(x)	back(x, ROWM)	/* OK since no vertical sizes yet    */
 
 #if DEBUG_ON

@@ -29,7 +29,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define	TAB_SIZE	211
 #define	MAX_CACHE	180
 

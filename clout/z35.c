@@ -29,7 +29,7 @@
 /*****************************************************************************/
 #include <time.h>
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #define load(str, typ, encl)						\
   sym = InsertSym(str, typ, no_fpos, DEFAULT_PREC,  			\

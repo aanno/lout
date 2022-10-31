@@ -29,7 +29,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #if DEBUG_ON
 #define	MULTI	  7			/* max no of simultaneous calls      */

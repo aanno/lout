@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #if DEBUG_ON
 FULL_CHAR *DebugInnersNames(OBJECT inners)

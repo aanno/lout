@@ -28,7 +28,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 
 #define	MEM_CHUNK	1020		/* how many ALIGNs to get from sys   */
 

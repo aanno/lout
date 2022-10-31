@@ -37,7 +37,7 @@
 /*                                                                           */
 /*****************************************************************************/
 // #include "externs.h"
-#include "../go-externs.h"
+#include "lout.h"
 #define	BUFFER_SIZE    8192		/* size of buffer for block read     */
 #define	OTHER		0		/* punctuation or other character    */
 #define	LETTER		1		/* letter type                       */
