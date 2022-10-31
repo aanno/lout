@@ -119,7 +119,7 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size,int dim)
       {	debug0(DGP, DD, "FindAdjustIncrement returning 0 (tab gap)");
 	return 0;
       }
-      mk += ActualGap(fwd(prev, dim), back(y, dim), fwd(y, dim), &gap(g),
+      mk += ActualGap(fwd(prev, dim), back(y, dim), fwd(y, dim), gap(g),
 		frame_size, mk);
       prev = y;
       adjustable_gaps++;
@@ -797,8 +797,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    /* NB state change here */
 	    fwd(prev, dim) += xb - back(x, dim);
 	    back(x, dim) = xb;
-	    mode(gap(g)) = EDGE_MODE;
-	    units(gap(g)) = FIXED_UNIT;
+	    setMode(gap(g), EDGE_MODE);
+	    setUnits(gap(g), FIXED_UNIT);
 	  }
 	  FirstDefinite(x, link, prev, jn);  /* not LDN since already done */
 
@@ -854,7 +854,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	      prev = FixAndPrintObject(prev, mk, back(prev, dim),
 		fwd(prev, dim) + inc, dim, NO_SUPPRESS, pg, count,&aback,&afwd);
 	    }
-	    mk += ActualGap(afwd, back(y, dim), fwd(y, dim), &gap(g),
+	    mk += ActualGap(afwd, back(y, dim), fwd(y, dim), gap(g),
 		    frame_size, mk - back_edge);
 	    prev = y;
 	    NextDefiniteWithGapLDN(x, link, y, g, jn, mk, dim, NO_SUPPRESS, pg);
@@ -1053,7 +1053,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	while( link != x )
 	{
 	  save_actual_gap(g) = ActualGap(fwd(prev, dim), back(y, dim),
-		fwd(y, dim), &gap(g), frame_size, mk - back_edge);
+		fwd(y, dim), gap(g), frame_size, mk - back_edge);
 	  mk += save_actual_gap(g);
 	  if( mode(gap(g)) == TAB_MODE || units(gap(g)) == AVAIL_UNIT
 				       || units(gap(g)) == FRAME_UNIT )
