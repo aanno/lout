@@ -660,27 +660,23 @@ extern const FULL_CHAR* const STR_SCALE_DOWN;
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 typedef struct
-{ FULL_LENGTH	owidth;			/* width of the gap                  */
-  BOOLEAN	onobreak : 1;		/* TRUE if this gap is unbreakable   */
-  BOOLEAN	omark	 : 1;		/* TRUE if this gap is marked        */
-  BOOLEAN	ojoin	 : 1;		/* TRUE if joins exist across gap    */
-  unsigned	ounits	 : 3;		/* units of measurement: fixed, etc  */
-  unsigned	omode	 : 3;		/* spacing mode: edge-to-edge, etc   */
+{ FULL_LENGTH	owidth;			/ width of the gap                  /
+  BOOLEAN	onobreak : 1;		/ TRUE if this gap is unbreakable   /
+  BOOLEAN	omark	 : 1;		/ TRUE if this gap is marked        /
+  BOOLEAN	ojoin	 : 1;		/ TRUE if joins exist across gap    /
+  unsigned	ounits	 : 3;		/ units of measurement: fixed, etc  /
+  unsigned	omode	 : 3;		/ spacing mode: edge-to-edge, etc   /
 } GAP;
-
-/** inline function not possible - also used for setters */
-#define	nobreak(x)	(x)->onobreak
-#define	mark(x)		(x)->omark
-#define	join(x)		(x)->ojoin
-#define	units(x)	(x)->ounits
-#define	mode(x)		(x)->omode
-#define	width(x)	(x)->owidth
+*/
+typedef size_t GoUintptr;
+typedef GoUintptr GAP; 
 
 /*
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
-INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
+INLINE void SetGapOnRef(GAP x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
   nobreak(*x) = xnobreak;
   mark(*x) = xmark;
   join(*x) = xjoin;
@@ -691,7 +687,7 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( &(x), &(y) ) )
-INLINE void GapCopyOnRef(GAP* x, GAP* y) {
+INLINE void GapCopyOnRef(GAP x, GAP y) {
     nobreak(*x) = nobreak(*y);
     mark(*x) = mark(*y);
     join(*x) = join(*y);
@@ -728,8 +724,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP*		oline_gap;		/* separation between lines          */
-  GAP*		ospace_gap;		/* separation induced by white space */
+  GAP		oline_gap;		/* separation between lines          */
+  GAP		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -1756,7 +1752,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP*		ogap;
+     GAP		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */
@@ -3573,13 +3569,13 @@ extern	void	  AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim);
 
 /*****  z17.c	  Gap Widths		**************************************/
 extern	int	  GetWidth(OBJECT x, STYLE *style);
-extern	void	  GetGap(OBJECT x, STYLE *style, GAP *res_gap,
+extern	void	  GetGap(OBJECT x, STYLE *style, GAP res_gap,
 		    unsigned *res_inc);
-extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap);
-extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir);
+extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap);
+extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP xgap, int dir);
 extern	FULL_LENGTH  ActualGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c,
-		       GAP *xgap, FULL_LENGTH f, FULL_LENGTH mk);
-extern	FULL_CHAR *EchoGap(GAP *xgap);
+		       GAP xgap, FULL_LENGTH f, FULL_LENGTH mk);
+extern	FULL_CHAR *EchoGap(GAP xgap);
 
 /*****  z18.c	  Galley Transfer	**************************************/
 extern	STYLE	  InitialStyle;

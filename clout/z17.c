@@ -191,7 +191,7 @@ int GetWidth(OBJECT x, STYLE *style)
 /*****************************************************************************/
 #define setwidths(x, y) w = x; units(*res_gap) = y;  break;
 
-void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
+void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
 { int w;  float num; 
   FULL_CHAR *str;
 
@@ -317,7 +317,7 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap)
+FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap)
 { FULL_LENGTH res;  int w = 0;
   switch( units(*xgap) )
   {
@@ -385,7 +385,7 @@ FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap)
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir)
+FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP xgap, int dir)
 { FULL_LENGTH tmp, res;
   FULL_LENGTH w = units(*xgap) == FIXED_UNIT ? width(*xgap) : 0;
   switch( mode(*xgap) )
@@ -438,7 +438,7 @@ FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir)
 /*****************************************************************************/
 
 FULL_LENGTH ActualGap(FULL_LENGTH prevf, FULL_LENGTH b, FULL_LENGTH f,
-  GAP *xgap, FULL_LENGTH frame_size, FULL_LENGTH mk)
+  GAP xgap, FULL_LENGTH frame_size, FULL_LENGTH mk)
 { FULL_LENGTH res;  int w = 0, w2;
   switch( units(*xgap) )
   {
@@ -510,7 +510,7 @@ FULL_LENGTH ActualGap(FULL_LENGTH prevf, FULL_LENGTH b, FULL_LENGTH f,
 /*****************************************************************************/
 #if DEBUG_ON
 
-FULL_CHAR *EchoGap(GAP *xgap)
+FULL_CHAR *EchoGap(GAP xgap)
 { char *letter = "?ehxoktH";  char c;  FULL_CHAR *res;
   char *u;
   static int i = 0;

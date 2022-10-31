@@ -923,8 +923,8 @@ static OBJECT BuildLines(OBJECT current, FULL_CHAR *buff, int *bufftop, int ladj
 
     /* now attach the new word to res, preceded by a one-line gap */
     New(gp, GAP_OBJ);
-    mark(gap(gp)) = FALSE;
-    join(gap(gp)) = FALSE;
+    setMark(gap(gp), FALSE);
+    setJoin(gap(gp), FALSE);
     FposCopy(fpos(gp), xfp);
     gpword = MakeWord(WORD, AsciiToFull("1vx"), &xfp);
     Link(gp, gpword);

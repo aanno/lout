@@ -86,6 +86,27 @@ extern void SetGap(GoUintptr x, GoUint8 xnobreak, GoUint8 xmark, GoUint8 xjoin, 
 extern void GapCopy(GoUintptr x, GoUintptr y);
 extern GoUint8 GapEqual(GoUintptr x, GoUintptr y);
 
+/*
+#define	nobreak(x)	(x)->onobreak
+#define	mark(x)		(x)->omark
+#define	join(x)		(x)->ojoin
+#define	units(x)	(x)->ounits
+#define	mode(x)		(x)->omode
+#define	width(x)	(x)->owidth
+*/
+extern GoUint8 nobreak(GoUintptr x);
+extern GoUint8 mark(GoUintptr x);
+extern GoUint8 join(GoUintptr x);
+extern GoUint8 units(GoUintptr x);
+extern GoUint8 mode(GoUintptr x);
+extern GoInt32 width(GoUintptr x);
+extern void setNobreak(GoUintptr x, GoUint8 nobreak);
+extern void setMark(GoUintptr x, GoUint8 mark);
+extern void setJoin(GoUintptr x, GoUint8 join);
+extern void setUnits(GoUintptr x, GoUint8 units);
+extern void setMode(GoUintptr x, GoUint8 mode);
+extern void setWidth(GoUintptr x, GoInt32 width);
+
 #ifdef __cplusplus
 }
 #endif

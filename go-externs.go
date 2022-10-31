@@ -130,13 +130,95 @@ func GapEqual(x, y GAP) bool {
 		xgap.owidth == ygap.owidth
 }
 
+/*
+#define	nobreak(x)	(x)->onobreak
+#define	mark(x)		(x)->omark
+#define	join(x)		(x)->ojoin
+#define	units(x)	(x)->ounits
+#define	mode(x)		(x)->omode
+#define	width(x)	(x)->owidth
+*/
+//export nobreak
+func nobreak(x GAP)bool {
+
+	gap := mapGap.ref(x)
+	return gap.onobreak
+}
+//export mark
+func mark(x GAP)bool {
+
+	gap := mapGap.ref(x)
+	return gap.omark
+}
+//export join
+func join(x GAP)bool {
+
+	gap := mapGap.ref(x)
+	return gap.ojoin
+}
+//export units
+func units(x GAP)uint8 {
+
+	gap := mapGap.ref(x)
+	return gap.ounits
+}
+//export mode
+func mode(x GAP)uint8 {
+
+	gap := mapGap.ref(x)
+	return gap.omode
+}
+//export width
+func width(x GAP)FULL_LENGTH {
+
+	gap := mapGap.ref(x)
+	return gap.owidth
+}
+
+//export setNobreak
+func setNobreak(x GAP, nobreak bool) {
+
+	gap := mapGap.ref(x)
+	gap.onobreak = nobreak
+}
+//export setMark
+func setMark(x GAP, mark bool) {
+
+	gap := mapGap.ref(x)
+	gap.omark = mark
+}
+//export setJoin
+func setJoin(x GAP, join bool) {
+
+	gap := mapGap.ref(x)
+	gap.ojoin = join
+}
+//export setUnits
+func setUnits(x GAP, units uint8) {
+
+	gap := mapGap.ref(x)
+	gap.ounits = units
+}
+//export setMode
+func setMode(x GAP, mode uint8) {
+
+	gap := mapGap.ref(x)
+	gap.omode = mode
+}
+//export setWidth
+func setWidth(x GAP, width FULL_LENGTH) {
+
+	gap := mapGap.ref(x)
+	gap.owidth = width
+}
+
 /*****  z17.c	  Gap Widths		*************************************
 extern	int	  GetWidth(OBJECT x, STYLE *style);
-extern	void	  GetGap(OBJECT x, STYLE *style, GAP *res_gap,
+extern	void	  GetGap(OBJECT x, STYLE *style, GAP res_gap,
 		    unsigned *res_inc);
-extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap);
-extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir);
+extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap);
+extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP xgap, int dir);
 extern	FULL_LENGTH  ActualGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c,
-		       GAP *xgap, FULL_LENGTH f, FULL_LENGTH mk);
-extern	FULL_CHAR *EchoGap(GAP *xgap);
+		       GAP xgap, FULL_LENGTH f, FULL_LENGTH mk);
+extern	FULL_CHAR *EchoGap(GAP xgap);
 */
