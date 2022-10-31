@@ -378,7 +378,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	*** */
 	else
 	{ cprint( EchoCatOp(outer_prec, mark(gap(x)), join(gap(x))) );
-	  cprint( EchoGap(&gap(x)) );
+	  cprint( EchoGap(gap(x)) );
 	}
 	aprint(" ");
 	break;
@@ -1066,7 +1066,7 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
     else if( type(y) == GAP_OBJ )
     {
       debug4(ANY, D, "| %p %-7s %20s %s", y, "gap_obj",
-	Image(type(y)), EchoGap(&gap(y)));
+	Image(type(y)), EchoGap(gap(y)));
     }
     else if( type(y) == EXPAND_IND )
     { OBJECT z = nilobj;

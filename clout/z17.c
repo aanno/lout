@@ -525,19 +525,19 @@ FULL_CHAR *EchoGap(GAP xgap)
     case 0:	     sprintf(buff[i], "(none)%c", c);
 		     break;
 
-    case FIXED_UNIT: sprintf(buff[i], "%.1fc%c%s", (float) width(xgap)/CM, c,u);
+    case FIXED_UNIT: sprintf(buff[i], "%.1fc%c%s", ((float) width(xgap))/CM, c,u);
 		     break;
 
-    case NEXT_UNIT:  sprintf(buff[i], "%.1fw%c%s", (float) width(xgap)/FR, c,u);
+    case NEXT_UNIT:  sprintf(buff[i], "%.1fw%c%s", ((float) width(xgap))/FR, c,u);
 		     break;
 
-    case FRAME_UNIT: sprintf(buff[i], "%.1fb%c%s", (float) width(xgap)/FR, c,u);
+    case FRAME_UNIT: sprintf(buff[i], "%.1fb%c%s", ((float) width(xgap))/FR, c,u);
 		     break;
 
-    case AVAIL_UNIT: sprintf(buff[i], "%.1fr%c%s", (float) width(xgap)/FR, c,u);
+    case AVAIL_UNIT: sprintf(buff[i], "%.1fr%c%s", ((float) width(xgap))/FR, c,u);
 		     break;
 
-    case DEG_UNIT:   sprintf(buff[i], "%.1fd", (float) width(xgap) / DG);
+    case DEG_UNIT:   sprintf(buff[i], "%.1fd", ((float) width(xgap))/DG);
 		     break;
 
     default:	     assert(FALSE, "EchoGap: units");

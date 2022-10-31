@@ -192,31 +192,31 @@ OBJECT y, int dim)
   if( is_indefinite(type(x)) )
   {
     beffect = pg == nilobj ? *b :
-      MinGap(fwd(prec_def, dim), *b, *f, &gap(pg));
+      MinGap(fwd(prec_def, dim), *b, *f, gap(pg));
 
     feffect = sg == nilobj ? *f :
-      MinGap(*f, back(sd, dim), fwd(sd, dim), &gap(sg));
+      MinGap(*f, back(sd, dim), fwd(sd, dim), gap(sg));
 
     seffect = pg == nilobj ? sg == nilobj ? 0 : back(sd, dim) :
       sg == nilobj ? fwd(prec_def, dim) :
-      MinGap(fwd(prec_def, dim), back(sd,dim), fwd(sd,dim), &gap(sg));
+      MinGap(fwd(prec_def, dim), back(sd,dim), fwd(sd,dim), gap(sg));
   }
   else /* !is_indefinite(type(x)) */
   {
     beffect = pg == nilobj ?  *b - back(x, dim) :
-      MinGap(fwd(prec_def, dim), *b,           *f,          &gap(pg)) -
-      MinGap(fwd(prec_def, dim), back(x, dim), fwd(x, dim), &gap(pg));
+      MinGap(fwd(prec_def, dim), *b,           *f,          gap(pg)) -
+      MinGap(fwd(prec_def, dim), back(x, dim), fwd(x, dim), gap(pg));
 
     feffect = sg == nilobj ? *f - fwd(x, dim) :
-      MinGap(*f,          back(sd, dim), fwd(sd, dim), &gap(sg)) -
-      MinGap(fwd(x, dim), back(sd, dim), fwd(sd, dim), &gap(sg));
+      MinGap(*f,          back(sd, dim), fwd(sd, dim), gap(sg)) -
+      MinGap(fwd(x, dim), back(sd, dim), fwd(sd, dim), gap(sg));
 	
     seffect = 0;
   }
 
   debug3(DSA, D, "  pg = %s, sg = %s, side = %s",
-    pg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(pg)),
-    sg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(sg)), Image(side));
+    pg == nilobj ? AsciiToFull("<nil>") : EchoGap(gap(pg)),
+    sg == nilobj ? AsciiToFull("<nil>") : EchoGap(gap(sg)), Image(side));
   debug3(DSA, D, "  beffect = %s, feffect = %s, seffect = %s",
     EchoLength(beffect), EchoLength(feffect), EchoLength(seffect));
   back(x, dim) = *b;  fwd(x, dim) = *f;

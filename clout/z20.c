@@ -615,15 +615,15 @@ void FlushGalley(OBJECT hd)
 	    /* calculate parallel effect of adding y to dest */
 	    f = dest_fwd  + fwd(y, dim) - fwd(prec_def, dim) +
 		  ActualGap(fwd(prec_def, dim), back(y, dim),
-			fwd(y, dim), &gap(prec_gap), frame_size,
+			fwd(y, dim), gap(prec_gap), frame_size,
 			dest_back + dest_fwd - fwd(prec_def, dim));
 	    debug5(DGF, DD, "  f = %s + %s - %s + %s (prec_gap %s)",
 	      EchoLength(dest_fwd), EchoLength(fwd(y, dim)),
 	      EchoLength(fwd(prec_def, dim)), EchoLength(
 		  ActualGap(fwd(prec_def, dim), back(y, dim),
-			fwd(y, dim), &gap(prec_gap), frame_size,
+			fwd(y, dim), gap(prec_gap), frame_size,
 			dest_back + dest_fwd - fwd(prec_def, dim))
-	      ), EchoGap(&gap(prec_gap)));
+	      ), EchoGap(gap(prec_gap)));
 	    debug3(DGF, DD, "  b,f: %s,%s;   dest_encl: %s",
 			EchoLength(dest_back), EchoLength(f),
 			EchoConstraint(&dest_par_constr));
@@ -646,7 +646,7 @@ void FlushGalley(OBJECT hd)
 		    SymName(actual(hd)), EchoConstraint(&constraint(z)));
 		  if( units(gap(prec_gap))==FRAME_UNIT &&
 		      width(gap(prec_gap)) > FR ) 
-		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(&gap(prec_gap)));
+		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(gap(prec_gap)));
 		  }
 		  if( !FitsConstraint(dest_back, f, dest_par_constr) )
 		  { debug3(DOG, D, "  !FitsConstraint(%s, %s, %s)",
@@ -658,7 +658,7 @@ void FlushGalley(OBJECT hd)
 		      opt_comps_permitted(hd));
 		  }
 		  debug4(DOG, D, "prec_gap = %s;  y = %s (%s,%s):",
-		    EchoGap(&gap(prec_gap)), Image(type(y)),
+		    EchoGap(gap(prec_gap)), Image(type(y)),
 		    EchoLength(back(y, dim)), EchoLength(fwd(y, dim)));
 		  DebugObject(y);
 		)

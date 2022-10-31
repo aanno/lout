@@ -292,7 +292,7 @@ void BreakChange(STYLE *style, OBJECT x)
 			{
 			  link = NextDown(NextDown(link));
 			  Child(y, link);
-			  GetGap(y, style, &res_gap, &gap_inc);
+			  GetGap(y, style, res_gap, &gap_inc);
 			  outdent_len(*style) = gap_inc == GAP_ABS ?
 			    width(res_gap) : gap_inc == GAP_INC ?
 			    outdent_len(*style) + width(res_gap) :
@@ -347,7 +347,7 @@ void BreakChange(STYLE *style, OBJECT x)
 
 void YUnitChange(STYLE *style, OBJECT x)
 { GAP res_gap; unsigned gap_inc;
-  GetGap(x, style, &res_gap, &gap_inc);
+  GetGap(x, style, res_gap, &gap_inc);
   if( units(res_gap) != FIXED_UNIT )
     Error(11, 9, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_YUNIT);
@@ -369,7 +369,7 @@ void YUnitChange(STYLE *style, OBJECT x)
 
 void ZUnitChange(STYLE *style, OBJECT x)
 { GAP res_gap; unsigned gap_inc;
-  GetGap(x, style, &res_gap, &gap_inc);
+  GetGap(x, style, res_gap, &gap_inc);
   if( units(res_gap) != FIXED_UNIT )
     Error(11, 10, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_ZUNIT);

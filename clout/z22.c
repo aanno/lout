@@ -643,7 +643,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  /* previous gap must have preceded an indefinite, so overwrite it */
 	  FposCopy(fpos(last), fpos(y));
 	  debug2(DOG, DD, "  overwriting GAP_OBJ %s with %s",
-	    EchoGap(gap(last)), EchoGap(&gap(y)));
+	    EchoGap(gap(last)), EchoGap(gap(y)));
 	  GapCopy(gap(last), gap(y));
 	  if( Down(last) != last )  DisposeChild(Down(last));
 	  if( Down(y) != y )

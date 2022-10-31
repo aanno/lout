@@ -351,8 +351,8 @@ BOOLEAN VerticalHyphenate(OBJECT y)
 
   /* make sure that first gap does not change when rearranging */
   rump_fwd = find_max(rump_fwd, fwd(prev, ROWM));
-  if( MinGap(rump_fwd, back(nxt, ROWM), fwd(nxt, ROWM), &gap(g)) !=
-      MinGap(fwd(prev, ROWM), back(nxt, ROWM), fwd(nxt, ROWM), &gap(g)) )
+  if( MinGap(rump_fwd, back(nxt, ROWM), fwd(nxt, ROWM), gap(g)) !=
+      MinGap(fwd(prev, ROWM), back(nxt, ROWM), fwd(nxt, ROWM), gap(g)) )
   { debug0(DVH, D, "] VerticalHyphenate returning FALSE (first gap changes)");
     return FALSE;
   }

@@ -267,7 +267,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
 
     opt_gazumped(hd) = TRUE;
     debug2(DOG, D, "GazumpOptimize(%s) new gap is %s",
-      SymName(actual(hd)), EchoGap(&gap(g)));
+      SymName(actual(hd)), EchoGap(gap(g)));
   }
 
   /* refresh the number of comps permitted into the next target */
@@ -415,7 +415,7 @@ static void DebugOptimizedAcat(OBJECT x)
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(y, link);
     if( type(y) == GAP_OBJ )
-    { debug1(DOG, D, "  GAP_OBJ %s", EchoGap(&gap(y)));
+    { debug1(DOG, D, "  GAP_OBJ %s", EchoGap(gap(y)));
     }
     else if( is_word(type(y)) )
     { debug2(DOG, D, "  word (%s, %s)", EchoLength(back(y, COLM)),
