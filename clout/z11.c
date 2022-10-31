@@ -106,7 +106,8 @@ FULL_CHAR *EchoStyle(STYLE *style)
 /*****************************************************************************/
 
 static void changespace(STYLE *style, OBJECT x)
-{ GAP res_gap;  unsigned gap_inc;
+{ GAP res_gap = newGap();
+  unsigned gap_inc;
   assert( is_word(type(x)), "changespace: type(x)!" );
   if( beginsbreakstyle(string(x)[0]) )
   {
@@ -185,7 +186,8 @@ void SpaceChange(STYLE *style, OBJECT x)
 /*****************************************************************************/
 
 static void changebreak(STYLE *style, OBJECT x)
-{ GAP res_gap;  unsigned gap_inc;
+{ GAP res_gap = newGap();
+  unsigned gap_inc;
   debug0(DSS, D, "[ changebreak");
   if( beginsbreakstyle(string(x)[0]) )
   {
@@ -247,7 +249,8 @@ static void changebreak(STYLE *style, OBJECT x)
 
 void BreakChange(STYLE *style, OBJECT x)
 { OBJECT link, y;
-  GAP res_gap;  unsigned gap_inc;
+  GAP res_gap = newGap();
+  unsigned gap_inc;
   debug3(DSS, D, "BreakChange(%s, %s at %s)", EchoStyle(style),
     EchoObject(x), EchoFilePos(&fpos(x)));
   switch( type(x) )
@@ -346,7 +349,8 @@ void BreakChange(STYLE *style, OBJECT x)
 /*****************************************************************************/
 
 void YUnitChange(STYLE *style, OBJECT x)
-{ GAP res_gap; unsigned gap_inc;
+{ GAP res_gap = newGap();
+  unsigned gap_inc;
   GetGap(x, style, res_gap, &gap_inc);
   if( units(res_gap) != FIXED_UNIT )
     Error(11, 9, "this unit not allowed with %s symbol",
@@ -368,7 +372,8 @@ void YUnitChange(STYLE *style, OBJECT x)
 /*****************************************************************************/
 
 void ZUnitChange(STYLE *style, OBJECT x)
-{ GAP res_gap; unsigned gap_inc;
+{ GAP res_gap = newGap();
+  unsigned gap_inc;
   GetGap(x, style, res_gap, &gap_inc);
   if( units(res_gap) != FIXED_UNIT )
     Error(11, 10, "this unit not allowed with %s symbol",

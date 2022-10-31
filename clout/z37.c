@@ -1071,7 +1071,6 @@ static OBJECT FontRead(FULL_CHAR *family_name, FULL_CHAR *face_name, OBJECT err)
   return face;
 
 } /* end FontRead */
-
 
 /*@::FontChange()@************************************************************/
 /*                                                                           */
@@ -1090,7 +1089,8 @@ void FontChange(STYLE *style, OBJECT x)
 { /* register */ int i;
   OBJECT requested_family, requested_face, requested_size;
   OBJECT par[3], family, face, fsize, y = nilobj, link, new, old, tmpf;
-  GAP gp;  FULL_LENGTH flen = 0;  int num, c;  unsigned inc;
+  GAP gp = newGap();
+  FULL_LENGTH flen = 0;  int num, c;  unsigned inc;
   struct metrics *newfnt, *oldfnt;
   FULL_CHAR *lig, *old_lig;
   int cmptop;
