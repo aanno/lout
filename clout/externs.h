@@ -2929,6 +2929,8 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
 }
 */
 #define New(x, typ) (x) = returnNew((x), (typ))
+
+#pragma clang diagnostic ignored "-Wuninitialized"
 INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checknew(typ);
   zz_hold = GetMem(zz_hold, zz_lengths[typ], no_fpos);
@@ -2938,7 +2940,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
-  return zz_hold;
+  return x;
 }
 
 #define NewWord(x, typ, len, pos)					\
