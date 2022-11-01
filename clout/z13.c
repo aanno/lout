@@ -758,7 +758,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	for( link = Down(x);  link != x;  link = NextDown(link) )
 	{ Child(y, link);
 	  if( type(y) == GAP_OBJ && mark(gap(y)) )
-	  { mark(gap(y)) = FALSE;
+	  { setMark(&gap(y), FALSE);
 	    rpos = y;
 	  }
 	}

@@ -1091,7 +1091,7 @@ OBJECT Hyphenate(OBJECT x)
     {
       if( type(y) == GAP_OBJ && mode(gap(y)) == HYPH_MODE )
       {
-	nobreak(gap(y)) = FALSE;
+	setNobreak(&gap(y), FALSE);
 
 	/* don't hyphenate a word following &<len>h */
 	if( NextDown(link) != x )
