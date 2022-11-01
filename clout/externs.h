@@ -2792,7 +2792,19 @@ extern	const FULL_CHAR *Image(unsigned int c);
 #define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
 
+// defined in z31.c
+extern OBJECT		zz_free[], zz_hold, zz_tmp, zz_res;
+extern int		zz_size;
+extern unsigned char	zz_lengths[];		/* DISPOSED is 1 + max type */
+extern OBJECT 		xx_link, xx_tmp, xx_res, xx_hold;
+
 #if DEBUG_ON
+
+// defined in z31.c if DEBUG_ON
+extern int	zz_newcount;	/* number of calls to New()          */
+extern int	zz_disposecount;	/* number of calls to Dispose()      */
+extern int	zz_listcount;	/* number of elements in zz_free[]   */
+
 #define newcount zz_newcount++
 #define freecount zz_listcount--
 
@@ -2887,7 +2899,7 @@ typedef struct
   }									\
   mallocsetfile(x);							\
 }
-/* not working!
+/*
 INLINE void GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
   newcount;
   if( (zz_size=(siz)) >= MAX_OBJECT_REC )
