@@ -2963,6 +2963,7 @@ inline void setdisposed() {
 
 #if USE_MALLOC_DEBUG
 
+/*
 #define	PutMem(x, siz)							\
 { disposecount;								\
   zz_hold = (x);							\
@@ -2970,7 +2971,7 @@ inline void setdisposed() {
   mallocheadercheck(zz_hold,zz_size);					\
   free( malloc_oheader(x) );						\
 }
-/*
+*/
 INLINE void PutMem(POINTER x, int size) {
     disposecount();
     zz_hold = (x);
@@ -2978,51 +2979,51 @@ INLINE void PutMem(POINTER x, int size) {
     mallocheadercheck(zz_hold,zz_size);
     free( malloc_oheader(x) );
 }
-*/
 
+/*
 #define Dispose(x)							\
 { zz_hold = (x);							\
   PutMem(zz_hold, is_word(type(zz_hold)) ?				\
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
 }
-/*
+*/
 INLINE void Dispose(POINTER x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
 }
-*/
 
 #else
 
+/*
 #define	PutMem(x, siz)							\
 { disposecount;								\
   free( (x) );								\
 }
-/*
+*/
 INLINE void PutMem(POINTER x , int size) {
     disposecount();
     free( (x) );
 }
-*/
 
+/*
 #define	Dispose(x)							\
 { zz_hold = (x);							\
   setdisposed;								\
   PutMem(zz_hold,0);							\
 }
-/*
+*/
 INLINE Dispose(POINTER x) {
     zz_hold = (x);
     setdisposed();
     PutMem(zz_hold, 0);
 }
-*/
 
 #endif
 
 #else
 
+/*
 #define PutMem(x, siz)							\
 { disposecount;								\
   zz_hold = (x);							\
@@ -3032,32 +3033,31 @@ INLINE Dispose(POINTER x) {
   pred(zz_hold, CHILD) = zz_free[zz_size];				\
   zz_free[zz_size] = zz_hold;						\
 }
-/*
+*/
 INLINE void PutMem(POINTER x, int size) {
-    disposecount();
+    disposecount;
     zz_hold = (x);
     zz_size = (size);
     mallocheadercheck(zz_hold,zz_size);
-    disposecheck();
+    disposecheck;
     pred(zz_hold, CHILD) = zz_free[zz_size];
     zz_free[zz_size] = zz_hold;
 }
-*/
 
+/*
 #define Dispose(x)							\
 { zz_hold = (x);							\
   PutMem(zz_hold, is_word(type(zz_hold)) ?				\
     rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
   setdisposed;								\
 }
-/*
+*/
 INLINE void Dispose(OBJECT x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
-    setdisposed();
+    setdisposed;
 }
-*/
 
 #endif
 
