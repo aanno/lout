@@ -1990,8 +1990,8 @@ typedef REAL_OBJECT* OBJECT;
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
 #define	shift_type(x)		width(space_gap(save_style(x)))
-// #define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
-#define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
+#define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
+// #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap(save_style(x))
 
 #define actual(x)		(x)->os2.oactual
