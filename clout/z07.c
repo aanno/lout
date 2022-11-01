@@ -138,7 +138,7 @@ int DisposeObject(OBJECT x)
 
 OBJECT MakeWord(unsigned typ, const FULL_CHAR *str, FILE_POS *pos)
 { OBJECT res;
-  NewWord(res, typ, StringLength(str), pos);
+  res = NewWord(res, typ, StringLength(str), pos);
   StringCopy(string(res), str);
   FposCopy(fpos(res), *pos);
   debug4(DOS, DDD, "MakeWord(%s, %s, %s) returning %s",
@@ -161,7 +161,7 @@ OBJECT MakeWordTwo(unsigned typ, const FULL_CHAR *str1, const FULL_CHAR *str2, F
   OBJECT res;
   debug4(DOS, DDD, "MakeWordTwo(%s, %s, %s, %s)",
     Image(typ), str1, str2, EchoFilePos(pos));
-  NewWord(res, typ, len1 + len2, pos);
+  res = NewWord(res, typ, len1 + len2, pos);
   StringCopy(string(res), str1);
   StringCopy(&string(res)[len1], str2);
   FposCopy(fpos(res), *pos);
@@ -185,7 +185,7 @@ OBJECT MakeWordThree(const FULL_CHAR *s1, const FULL_CHAR *s2, const FULL_CHAR *
   int len3 = StringLength(s3);
   OBJECT res;
   debug3(DOS, DDD, "MakeWordThree(%s, %s, %s)", s1, s2, s3);
-  NewWord(res, WORD, len1 + len2 + len3, no_fpos);
+  res = NewWord(res, WORD, len1 + len2 + len3, no_fpos);
   StringCopy(string(res), s1);
   StringCopy(&string(res)[len1], s2);
   StringCopy(&string(res)[len1 + len2], s3);
@@ -215,7 +215,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
     case WORD:
     case QWORD:
     
-      NewWord(res, type(x), StringLength(string(x)), pos);
+      res = NewWord(res, type(x), StringLength(string(x)), pos);
       StringCopy(string(res), string(x));
       break;
 

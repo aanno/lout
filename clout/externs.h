@@ -2943,9 +2943,10 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   return x;
 }
 
+/*
 #define NewWord(x, typ, len, pos)					\
 { zz_size = sizeof(struct word_type) - 4 + ((len)+1)*sizeof(FULL_CHAR);	\
-  /* NB the following line RESETS zz_size */				\
+  / NB the following line RESETS zz_size /				\
   zz_hold = GetMem(zz_hold, ceiling(zz_size, sizeof(ALIGN)), pos);		\
   checkmem(zz_hold, typ);						\
   rec_size(zz_hold) = zz_size;						\
@@ -2954,6 +2955,20 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   mallocheadercheck(zz_hold,zz_size);					\
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =			\
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;		\
+}
+*/
+INLINE OBJECT NewWord(OBJECT x, OBJTYPE typ, size_t len, FILE_POS* pos) {
+  zz_size = sizeof(struct word_type) - 4 + ((len)+1)*sizeof(FULL_CHAR);
+  /* NB the following line RESETS zz_size */
+  zz_hold = GetMem(zz_hold, ceiling(zz_size, sizeof(ALIGN)), pos);
+  checkmem(zz_hold, typ);
+  rec_size(zz_hold) = zz_size;
+  setmemtype(zz_hold, typ);
+  type(zz_hold) = typ;
+  mallocheadercheck(zz_hold,zz_size);
+  x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
+  pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  return x;
 }
 
 /*@::PutMem(), Dispose()@*****************************************************/

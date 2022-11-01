@@ -304,7 +304,7 @@ void LexPop(void)
 /*****************************************************************************/
 
 #define setword(typ, res, file_pos, str, len)				\
-{ NewWord(res, typ, len, &file_pos);					\
+{ res = NewWord(res, typ, len, &file_pos);					\
   FposCopy(fpos(res), file_pos);					\
   for( ch = 0;  ch < len;  ch++ ) string(res)[ch] = str[ch];		\
   string(res)[ch] = '\0';						\

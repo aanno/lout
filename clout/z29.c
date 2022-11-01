@@ -508,7 +508,7 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
   }
 
   /* need a new OBJECT as well as s */
-  NewWord(p, WORD, len, xfpos);
+  p = NewWord(p, WORD, len, xfpos);
   length(p) = len;
   StringCopy(string(p), str);
   Link(entry, p);
@@ -559,7 +559,7 @@ void InsertAlternativeName(FULL_CHAR *str, OBJECT s, FILE_POS *xfpos)
   }
 
   /* need a new OBJECT as well as s */
-  NewWord(p, WORD, len, xfpos);
+  p = NewWord(p, WORD, len, xfpos);
   length(p) = len;
   StringCopy(string(p), str);
   Link(entry, p);
