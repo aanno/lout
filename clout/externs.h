@@ -677,6 +677,34 @@ typedef struct
 #define	mode(x)		(x).omode
 #define	width(x)	(x).owidth
 
+#define	setNobreak(x, xbreak)	(x)->onobreak = xbreak
+#define	setMark(x, xmark)		(x)->omark = xmark
+#define	setJoin(x, xjoin)		(x)->ojoin = xjoin
+#define	setUnits(x, xunits)	(x)->ounits = xunits
+#define	setMode(x, xmode)		(x)->omode = xmode
+#define	setWidth(x, xwidth)	(x)->owidth = xwidth
+
+/*
+INLINE void setNobreak(GAP* x, BOOLEAN xnobreak) {
+  x->onobreak = xnobreak;
+}
+INLINE void setMark(GAP* x, BOOLEAN xmark) {
+  x->omark = xmark;
+}
+INLINE void setJoin(GAP* x, BOOLEAN xjoin) {
+  x->ojoin = xjoin;
+}
+INLINE void setUnits(GAP* x, unsigned xunits) {
+  x->ounits = xunits;
+}
+INLINE void setMode(GAP* x, unsigned xmode) {
+  x->omode = xmode;
+}
+INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
+  x->owidth = xwidth;
+}
+*/
+
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
@@ -686,17 +714,33 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
   units(*x) = xunits;
   mode(*x) = xmode;
   width(*x) = xwidth;
+/* known not to work
+  setNobreak(x, xnobreak);
+  setMark(x, xmark);
+  setJoin(x, xjoin);
+  setUnits(x, xunits);
+  setMode(x, xmode);
+  setWidth(x, xwidth);
+*/
 }
 
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( &(x), &(y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
-    nobreak(*x) = nobreak(*y);
-    mark(*x) = mark(*y);
-    join(*x) = join(*y);
-    units(*x) = units(*y);
-    mode(*x) = mode(*y);
-    width(*x) = width(*y);
+  nobreak(*x) = nobreak(*y);
+  mark(*x) = mark(*y);
+  join(*x) = join(*y);
+  units(*x) = units(*y);
+  mode(*x) = mode(*y);
+  width(*x) = width(*y);
+/* known not to work
+  setNobreak(x, nobreak(*y));
+  setMark(x, mark(*y));
+  setJoin(x, join(*y));
+  setUnits(x, nobreak(*y));
+  setMode(x, mode(*y));
+  setWidth(x, width(*y));
+*/
 }
 
 inline BOOLEAN GapEqual(GAP x, GAP y) {
@@ -1946,6 +1990,7 @@ typedef REAL_OBJECT* OBJECT;
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
 #define	shift_type(x)		width(space_gap(save_style(x)))
+// #define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
 #define	shift_gap(x)		line_gap(save_style(x))
 
 #define actual(x)		(x)->os2.oactual
