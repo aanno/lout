@@ -2887,6 +2887,21 @@ typedef struct
   }									\
   mallocsetfile(x);							\
 }
+/* not working!
+INLINE void GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
+  newcount;
+  if( (zz_size=(siz)) >= MAX_OBJECT_REC )
+    x = NULL, Error(1, 1, "word is too long", FATAL, pos);
+  else if( zz_free[zz_size] == nilobj )
+    x = GetMemory(zz_size, pos);
+  else
+  { x = zz_free[zz_size];
+    freecount;
+    zz_free[zz_size] = pred(x, CHILD);
+  }
+  mallocsetfile(x);
+}
+*/
 
 #define	New(x, typ)							\
 { checknew(typ);							\
@@ -2898,6 +2913,18 @@ typedef struct
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =			\
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;		\
 }
+/* not working!
+INLINE void New(OBJECT x, OBJTYPE typ) {
+  checknew(typ);
+  GetMem(zz_hold, zz_lengths[typ], no_fpos);
+  type(zz_hold) = typ;
+  setmemtype(zz_hold, typ);
+  mallocheadercheck(zz_hold,zz_lengths[typ]);
+  checkmem(zz_hold, typ);
+  x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
+  pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+}
+*/
 
 #define NewWord(x, typ, len, pos)					\
 { zz_size = sizeof(struct word_type) - 4 + ((len)+1)*sizeof(FULL_CHAR);	\
