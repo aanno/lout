@@ -2916,6 +2916,7 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
   return x;
 }
 
+/*
 #define	New(x, typ)							\
 { checknew(typ);							\
   zz_hold = GetMem(zz_hold, zz_lengths[typ], no_fpos);				\
@@ -2926,8 +2927,9 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =			\
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;		\
 }
-/* not working!
-INLINE void New(OBJECT x, OBJTYPE typ) {
+*/
+#define New(x, typ) (x) = returnNew((x), (typ))
+INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checknew(typ);
   zz_hold = GetMem(zz_hold, zz_lengths[typ], no_fpos);
   type(zz_hold) = typ;
@@ -2936,8 +2938,8 @@ INLINE void New(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  return zz_hold;
 }
-*/
 
 #define NewWord(x, typ, len, pos)					\
 { zz_size = sizeof(struct word_type) - 4 + ((len)+1)*sizeof(FULL_CHAR);	\
