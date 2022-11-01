@@ -189,7 +189,7 @@ int GetWidth(OBJECT x, STYLE *style)
 /*  If there is an error, GetGap prints a message and returns 0ie.           */
 /*                                                                           */
 /*****************************************************************************/
-#define setwidths(x, y) w = x; setUnits(*res_gap, y);  break;
+#define setwidths(x, y) w = x; setUnits(res_gap, y);  break;
 
 void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
 { int w;  float num; 
@@ -198,10 +198,10 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
   debug2(DGW, D, "GetGap( %s, %s, res_gap, res_inc )",
 	EchoObject(x), EchoStyle(style));
 
-  setNobreak(*res_gap, FALSE);
-  setWidth(*res_gap, 0);
-  setUnits(*res_gap, FIXED_UNIT);
-  setMode(*res_gap, EDGE_MODE);
+  setNobreak(res_gap, FALSE);
+  setWidth(res_gap, 0);
+  setUnits(res_gap, FIXED_UNIT);
+  setMode(res_gap, EDGE_MODE);
   *res_inc = GAP_ABS;
 
   /* make sure we have a WORD or QWORD argument */
@@ -270,19 +270,19 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
     Error(17, 5, "%s exceeds maximum allowed gap size", INTERN, &fpos(x),
       string(x));
   *** */
-  setWidth(*res_gap, w);
+  setWidth(res_gap, w);
 
   /* read the optional gap mode */
   switch( *str )
   {
     case CH_NOBREAK:
-    case '\0':		setMode(*res_gap, EDGE_MODE);          break;
-    case CH_MODE_EDGE:	setMode(*res_gap, EDGE_MODE);  str++;  break;
-    case CH_MODE_HYPH:	setMode(*res_gap, HYPH_MODE);  str++;  break;
-    case CH_MODE_MARK:	setMode(*res_gap, MARK_MODE);  str++;  break;
-    case CH_MODE_OVER:	setMode(*res_gap, OVER_MODE);  str++;  break;
-    case CH_MODE_KERN:	setMode(*res_gap, KERN_MODE);  str++;  break;
-    case CH_MODE_TABL:	setMode(*res_gap, TAB_MODE);   str++;  break;
+    case '\0':		setMode(res_gap, EDGE_MODE);          break;
+    case CH_MODE_EDGE:	setMode(res_gap, EDGE_MODE);  str++;  break;
+    case CH_MODE_HYPH:	setMode(res_gap, HYPH_MODE);  str++;  break;
+    case CH_MODE_MARK:	setMode(res_gap, MARK_MODE);  str++;  break;
+    case CH_MODE_OVER:	setMode(res_gap, OVER_MODE);  str++;  break;
+    case CH_MODE_KERN:	setMode(res_gap, KERN_MODE);  str++;  break;
+    case CH_MODE_TABL:	setMode(res_gap, TAB_MODE);   str++;  break;
 
     default:	Error(17, 7, "unknown gap mode in %s",
 		  WARN, &fpos(x), string(x));
@@ -296,7 +296,7 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
     if( mode(*res_gap) == HYPH_MODE )
       Error(17, 9, "replacing self-contradictory gap %s by breakable version",
 	WARN, &fpos(x), string(x));
-    else setNobreak(*res_gap, TRUE);
+    else setNobreak(res_gap, TRUE);
     str++;
   }
 

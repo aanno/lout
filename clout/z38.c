@@ -409,9 +409,9 @@ static OBJECT DoVShift(OBJECT x, FULL_LENGTH vshift, OBJECT chld)
   New(res, VSHIFT);
   FposCopy(fpos(res), fpos(x));
   setShift_type(res, GAP_DEC);
-  setUnits(shift_gap(res), FIXED_UNIT);
-  setMode(shift_gap(res), EDGE_MODE);
-  setWidth(shift_gap(res), vshift);
+  setUnits(&shift_gap(res), FIXED_UNIT);
+  setMode(&shift_gap(res), EDGE_MODE);
+  setWidth(&shift_gap(res), vshift);
   underline(res) = UNDER_OFF;
   Link(res, chld);
   return res;

@@ -203,7 +203,7 @@ static BOOLEAN FindSpannerGap(OBJECT thr, unsigned dim, unsigned cat_op,
   else if( type(x) == HEAD && gall_dir(x)==dim && type(PrevDown(link))==LINK )
   { Child(*res, PrevDown(link));
     assert(type(*res) == GAP_OBJ, "FindSpannerGap (HEAD): type(*res)!" );
-    setNobreak(gap(*res), TRUE);
+    setNobreak(&gap(*res), TRUE);
   }
   else *res = nilobj;
 
@@ -974,9 +974,9 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		underline(z) = UNDER_OFF;
 		GapCopy(gap(z), space_gap(save_style(x)));
 		if( display_style(save_style(x)) == DISPLAY_ORAGGED )
-		  setWidth(gap(z), outdent_len(save_style(x)));
+		  setWidth(&gap(z), outdent_len(save_style(x)));
 		else
-		  setWidth(gap(z), width(gap(z)) * hspace(z));
+		  setWidth(&gap(z), width(gap(z)) * hspace(z));
 		Link(NextDown(Down(x)), z);
 
 		debug2(DSF, D, "  hspace(g) = %d, width(gap(z)) = %s",
@@ -990,7 +990,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      width(gap(g)) *= find_max(1, vspace(g));
 	      *** */
 	      if( vspace(g) > 1 )
-	        setWidth(gap(g),
+	        setWidth(&gap(g),
 		  width(gap(g)) + (width(gap(g))*blanklinescale(save_style(x))*(vspace(g)-1))/SF);
 	    }
 	    NextDefiniteWithGap(x, link, y, g, jn);
@@ -1111,15 +1111,15 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      if( g != nilobj && mark(gap(g)) )
 	      {	Error(12, 3, "^ deleted (it may not precede this object)",
 		  WARN, &fpos(y));
-		setMark(gap(g), FALSE);
+		setMark(&gap(g), FALSE);
 	      }
 
 	      /* error if next unit is used in preceding gap */
 	      if( g != nilobj && units(gap(g)) == NEXT_UNIT )
 	      {	Error(12, 4, "gap replaced by 0i (%c unit not allowed here)",
 		  WARN, &fpos(y), CH_UNIT_WD);
-		setUnits(gap(g), FIXED_UNIT);
-		setWidth(gap(g), 0);
+		setUnits(&gap(g), FIXED_UNIT);
+		setWidth(&gap(g), 0);
 	      }
 	    }
 	    else
