@@ -3137,6 +3137,7 @@ INLINE void Dispose(OBJECT x) {
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define	Append(x, y, dir)						\
 ( zz_res = (x),	zz_hold = (y),						\
   zz_hold == nilobj ? zz_res  :						\
@@ -3148,22 +3149,19 @@ INLINE void Dispose(OBJECT x) {
     succ(zz_tmp, dir) = zz_res						\
   )									\
 )
-/*
-not working!
+*/
 INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
-    zz_res = (x);
-    zz_hold = (y);
-    zz_hold == nilobj ? zz_res  : \
-        zz_res == nilobj ? zz_hold : \
+    return zz_res = (x),
+    zz_hold = (y),
+    zz_hold == nilobj ? zz_res  : 
+        zz_res == nilobj ? zz_hold : 
             ( zz_tmp = pred(zz_hold, dir),
             pred(zz_hold, dir) = pred(zz_res, dir),
             succ(pred(zz_res, dir), dir) = zz_hold,
             pred(zz_res, dir) = zz_tmp,
             succ(zz_tmp, dir) = zz_res
             );
-    return zz_res;
 }
-*/
 
 
 /*****************************************************************************/
@@ -3174,6 +3172,7 @@ INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define Delete(x, dir)							\
 ( zz_hold = (x),							\
   succ(zz_hold, dir) == zz_hold ? nilobj :				\
@@ -3184,19 +3183,17 @@ INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
     zz_res								\
   )									\
 )
-/* not working!
+*/
 INLINE OBJECT Delete(OBJECT x, int dir) {
-    zz_hold = (x);
-    succ(zz_hold, dir) == zz_hold ? nilobj : \
+    return zz_hold = (x),
+    succ(zz_hold, dir) == zz_hold ? nilobj :
         ( zz_res = succ(zz_hold, dir),
         pred(zz_res, dir) = pred(zz_hold, dir),
         succ(pred(zz_hold, dir), dir) = zz_res,
         pred(zz_hold, dir) = succ(zz_hold, dir) = zz_hold,
         zz_res
         );
-    return zz_res;
 }
-*/
 
 #define Down(x)		succ(x, CHILD)
 #define NextDown(x)	succ(x, CHILD)
