@@ -2921,42 +2921,51 @@ typedef struct
 /*                                                                           */
 /*****************************************************************************/
 #if DEBUG_ON
-#define disposecount zz_disposecount++; zz_listcount++;
-/*
-inline void disposecount() {
+// #define disposecount zz_disposecount++; zz_listcount++;
+INLINE void disposecount() {
     zz_disposecount++;
     zz_listcount++;
 }
-*/
 
+/*
 #define disposecheck							\
 { assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );	\
 }
-/*
-inline void disposecheck() {
+*/
+INLINE void disposecheck() {
     assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );
 }
-*/
 
+/*
 #define	setdisposed							\
 { if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )		\
     fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,		\
       Image(type(zz_hold)), STR_NEWLINE);				\
   type(zz_hold) = DISPOSED;						\
 }
-/*
-inline void setdisposed() {
+*/
+INLINE void setdisposed() {
     if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )
         fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,
             Image(type(zz_hold)), STR_NEWLINE);
     type(zz_hold) = DISPOSED;
 }
-*/
 
 #else
+/*
 #define disposecount
-#define disposecheck
-#define	setdisposed
+#define disposecheck()
+#define	setdisposed()
+*/
+INLINE void disposecount() {
+}
+
+INLINE void disposecheck() {
+}
+
+INLINE void setdisposed() {
+}
+
 #endif
 
 #if USE_SYSTEM_MALLOC
@@ -3035,11 +3044,11 @@ INLINE Dispose(POINTER x) {
 }
 */
 INLINE void PutMem(POINTER x, int size) {
-    disposecount;
+    disposecount();
     zz_hold = (x);
     zz_size = (size);
     mallocheadercheck(zz_hold,zz_size);
-    disposecheck;
+    disposecheck();
     pred(zz_hold, CHILD) = zz_free[zz_size];
     zz_free[zz_size] = zz_hold;
 }
@@ -3056,7 +3065,7 @@ INLINE void Dispose(OBJECT x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
-    setdisposed;
+    setdisposed();
 }
 
 #endif
@@ -3116,7 +3125,7 @@ INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
     zz_res								\
   )									\
 )
-/*
+/* not working!
 INLINE OBJECT Delete(OBJECT x, int dir) {
     zz_hold = (x);
     succ(zz_hold, dir) == zz_hold ? nilobj : \
