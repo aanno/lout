@@ -36,7 +36,8 @@
 /*  are two of them.  With this rule it's quite easy to do the conversion.   */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define	BUFFER_SIZE    8192		/* size of buffer for block read     */
 #define	OTHER		0		/* punctuation or other character    */
 #define	LETTER		1		/* letter type                       */

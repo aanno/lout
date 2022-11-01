@@ -27,7 +27,8 @@
 /*  EXTERNS:      EchoStyle(), SpaceChange(), BreakChange()                  */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 
 #if DEBUG_ON

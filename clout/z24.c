@@ -33,7 +33,8 @@
 /*  very little left in this module.                                         */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 
 /*@::EightBitToPrintForm()@***************************************************/

@@ -27,7 +27,8 @@
 /*  EXTERNS:      ReadPrependDef(), ReadDatabaseDef(), ReadDefinitions()     */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 
 /*****************************************************************************/

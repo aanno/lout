@@ -28,7 +28,8 @@
 /*                PrintSym, AllowCrossDb                                     */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #include <signal.h>
 // for main1
 #include <string.h>

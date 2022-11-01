@@ -27,7 +27,8 @@
 /*  EXTERNS:      ReadFromFile(), AppendToFile(), CloseFiles()               */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 static FILE_NUM	last_write_fnum;
 static FILE	*last_write_fp;

@@ -28,7 +28,8 @@
 /*                MapPrintEncodings(), MapPrintResources(), MapSmallCaps()   */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define MAX_MAP		 20		/* max number of lcm files           */
 
 /*****************************************************************************/
@@ -407,7 +408,7 @@ static OBJECT DoVShift(OBJECT x, FULL_LENGTH vshift, OBJECT chld)
 { OBJECT res;
   New(res, VSHIFT);
   FposCopy(fpos(res), fpos(x));
-  shift_type(res) = GAP_DEC;
+  setShift_type(res, GAP_DEC);
   setUnits(&shift_gap(res), FIXED_UNIT);
   setMode(&shift_gap(res), EDGE_MODE);
   setWidth(&shift_gap(res), vshift);

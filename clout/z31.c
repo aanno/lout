@@ -27,7 +27,8 @@
 /*  EXTERNS:      DebugMemory(), zz_free[], MemInit(), GetMemory()           */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 #define	MEM_CHUNK	1020		/* how many ALIGNs to get from sys   */
 

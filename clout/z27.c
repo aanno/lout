@@ -28,7 +28,8 @@
 /*                ProfileOn(), ProfileOff(), ProfilePrint()                  */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 #if DEBUG_ON
 struct dbs  dbg[] = {

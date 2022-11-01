@@ -29,7 +29,8 @@
 /*                SetTarget(), CheckComponentOrder()                         */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 /* these three variables refer to the root galley only */
 static BOOLEAN first = TRUE;		  /* if first component unwritten    */

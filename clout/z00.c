@@ -1,4 +1,5 @@
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 
 const FULL_CHAR* const LOUT_VERSION    = AsciiToFull("Basser Lout Version 3.42 (Dec 2020)");
 const FULL_CHAR* const CROSS_DB        = AsciiToFull("lout");

@@ -27,7 +27,8 @@
 /*  EXTERNS:      Manifest()                                                 */
 /*                                                                           */
 /*****************************************************************************/
-#include "externs.h"
+// #include "externs.h"
+#include "lout.h"
 #define line_breaker(g)							\
   (vspace(g) > 0 || (units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR))
 
@@ -1337,12 +1338,12 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &shift_gap(x), &res_inc);
-      shift_type(x) = res_inc;
+      setShift_type(x, res_inc);
       if( mode(shift_gap(x)) != EDGE_MODE || 
 	  (units(shift_gap(x))!=FIXED_UNIT && units(shift_gap(x))!=NEXT_UNIT) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
-	shift_type(x) = GAP_INC;
+	setShift_type(x, GAP_INC);
 	setUnits(&shift_gap(x), FIXED_UNIT);
 	setWidth(&shift_gap(x), 0);
 	setMode(&shift_gap(x), EDGE_MODE);

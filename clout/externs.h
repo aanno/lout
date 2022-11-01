@@ -1991,6 +1991,7 @@ typedef REAL_OBJECT* OBJECT;
 #define	constraint(x)		(x)->os2.ou4.oconstraint
 #define	shift_type(x)		width(space_gap(save_style(x)))
 // #define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
+#define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap(save_style(x))
 
 #define actual(x)		(x)->os2.oactual
@@ -2499,6 +2500,7 @@ typedef enum space_mode {
 #define	NEXT_UNIT	     5		/* w unit (inners)                   */
  
 /* units of distance as multiples of the basic unit */
+// #define UNIT_TYPE float
 #define	CM	  (72*20/2.54)		/* 1 centimetre                      */
 #define	IN	          1440		/* 1 inch                            */
 #define	EM	           120		/* 1 em (= 1/12 inch)                */
