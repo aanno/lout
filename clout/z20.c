@@ -414,7 +414,7 @@ void FlushGalley(OBJECT hd)
 	  /* *** not necessarily true
 	  assert( dest_encl != nilobj, "FlushGalley/GAP_OBJ: dest_encl!" );
 	  *** */
-	  if( dest_encl != nilobj && !nobreak(gap(prec_gap)) )
+	  if( dest_encl != nilobj && !nobreak(&gap(prec_gap)) )
 	  {
 	    stop_link = link;
 	    stop_back = dest_back;
@@ -424,7 +424,7 @@ void FlushGalley(OBJECT hd)
 	  }
 	}
 	else stop_link = link;
-	if( !join(gap(y)) )  seen_nojoin(hd) = TRUE;
+	if( !join(&gap(y)) )  seen_nojoin(hd) = TRUE;
 	break;
 
 
@@ -561,7 +561,7 @@ void FlushGalley(OBJECT hd)
 	      case RECEIVING:	y = z;
 				goto SUSPEND;
 
-	      case GAP_OBJ:	if( !join(gap(z)) )  zlink = PrevDown(hd);
+	      case GAP_OBJ:	if( !join(&gap(z)) )  zlink = PrevDown(hd);
 				break;
 
 	      default:		break;
@@ -609,7 +609,7 @@ void FlushGalley(OBJECT hd)
 
 	  if( !is_indefinite(type(y)) )
 	  {
-	    ifdebugcond(DGF, DD,  mode(gap(prec_gap)) == NO_MODE,
+	    ifdebugcond(DGF, DD,  mode(&gap(prec_gap)) == NO_MODE,
 	      DebugGalley(hd, y, 4));
 
 	    /* calculate parallel effect of adding y to dest */
@@ -629,7 +629,7 @@ void FlushGalley(OBJECT hd)
 			EchoConstraint(&dest_par_constr));
 
 	    /* check new size against parallel constraint */
-	    if( (units(gap(prec_gap))==FRAME_UNIT && width(gap(prec_gap)) > FR)
+	    if( (units(&gap(prec_gap))==FRAME_UNIT && width(&gap(prec_gap)) > FR)
 	        || !FitsConstraint(dest_back, f, dest_par_constr)
 		|| (opt_components(hd) != nilobj && opt_comps_permitted(hd)<=0)
 	      )
@@ -644,8 +644,8 @@ void FlushGalley(OBJECT hd)
 		ifdebug(DOG, D,
 		  debug2(DOG, D, "FlushGalley(%s) adding constraint %s",
 		    SymName(actual(hd)), EchoConstraint(&constraint(z)));
-		  if( units(gap(prec_gap))==FRAME_UNIT &&
-		      width(gap(prec_gap)) > FR ) 
+		  if( units(&gap(prec_gap))==FRAME_UNIT &&
+		      width(&gap(prec_gap)) > FR ) 
 		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(&gap(prec_gap)));
 		  }
 		  if( !FitsConstraint(dest_back, f, dest_par_constr) )
@@ -738,7 +738,7 @@ void FlushGalley(OBJECT hd)
 	  if( type(NextDown(link)) == LINK )
 	  { Child(tgp, NextDown(link));
 	    assert( type(tgp) == GAP_OBJ, "FlushGalley:  tgp!" );
-	    promotable = !nobreak(gap(tgp));
+	    promotable = !nobreak(&gap(tgp));
 	  }
 	  else promotable = TRUE;
 

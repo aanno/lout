@@ -470,7 +470,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
   link = UpDim(x, dim);  ratm = FALSE;
   for( tlink = NextDown(link);  type(tlink) == LINK;  tlink = NextDown(tlink) )
   { Child(g, tlink);
-    if( type(g) == GAP_OBJ && mark(gap(g)) )  ratm = TRUE;
+    if( type(g) == GAP_OBJ && mark(&gap(g)) )  ratm = TRUE;
   }
   y = tlink;
   debug1(DSC, DDD, "parent y = %s", Image(type(y)));
@@ -693,11 +693,11 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	/* the components joined to x (or parent if no such) */
 	for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	{ Child(z, lp);
-	  if( type(z) == GAP_OBJ && !join(gap(z)) )  break;
+	  if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
 	}
 	for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	{ Child(z, rp);
-	  if( type(z) == GAP_OBJ && !join(gap(z)) )  break;
+	  if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
 	}
 	if( lp == y && rp == y && !(type(y) == HEAD && seen_nojoin(y)) )
 	{

@@ -341,7 +341,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	    { StringFPuts(STR_NEWLINE, last_write_fp);
 	      *linecount += 1;
 	    }
-	    StringFPuts(EchoCatOp(type(x), mark(gap(y)), join(gap(y))),
+	    StringFPuts(EchoCatOp(type(x), mark(&gap(y)), join(&gap(y))),
 	      last_write_fp);
 	    if( !is_word(type(gap_obj)) || StringLength(string(gap_obj)) != 0 )
 		WriteObject(gap_obj, FORCE_PREC, linecount, fnum);

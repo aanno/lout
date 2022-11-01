@@ -712,7 +712,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 
   /* make nojoin status clear by adding an extra gap at start if needed */
   if( gall_dir(hd) == ROWM && !external_ver(dest) && seen_nojoin(hd) &&
-      join(gap(y)) )
+      join(&gap(y)) )
   { OBJECT prnt, extra_null, extra_gap;
 
     /* add nojoin gap at start */

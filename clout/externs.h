@@ -677,23 +677,23 @@ typedef struct
 #define	mode_m(x)		(x).omode
 #define	width_m(x)	(x).owidth
 
-INLINE BOOLEAN nobreak(GAP x) {
-  return x.onobreak;
+INLINE BOOLEAN nobreak(GAP* x) {
+  return x->onobreak;
 }
-INLINE BOOLEAN mark(GAP x) {
-  return x.omark;
+INLINE BOOLEAN mark(GAP* x) {
+  return x->omark;
 }
-INLINE BOOLEAN join(GAP x) {
-  return x.ojoin;
+INLINE BOOLEAN join(GAP* x) {
+  return x->ojoin;
 }
-INLINE unsigned units(GAP x) {
-  return x.ounits;
+INLINE unsigned units(GAP* x) {
+  return x->ounits;
 }
-INLINE unsigned mode(GAP x) {
-  return x.omode;
+INLINE unsigned mode(GAP* x) {
+  return x->omode;
 }
-INLINE FULL_LENGTH width(GAP x) {
-  return x.owidth;
+INLINE FULL_LENGTH width(GAP* x) {
+  return x->owidth;
 }
 
 
@@ -738,12 +738,12 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( &(x), &(y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
-  nobreak_m(*x) = nobreak(*y);
-  mark_m(*x) = mark(*y);
-  join_m(*x) = join(*y);
-  units_m(*x) = units(*y);
-  mode_m(*x) = mode(*y);
-  width_m(*x) = width(*y);
+  nobreak_m(*x) = nobreak(y);
+  mark_m(*x) = mark(y);
+  join_m(*x) = join(y);
+  units_m(*x) = units(y);
+  mode_m(*x) = mode(y);
+  width_m(*x) = width(y);
 /* known not to work
   setNobreak(x, nobreak(*y));
   setMark(x, mark(*y));
@@ -754,7 +754,7 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
 */
 }
 
-inline BOOLEAN GapEqual(GAP x, GAP y) {
+inline BOOLEAN GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
              && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
 }
@@ -2000,7 +2000,7 @@ typedef REAL_OBJECT* OBJECT;
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(space_gap(save_style(x)))
+#define	shift_type(x)		width(&space_gap(save_style(x)))
 #define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap(save_style(x))
@@ -3324,7 +3324,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  jn = jn && join(gap(y));			\
+    if( type(y) == GAP_OBJ )  jn = jn && join(&gap(y));			\
     else if( type(y)==SPLIT ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
@@ -3388,7 +3388,7 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(gap(y));		\
+    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(&gap(y));		\
     else if( type(y)==SPLIT ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\

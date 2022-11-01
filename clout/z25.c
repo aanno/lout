@@ -366,7 +366,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	if( outer_prec == ACAT )  aprint(" ");
 	if( Down(x) != x )
 	{
-	  cprint( EchoCatOp(outer_prec, mark(gap(x)), join(gap(x))) );
+	  cprint( EchoCatOp(outer_prec, mark(&gap(x)), join(&gap(x))) );
 	  CountChild(y, Down(x), count);
 	  echo(y, FORCE_PREC, count);
 	}
@@ -377,7 +377,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	}
 	*** */
 	else
-	{ cprint( EchoCatOp(outer_prec, mark(gap(x)), join(gap(x))) );
+	{ cprint( EchoCatOp(outer_prec, mark(&gap(x)), join(&gap(x))) );
 	  cprint( EchoGap(&gap(x)) );
 	}
 	aprint(" ");

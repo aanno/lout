@@ -1381,21 +1381,21 @@ void FontChange(STYLE *style, OBJECT x)
     flen = font_size(finfo[font(*style)].font_table);
   else 
   { GetGap(requested_size, style, &gp, &inc);
-    if( mode(gp) != EDGE_MODE || units(gp) != FIXED_UNIT )
+    if( mode(&gp) != EDGE_MODE || units(&gp) != FIXED_UNIT )
     { Error(37, 47, "syntax error in font size %s; ignoring it",
 	WARN, &fpos(requested_size), string(requested_size));
       flen = font_size(finfo[font(*style)].font_table);
     }
     else if( inc == GAP_ABS )
-      flen = width(gp);
+      flen = width(&gp);
     else if( font(*style) == NO_FONT )
     { Error(37, 48, "no current font on which to base size change %s",
 	FATAL, &fpos(requested_size), string(requested_size));
     }
     else if( inc == GAP_INC )
-      flen = font_size(finfo[font(*style)].font_table) + width(gp);
+      flen = font_size(finfo[font(*style)].font_table) + width(&gp);
     else if( inc == GAP_DEC )
-      flen = font_size(finfo[font(*style)].font_table) - width(gp);
+      flen = font_size(finfo[font(*style)].font_table) - width(&gp);
     else Error(37, 49, "FontChange: %d", INTERN, &fpos(x), inc);
   }
 
@@ -1412,7 +1412,7 @@ void FontChange(STYLE *style, OBJECT x)
   { Child(fsize, link);
     if( font_size(fsize) == flen )
     { font(*style) = font_num(fsize);
-      SetGap(space_gap(*style), nobreak(space_gap(*style)), FALSE, TRUE,
+      SetGap(space_gap(*style), nobreak(&space_gap(*style)), FALSE, TRUE,
 	FIXED_UNIT, EDGE_MODE, font_spacewidth(fsize));
       debug2(DFT, D,"FontChange returning (old) %d (XHeight2 = %d)",
 	font(*style), font_xheight2(finfo[font(*style)].font_table));
@@ -1531,7 +1531,7 @@ void FontChange(STYLE *style, OBJECT x)
 
   /* return new font number and exit */
   font(*style) = font_count;
-  SetGap(space_gap(*style), nobreak(space_gap(*style)), FALSE, TRUE,
+  SetGap(space_gap(*style), nobreak(&space_gap(*style)), FALSE, TRUE,
     FIXED_UNIT, EDGE_MODE, font_spacewidth(new));
   debug2(DFT, D,"FontChange returning (scaled) %d (XHeight2 = %d)",
     font(*style), font_xheight2(finfo[font(*style)].font_table));

@@ -30,7 +30,7 @@
 // #include "externs.h"
 #include "lout.h"
 #define line_breaker(g)							\
-  (vspace(g) > 0 || (units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR))
+  (vspace(g) > 0 || (units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR))
 
 
 /*****************************************************************************/
@@ -322,7 +322,7 @@ OBJECT *enclose, BOOLEAN fcr)
   if( bthr[par] )  { New(first_bt, THREAD); }
   else first_bt = nilobj;
   bt[par] = first_bt;
-  if( join(gap(g)) )  { New(ft[par], THREAD); }
+  if( join(&gap(g)) )  { New(ft[par], THREAD); }
   else ft[par] = nilobj;
   still_backing = first_bt != nilobj;
 
@@ -369,7 +369,7 @@ OBJECT *enclose, BOOLEAN fcr)
     last_ft = ft[par];
     if( ft[par] ) { New(bt[par], THREAD); }  else bt[par] = nilobj;
     if( g != nilobj )
-    { if( join(gap(g)) )  { New(ft[par], THREAD); }  else ft[par] = nilobj;
+    { if( join(&gap(g)) )  { New(ft[par], THREAD); }  else ft[par] = nilobj;
     }
     else
     {
@@ -1156,7 +1156,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	    case SPACE_LOUT:
 
 	      /* usual Lout spacing, the number of white space characters */
-	      setWidth(&gap(g), width(gap(g)) * (vspace(g) + hspace(g)));
+	      setWidth(&gap(g), width(&gap(g)) * (vspace(g) + hspace(g)));
 	      break;
 
 
@@ -1181,7 +1181,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	    case SPACE_TROFF:
 
 	      /* Lout spacing plus one extra space for sentence end at eoln */
-	      setWidth(&gap(g), width(gap(g)) * (vspace(g) + hspace(g)));
+	      setWidth(&gap(g), width(&gap(g)) * (vspace(g) + hspace(g)));
 	      debugcond2(DLS, DD, vspace(g) > 0, "  prev = %s %s",
 		Image(type(prev)), EchoObject(prev));
 	      if( vspace(g) > 0 )
@@ -1204,7 +1204,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		    bool(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
-		    setWidth(&gap(g), width(gap(g)) + width(space_gap(*style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap(*style)));
 		}
 	      }
 	      break;
@@ -1237,7 +1237,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		      bool(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
-		    setWidth(&gap(g), width(gap(g)) + width(space_gap(*style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap(*style)));
 	        }
 	      }
 	      break;
@@ -1248,16 +1248,16 @@ OBJECT *enclose, BOOLEAN fcr)
 	      assert(FALSE, "Manifest: unexpected space_style!");
 	      break;
 	  }
-	  setNobreak(&gap(g), (width(gap(g)) == 0));
+	  setNobreak(&gap(g), (width(&gap(g)) == 0));
 	  if( line_breaker(g) && is_definite(type(y)) )  multiline = TRUE;
 	}
-        debug1(DOM, DD, "  in ACAT, gap = %s", EchoLength(width(gap(g))));
+        debug1(DOM, DD, "  in ACAT, gap = %s", EchoLength(width(&gap(g))));
 
 	/* compress adjacent juxtaposed words of equal font, etc. */
-	if( is_word(type(y)) && width(gap(g)) == 0 && nobreak(gap(g)) &&
+	if( is_word(type(y)) && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
 	    vspace(g)+hspace(g)==0 &&
-	    units(gap(g)) == FIXED_UNIT && mode(gap(g)) == EDGE_MODE &&
-	    prev != nilobj && is_word(type(prev)) && !mark(gap(g)) &&
+	    units(&gap(g)) == FIXED_UNIT && mode(&gap(g)) == EDGE_MODE &&
+	    prev != nilobj && is_word(type(prev)) && !mark(&gap(g)) &&
 	    word_font(prev) == word_font(y) &&
 	    word_colour(prev) == word_colour(y) &&
 	    word_underline_colour(prev) == word_underline_colour(y) &&
@@ -1339,8 +1339,8 @@ OBJECT *enclose, BOOLEAN fcr)
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &shift_gap(x), &res_inc);
       setShift_type(x, res_inc);
-      if( mode(shift_gap(x)) != EDGE_MODE || 
-	  (units(shift_gap(x))!=FIXED_UNIT && units(shift_gap(x))!=NEXT_UNIT) )
+      if( mode(&shift_gap(x)) != EDGE_MODE || 
+	  (units(&shift_gap(x))!=FIXED_UNIT && units(&shift_gap(x))!=NEXT_UNIT) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
 	setShift_type(x, GAP_INC);
@@ -1456,14 +1456,14 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &res_gap, &res_inc);
-      if( res_inc != GAP_ABS || mode(res_gap) != EDGE_MODE ||
-		units(res_gap) != DEG_UNIT )
+      if( res_inc != GAP_ABS || mode(&res_gap) != EDGE_MODE ||
+		units(&res_gap) != DEG_UNIT )
       {	Error(8, 28, "replacing invalid left parameter of %s by 0d",
 	  WARN, &fpos(y), Image(type(x)) );
 	setUnits(&res_gap, DEG_UNIT);
 	setWidth(&res_gap, 0);
       }
-      sparec(constraint(x)) = width(res_gap);
+      sparec(constraint(x)) = width(&res_gap);
       DisposeChild(Down(x));
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, target, crs, ok, FALSE,enclose,fcr);
