@@ -670,21 +670,32 @@ typedef struct
 } GAP;
 
 /** inline function not possible - also used for setters */
-#define	nobreak(x)	(x).onobreak
-#define	mark(x)		(x).omark
-#define	join(x)		(x).ojoin
-#define	units(x)	(x).ounits
-#define	mode(x)		(x).omode
-#define	width(x)	(x).owidth
+#define	nobreak_m(x)	(x).onobreak
+#define	mark_m(x)		(x).omark
+#define	join_m(x)		(x).ojoin
+#define	units_m(x)	(x).ounits
+#define	mode_m(x)		(x).omode
+#define	width_m(x)	(x).owidth
 
-/*
-#define	setNobreak(x, xbreak)	(x)->onobreak = xbreak
-#define	setMark(x, xmark)		(x)->omark = xmark
-#define	setJoin(x, xjoin)		(x)->ojoin = xjoin
-#define	setUnits(x, xunits)	(x)->ounits = xunits
-#define	setMode(x, xmode)		(x)->omode = xmode
-#define	setWidth(x, xwidth)	(x)->owidth = xwidth
-*/
+INLINE BOOLEAN nobreak(GAP x) {
+  return x.onobreak;
+}
+INLINE BOOLEAN mark(GAP x) {
+  return x.omark;
+}
+INLINE BOOLEAN join(GAP x) {
+  return x.ojoin;
+}
+INLINE unsigned units(GAP x) {
+  return x.ounits;
+}
+INLINE unsigned mode(GAP x) {
+  return x.omode;
+}
+INLINE FULL_LENGTH width(GAP x) {
+  return x.owidth;
+}
+
 
 INLINE void setNobreak(GAP* x, BOOLEAN xnobreak) {
   x->onobreak = xnobreak;
@@ -708,12 +719,12 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
-  nobreak(*x) = xnobreak;
-  mark(*x) = xmark;
-  join(*x) = xjoin;
-  units(*x) = xunits;
-  mode(*x) = xmode;
-  width(*x) = xwidth;
+  nobreak_m(*x) = xnobreak;
+  mark_m(*x) = xmark;
+  join_m(*x) = xjoin;
+  units_m(*x) = xunits;
+  mode_m(*x) = xmode;
+  width_m(*x) = xwidth;
 /* known not to work
   setNobreak(x, xnobreak);
   setMark(x, xmark);
@@ -727,12 +738,12 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( &(x), &(y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
-  nobreak(*x) = nobreak(*y);
-  mark(*x) = mark(*y);
-  join(*x) = join(*y);
-  units(*x) = units(*y);
-  mode(*x) = mode(*y);
-  width(*x) = width(*y);
+  nobreak_m(*x) = nobreak(*y);
+  mark_m(*x) = mark(*y);
+  join_m(*x) = join(*y);
+  units_m(*x) = units(*y);
+  mode_m(*x) = mode(*y);
+  width_m(*x) = width(*y);
 /* known not to work
   setNobreak(x, nobreak(*y));
   setMark(x, mark(*y));
