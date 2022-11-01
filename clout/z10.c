@@ -125,7 +125,7 @@ static int crtab_getnext(OBJECT sym, FILE_NUM fnum, CROSSREF_TABLE *S)
   }
 
   /* insert a new entry for (sym, fnum) with value 1 */
-  GetMem(t, sizeof(struct crossref_rec), no_fpos);
+  t = GetMem(t, sizeof(struct crossref_rec), no_fpos);
   x = (CROSSREF_ENTRY) t;
   x->crtab_sym = sym;
   x->crtab_fnum = fnum;

@@ -45,7 +45,7 @@ void InsertUses(OBJECT x, OBJECT y)
 { OBJECT tmp;
   debug2(DSU, D, "InsertUses( %s, %s )", SymName(x), SymName(y));
   if( type(x) == LOCAL && type(y) == LOCAL && !predefined(y) )
-  { GetMem(tmp, USES_SIZE, no_fpos);  item(tmp) = y;
+  { tmp = GetMem(tmp, USES_SIZE, no_fpos);  item(tmp) = y;
     if( base_uses(x) == nilobj )  next(tmp) = tmp;
     else next(tmp) = next(base_uses(x)), next(base_uses(x)) = tmp;
     base_uses(x) = tmp;
@@ -81,7 +81,7 @@ static void GatherUses(OBJECT x, OBJECT sym)
       if( marker(y) != sym )
       {	if( y != sym )
 	{ marker(y) = sym;
-	  GetMem(tmp, USES_SIZE, no_fpos);  item(tmp) = y;
+	  tmp = GetMem(tmp, USES_SIZE, no_fpos);  item(tmp) = y;
 	  if( uses(sym) == nilobj )  next(tmp) = tmp;
 	  else next(tmp) = next(uses(sym)), next(uses(sym)) = tmp;
 	  uses(sym) = tmp;
