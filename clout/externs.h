@@ -677,14 +677,15 @@ typedef struct
 #define	mode(x)		(x).omode
 #define	width(x)	(x).owidth
 
+/*
 #define	setNobreak(x, xbreak)	(x)->onobreak = xbreak
 #define	setMark(x, xmark)		(x)->omark = xmark
 #define	setJoin(x, xjoin)		(x)->ojoin = xjoin
 #define	setUnits(x, xunits)	(x)->ounits = xunits
 #define	setMode(x, xmode)		(x)->omode = xmode
 #define	setWidth(x, xwidth)	(x)->owidth = xwidth
+*/
 
-/*
 INLINE void setNobreak(GAP* x, BOOLEAN xnobreak) {
   x->onobreak = xnobreak;
 }
@@ -703,7 +704,6 @@ INLINE void setMode(GAP* x, unsigned xmode) {
 INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
   x->owidth = xwidth;
 }
-*/
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
