@@ -188,7 +188,7 @@ int GetWidth(OBJECT x, STYLE *style)
 /*  If there is an error, GetGap prints a message and returns 0ie.           */
 /*                                                                           */
 /*****************************************************************************/
-#define setwidths(x, y) w = x; units_m(*res_gap) = y;  break;
+#define setwidths(x, y) w = x; setUnits(res_gap, y);  break;
 
 void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
 { int w;  float num; 
@@ -197,10 +197,10 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
   debug2(DGW, D, "GetGap( %s, %s, res_gap, res_inc )",
 	EchoObject(x), EchoStyle(style));
 
-  nobreak_m(*res_gap) = FALSE;
-  width_m(*res_gap) = 0;
-  units_m(*res_gap) = FIXED_UNIT;
-  mode_m(*res_gap)  = EDGE_MODE;
+  setNobreak(res_gap, FALSE);
+  setWidth(res_gap, 0);
+  setUnits(res_gap, FIXED_UNIT);
+  setMode(res_gap, EDGE_MODE);
   *res_inc = GAP_ABS;
 
   /* make sure we have a WORD or QWORD argument */
