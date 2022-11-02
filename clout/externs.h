@@ -719,20 +719,12 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
-  nobreak_m(*x) = xnobreak;
-  mark_m(*x) = xmark;
-  join_m(*x) = xjoin;
-  units_m(*x) = xunits;
-  mode_m(*x) = xmode;
-  width_m(*x) = xwidth;
-/* known not to work
   setNobreak(x, xnobreak);
   setMark(x, xmark);
   setJoin(x, xjoin);
   setUnits(x, xunits);
   setMode(x, xmode);
   setWidth(x, xwidth);
-*/
 }
 
 #define GapCopy(x, y)							\
@@ -744,14 +736,14 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   units_m(*x) = units(y);
   mode_m(*x) = mode(y);
   width_m(*x) = width(y);
-/* known not to work
-  setNobreak(x, nobreak(*y));
-  setMark(x, mark(*y));
-  setJoin(x, join(*y));
-  setUnits(x, nobreak(*y));
-  setMode(x, mode(*y));
-  setWidth(x, width(*y));
-*/
+  /* not working!
+  setNobreak(x, nobreak(y));
+  setMark(x, mark(y));
+  setJoin(x, join(y));
+  setUnits(x, nobreak(y));
+  setMode(x, mode(y));
+  setWidth(x, width(y));
+  */
 }
 
 inline BOOLEAN GapEqual(GAP* x, GAP* y) {
