@@ -717,7 +717,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 }
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
-( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
+( SetGapOnRef( (x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
@@ -728,7 +728,7 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 }
 
 #define GapCopy(x, y)							\
-( GapCopyOnRef( &(x), &(y) ) )
+( GapCopyOnRef( (x), (y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   nobreak_m(*x) = nobreak(y);
   mark_m(*x) = mark(y);
@@ -773,8 +773,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP		oline_gap;		/* separation between lines          */
-  GAP		ospace_gap;		/* separation induced by white space */
+  GAP*		oline_gap;		/* separation between lines          */
+  GAP*		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -1801,7 +1801,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP		ogap;
+     GAP*		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */
@@ -1992,8 +1992,8 @@ typedef REAL_OBJECT* OBJECT;
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(&space_gap(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
+#define	shift_type(x)		width(space_gap(save_style(x)))
+#define	setShift_type(x, y)		setWidth(space_gap(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap(save_style(x))
 
@@ -3381,7 +3381,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  jn = jn && join(&gap(y));			\
+    if( type(y) == GAP_OBJ )  jn = jn && join(gap(y));			\
     else if( type(y)==SPLIT ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
@@ -3445,7 +3445,7 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(&gap(y));		\
+    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(gap(y));		\
     else if( type(y)==SPLIT ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\

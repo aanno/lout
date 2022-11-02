@@ -328,18 +328,18 @@ OBJECT y, int dim, OBJECT *why)
     SetNeighbours(link, ratm, &pg, &prec_def, &sg, &sd, &side);
 
     /* amount of space available at x without changing the size of y */
-    be = pg == nilobj ? 0 : ExtraGap(fwd(prec_def, dim), 0, &gap(pg), BACK);
-    fe = sg == nilobj ? 0 : ExtraGap(0, back(sd, dim),      &gap(sg), FWD);
+    be = pg == nilobj ? 0 : ExtraGap(fwd(prec_def, dim), 0, gap(pg), BACK);
+    fe = sg == nilobj ? 0 : ExtraGap(0, back(sd, dim),      gap(sg), FWD);
 
     if( is_indefinite(type(x)) )
     {
       /* insert two lengths and delete one */
-      beffect = pg==nilobj ? 0 : MinGap(fwd(prec_def, dim), 0, 0, &gap(pg));
-      feffect = sg==nilobj ? 0 : MinGap(0, back(sd,dim), fwd(sd,dim), &gap(sg));
+      beffect = pg==nilobj ? 0 : MinGap(fwd(prec_def, dim), 0, 0, gap(pg));
+      feffect = sg==nilobj ? 0 : MinGap(0, back(sd,dim), fwd(sd,dim), gap(sg));
       seffect = pg==nilobj ?
 	  sg == nilobj ? 0 : back(sd, dim) :
 	  sg == nilobj ? fwd(prec_def, dim) :
-	    MinGap(fwd(prec_def, dim), back(sd, dim), fwd(sd, dim), &gap(sg));
+	    MinGap(fwd(prec_def, dim), back(sd, dim), fwd(sd, dim), gap(sg));
 
       switch( side )
       {
@@ -361,12 +361,12 @@ OBJECT y, int dim, OBJECT *why)
     else /* x is definite */
 
     { beffect = pg == nilobj ? back(x, dim) :
-	MinGap(fwd(prec_def, dim), back(x,dim), fwd(x,dim), &gap(pg)) -
-	MinGap(fwd(prec_def, dim), 0,           0,          &gap(pg));
+	MinGap(fwd(prec_def, dim), back(x,dim), fwd(x,dim), gap(pg)) -
+	MinGap(fwd(prec_def, dim), 0,           0,          gap(pg));
 
       feffect = sg == nilobj ? fwd(x, dim) :
-	MinGap(fwd(x, dim), back(sd, dim), fwd(sd, dim), &gap(sg)) -
-	MinGap(0,           back(sd, dim), fwd(sd, dim), &gap(sg));
+	MinGap(fwd(x, dim), back(sd, dim), fwd(sd, dim), gap(sg)) -
+	MinGap(0,           back(sd, dim), fwd(sd, dim), gap(sg));
 
       switch( side )
       {
@@ -470,7 +470,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
   link = UpDim(x, dim);  ratm = FALSE;
   for( tlink = NextDown(link);  type(tlink) == LINK;  tlink = NextDown(tlink) )
   { Child(g, tlink);
-    if( type(g) == GAP_OBJ && mark(&gap(g)) )  ratm = TRUE;
+    if( type(g) == GAP_OBJ && mark(gap(g)) )  ratm = TRUE;
   }
   y = tlink;
   debug1(DSC, DDD, "parent y = %s", Image(type(y)));
@@ -693,11 +693,11 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	/* the components joined to x (or parent if no such) */
 	for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	{ Child(z, lp);
-	  if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	  if( type(z) == GAP_OBJ && !join(gap(z)) )  break;
 	}
 	for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	{ Child(z, rp);
-	  if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	  if( type(z) == GAP_OBJ && !join(gap(z)) )  break;
 	}
 	if( lp == y && rp == y && !(type(y) == HEAD && seen_nojoin(y)) )
 	{

@@ -1412,7 +1412,7 @@ void FontChange(STYLE *style, OBJECT x)
   { Child(fsize, link);
     if( font_size(fsize) == flen )
     { font(*style) = font_num(fsize);
-      SetGap(space_gap(*style), nobreak(&space_gap(*style)), FALSE, TRUE,
+      SetGap(space_gap(*style), nobreak(space_gap(*style)), FALSE, TRUE,
 	FIXED_UNIT, EDGE_MODE, font_spacewidth(fsize));
       debug2(DFT, D,"FontChange returning (old) %d (XHeight2 = %d)",
 	font(*style), font_xheight2(finfo[font(*style)].font_table));
@@ -1531,7 +1531,7 @@ void FontChange(STYLE *style, OBJECT x)
 
   /* return new font number and exit */
   font(*style) = font_count;
-  SetGap(space_gap(*style), nobreak(&space_gap(*style)), FALSE, TRUE,
+  SetGap(space_gap(*style), nobreak(space_gap(*style)), FALSE, TRUE,
     FIXED_UNIT, EDGE_MODE, font_spacewidth(new));
   debug2(DFT, D,"FontChange returning (scaled) %d (XHeight2 = %d)",
     font(*style), font_xheight2(finfo[font(*style)].font_table));

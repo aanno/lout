@@ -551,7 +551,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
       Error(7, 1, "%s: maximum paragraph length (%d) exceeded", FATAL, &fpos(x),
 	KW_MELD, MAX_MELD-1);
     assert( type(z) != ACAT, "Meld: xcomp is ACAT!");
-    if( g == nilobj || width(&gap(g)) != 0 )
+    if( g == nilobj || width(gap(g)) != 0 )
     {
       debug3(DOS, DD, "  initializing xcomp[%d] to %s %s",
         xlen, Image(type(z)), EchoObject(z));
@@ -588,7 +588,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
       Error(7, 1, "%s: maximum paragraph length (%d) exceeded", FATAL, &fpos(y),
 	KW_MELD, MAX_MELD-1);
     assert( type(z) != ACAT, "Meld: ycomp is ACAT!");
-    if( g == nilobj || width(&gap(g)) != 0 )
+    if( g == nilobj || width(gap(g)) != 0 )
     {
       debug3(DOS, DD, "  initializing ycomp[%d] to %s %s",
         ylen, Image(type(z)), EchoObject(z));
@@ -717,7 +717,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 	hspace(g) = 1;  vspace(g) = 0;
 	FposCopy(fpos(g), *no_fpos);
 	SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE,
-	  width(&space_gap(save_style(res))));
+	  width(space_gap(save_style(res))));
 	tmp = MakeWord(WORD, AsciiToFull("1s"), &fpos(g));
 	Link(g, tmp);
         Link(Down(res), g);
@@ -781,7 +781,7 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
     case GAP_OBJ:
 
       /* objects are equal if the two gaps are equal */
-      return GapEqual(&gap(x), &gap(y));
+      return GapEqual(gap(x), gap(y));
       break;
 
 
@@ -867,7 +867,7 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
 
       /* objects are equal if constraints and children are equal */
       return shift_type(x) == shift_type(y) &&
-	     GapEqual(&shift_gap(x), &shift_gap(y)) && EqualChildren(x, y);
+	     GapEqual(shift_gap(x), shift_gap(y)) && EqualChildren(x, y);
       break;
 
 

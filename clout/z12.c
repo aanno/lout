@@ -30,7 +30,7 @@
 // #include "externs.h"
 #include "lout.h"
 #define line_breaker(g)							\
-  (vspace(g) > 0 || (units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR))
+  (vspace(g) > 0 || (units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR))
 #define IG_LOOKING	0
 #define IG_NOFILE	1
 #define IG_BADFILE	2
@@ -203,7 +203,7 @@ static BOOLEAN FindSpannerGap(OBJECT thr, unsigned dim, unsigned cat_op,
   else if( type(x) == HEAD && gall_dir(x)==dim && type(PrevDown(link))==LINK )
   { Child(*res, PrevDown(link));
     assert(type(*res) == GAP_OBJ, "FindSpannerGap (HEAD): type(*res)!" );
-    setNobreak(&gap(*res), TRUE);
+    setNobreak(gap(*res), TRUE);
   }
   else *res = nilobj;
 
@@ -263,7 +263,7 @@ void SpannerAvailableSpace(OBJECT y, int dim, FULL_LENGTH *resb,
       else if( FindSpannerGap(thr, dim, cat_type, &gp) )
       {
         /* this is a subquent column spanned over */
-        b += MinGap(fwd(prevthr, dim), back(thr, dim), fwd(thr, dim), &gap(gp));
+        b += MinGap(fwd(prevthr, dim), back(thr, dim), fwd(thr, dim), gap(gp));
 	f = fwd(thr, dim);
         debug5(DSF, DD, "  later component %s,%s: gp = %s, b = %s, f = %s",
           EchoLength(back(thr, dim)), EchoLength(fwd(thr, dim)), EchoObject(gp),
@@ -929,7 +929,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	  while( link != x )
 	  {
 	    /* check whether we need to break the paragraph here at g */
-	    if( mode(&gap(g)) != NO_MODE && line_breaker(g) )
+	    if( mode(gap(g)) != NO_MODE && line_breaker(g) )
 	    {
 	      /* if this is our first break, build res */
 	      if( res == nilobj )
@@ -974,13 +974,13 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		underline(z) = UNDER_OFF;
 		GapCopy(gap(z), space_gap(save_style(x)));
 		if( display_style(save_style(x)) == DISPLAY_ORAGGED )
-		  setWidth(&gap(z), outdent_len(save_style(x)));
+		  setWidth(gap(z), outdent_len(save_style(x)));
 		else
-		  setWidth(&gap(z), width(&gap(z)) * hspace(z));
+		  setWidth(gap(z), width(gap(z)) * hspace(z));
 		Link(NextDown(Down(x)), z);
 
 		debug2(DSF, D, "  hspace(g) = %d, width(gap(z)) = %s",
-		  hspace(g), EchoLength(width(&gap(z))));
+		  hspace(g), EchoLength(width(gap(z))));
 	      }
 
 	      /* append a gap to res (recycle g) */
@@ -990,8 +990,8 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      width(gap(g)) *= find_max(1, vspace(g));
 	      *** */
 	      if( vspace(g) > 1 )
-	        setWidth(&gap(g),
-		 (width(&gap(g))*blanklinescale(save_style(x))*(vspace(g)-1))/SF);
+	        setWidth(gap(g),
+		 (width(gap(g))*blanklinescale(save_style(x))*(vspace(g)-1))/SF);
 	    }
 	    NextDefiniteWithGap(x, link, y, g, jn);
 	  }
@@ -1049,11 +1049,11 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	    { if( dim == COLM )
 	      {
 		/* compress adjacent words if compatible */
-		if( prev != nilobj && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
+		if( prev != nilobj && width(gap(g)) == 0 && nobreak(gap(g)) &&
 		    type(x) == ACAT &&
 		    is_word(type(prev)) && vspace(g) + hspace(g) == 0 &&
-		    units(&gap(g)) == FIXED_UNIT &&
-		    mode(&gap(g)) == EDGE_MODE && !mark(&gap(g)) &&
+		    units(gap(g)) == FIXED_UNIT &&
+		    mode(gap(g)) == EDGE_MODE && !mark(gap(g)) &&
 		    word_font(prev) == word_font(y) &&
 		    word_colour(prev) == word_colour(y) &&
 		    word_underline_colour(prev) == word_underline_colour(y) &&
@@ -1108,18 +1108,18 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	    if( is_indefinite(type(y)) )
 	    {
 	      /* error if preceding gap has mark */
-	      if( g != nilobj && mark(&gap(g)) )
+	      if( g != nilobj && mark(gap(g)) )
 	      {	Error(12, 3, "^ deleted (it may not precede this object)",
 		  WARN, &fpos(y));
-		setMark(&gap(g), FALSE);
+		setMark(gap(g), FALSE);
 	      }
 
 	      /* error if next unit is used in preceding gap */
-	      if( g != nilobj && units(&gap(g)) == NEXT_UNIT )
+	      if( g != nilobj && units(gap(g)) == NEXT_UNIT )
 	      {	Error(12, 4, "gap replaced by 0i (%c unit not allowed here)",
 		  WARN, &fpos(y), CH_UNIT_WD);
-		setUnits(&gap(g), FIXED_UNIT);
-		setWidth(&gap(g), 0);
+		setUnits(gap(g), FIXED_UNIT);
+		setWidth(gap(g), 0);
 	      }
 	    }
 	    else
@@ -1128,26 +1128,26 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      if( prev == nilobj )  b = back(y, dim), f = 0;
 	      else
 	      { FULL_LENGTH tmp;
-		tmp = MinGap(fwd(prev,dim), back(y,dim), fwd(y, dim), &gap(g));
-		assert(g!=nilobj && mode(&gap(g))!=NO_MODE, "MinSize: NO_MODE!");
-		if( units(&gap(g)) == FIXED_UNIT && mode(&gap(g)) == TAB_MODE )
+		tmp = MinGap(fwd(prev,dim), back(y,dim), fwd(y, dim), gap(g));
+		assert(g!=nilobj && mode(gap(g))!=NO_MODE, "MinSize: NO_MODE!");
+		if( units(gap(g)) == FIXED_UNIT && mode(gap(g)) == TAB_MODE )
 		{
-		  f = find_max(width(&gap(g)) + back(y, dim), f + tmp);
+		  f = find_max(width(gap(g)) + back(y, dim), f + tmp);
 		}
 		else
 		{
 		  f = f + tmp;
 		}
-		if( units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR )
+		if( units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR )
 		    will_expand = TRUE;
-		if( units(&gap(g)) == AVAIL_UNIT && mark(&gap(g)) && width(&gap(g)) > 0 )
+		if( units(gap(g)) == AVAIL_UNIT && mark(gap(g)) && width(gap(g)) > 0 )
 		  Error(12, 9, "mark alignment incompatible with centring or right justification",
 		    WARN, &fpos(g));
 		/* ***
 		if( units(gap(g)) == AVAIL_UNIT && width(gap(g)) >= FR )
 		    will_expand = TRUE;
 		*** */
-		if( mark(&gap(g)) )  b += f, f = 0;
+		if( mark(gap(g)) )  b += f, f = 0;
 	      }
 	      prev = y;
 	    }
@@ -1197,7 +1197,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	  }
 	  else if( type(y) == GAP_OBJ )
 	  { assert( found, "MinSize/VCAT/perp: !found!" );
-	    if( !join(&gap(y)) )
+	    if( !join(gap(y)) )
 	    {
 	      /* found // or || operator, so end current group */
 	      dble_found = TRUE;

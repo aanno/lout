@@ -1084,15 +1084,15 @@ OBJECT Hyphenate(OBJECT x)
       if( NextDown(link) != x )
       {
 	Child(z, NextDown(link));
-	if( type(z) == GAP_OBJ && mode(&gap(z)) == HYPH_MODE )
+	if( type(z) == GAP_OBJ && mode(gap(z)) == HYPH_MODE )
 	  word_hyph(y) = FALSE;
       }
     }
     if( !is_word(type(y)) || string(y)[0] == '\0' || !word_hyph(y) )
     {
-      if( type(y) == GAP_OBJ && mode(&gap(y)) == HYPH_MODE )
+      if( type(y) == GAP_OBJ && mode(gap(y)) == HYPH_MODE )
       {
-	setNobreak(&gap(y), FALSE);
+	setNobreak(gap(y), FALSE);
 
 	/* don't hyphenate a word following &<len>h */
 	if( NextDown(link) != x )
