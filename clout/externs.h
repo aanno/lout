@@ -2932,6 +2932,14 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  
+  if (typ == GAP_OBJ) {
+     GAP* g;
+     // slow
+     g = calloc(1L, zz_lengths[GAP_OBJ]);
+     gap(x) = g;
+  }
+
   return x;
 }
 
@@ -3113,6 +3121,11 @@ INLINE void PutMem(POINTER x, int size) {
 }
 */
 INLINE void Dispose(OBJECT x) {
+    if (type(x) == GAP_OBJ) {
+      // slow
+      free(gap(x));
+    }
+
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
