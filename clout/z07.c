@@ -717,7 +717,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 	hspace(g) = 1;  vspace(g) = 0;
 	FposCopy(fpos(g), *no_fpos);
 	SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE,
-	  width(&space_gap(save_style(res))));
+	  width(&space_gap_m(save_style(res))));
 	tmp = MakeWord(WORD, AsciiToFull("1s"), &fpos(g));
 	Link(g, tmp);
         Link(Down(res), g);

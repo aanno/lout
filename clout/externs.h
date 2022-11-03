@@ -803,9 +803,9 @@ typedef struct style_type
   CONTEXT	ocontext;		/* context stack		     */
 } STYLE;
 
+#define	line_gap_m(x)	(x).oline_gap
+#define	space_gap_m(x)	(x).ospace_gap
 /*
-#define	line_gap(x)	(x).oline_gap
-#define	space_gap(x)	(x).ospace_gap
 #define	yunit(x)	(x).oyunit
 #define	zunit(x)	(x).ozunit
 #define	outdent_len(x)	(x).ooutdent_len
@@ -831,8 +831,8 @@ typedef struct style_type
 #define	strut(x)	(x).ostrut
 #define	ligatures(x)	(x).oligatures
 #define	marginkerning(x)(x).omarginkerning
-#define	context(x)	(x).ocontext
 */
+#define	context_m(x)	(x).ocontext
 
 INLINE GAP line_gap(STYLE x) {
   return (x).oline_gap;
@@ -905,6 +905,9 @@ INLINE BOOLEAN nobreaklast(STYLE x) {
 }
 INLINE BOOLEAN baselinemark(STYLE x) {
   return (x).obaselinemark;
+}
+INLINE BOOLEAN strut(STYLE x) {
+  return (x).ostrut;
 }
 INLINE BOOLEAN ligatures(STYLE x) {
   return (x).oligatures;
@@ -988,6 +991,9 @@ INLINE void setNobreaklast(STYLE x, BOOLEAN nobreaklast) {
 INLINE void setBaselinemark(STYLE x, BOOLEAN baselinemark) {
   (x).obaselinemark = baselinemark;
 }
+INLINE void setStrut(STYLE x, BOOLEAN strut) {
+  (x).ostrut = strut;
+}
 INLINE void setLigatures(STYLE x, BOOLEAN ligatures) {
   (x).oligatures = ligatures;
 }
@@ -999,34 +1005,34 @@ INLINE void setContext(STYLE x, CONTEXT context) {
 }
 
 #define StyleCopy(x, y)							\
-( GapCopy(line_gap(x), line_gap(y)),					\
-  GapCopy(space_gap(x), space_gap(y)),					\
-  yunit(x) = yunit(y),							\
-  zunit(x) = zunit(y),							\
-  outdent_len(x) = outdent_len(y),					\
-  smallcaps_len(x) = smallcaps_len(y),					\
-  font(x) = font(y),							\
-  colour(x) = colour(y),						\
-  underline_colour(x) = underline_colour(y),				\
-  texture(x) = texture(y),						\
-  blanklinescale(x) = blanklinescale(y),				\
-  language(x) = language(y), 						\
-  vadjust(x) = vadjust(y), 						\
-  hadjust(x) = hadjust(y), 						\
-  padjust(x) = padjust(y), 						\
-  small_caps(x) = small_caps(y),					\
-  space_style(x) = space_style(y),					\
-  hyph_style(x) = hyph_style(y),					\
-  fill_style(x) = fill_style(y),					\
-  display_style(x) = display_style(y),					\
-  outline(x) = outline(y),						\
-  nobreakfirst(x) = nobreakfirst(y),					\
-  nobreaklast(x) = nobreaklast(y),					\
-  baselinemark(x) = baselinemark(y),					\
-  strut(x) = strut(y),							\
-  ligatures(x) = ligatures(y),						\
-  marginkerning(x) = marginkerning(y),					\
-  context(x) = context(y)						\
+( GapCopy(line_gap_m(x), line_gap_m(y)),					\
+  GapCopy(space_gap_m(x), space_gap_m(y)),					\
+  setYunit(x, yunit(y)),							\
+  setZunit(x, zunit(y)),							\
+  setOutdent_len(x, outdent_len(y)),					\
+  setSmallcaps_len(x, smallcaps_len(y)),					\
+  setFont(x, font(y)),							\
+  setColour(x, colour(y)),						\
+  setUnderline_colour(x, underline_colour(y)),				\
+  setTexture(x, texture(y)),						\
+  setBlanklinescale(x, blanklinescale(y)),				\
+  setLanguage(x, language(y)), 						\
+  setVadjust(x, vadjust(y)), 						\
+  setHadjust(x, hadjust(y)), 						\
+  setPadjust(x, padjust(y)), 						\
+  setSmall_caps(x, small_caps(y)),					\
+  setSpace_style(x, space_style(y)),					\
+  setHyph_style(x, hyph_style(y)),					\
+  setFill_style(x, fill_style(y)),					\
+  setDisplay_style(x, display_style(y)),					\
+  setOutline(x, outline(y)),						\
+  setNobreakfirst(x, nobreakfirst(y)),					\
+  setNobreaklast(x, nobreaklast(y)),					\
+  setBaselinemark(x, baselinemark(y)),					\
+  setStrut(x, strut(y)),							\
+  setLigatures(x, ligatures(y)),						\
+  setMarginkerning(x, marginkerning(y)),					\
+  setContext(x, context(y))						\
 )
 
 
@@ -2158,10 +2164,10 @@ typedef REAL_OBJECT* OBJECT;
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(&space_gap(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap(save_style(x)), (y))
+#define	shift_type(x)		width(&space_gap_m(save_style(x)))
+#define	setShift_type(x, y)		setWidth(&space_gap_m(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
-#define	shift_gap(x)		line_gap(save_style(x))
+#define	shift_gap(x)		line_gap_m(save_style(x))
 
 #define actual(x)		(x)->os2.oactual
 #define whereto(x)		(x)->os2.oux.owhereto

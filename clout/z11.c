@@ -50,8 +50,8 @@ FULL_CHAR *EchoStyle(STYLE *style)
 				  "left", "centre", "right", "do" };
 
   StringCopy(res, AsciiToFull("["));
-  StringCat(res, EchoCatOp(VCAT,mark(&line_gap(*style)),join(&line_gap(*style))));
-  StringCat(res, EchoGap(&line_gap(*style)));
+  StringCat(res, EchoCatOp(VCAT,mark(&line_gap_m(*style)),join(&line_gap_m(*style))));
+  StringCat(res, EchoGap(&line_gap_m(*style)));
   StringCat(res, AsciiToFull(", "));
   if( font(*style) == 0 )
     StringCat(res, AsciiToFull("nofont"));
@@ -64,7 +64,7 @@ FULL_CHAR *EchoStyle(STYLE *style)
   StringCat(res, AsciiToFull(" ("));
   StringCat(res, AsciiToFull(spacewords[space_style(*style)]));
   StringCat(res, AsciiToFull(" "));
-  StringCat(res, EchoGap(&space_gap(*style)));
+  StringCat(res, EchoGap(&space_gap_m(*style)));
   StringCat(res, AsciiToFull("), "));
   StringCat(res, AsciiToFull(hyph_style(*style) < 3 ?
 		    hyphwords[hyph_style(*style)] : "?"));
@@ -112,30 +112,30 @@ static void changespace(STYLE *style, OBJECT x)
   {
     /* should be a new space style option */
     if( StringEqual(string(x), STR_SPACE_LOUT) )
-	space_style(*style) = SPACE_LOUT;
+	setSpace_style(*style, SPACE_LOUT);
     else if( StringEqual(string(x), STR_SPACE_COMPRESS) )
-	space_style(*style) = SPACE_COMPRESS;
+	setSpace_style(*style, SPACE_COMPRESS);
     else if( StringEqual(string(x), STR_SPACE_SEPARATE) )
-	space_style(*style) = SPACE_SEPARATE;
+	setSpace_style(*style, SPACE_SEPARATE);
     else if( StringEqual(string(x), STR_SPACE_TROFF) )
-	space_style(*style) = SPACE_TROFF;
+	setSpace_style(*style, SPACE_TROFF);
     else if( StringEqual(string(x), STR_SPACE_TEX) )
-	space_style(*style) = SPACE_TEX;
+	setSpace_style(*style, SPACE_TEX);
     else Error(11, 1, "unknown option to %s symbol (%s)",
 	   WARN, &fpos(x), KW_SPACE, string(x));
   }
   else /* should be a new space gap */
   { GetGap(x, style, &res_gap, &gap_inc);
-    if( gap_inc != GAP_ABS && units(&res_gap) != units(&space_gap(*style)) )
+    if( gap_inc != GAP_ABS && units(&res_gap) != units(&space_gap_m(*style)) )
     { Error(11, 2, "spacing %s is not compatible with current spacing",
 	WARN, &fpos(x), string(x));
     }
     else
-    { setUnits(&space_gap(*style), units(&res_gap));
-      setMode(&space_gap(*style), mode(&res_gap));
-      setWidth(&space_gap(*style), gap_inc == GAP_ABS ? width(&res_gap) :
-	     gap_inc == GAP_INC ? width(&space_gap(*style)) + width(&res_gap) :
-	     find_max(width(&space_gap(*style)) - width(&res_gap), 0));
+    { setUnits(&space_gap_m(*style), units(&res_gap));
+      setMode(&space_gap_m(*style), mode(&res_gap));
+      setWidth(&space_gap_m(*style), gap_inc == GAP_ABS ? width(&res_gap) :
+	     gap_inc == GAP_INC ? width(&space_gap_m(*style)) + width(&res_gap) :
+	     find_max(width(&space_gap_m(*style)) - width(&res_gap), 0));
     }
   }
   debug1(DSS, D, "SpaceChange returning %s", EchoStyle(style));
@@ -191,55 +191,55 @@ static void changebreak(STYLE *style, OBJECT x)
   {
     /* should be a new break style option */
     if( StringEqual(string(x), STR_BREAK_HYPHEN) )
-	hyph_style(*style) = HYPH_ON;
+	setHyph_style(*style, HYPH_ON);
     else if( StringEqual(string(x), STR_BREAK_NOHYPHEN) )
-	hyph_style(*style) = HYPH_OFF;
+	setHyph_style(*style, HYPH_OFF);
     else if( StringEqual(string(x), STR_BREAK_ADJUST) )
-	fill_style(*style) = FILL_ON, display_style(*style) = DISPLAY_ADJUST;
+	setFill_style(*style, FILL_ON), setDisplay_style(*style, DISPLAY_ADJUST);
     else if( StringEqual(string(x), STR_BREAK_OUTDENT) )
-	fill_style(*style) = FILL_ON, display_style(*style) = DISPLAY_OUTDENT;
+	setFill_style(*style, FILL_ON), setDisplay_style(*style, DISPLAY_OUTDENT);
     else if( StringEqual(string(x), STR_BREAK_RAGGED) )
-	fill_style(*style) = FILL_ON, display_style(*style) = DISPLAY_LEFT;
+	setFill_style(*style, FILL_ON), setDisplay_style(*style, DISPLAY_LEFT);
     else if( StringEqual(string(x), STR_BREAK_CRAGGED) )
-	fill_style(*style) = FILL_ON, display_style(*style) = DISPLAY_CENTRE;
+	setFill_style(*style, FILL_ON), setDisplay_style(*style, DISPLAY_CENTRE);
     else if( StringEqual(string(x), STR_BREAK_RRAGGED) )
-	fill_style(*style) = FILL_ON, display_style(*style) = DISPLAY_RIGHT;
+	setFill_style(*style, FILL_ON), setDisplay_style(*style, DISPLAY_RIGHT);
     else if( StringEqual(string(x), STR_BREAK_ORAGGED) )
-	fill_style(*style) = FILL_ON, display_style(*style) = DISPLAY_ORAGGED;
+	setFill_style(*style, FILL_ON), setDisplay_style(*style, DISPLAY_ORAGGED);
     else if( StringEqual(string(x), STR_BREAK_LINES) )
-	fill_style(*style) = FILL_OFF, display_style(*style) = DISPLAY_LEFT;
+	setFill_style(*style, FILL_OFF), setDisplay_style(*style, DISPLAY_LEFT);
     else if( StringEqual(string(x), STR_BREAK_CLINES) )
-	fill_style(*style) = FILL_OFF, display_style(*style) = DISPLAY_CENTRE;
+	setFill_style(*style, FILL_OFF), setDisplay_style(*style, DISPLAY_CENTRE);
     else if( StringEqual(string(x), STR_BREAK_RLINES) )
-	fill_style(*style) = FILL_OFF, display_style(*style) = DISPLAY_RIGHT;
+	setFill_style(*style, FILL_OFF), setDisplay_style(*style, DISPLAY_RIGHT);
     else if( StringEqual(string(x), STR_BREAK_OLINES) )
-	fill_style(*style) = FILL_OFF, display_style(*style) = DISPLAY_ORAGGED;
+	setFill_style(*style, FILL_OFF), setDisplay_style(*style, DISPLAY_ORAGGED);
     else if( StringEqual(string(x), STR_BREAK_NOFIRST) )
-	nobreakfirst(*style) = TRUE;
+	setNobreakfirst(*style, TRUE);
     else if( StringEqual(string(x), STR_BREAK_FIRST) )
-	nobreakfirst(*style) = FALSE;
+	setNobreakfirst(*style, FALSE);
     else if( StringEqual(string(x), STR_BREAK_NOLAST) )
-	nobreaklast(*style) = TRUE;
+	setNobreaklast(*style, TRUE);
     else if( StringEqual(string(x), STR_BREAK_LAST) )
-	nobreaklast(*style) = FALSE;
+	setNobreaklast(*style, FALSE);
     else if( StringEqual(string(x), STR_BREAK_MARGINKERNING) )
-	marginkerning(*style) = TRUE;
+	setMarginkerning(*style, TRUE);
     else if( StringEqual(string(x), STR_BREAK_NOMARGINKERNING) )
-	marginkerning(*style) = FALSE;
+	setMarginkerning(*style, FALSE);
     else Error(11, 5, "found unknown option to %s symbol (%s)",
 	   WARN, &fpos(x), KW_BREAK, string(x));
   }
   else /* should be a new inter-line gap */
   { GetGap(x, style, &res_gap, &gap_inc);
-    if( gap_inc != GAP_ABS && units(&res_gap) != units(&line_gap(*style)) )
+    if( gap_inc != GAP_ABS && units(&res_gap) != units(&line_gap_m(*style)) )
       Error(11, 6, "line spacing %s is not compatible with current spacing",
         WARN, &fpos(x), string(x));
     else
-    { setUnits(&line_gap(*style), units(&res_gap));
-      setMode(&line_gap(*style), mode(&res_gap));
-      setWidth(&line_gap(*style), gap_inc == GAP_ABS ? width(&res_gap) :
-	gap_inc == GAP_INC ? width(&line_gap(*style)) + width(&res_gap) :
-	find_max(width(&line_gap(*style)) - width(&res_gap), 0));
+    { setUnits(&line_gap_m(*style), units(&res_gap));
+      setMode(&line_gap_m(*style), mode(&res_gap));
+      setWidth(&line_gap_m(*style), gap_inc == GAP_ABS ? width(&res_gap) :
+	gap_inc == GAP_INC ? width(&line_gap_m(*style)) + width(&res_gap) :
+	find_max(width(&line_gap_m(*style)) - width(&res_gap), 0));
     }
   }
   debug0(DSS, D, "] changebreak");
@@ -293,10 +293,10 @@ void BreakChange(STYLE *style, OBJECT x)
 			  link = NextDown(NextDown(link));
 			  Child(y, link);
 			  GetGap(y, style, &res_gap, &gap_inc);
-			  outdent_len(*style) = gap_inc == GAP_ABS ?
+			  setOutdent_len(*style, gap_inc == GAP_ABS ?
 			    width(&res_gap) : gap_inc == GAP_INC ?
 			    outdent_len(*style) + width(&res_gap) :
-			    find_max(outdent_len(*style) - width(&res_gap), 0);
+			    find_max(outdent_len(*style) - width(&res_gap), 0));
 			}
 		      }
 		      else if( StringEqual(string(y), STR_BREAK_SCALE) )
@@ -313,7 +313,7 @@ void BreakChange(STYLE *style, OBJECT x)
 			  link = NextDown(NextDown(link));
 			  Child(y, link);
 			  val = GetScaleFactor(y);
-			  blanklinescale(*style) = (int) (val * SF);
+			  setBlanklinescale(*style, (int) (val * SF));
 			}
 		      }
 		      else
@@ -352,9 +352,9 @@ void YUnitChange(STYLE *style, OBJECT x)
     Error(11, 9, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_YUNIT);
   else
-  { if( gap_inc == GAP_ABS ) yunit(*style) = width(&res_gap);
-    else if( gap_inc == GAP_INC ) yunit(*style) += width(&res_gap);
-    else yunit(*style) = find_max(yunit(*style) - width(&res_gap), 0);
+  { if( gap_inc == GAP_ABS ) setYunit(*style, width(&res_gap));
+    else if( gap_inc == GAP_INC ) setYunit(*style, yunit(*style) + width(&res_gap));
+    else setYunit(*style, find_max(yunit(*style) - width(&res_gap), 0));
   }
 } /* end YUnitChange */
 
@@ -374,8 +374,8 @@ void ZUnitChange(STYLE *style, OBJECT x)
     Error(11, 10, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_ZUNIT);
   else
-  { if( gap_inc == GAP_ABS ) zunit(*style) = width(&res_gap);
-    else if( gap_inc == GAP_INC ) zunit(*style) += width(&res_gap);
-    else zunit(*style) = find_max(zunit(*style) - width(&res_gap), 0);
+  { if( gap_inc == GAP_ABS ) setZunit(*style, width(&res_gap));
+    else if( gap_inc == GAP_INC ) setZunit(*style, zunit(*style) + width(&res_gap));
+    else setZunit(*style, find_max(zunit(*style) - width(&res_gap), 0));
   }
 } /* end ZUnitChange */

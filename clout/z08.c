@@ -303,12 +303,12 @@ OBJECT *enclose, BOOLEAN fcr)
   if( type(x) == HCAT )
   { par = ROWM;
     adjust_cat(x) = hadjust(*style);
-    hadjust(new_style) = FALSE;
+    setHadjust(new_style, FALSE);
   }
   else
   { par = COLM;
     adjust_cat(x) = vadjust(*style);
-    vadjust(new_style) = FALSE;
+    setVadjust(new_style, FALSE);
   }
   perp = 1 - par;
   link = Down(x);
@@ -1070,7 +1070,7 @@ OBJECT *enclose, BOOLEAN fcr)
       StyleCopy(save_style(x), *style);
       adjust_cat(x) = padjust(*style);
       StyleCopy(new_style, *style);
-      padjust(new_style) = FALSE;
+      setPadjust(new_style, FALSE);
       assert(Down(x) != x, "Manifest: ACAT!" );
       link = Down(x);  Child(y, link);
       assert( type(y) != GAP_OBJ, "Manifest ACAT: GAP_OBJ is first!" );
@@ -1150,7 +1150,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	else
 	{
 	  /* implicit & operator */
-	  GapCopy(gap(g), space_gap(*style));
+	  GapCopy(gap(g), space_gap_m(*style));
 	  switch( space_style(*style) )
 	  {
 	    case SPACE_LOUT:
@@ -1204,7 +1204,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		    bool(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap(*style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(*style)));
 		}
 	      }
 	      break;
@@ -1237,7 +1237,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		      bool(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap(*style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(*style)));
 	        }
 	      }
 	      break;
@@ -1387,7 +1387,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE,
 	&nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &line_gap(save_style(x)), &res_inc);
+      GetGap(y, style, &line_gap_m(save_style(x)), &res_inc);
 
       /* make vc, a joined VCAT of MAX_HCOPIES copies of the header */
       Child(y, LastDown(x));
@@ -1669,7 +1669,7 @@ OBJECT *enclose, BOOLEAN fcr)
       assert(Down(x) != x && NextDown(Down(x)) == x, "Manifest: UNDERLINE!");
       type(x) = ACAT;
       adjust_cat(x) = padjust(*style);
-      padjust(*style) = FALSE;
+      setPadjust(*style, FALSE);
       StyleCopy(save_style(x), *style);
 
       /* manifest x's sole child and set underline flags in the child */
@@ -1794,10 +1794,10 @@ OBJECT *enclose, BOOLEAN fcr)
       /* memorize the key, value, style and environment for use when */
       /* manifesting VALUE in `@GetContext'.  */
       StyleCopy(new_style, *style);
-      context_key(context(new_style)) = key;
-      context_value(context(new_style)) = value;
-      context_style(context(new_style)) = style;
-      context_env(context(new_style)) = env;
+      context_key(context_m(new_style)) = key;
+      context_value(context_m(new_style)) = value;
+      context_style(context_m(new_style)) = style;
+      context_env(context_m(new_style)) = env;
 
       ReplaceNode(z, x);
       DisposeObject(x);
@@ -1821,7 +1821,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	/* looked for (currently Y) is found.  */
 	for( s = style; s != NULL; )
 	{
-	  CONTEXT *ctx = &context(*s);
+	  CONTEXT *ctx = &context_m(*s);
 	  if( !ctx )
 	  { s = NULL;
 	  }
@@ -1832,7 +1832,7 @@ OBJECT *enclose, BOOLEAN fcr)
 
 	    /* VALUE is to be manifested with the style associated to CTX */
 	    StyleCopy(new_style, *style);
-	    context(new_style) = context(*context_style(*ctx));
+	    setContext(new_style, context(*context_style(*ctx)));
 	    debug3(DOM, D, " @GetContext %s -> value has type %s (%p)", string(y),
 	      Image(type(value)), value);
 
@@ -1874,10 +1874,10 @@ OBJECT *enclose, BOOLEAN fcr)
     case VADJUST:
 
       StyleCopy(new_style, *style);
-      if(      type(x) == OUTLINE )  outline(new_style) = TRUE;
-      else if( type(x) == VADJUST )  vadjust(new_style) = TRUE;
-      else if( type(x) == HADJUST )  hadjust(new_style) = TRUE;
-      else                           padjust(new_style) = TRUE;
+      if(      type(x) == OUTLINE )  setOutline(new_style, TRUE);
+      else if( type(x) == VADJUST )  setVadjust(new_style, TRUE);
+      else if( type(x) == HADJUST )  setHadjust(new_style, TRUE);
+      else                           setPadjust(new_style, TRUE);
       Child(y, Down(x));
       y = Manifest(y, env, &new_style, bthr, fthr, target, crs, ok, FALSE, enclose, fcr);
       DeleteLink(Down(x));
@@ -1898,7 +1898,7 @@ OBJECT *enclose, BOOLEAN fcr)
       { OBJECT newx1;
 	New(newx1, ACAT);
         adjust_cat(newx1) = padjust(*style);
-	padjust(*style) = FALSE;
+	setPadjust(*style, FALSE);
         MoveLink(Down(x), newx1, CHILD);
         Link(newx1, x1);
         x1 = newx1;
@@ -1921,7 +1921,7 @@ OBJECT *enclose, BOOLEAN fcr)
       { OBJECT newx2;
 	New(newx2, ACAT);
         adjust_cat(newx2) = padjust(*style);
-	padjust(*style) = FALSE;
+	setPadjust(*style, FALSE);
         MoveLink(NextDown(Down(x)), newx2, CHILD);
         Link(newx2, x2);
         x2 = newx2;
