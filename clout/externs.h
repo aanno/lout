@@ -1004,6 +1004,7 @@ INLINE void setContext(STYLE* x, CONTEXT context) {
   (x)->ocontext = context;
 }
 
+/*
 #define StyleCopy(x, y)							\
 ( GapCopy(line_gap_m(x), line_gap_m(y)),					\
   GapCopy(space_gap_m(x), space_gap_m(y)),					\
@@ -1034,7 +1035,38 @@ INLINE void setContext(STYLE* x, CONTEXT context) {
   setMarginkerning(&x, marginkerning(y)),					\
   setContext(&x, context(y))						\
 )
+*/
 
+INLINE void StyleCopy(STYLE* x, STYLE y) {
+  GapCopy(line_gap_m(*x), line_gap_m(y));
+  GapCopy(space_gap_m(*x), space_gap_m(y));
+  setYunit(x, yunit(y));
+  setZunit(x, zunit(y));
+  setOutdent_len(x, outdent_len(y));
+  setSmallcaps_len(x, smallcaps_len(y));
+  setFont(x, font(y));
+  setColour(x, colour(y));
+  setUnderline_colour(x, underline_colour(y));
+  setTexture(x, texture(y));
+  setBlanklinescale(x, blanklinescale(y));
+  setLanguage(x, language(y));
+  setVadjust(x, vadjust(y));
+  setHadjust(x, hadjust(y));
+  setPadjust(x, padjust(y));
+  setSmall_caps(x, small_caps(y));
+  setSpace_style(x, space_style(y));
+  setHyph_style(x, hyph_style(y));
+  setFill_style(x, fill_style(y));
+  setDisplay_style(x, display_style(y));
+  setOutline(x, outline(y));
+  setNobreakfirst(x, nobreakfirst(y));
+  setNobreaklast(x, nobreaklast(y));
+  setBaselinemark(x, baselinemark(y));
+  setStrut(x, strut(y));
+  setLigatures(x, ligatures(y));
+  setMarginkerning(x, marginkerning(y));
+  setContext(x, context(y));
+}
 
 /*@::CONSTRAINT, FILE_NUM, FILE_POS, LIST@************************************/
 /*                                                                           */
