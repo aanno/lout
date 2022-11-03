@@ -228,8 +228,8 @@ static BOOLEAN ColChange(OBJECT x, const unsigned char *keyword, COLOUR_NUM *res
 
 void ColourChange(STYLE *style, OBJECT x)
 {
-  if( ColChange(x, KW_COLOUR, &colour(*style)) )
-    underline_colour(*style) = colour(*style);
+  if( ColChange(x, KW_COLOUR, &colour_m(*style)) )
+    setUnderline_colour(*style, colour(*style));
 }
 
 /* *** old version
@@ -278,7 +278,7 @@ void ColourChange(STYLE *style, OBJECT x)
 
 void ColourUnderlineChange(STYLE *style, OBJECT x)
 {
-  ColChange(x, KW_UNDERLINE_COLOUR, &underline_colour(*style));
+  ColChange(x, KW_UNDERLINE_COLOUR, &underline_colour_m(*style));
 }
 
 

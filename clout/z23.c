@@ -1248,7 +1248,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 		else
 		{
 	          underline_font = font(save_style(x));
-		  underline_colour = underline_colour(save_style(x));
+		  underline_colour = underline_colour_m(save_style(x));
 		  underline_texture = texture(save_style(x));
 		}
 	        underline_xstart = mk - back(prev, dim);
@@ -1322,7 +1322,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	      else
 	      {
 	        underline_font = font(save_style(x));
-	        underline_colour = underline_colour(save_style(x));
+	        underline_colour = underline_colour_m(save_style(x));
 	        underline_texture = texture(save_style(x));
 	      }
 	      underline_xstart = mk - back(prev, dim);

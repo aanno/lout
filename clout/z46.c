@@ -182,8 +182,8 @@ void SetOptimize(OBJECT hd, STYLE *style)
   StyleCopy(save_style(opt_components(hd)), *style);
   if( gall_dir(hd) == ROWM )
   {
-    hyph_style(save_style(opt_components(hd))) = HYPH_OFF;
-    marginkerning(save_style(opt_components(hd))) = FALSE;
+    setHyph_style(save_style(opt_components(hd)), HYPH_OFF);
+    setMarginkerning(save_style(opt_components(hd)), FALSE);
   }
 
   debug0(DOG, D, "SetOptimize returning:");

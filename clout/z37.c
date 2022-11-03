@@ -1121,21 +1121,21 @@ void FontChange(STYLE *style, OBJECT x)
     case QWORD:
 
       if( StringEqual(string(x), STR_SMALL_CAPS_ON) )
-        small_caps(*style) = SMALL_CAPS_ON;
+        setSmall_caps(*style, SMALL_CAPS_ON);
       else if( StringEqual(string(x), STR_SMALL_CAPS_OFF) )
-        small_caps(*style) = SMALL_CAPS_OFF;
+        setSmall_caps(*style, SMALL_CAPS_OFF);
       else if( StringEqual(string(x), STR_BASELINE_MARK) )
-        baselinemark(*style) = TRUE;
+        setBaselinemark(*style, TRUE);
       else if( StringEqual(string(x), STR_XHEIGHT2_MARK) )
-        baselinemark(*style) = FALSE;
+        setBaselinemark(*style, FALSE);
       else if( StringEqual(string(x), STR_NOSTRUT) )
-        strut(*style) = FALSE;
+        setStrut(*style, FALSE);
       else if( StringEqual(string(x), STR_STRUT) )
-        strut(*style) = TRUE;
+        setStrut(*style, TRUE);
       else if( StringEqual(string(x), STR_LIG) )
-        ligatures(*style) = TRUE;
+        setLigatures(*style, TRUE);
       else if( StringEqual(string(x), STR_NOLIG) )
-        ligatures(*style) = FALSE;
+        setLigatures(*style, FALSE);
       else if( StringEqual(string(x), STR_SMALL_CAPS_SET) )
         Error(37, 65, "%s in left parameter of %s must be followed by a value",
           WARN, &fpos(x), STR_SMALL_CAPS_SET, KW_FONT);
@@ -1153,21 +1153,21 @@ void FontChange(STYLE *style, OBJECT x)
         if( is_word(type(y)) ) 
         {
 	  if( StringEqual(string(y), STR_SMALL_CAPS_ON) )
-	    small_caps(*style) = SMALL_CAPS_ON;
+	    setSmall_caps(*style, SMALL_CAPS_ON);
 	  else if( StringEqual(string(y), STR_SMALL_CAPS_OFF) )
-	    small_caps(*style) = SMALL_CAPS_OFF;
+	    setSmall_caps(*style, SMALL_CAPS_OFF);
 	  else if( StringEqual(string(y), STR_BASELINE_MARK) )
-	    baselinemark(*style) = TRUE;
+	    setBaselinemark(*style, TRUE);
 	  else if( StringEqual(string(y), STR_XHEIGHT2_MARK) )
-	    baselinemark(*style) = FALSE;
+	    setBaselinemark(*style, FALSE);
 	  else if( StringEqual(string(y), STR_NOSTRUT) )
-	    strut(*style) = FALSE;
+	    setStrut(*style, FALSE);
 	  else if( StringEqual(string(y), STR_STRUT) )
-	    strut(*style) = TRUE;
+	    setStrut(*style, TRUE);
 	  else if( StringEqual(string(y), STR_LIG) )
-	    ligatures(*style) = TRUE;
+	    setLigatures(*style, TRUE);
 	  else if( StringEqual(string(y), STR_NOLIG) )
-	    ligatures(*style) = FALSE;
+	    setLigatures(*style, FALSE);
 	  else if( StringEqual(string(y), STR_SMALL_CAPS_SET) )
 	  {
 	    if( NextDown(link) == x || NextDown(NextDown(link)) == x )
@@ -1186,7 +1186,7 @@ void FontChange(STYLE *style, OBJECT x)
 	        Error(37, 68, "%s in %s followed by unreasonable number \"%s\"",
 		  WARN, &fpos(x), STR_SMALL_CAPS_SET, KW_FONT, string(y));
 	      else
-	        smallcaps_len(*style) = tmpf * FR;
+	        setSmallcaps_len(*style, tmpf * FR);
 	      link = NextDown(NextDown(link));
 	    }
 	  }
@@ -1411,8 +1411,8 @@ void FontChange(STYLE *style, OBJECT x)
   for( link=NextDown(NextDown(Down(face))); link!=face; link = NextDown(link) )
   { Child(fsize, link);
     if( font_size(fsize) == flen )
-    { font(*style) = font_num(fsize);
-      SetGap(space_gap(*style), nobreak(&space_gap(*style)), FALSE, TRUE,
+    { setFont(*style, font_num(fsize));
+      SetGap(space_gap_m(*style), nobreak(&space_gap_m(*style)), FALSE, TRUE,
 	FIXED_UNIT, EDGE_MODE, font_spacewidth(fsize));
       debug2(DFT, D,"FontChange returning (old) %d (XHeight2 = %d)",
 	font(*style), font_xheight2(finfo[font(*style)].font_table));
@@ -1530,8 +1530,8 @@ void FontChange(STYLE *style, OBJECT x)
   else finfo[font_count].kern_sizes = (FULL_LENGTH *) NULL;
 
   /* return new font number and exit */
-  font(*style) = font_count;
-  SetGap(space_gap(*style), nobreak(&space_gap(*style)), FALSE, TRUE,
+  setFont(*style, font_count);
+  SetGap(space_gap_m(*style), nobreak(&space_gap_m(*style)), FALSE, TRUE,
     FIXED_UNIT, EDGE_MODE, font_spacewidth(new));
   debug2(DFT, D,"FontChange returning (scaled) %d (XHeight2 = %d)",
     font(*style), font_xheight2(finfo[font(*style)].font_table));

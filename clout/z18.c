@@ -71,34 +71,34 @@ void TransferInit(OBJECT InitEnv)
 
   /* set initial environment and style */
   InitialEnvironment = InitEnv;
-  SetGap(line_gap(InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
-  vadjust(InitialStyle)         = FALSE;
-  hadjust(InitialStyle)         = FALSE;
-  padjust(InitialStyle)         = FALSE;
-  space_style(InitialStyle)     = SPACE_LOUT;
-  SetGap(space_gap(InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
-  hyph_style(InitialStyle)      = HYPH_UNDEF;
-  fill_style(InitialStyle)      = FILL_UNDEF;
-  display_style(InitialStyle)   = DISPLAY_UNDEF;
-  small_caps(InitialStyle)      = SMALL_CAPS_OFF;
-  font(InitialStyle)            = 0;			/* i.e. undefined    */
-  colour(InitialStyle)          = 0;			/* i.e. undefined    */
-  underline_colour(InitialStyle)= 0;			/* i.e. undefined    */
-  texture(InitialStyle)         = 1;			/* i.e. "null"       */
-  blanklinescale(InitialStyle)  = SF;			/* i.e. 1.0 (scaled) */
-  outline(InitialStyle)         = FALSE;		/* i.e. not outlined */
-  language(InitialStyle)        = 0;			/* i.e. undefined    */
-  yunit(InitialStyle)           = 0;			/* i.e. zero         */
-  zunit(InitialStyle)           = 0;			/* i.e. zero         */
-  outdent_len(InitialStyle)     = 0;			/* i.e. zero         */
-  smallcaps_len(InitialStyle)   = 0.7 * FR;		/* i.e. 0.7 scale    */
-  nobreakfirst(InitialStyle)	= FALSE;
-  nobreaklast(InitialStyle)	= FALSE;
-  marginkerning(InitialStyle)	= FALSE;
-  baselinemark(InitialStyle)	= FALSE;                /* i.e. not baseline */
-  strut(InitialStyle)		= FALSE;                /* i.e. not strutted */
-  ligatures(InitialStyle)	= TRUE;                 /* i.e. ligatures    */
-  context(InitialStyle) 	= InitialContext;
+  SetGap(line_gap_m(InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
+  setHadjust(InitialStyle, FALSE);
+  setHadjust(InitialStyle, FALSE);
+  setPadjust(InitialStyle, FALSE);
+  setSpace_style(InitialStyle, SPACE_LOUT);
+  SetGap(space_gap_m(InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
+  setHyph_style(InitialStyle, HYPH_UNDEF);
+  setFill_style(InitialStyle, FILL_UNDEF);
+  setDisplay_style(InitialStyle, DISPLAY_UNDEF);
+  setSmall_caps(InitialStyle, SMALL_CAPS_OFF);
+  setFont(InitialStyle, 0);			/* i.e. undefined    */
+  setColour(InitialStyle, 0);			/* i.e. undefined    */
+  setUnderline_colour(InitialStyle, 0);			/* i.e. undefined    */
+  setTexture(InitialStyle, 1);			/* i.e. "null"       */
+  setBlanklinescale(InitialStyle, SF);			/* i.e. 1.0 (scaled) */
+  setOutline(InitialStyle, FALSE);		/* i.e. not outlined */
+  setLanguage(InitialStyle, 0);			/* i.e. undefined    */
+  setYunit(InitialStyle, 0);			/* i.e. zero         */
+  setZunit(InitialStyle, 0);			/* i.e. zero         */
+  setOutdent_len(InitialStyle, 0);			/* i.e. zero         */
+  setSmallcaps_len(InitialStyle, 0.7 * FR);		/* i.e. 0.7 scale    */
+  setNobreakfirst(InitialStyle, FALSE);
+  setNobreaklast(InitialStyle, FALSE);
+  setMarginkerning(InitialStyle, FALSE);
+  setBaselinemark(InitialStyle, FALSE);                /* i.e. not baseline */
+  setStrut(InitialStyle, FALSE);                /* i.e. not strutted */
+  setLigatures(InitialStyle, TRUE);                 /* i.e. ligatures    */
+  setContext(InitialStyle, InitialContext);
 
   /* construct destination for root galley */
   New(up_hd, HEAD);

@@ -126,12 +126,12 @@ int GetWidth(OBJECT x, STYLE *style)
 
     case CH_UNIT_SP:
       
-      res = num * width(&space_gap(*style));
+      res = num * width(&space_gap_m(*style));
       break;
 
     case CH_UNIT_VS:
       
-      res = num * width(&line_gap(*style));
+      res = num * width(&line_gap_m(*style));
       break;
 
     case CH_UNIT_YU:
@@ -239,8 +239,8 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
     case CH_UNIT_PT:	setwidths( num*PT,                        FIXED_UNIT );
     case CH_UNIT_EM:	setwidths( num*EM,                        FIXED_UNIT );
     case CH_UNIT_FT:	setwidths( num*FontSize(font(*style), x), FIXED_UNIT );
-    case CH_UNIT_SP:	setwidths( num*width(&space_gap(*style)),  FIXED_UNIT );
-    case CH_UNIT_VS:	setwidths( num*width(&line_gap(*style)),   FIXED_UNIT );
+    case CH_UNIT_SP:	setwidths( num*width(&space_gap_m(*style)),  FIXED_UNIT );
+    case CH_UNIT_VS:	setwidths( num*width(&line_gap_m(*style)),   FIXED_UNIT );
     case CH_UNIT_YU:	setwidths( num*yunit(*style),             FIXED_UNIT );
     case CH_UNIT_ZU:	setwidths( num*zunit(*style),             FIXED_UNIT );
     case CH_UNIT_WD:	setwidths( num*FR,                        NEXT_UNIT  );

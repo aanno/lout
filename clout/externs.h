@@ -805,14 +805,14 @@ typedef struct style_type
 
 #define	line_gap_m(x)	(x).oline_gap
 #define	space_gap_m(x)	(x).ospace_gap
+#define	underline_colour_m(x) (x).ounderline_colour
+#define	colour_m(x)	(x).ocolour
 /*
 #define	yunit(x)	(x).oyunit
 #define	zunit(x)	(x).ozunit
 #define	outdent_len(x)	(x).ooutdent_len
 #define	smallcaps_len(x)(x).osmallcaps_len
 #define	font(x)		(x).ofont
-#define	colour(x)	(x).ocolour
-#define	underline_colour(x) (x).ounderline_colour
 #define	texture(x)	(x).otexture
 #define	blanklinescale(x)(x).oblanklinescale
 #define	language(x)	(x).olanguage
