@@ -803,6 +803,7 @@ typedef struct style_type
   CONTEXT	ocontext;		/* context stack		     */
 } STYLE;
 
+/*
 #define	line_gap(x)	(x).oline_gap
 #define	space_gap(x)	(x).ospace_gap
 #define	yunit(x)	(x).oyunit
@@ -831,6 +832,171 @@ typedef struct style_type
 #define	ligatures(x)	(x).oligatures
 #define	marginkerning(x)(x).omarginkerning
 #define	context(x)	(x).ocontext
+*/
+
+INLINE GAP line_gap(STYLE x) {
+  return (x).oline_gap;
+} 
+INLINE GAP space_gap(STYLE x) {
+  return (x).ospace_gap;
+}
+INLINE FULL_LENGTH yunit(STYLE x) {
+  return (x).oyunit;
+}
+INLINE FULL_LENGTH zunit(STYLE x) {
+  return (x).ozunit;
+}
+INLINE FULL_LENGTH outdent_len(STYLE x) {
+  return (x).ooutdent_len;
+}
+INLINE FULL_LENGTH smallcaps_len(STYLE x) {
+  return (x).osmallcaps_len;
+}
+INLINE FONT_NUM font(STYLE x) {
+  return (x).ofont;
+}
+INLINE COLOUR_NUM colour(STYLE x) {
+  return (x).ocolour;
+}
+INLINE COLOUR_NUM underline_colour(STYLE x) {
+  return (x).ounderline_colour;
+}
+INLINE TEXTURE_NUM texture(STYLE x) {
+  return (x).otexture;
+}
+INLINE unsigned short blanklinescale(STYLE x) {
+  return (x).oblanklinescale;
+}
+INLINE LANGUAGE_NUM language(STYLE x) {
+  return (x).olanguage;
+}
+INLINE BOOLEAN vadjust(STYLE x) {
+  return (x).ovadjust;
+}
+INLINE BOOLEAN hadjust(STYLE x) {
+  return (x).ohadjust;
+}
+INLINE BOOLEAN padjust(STYLE x) {
+  return (x).opadjust;
+}
+INLINE unsigned small_caps(STYLE x) {
+  return (x).osmall_caps;
+}
+INLINE unsigned space_style(STYLE x) {
+  return (x).ospace_style;
+}
+INLINE unsigned hyph_style(STYLE x) {
+  return (x).ohyph_style;
+}
+INLINE unsigned fill_style(STYLE x) {
+  return (x).ofill_style;
+}
+INLINE unsigned display_style(STYLE x) {
+  return (x).odisplay_style;
+}
+INLINE BOOLEAN outline(STYLE x) {
+  return (x).ooutline;
+}
+INLINE BOOLEAN nobreakfirst(STYLE x) {
+  return (x).onobreakfirst;
+}
+INLINE BOOLEAN nobreaklast(STYLE x) {
+  return (x).onobreaklast;
+}
+INLINE BOOLEAN baselinemark(STYLE x) {
+  return (x).obaselinemark;
+}
+INLINE BOOLEAN ligatures(STYLE x) {
+  return (x).oligatures;
+}
+INLINE BOOLEAN marginkerning(STYLE x) {
+  return (x).omarginkerning;
+}
+INLINE CONTEXT context(STYLE x) {
+  return (x).ocontext;
+}
+
+INLINE void setLine_gap(STYLE x, GAP line_gap) {
+  (x).oline_gap = line_gap;
+} 
+INLINE void setSpace_gap(STYLE x, GAP space_gap) {
+  (x).ospace_gap = space_gap;
+}
+INLINE void setYunit(STYLE x, FULL_LENGTH yunit) {
+  (x).oyunit = yunit;
+}
+INLINE void setZunit(STYLE x, FULL_LENGTH zunit) {
+  (x).ozunit = zunit;
+}
+INLINE void setOutdent_len(STYLE x, FULL_LENGTH outdent_len) {
+  (x).ooutdent_len = outdent_len;
+}
+INLINE void setSmallcaps_len(STYLE x, FULL_LENGTH smallcaps_len) {
+  (x).osmallcaps_len = smallcaps_len;
+}
+INLINE void setFont(STYLE x, FONT_NUM font) {
+  (x).ofont = font;
+}
+INLINE void setColour(STYLE x, COLOUR_NUM colour) {
+  (x).ocolour = colour;
+}
+INLINE void setUnderline_colour(STYLE x, COLOUR_NUM underline_colour) {
+  (x).ounderline_colour = underline_colour;
+}
+INLINE void setTexture(STYLE x, TEXTURE_NUM texture) {
+  (x).otexture = texture;
+}
+INLINE void setBlanklinescale(STYLE x, unsigned short blanklinescale) {
+  (x).oblanklinescale = blanklinescale;
+}
+INLINE void setLanguage(STYLE x, LANGUAGE_NUM language) {
+  (x).olanguage = language;
+}
+INLINE void setVadjust(STYLE x, BOOLEAN vadjust) {
+  (x).ovadjust = vadjust;
+}
+INLINE void setHadjust(STYLE x, BOOLEAN hadjust) {
+  (x).ohadjust = hadjust;
+}
+INLINE void setPadjust(STYLE x, BOOLEAN padjust) {
+  (x).opadjust = padjust;
+}
+INLINE void setSmall_caps(STYLE x, unsigned small_caps) {
+  (x).osmall_caps = small_caps;
+}
+INLINE void setSpace_style(STYLE x, unsigned space_style) {
+  (x).ospace_style = space_style;
+}
+INLINE void setHyph_style(STYLE x, unsigned hyph_style) {
+  (x).ohyph_style = hyph_style;
+}
+INLINE void setFill_style(STYLE x, unsigned fill_style) {
+  (x).ofill_style = fill_style;
+}
+INLINE void setDisplay_style(STYLE x, unsigned display_style) {
+  (x).odisplay_style = display_style;
+}
+INLINE void setOutline(STYLE x, BOOLEAN outline) {
+  (x).ooutline = outline;
+}
+INLINE void setNobreakfirst(STYLE x, BOOLEAN nobreakfirst) {
+  (x).onobreakfirst = nobreakfirst;
+}
+INLINE void setNobreaklast(STYLE x, BOOLEAN nobreaklast) {
+  (x).onobreaklast = nobreaklast;
+}
+INLINE void setBaselinemark(STYLE x, BOOLEAN baselinemark) {
+  (x).obaselinemark = baselinemark;
+}
+INLINE void setLigatures(STYLE x, BOOLEAN ligatures) {
+  (x).oligatures = ligatures;
+}
+INLINE void setMarginkerning(STYLE x, BOOLEAN marginkerning) {
+  (x).omarginkerning = marginkerning;
+}
+INLINE void setContext(STYLE x, CONTEXT context) {
+  (x).ocontext = context;
+}
 
 #define StyleCopy(x, y)							\
 ( GapCopy(line_gap(x), line_gap(y)),					\
