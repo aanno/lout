@@ -919,120 +919,120 @@ INLINE CONTEXT context(STYLE x) {
   return (x).ocontext;
 }
 
-INLINE void setLine_gap(STYLE x, GAP line_gap) {
-  (x).oline_gap = line_gap;
+INLINE void setLine_gap(STYLE* x, GAP line_gap) {
+  (x)->oline_gap = line_gap;
 } 
-INLINE void setSpace_gap(STYLE x, GAP space_gap) {
-  (x).ospace_gap = space_gap;
+INLINE void setSpace_gap(STYLE* x, GAP space_gap) {
+  (x)->ospace_gap = space_gap;
 }
-INLINE void setYunit(STYLE x, FULL_LENGTH yunit) {
-  (x).oyunit = yunit;
+INLINE void setYunit(STYLE* x, FULL_LENGTH yunit) {
+  (x)->oyunit = yunit;
 }
-INLINE void setZunit(STYLE x, FULL_LENGTH zunit) {
-  (x).ozunit = zunit;
+INLINE void setZunit(STYLE* x, FULL_LENGTH zunit) {
+  (x)->ozunit = zunit;
 }
-INLINE void setOutdent_len(STYLE x, FULL_LENGTH outdent_len) {
-  (x).ooutdent_len = outdent_len;
+INLINE void setOutdent_len(STYLE* x, FULL_LENGTH outdent_len) {
+  (x)->ooutdent_len = outdent_len;
 }
-INLINE void setSmallcaps_len(STYLE x, FULL_LENGTH smallcaps_len) {
-  (x).osmallcaps_len = smallcaps_len;
+INLINE void setSmallcaps_len(STYLE* x, FULL_LENGTH smallcaps_len) {
+  (x)->osmallcaps_len = smallcaps_len;
 }
-INLINE void setFont(STYLE x, FONT_NUM font) {
-  (x).ofont = font;
+INLINE void setFont(STYLE* x, FONT_NUM font) {
+  (x)->ofont = font;
 }
-INLINE void setColour(STYLE x, COLOUR_NUM colour) {
-  (x).ocolour = colour;
+INLINE void setColour(STYLE* x, COLOUR_NUM colour) {
+  (x)->ocolour = colour;
 }
-INLINE void setUnderline_colour(STYLE x, COLOUR_NUM underline_colour) {
-  (x).ounderline_colour = underline_colour;
+INLINE void setUnderline_colour(STYLE* x, COLOUR_NUM underline_colour) {
+  (x)->ounderline_colour = underline_colour;
 }
-INLINE void setTexture(STYLE x, TEXTURE_NUM texture) {
-  (x).otexture = texture;
+INLINE void setTexture(STYLE* x, TEXTURE_NUM texture) {
+  (x)->otexture = texture;
 }
-INLINE void setBlanklinescale(STYLE x, unsigned short blanklinescale) {
-  (x).oblanklinescale = blanklinescale;
+INLINE void setBlanklinescale(STYLE* x, unsigned short blanklinescale) {
+  (x)->oblanklinescale = blanklinescale;
 }
-INLINE void setLanguage(STYLE x, LANGUAGE_NUM language) {
-  (x).olanguage = language;
+INLINE void setLanguage(STYLE* x, LANGUAGE_NUM language) {
+  (x)->olanguage = language;
 }
-INLINE void setVadjust(STYLE x, BOOLEAN vadjust) {
-  (x).ovadjust = vadjust;
+INLINE void setVadjust(STYLE* x, BOOLEAN vadjust) {
+  (x)->ovadjust = vadjust;
 }
-INLINE void setHadjust(STYLE x, BOOLEAN hadjust) {
-  (x).ohadjust = hadjust;
+INLINE void setHadjust(STYLE* x, BOOLEAN hadjust) {
+  (x)->ohadjust = hadjust;
 }
-INLINE void setPadjust(STYLE x, BOOLEAN padjust) {
-  (x).opadjust = padjust;
+INLINE void setPadjust(STYLE* x, BOOLEAN padjust) {
+  (x)->opadjust = padjust;
 }
-INLINE void setSmall_caps(STYLE x, unsigned small_caps) {
-  (x).osmall_caps = small_caps;
+INLINE void setSmall_caps(STYLE* x, unsigned small_caps) {
+  (x)->osmall_caps = small_caps;
 }
-INLINE void setSpace_style(STYLE x, unsigned space_style) {
-  (x).ospace_style = space_style;
+INLINE void setSpace_style(STYLE* x, unsigned space_style) {
+  (x)->ospace_style = space_style;
 }
-INLINE void setHyph_style(STYLE x, unsigned hyph_style) {
-  (x).ohyph_style = hyph_style;
+INLINE void setHyph_style(STYLE* x, unsigned hyph_style) {
+  (x)->ohyph_style = hyph_style;
 }
-INLINE void setFill_style(STYLE x, unsigned fill_style) {
-  (x).ofill_style = fill_style;
+INLINE void setFill_style(STYLE* x, unsigned fill_style) {
+  (x)->ofill_style = fill_style;
 }
-INLINE void setDisplay_style(STYLE x, unsigned display_style) {
-  (x).odisplay_style = display_style;
+INLINE void setDisplay_style(STYLE* x, unsigned display_style) {
+  (x)->odisplay_style = display_style;
 }
-INLINE void setOutline(STYLE x, BOOLEAN outline) {
-  (x).ooutline = outline;
+INLINE void setOutline(STYLE* x, BOOLEAN outline) {
+  (x)->ooutline = outline;
 }
-INLINE void setNobreakfirst(STYLE x, BOOLEAN nobreakfirst) {
-  (x).onobreakfirst = nobreakfirst;
+INLINE void setNobreakfirst(STYLE* x, BOOLEAN nobreakfirst) {
+  (x)->onobreakfirst = nobreakfirst;
 }
-INLINE void setNobreaklast(STYLE x, BOOLEAN nobreaklast) {
-  (x).onobreaklast = nobreaklast;
+INLINE void setNobreaklast(STYLE* x, BOOLEAN nobreaklast) {
+  (x)->onobreaklast = nobreaklast;
 }
-INLINE void setBaselinemark(STYLE x, BOOLEAN baselinemark) {
-  (x).obaselinemark = baselinemark;
+INLINE void setBaselinemark(STYLE* x, BOOLEAN baselinemark) {
+  (x)->obaselinemark = baselinemark;
 }
-INLINE void setStrut(STYLE x, BOOLEAN strut) {
-  (x).ostrut = strut;
+INLINE void setStrut(STYLE* x, BOOLEAN strut) {
+  (x)->ostrut = strut;
 }
-INLINE void setLigatures(STYLE x, BOOLEAN ligatures) {
-  (x).oligatures = ligatures;
+INLINE void setLigatures(STYLE* x, BOOLEAN ligatures) {
+  (x)->oligatures = ligatures;
 }
-INLINE void setMarginkerning(STYLE x, BOOLEAN marginkerning) {
-  (x).omarginkerning = marginkerning;
+INLINE void setMarginkerning(STYLE* x, BOOLEAN marginkerning) {
+  (x)->omarginkerning = marginkerning;
 }
-INLINE void setContext(STYLE x, CONTEXT context) {
-  (x).ocontext = context;
+INLINE void setContext(STYLE* x, CONTEXT context) {
+  (x)->ocontext = context;
 }
 
 #define StyleCopy(x, y)							\
 ( GapCopy(line_gap_m(x), line_gap_m(y)),					\
   GapCopy(space_gap_m(x), space_gap_m(y)),					\
-  setYunit(x, yunit(y)),							\
-  setZunit(x, zunit(y)),							\
-  setOutdent_len(x, outdent_len(y)),					\
-  setSmallcaps_len(x, smallcaps_len(y)),					\
-  setFont(x, font(y)),							\
-  setColour(x, colour(y)),						\
+  setYunit(&x, yunit(y)),							\
+  setZunit(&x, zunit(y)),							\
+  setOutdent_len(&x, outdent_len(y)),					\
+  setSmallcaps_len(&x, smallcaps_len(y)),					\
+  setFont(&x, font(y)),							\
+  setColour(&x, colour(y)),						\
   setUnderline_colour(x, underline_colour(y)),				\
-  setTexture(x, texture(y)),						\
-  setBlanklinescale(x, blanklinescale(y)),				\
-  setLanguage(x, language(y)), 						\
-  setVadjust(x, vadjust(y)), 						\
-  setHadjust(x, hadjust(y)), 						\
-  setPadjust(x, padjust(y)), 						\
-  setSmall_caps(x, small_caps(y)),					\
-  setSpace_style(x, space_style(y)),					\
-  setHyph_style(x, hyph_style(y)),					\
-  setFill_style(x, fill_style(y)),					\
-  setDisplay_style(x, display_style(y)),					\
-  setOutline(x, outline(y)),						\
-  setNobreakfirst(x, nobreakfirst(y)),					\
-  setNobreaklast(x, nobreaklast(y)),					\
-  setBaselinemark(x, baselinemark(y)),					\
-  setStrut(x, strut(y)),							\
-  setLigatures(x, ligatures(y)),						\
-  setMarginkerning(x, marginkerning(y)),					\
-  setContext(x, context(y))						\
+  setTexture(&x, texture(y)),						\
+  setBlanklinescale(&x, blanklinescale(y)),				\
+  setLanguage(&x, language(y)), 						\
+  setVadjust(&x, vadjust(y)), 						\
+  setHadjust(&x, hadjust(y)), 						\
+  setPadjust(&x, padjust(y)), 						\
+  setSmall_caps(&x, small_caps(y)),					\
+  setSpace_style(&x, space_style(y)),					\
+  setHyph_style(&x, hyph_style(y)),					\
+  setFill_style(&x, fill_style(y)),					\
+  setDisplay_style(&x, display_style(y)),					\
+  setOutline(&x, outline(y)),						\
+  setNobreakfirst(&x, nobreakfirst(y)),					\
+  setNobreaklast(&x, nobreaklast(y)),					\
+  setBaselinemark(&x, baselinemark(y)),					\
+  setStrut(&x, strut(y)),							\
+  setLigatures(&x, ligatures(y)),						\
+  setMarginkerning(&x, marginkerning(y)),					\
+  setContext(&x, context(y))						\
 )
 
 
