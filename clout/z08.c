@@ -30,7 +30,7 @@
 // #include "externs.h"
 #include "lout.h"
 #define line_breaker(g)							\
-  (vspace(g) > 0 || (units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR))
+  (vspace(g) > 0 || (units(gap(g)) == FRAME_UNIT && width(gap(g)) > FR))
 
 
 /*****************************************************************************/
@@ -322,7 +322,7 @@ OBJECT *enclose, BOOLEAN fcr)
   if( bthr[par] )  { New(first_bt, THREAD); }
   else first_bt = nilobj;
   bt[par] = first_bt;
-  if( join(&gap(g)) )  { New(ft[par], THREAD); }
+  if( join(gap(g)) )  { New(ft[par], THREAD); }
   else ft[par] = nilobj;
   still_backing = first_bt != nilobj;
 
@@ -353,7 +353,7 @@ OBJECT *enclose, BOOLEAN fcr)
       StyleCopy(&gap_style, style);
     z = ReplaceWithTidy(z, ACAT_TIDY);
     debug1(DOM, DD, "calling GetGap, style = %s", EchoStyle(&gap_style));
-    GetGap(z, &gap_style, &gap(g), &res_inc);
+    GetGap(z, &gap_style, gap(g), &res_inc);
     if( bt[perp] )  Link(bt[perp], g);
     if( ft[perp] )  Link(ft[perp], g);
 
@@ -369,7 +369,7 @@ OBJECT *enclose, BOOLEAN fcr)
     last_ft = ft[par];
     if( ft[par] ) { New(bt[par], THREAD); }  else bt[par] = nilobj;
     if( g != nilobj )
-    { if( join(&gap(g)) )  { New(ft[par], THREAD); }  else ft[par] = nilobj;
+    { if( join(gap(g)) )  { New(ft[par], THREAD); }  else ft[par] = nilobj;
     }
     else
     {
@@ -1144,7 +1144,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	  Child(z, Down(g));
 	  z = Manifest(z, env, &new_style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
 	  z = ReplaceWithTidy(z, ACAT_TIDY);
-	  GetGap(z, style, &gap(g), &res_inc);
+	  GetGap(z, style, gap(g), &res_inc);
 	  vspace(g) = hspace(g) = 0;
 	}
 	else
@@ -1156,7 +1156,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	    case SPACE_LOUT:
 
 	      /* usual Lout spacing, the number of white space characters */
-	      setWidth(&gap(g), width(&gap(g)) * (vspace(g) + hspace(g)));
+	      setWidth(gap(g), width(gap(g)) * (vspace(g) + hspace(g)));
 	      break;
 
 
@@ -1164,7 +1164,7 @@ OBJECT *enclose, BOOLEAN fcr)
 
 	      /* either zero or one space */
 	      if( vspace(g) + hspace(g) == 0 )
-	      { setWidth(&gap(g), 0);
+	      { setWidth(gap(g), 0);
 	      }
 	      else
 	      { /* else width is like one space, so OK as is */
@@ -1181,7 +1181,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	    case SPACE_TROFF:
 
 	      /* Lout spacing plus one extra space for sentence end at eoln */
-	      setWidth(&gap(g), width(&gap(g)) * (vspace(g) + hspace(g)));
+	      setWidth(gap(g), width(gap(g)) * (vspace(g) + hspace(g)));
 	      debugcond2(DLS, DD, vspace(g) > 0, "  prev = %s %s",
 		Image(type(prev)), EchoObject(prev));
 	      if( vspace(g) > 0 )
@@ -1204,7 +1204,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		    bool(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
+		    setWidth(gap(g), width(gap(g)) + width(space_gap_m(style)));
 		}
 	      }
 	      break;
@@ -1215,7 +1215,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	      if( vspace(g) + hspace(g) == 0 )
 	      {
 		/* zero spaces gives zero result, as for compress above */
-		setWidth(&gap(g), 0);
+		setWidth(gap(g), 0);
 	      }
 	      else
 	      {
@@ -1237,7 +1237,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		      bool(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
+		    setWidth(gap(g), width(gap(g)) + width(space_gap_m(style)));
 	        }
 	      }
 	      break;
@@ -1248,16 +1248,16 @@ OBJECT *enclose, BOOLEAN fcr)
 	      assert(FALSE, "Manifest: unexpected space_style!");
 	      break;
 	  }
-	  setNobreak(&gap(g), (width(&gap(g)) == 0));
+	  setNobreak(gap(g), (width(gap(g)) == 0));
 	  if( line_breaker(g) && is_definite(type(y)) )  multiline = TRUE;
 	}
-        debug1(DOM, DD, "  in ACAT, gap = %s", EchoLength(width(&gap(g))));
+        debug1(DOM, DD, "  in ACAT, gap = %s", EchoLength(width(gap(g))));
 
 	/* compress adjacent juxtaposed words of equal font, etc. */
-	if( is_word(type(y)) && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
+	if( is_word(type(y)) && width(gap(g)) == 0 && nobreak(gap(g)) &&
 	    vspace(g)+hspace(g)==0 &&
-	    units(&gap(g)) == FIXED_UNIT && mode(&gap(g)) == EDGE_MODE &&
-	    prev != nilobj && is_word(type(prev)) && !mark(&gap(g)) &&
+	    units(gap(g)) == FIXED_UNIT && mode(gap(g)) == EDGE_MODE &&
+	    prev != nilobj && is_word(type(prev)) && !mark(gap(g)) &&
 	    word_font(prev) == word_font(y) &&
 	    word_colour(prev) == word_colour(y) &&
 	    word_underline_colour(prev) == word_underline_colour(y) &&
@@ -1337,16 +1337,16 @@ OBJECT *enclose, BOOLEAN fcr)
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &shift_gap(x), &res_inc);
+      GetGap(y, style, shift_gap(x), &res_inc);
       setShift_type(x, res_inc);
-      if( mode(&shift_gap(x)) != EDGE_MODE || 
-	  (units(&shift_gap(x))!=FIXED_UNIT && units(&shift_gap(x))!=NEXT_UNIT) )
+      if( mode(shift_gap(x)) != EDGE_MODE || 
+	  (units(shift_gap(x))!=FIXED_UNIT && units(shift_gap(x))!=NEXT_UNIT) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
 	setShift_type(x, GAP_INC);
-	setUnits(&shift_gap(x), FIXED_UNIT);
-	setWidth(&shift_gap(x), 0);
-	setMode(&shift_gap(x), EDGE_MODE);
+	setUnits(shift_gap(x), FIXED_UNIT);
+	setWidth(shift_gap(x), 0);
+	setMode(shift_gap(x), EDGE_MODE);
       }
       DisposeChild(Down(x));
       goto ETC;		/* next case down from here */
@@ -1387,7 +1387,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE,
 	&nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &line_gap_ms(save_style(x)), &res_inc);
+      GetGap(y, style, line_gap_ms(save_style(x)), &res_inc);
 
       /* make vc, a joined VCAT of MAX_HCOPIES copies of the header */
       Child(y, LastDown(x));
@@ -1398,8 +1398,8 @@ OBJECT *enclose, BOOLEAN fcr)
       {
 	/* make new gap object and link to vc */
 	New(g, GAP_OBJ);
-	setMark(&gap(g), FALSE);
-	setJoin(&gap(g), TRUE);
+	setMark(gap(g), FALSE);
+	setJoin(gap(g), TRUE);
 	FposCopy(fpos(g), fpos(y));
 	gword = MakeWord(WORD, STR_EMPTY, &fpos(g));
 	Link(g, gword);

@@ -717,7 +717,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 }
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
-( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
+( SetGapOnRef( (x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
@@ -728,7 +728,7 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 }
 
 #define GapCopy(x, y)							\
-( GapCopyOnRef( &(x), &(y) ) )
+( GapCopyOnRef( (x), (y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   nobreak_m(*x) = nobreak(y);
   mark_m(*x) = mark(y);
@@ -773,8 +773,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP		oline_gap;		/* separation between lines          */
-  GAP		ospace_gap;		/* separation induced by white space */
+  GAP*		oline_gap;		/* separation between lines          */
+  GAP*		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -837,10 +837,10 @@ typedef struct style_type
 */
 #define	context_m(x)	(x)->ocontext
 
-INLINE GAP line_gap(STYLE* x) {
+INLINE GAP* line_gap(STYLE* x) {
   return (x)->oline_gap;
 } 
-INLINE GAP space_gap(STYLE* x) {
+INLINE GAP* space_gap(STYLE* x) {
   return (x)->ospace_gap;
 }
 INLINE FULL_LENGTH yunit(STYLE* x) {
@@ -923,10 +923,10 @@ INLINE CONTEXT context(STYLE* x) {
 }
 
 INLINE void setLine_gap(STYLE* x, GAP* line_gap) {
-  (x)->oline_gap = *line_gap;
+  (x)->oline_gap = line_gap;
 } 
 INLINE void setSpace_gap(STYLE* x, GAP* space_gap) {
-  (x)->ospace_gap = *space_gap;
+  (x)->ospace_gap = space_gap;
 }
 INLINE void setYunit(STYLE* x, FULL_LENGTH yunit) {
   (x)->oyunit = yunit;
@@ -1041,8 +1041,8 @@ INLINE void setContext(STYLE* x, CONTEXT* context) {
 */
 
 INLINE void StyleCopy(STYLE* x, STYLE* y) {
-  GapCopyOnRef(&line_gap_m(x), &line_gap_m(y));
-  GapCopyOnRef(&space_gap_m(x), &space_gap_m(y));
+  GapCopyOnRef(line_gap_m(x), line_gap_m(y));
+  GapCopyOnRef(space_gap_m(x), space_gap_m(y));
   setYunit(x, yunit(y));
   setZunit(x, zunit(y));
   setOutdent_len(x, outdent_len(y));
@@ -2008,7 +2008,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP		ogap;
+     GAP*		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */
@@ -2199,8 +2199,8 @@ typedef REAL_OBJECT* OBJECT;
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(&space_gap_ms(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap_ms(save_style(x)), (y))
+#define	shift_type(x)		width(space_gap_ms(save_style(x)))
+#define	setShift_type(x, y)		setWidth(space_gap_ms(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap_m(&save_style(x))
 
@@ -3139,6 +3139,14 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  
+  if (typ == GAP_OBJ) {
+     GAP* g;
+     // slow
+     g = calloc(1L, zz_lengths[GAP_OBJ]);
+     gap(x) = g;
+  }
+
   return x;
 }
 
@@ -3320,6 +3328,11 @@ INLINE void PutMem(POINTER x, int size) {
 }
 */
 INLINE void Dispose(OBJECT x) {
+    if (type(x) == GAP_OBJ) {
+      // slow
+      free(gap(x));
+    }
+
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
@@ -3588,7 +3601,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  jn = jn && join(&gap(y));			\
+    if( type(y) == GAP_OBJ )  jn = jn && join(gap(y));			\
     else if( type(y)==SPLIT ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
@@ -3652,7 +3665,7 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(&gap(y));		\
+    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(gap(y));		\
     else if( type(y)==SPLIT ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\

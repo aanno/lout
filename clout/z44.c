@@ -61,7 +61,7 @@
   { FirstDefinite(y, ylink, z, jn);					\
     if( ylink != y && PrevDown(ylink) != y )				\
     { Child(yg, PrevDown(ylink));					\
-      assert( type(yg)==GAP_OBJ && mode(&gap(yg)) != NO_MODE, "NDWGC!");	\
+      assert( type(yg)==GAP_OBJ && mode(gap(yg)) != NO_MODE, "NDWGC!");	\
       MoveLink(PrevDown(ylink), Up(g), PARENT);				\
       MoveLink(Up(g), ylink, PARENT);					\
     }									\
@@ -71,7 +71,7 @@
     NextDefiniteWithGap(x, link, y, g, jn);				\
   }									\
   assert( link==x || is_definite(type(y)), "FirstDefiniteCompressed!");	\
-  assert( link==x || mode(&gap(g)) != NO_MODE,				\
+  assert( link==x || mode(gap(g)) != NO_MODE,				\
     "FirstDefiniteWithGapCompressed: mode(gap(g))!" );			\
 }
 
@@ -282,7 +282,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
   for( link = Down(y);  link != y;  link = NextDown(link) )
   { Child(s1, link);
     if( type(s1) == GAP_OBJ )
-    { if( !join(&gap(s1)) )
+    { if( !join(gap(s1)) )
       { debug0(DVH, D, "] VerticalHyphenate returning FALSE (not joined)");
 	return FALSE;
       }
@@ -351,8 +351,8 @@ BOOLEAN VerticalHyphenate(OBJECT y)
 
   /* make sure that first gap does not change when rearranging */
   rump_fwd = find_max(rump_fwd, fwd(prev, ROWM));
-  if( MinGap(rump_fwd, back(nxt, ROWM), fwd(nxt, ROWM), &gap(g)) !=
-      MinGap(fwd(prev, ROWM), back(nxt, ROWM), fwd(nxt, ROWM), &gap(g)) )
+  if( MinGap(rump_fwd, back(nxt, ROWM), fwd(nxt, ROWM), gap(g)) !=
+      MinGap(fwd(prev, ROWM), back(nxt, ROWM), fwd(nxt, ROWM), gap(g)) )
   { debug0(DVH, D, "] VerticalHyphenate returning FALSE (first gap changes)");
     return FALSE;
   }
@@ -360,7 +360,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
   /* check that large_comp has no joins */
   for( link = Down(large_comp);  link != large_comp;  link = NextDown(link) )
   { Child(z, link);
-    if( type(z) == GAP_OBJ && mode(&gap(z)) != NO_MODE && join(&gap(z)) )
+    if( type(z) == GAP_OBJ && mode(gap(z)) != NO_MODE && join(gap(z)) )
     { debug0(DVH, D, "] VerticalHyphenate returning FALSE (VCAT: joined)");
       return FALSE;
     }

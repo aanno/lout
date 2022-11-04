@@ -320,7 +320,7 @@ WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
 # unknown:
 # -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
 
-CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
+CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -Werror -O3 -pipe -fPIC $(WARN) -fsanitize=address -g
 
 
 CFLAGS	+= -DOS_UNIX=$(OSUNIX)					\
