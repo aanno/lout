@@ -359,7 +359,7 @@ void LanguageChange(STYLE *style, OBJECT x)
   if( lname == nilobj )
     Error(43, 7, "%s ignored (unknown language %s)", WARN, &fpos(x),
       KW_LANGUAGE, string(x));
-  else setLanguage(*style, word_language(lname));
+  else setLanguage(style, word_language(lname));
 
   debug1(DLS, D, "LanguageChange returning (language = %s)", string(lname));
   ifdebug(DLS, DD, ltab_debug(names_tab, stderr));

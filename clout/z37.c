@@ -1097,7 +1097,7 @@ void FontChange(STYLE *style, OBJECT x)
   COMPOSITE *oldcmp, *newcmp;
   FULL_LENGTH *oldks, *newks;  int klen;
   debug2(DFT, D, "FontChange( %s, %s )", EchoStyle(style), EchoObject(x));
-  assert( font(*style) <= font_count, "FontChange: font_count!");
+  assert( font(style) <= font_count, "FontChange: font_count!");
   ifdebug(DFT, DD, FontDebug());
 
   /***************************************************************************/
@@ -1121,21 +1121,21 @@ void FontChange(STYLE *style, OBJECT x)
     case QWORD:
 
       if( StringEqual(string(x), STR_SMALL_CAPS_ON) )
-        setSmall_caps(*style, SMALL_CAPS_ON);
+        setSmall_caps(style, SMALL_CAPS_ON);
       else if( StringEqual(string(x), STR_SMALL_CAPS_OFF) )
-        setSmall_caps(*style, SMALL_CAPS_OFF);
+        setSmall_caps(style, SMALL_CAPS_OFF);
       else if( StringEqual(string(x), STR_BASELINE_MARK) )
-        setBaselinemark(*style, TRUE);
+        setBaselinemark(style, TRUE);
       else if( StringEqual(string(x), STR_XHEIGHT2_MARK) )
-        setBaselinemark(*style, FALSE);
+        setBaselinemark(style, FALSE);
       else if( StringEqual(string(x), STR_NOSTRUT) )
-        setStrut(*style, FALSE);
+        setStrut(style, FALSE);
       else if( StringEqual(string(x), STR_STRUT) )
-        setStrut(*style, TRUE);
+        setStrut(style, TRUE);
       else if( StringEqual(string(x), STR_LIG) )
-        setLigatures(*style, TRUE);
+        setLigatures(style, TRUE);
       else if( StringEqual(string(x), STR_NOLIG) )
-        setLigatures(*style, FALSE);
+        setLigatures(style, FALSE);
       else if( StringEqual(string(x), STR_SMALL_CAPS_SET) )
         Error(37, 65, "%s in left parameter of %s must be followed by a value",
           WARN, &fpos(x), STR_SMALL_CAPS_SET, KW_FONT);
@@ -1153,21 +1153,21 @@ void FontChange(STYLE *style, OBJECT x)
         if( is_word(type(y)) ) 
         {
 	  if( StringEqual(string(y), STR_SMALL_CAPS_ON) )
-	    setSmall_caps(*style, SMALL_CAPS_ON);
+	    setSmall_caps(style, SMALL_CAPS_ON);
 	  else if( StringEqual(string(y), STR_SMALL_CAPS_OFF) )
-	    setSmall_caps(*style, SMALL_CAPS_OFF);
+	    setSmall_caps(style, SMALL_CAPS_OFF);
 	  else if( StringEqual(string(y), STR_BASELINE_MARK) )
-	    setBaselinemark(*style, TRUE);
+	    setBaselinemark(style, TRUE);
 	  else if( StringEqual(string(y), STR_XHEIGHT2_MARK) )
-	    setBaselinemark(*style, FALSE);
+	    setBaselinemark(style, FALSE);
 	  else if( StringEqual(string(y), STR_NOSTRUT) )
-	    setStrut(*style, FALSE);
+	    setStrut(style, FALSE);
 	  else if( StringEqual(string(y), STR_STRUT) )
-	    setStrut(*style, TRUE);
+	    setStrut(style, TRUE);
 	  else if( StringEqual(string(y), STR_LIG) )
-	    setLigatures(*style, TRUE);
+	    setLigatures(style, TRUE);
 	  else if( StringEqual(string(y), STR_NOLIG) )
-	    setLigatures(*style, FALSE);
+	    setLigatures(style, FALSE);
 	  else if( StringEqual(string(y), STR_SMALL_CAPS_SET) )
 	  {
 	    if( NextDown(link) == x || NextDown(NextDown(link)) == x )
@@ -1186,7 +1186,7 @@ void FontChange(STYLE *style, OBJECT x)
 	        Error(37, 68, "%s in %s followed by unreasonable number \"%s\"",
 		  WARN, &fpos(x), STR_SMALL_CAPS_SET, KW_FONT, string(y));
 	      else
-	        setSmallcaps_len(*style, tmpf * FR);
+	        setSmallcaps_len(style, tmpf * FR);
 	      link = NextDown(NextDown(link));
 	    }
 	  }
@@ -1279,7 +1279,7 @@ void FontChange(STYLE *style, OBJECT x)
   }
 
   /* check for initial font case: must have family, face, and size */
-  if( font(*style) == NO_FONT && (requested_size == nilobj ||
+  if( font(style) == NO_FONT && (requested_size == nilobj ||
 	requested_family == nilobj || requested_face == nilobj) )
     Error(37, 44, "initial font must have family, face and size",
       FATAL, &fpos(x));
@@ -1306,9 +1306,9 @@ void FontChange(STYLE *style, OBJECT x)
   else
   {
     /* preserve current family */
-    assert( Up(finfo[font(*style)].font_table)!=finfo[font(*style)].font_table,
+    assert( Up(finfo[font(style)].font_table)!=finfo[font(style)].font_table,
       "FontChange: Up(finfo[font(*style)].font_table) !" );
-    Parent(tmpf, Up(finfo[font(*style)].font_table));
+    Parent(tmpf, Up(finfo[font(style)].font_table));
     assert( is_word(type(tmpf)), "FontChange: type(tmpf)!" );
     assert( Up(tmpf) != tmpf, "FontChange: Up(tmpf)!" );
     Parent(family, Up(tmpf));
@@ -1332,7 +1332,7 @@ void FontChange(STYLE *style, OBJECT x)
     else
     {
       /* preserve current face */
-      Parent(face, Up(finfo[font(*style)].font_table));
+      Parent(face, Up(finfo[font(style)].font_table));
       assert( is_word(type(face)), "FontChange: type(face)!" );
       assert( Up(face) != face, "FontChange: Up(face)!" );
     }
@@ -1378,24 +1378,24 @@ void FontChange(STYLE *style, OBJECT x)
 
   /* get font size as integer flen */
   if( requested_size == nilobj )
-    flen = font_size(finfo[font(*style)].font_table);
+    flen = font_size(finfo[font(style)].font_table);
   else 
   { GetGap(requested_size, style, &gp, &inc);
     if( mode(&gp) != EDGE_MODE || units(&gp) != FIXED_UNIT )
     { Error(37, 47, "syntax error in font size %s; ignoring it",
 	WARN, &fpos(requested_size), string(requested_size));
-      flen = font_size(finfo[font(*style)].font_table);
+      flen = font_size(finfo[font(style)].font_table);
     }
     else if( inc == GAP_ABS )
       flen = width(&gp);
-    else if( font(*style) == NO_FONT )
+    else if( font(style) == NO_FONT )
     { Error(37, 48, "no current font on which to base size change %s",
 	FATAL, &fpos(requested_size), string(requested_size));
     }
     else if( inc == GAP_INC )
-      flen = font_size(finfo[font(*style)].font_table) + width(&gp);
+      flen = font_size(finfo[font(style)].font_table) + width(&gp);
     else if( inc == GAP_DEC )
-      flen = font_size(finfo[font(*style)].font_table) - width(&gp);
+      flen = font_size(finfo[font(style)].font_table) - width(&gp);
     else Error(37, 49, "FontChange: %d", INTERN, &fpos(x), inc);
   }
 
@@ -1411,11 +1411,11 @@ void FontChange(STYLE *style, OBJECT x)
   for( link=NextDown(NextDown(Down(face))); link!=face; link = NextDown(link) )
   { Child(fsize, link);
     if( font_size(fsize) == flen )
-    { setFont(*style, font_num(fsize));
-      SetGap(space_gap_m(*style), nobreak(&space_gap_m(*style)), FALSE, TRUE,
+    { setFont(style, font_num(fsize));
+      SetGapOnRef(&space_gap_m(style), nobreak(&space_gap_m(style)), FALSE, TRUE,
 	FIXED_UNIT, EDGE_MODE, font_spacewidth(fsize));
       debug2(DFT, D,"FontChange returning (old) %d (XHeight2 = %d)",
-	font(*style), font_xheight2(finfo[font(*style)].font_table));
+	font(style), font_xheight2(finfo[font(style)].font_table));
       return;
     }
   }
@@ -1530,11 +1530,11 @@ void FontChange(STYLE *style, OBJECT x)
   else finfo[font_count].kern_sizes = (FULL_LENGTH *) NULL;
 
   /* return new font number and exit */
-  setFont(*style, font_count);
-  SetGap(space_gap_m(*style), nobreak(&space_gap_m(*style)), FALSE, TRUE,
+  setFont(style, font_count);
+  SetGap(space_gap_m(style), nobreak(&space_gap_ms(*style)), FALSE, TRUE,
     FIXED_UNIT, EDGE_MODE, font_spacewidth(new));
   debug2(DFT, D,"FontChange returning (scaled) %d (XHeight2 = %d)",
-    font(*style), font_xheight2(finfo[font(*style)].font_table));
+    font(style), font_xheight2(finfo[font(style)].font_table));
   /* FontDebug(); */
 } /* end FontChange */
 

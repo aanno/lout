@@ -480,13 +480,13 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
   }
 
   /* make sure the small caps size is a reasonable one */
-  if( smallcaps_len(*style) <= 0 )
+  if( smallcaps_len(style) <= 0 )
     Error(38, 12, "small caps size is zero or negative", FATAL, &fpos(x));
 
   /* set up the font change word if not already done */
-  if( font_change_length != smallcaps_len(*style) )
+  if( font_change_length != smallcaps_len(style) )
   { char tmp[100];
-    font_change_length = smallcaps_len(*style);
+    font_change_length = smallcaps_len(style);
     sprintf(tmp, "%.2ff", (float) font_change_length / FR);
     font_change_word = MakeWord(WORD, AsciiToFull(tmp), no_fpos);
   }
@@ -505,9 +505,9 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
         { *q++ = uc[*p];
 
 	  /* work out what the smaller font is going to be, and the vshift */
-	  StyleCopy(new_style, *style);
+	  StyleCopy(&new_style, style);
 	  FontChange(&new_style, font_change_word);
-	  small_font = font(new_style);
+	  small_font = font(&new_style);
 	  vshift = word_baselinemark(x) ? 0 :
 	    (FontHalfXHeight(word_font(x)) - FontHalfXHeight(small_font));
 
@@ -526,9 +526,9 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
         if( transformable(*p) )
         { 
 	  /* work out what the smaller font is going to be */
-	  StyleCopy(new_style, *style);
+	  StyleCopy(&new_style, style);
 	  FontChange(&new_style, font_change_word);
-	  small_font = font(new_style);
+	  small_font = font(&new_style);
 	  vshift = word_baselinemark(x) ? 0 :
 	    (FontHalfXHeight(word_font(x)) - FontHalfXHeight(small_font));
 

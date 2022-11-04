@@ -717,14 +717,14 @@ static void PDF_DefineGraphicNames(OBJECT x)
   debug1(DPF, DD, "  style = %s", EchoStyle(&save_style(x)));
 
   /* if baselinemark is different to previous word then record change */
-  if( baselinemark(save_style(x)) != currentbaselinemark )
+  if( baselinemark(&save_style(x)) != currentbaselinemark )
   {
-    currentbaselinemark = baselinemark(save_style(x));
+    currentbaselinemark = baselinemark(&save_style(x));
     currentxheight2 = currentbaselinemark ? 0 : FontHalfXHeight(currentfont);
   }
   /* if font is different to previous word then print change */
-  if( font(save_style(x)) != currentfont )
-  { currentfont = font(save_style(x));
+  if( font(&save_style(x)) != currentfont )
+  { currentfont = font(&save_style(x));
     if( currentfont > 0 )
     {
       currentxheight2 = currentbaselinemark ? 0 : FontHalfXHeight(currentfont);
@@ -735,8 +735,8 @@ static void PDF_DefineGraphicNames(OBJECT x)
   /* PDF textures not implemented */
 
   /* if colour is different to previous word then print change */
-  if( colour(save_style(x)) != currentcolour )
-  { currentcolour = colour(save_style(x));
+  if( colour(&save_style(x)) != currentcolour )
+  { currentcolour = colour(&save_style(x));
     if( currentcolour > 0 )
     { char str[256];
       sprintf(str, "%s ", ColourCommand(currentcolour));
@@ -746,7 +746,7 @@ static void PDF_DefineGraphicNames(OBJECT x)
 
   PDFPage_SetVars(size(x, COLM), size(x, ROWM), back(x, COLM), fwd(x, ROWM),
     currentfont <= 0 ? 12*PT : FontSize(currentfont, x),
-    width(&line_gap_m(save_style(x))), width(&space_gap_m(save_style(x))));
+    width(&line_gap_ms(save_style(x))), width(&space_gap_ms(save_style(x))));
 
   debug0(DPF, D, "PDF_DefineGraphicNames returning.");
 } /* end PDF_DefineGraphicNames */

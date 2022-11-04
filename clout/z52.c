@@ -230,13 +230,13 @@ void TextureChange(STYLE *style, OBJECT x)
     if( cname == nilobj )
     { cname = MakeWord(type(x), string(x), &fpos(x));
       ptab_insert(cname, &pat_tab);
-      setTexture(*style, word_texture(cname));
+      setTexture(style, word_texture(cname));
     }
-    else setTexture(*style, word_texture(cname));
+    else setTexture(style, word_texture(cname));
   }
 
   debug2(DTX, D, "TextureChange returning %d (texture = %s)",
-   texture(*style), string(cname));
+   texture(style), string(cname));
   ifdebug(DTX, DD, ptab_debug(pat_tab, stderr));
 } /* TextureChange */
 

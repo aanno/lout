@@ -179,11 +179,11 @@ void SetOptimize(OBJECT hd, STYLE *style)
   New(opt_components(hd), ACAT);
   opt_gazumped(hd) = FALSE;
   New(opt_constraints(hd), ACAT);
-  StyleCopy(save_style(opt_components(hd)), *style);
+  StyleCopy(&save_style(opt_components(hd)), style);
   if( gall_dir(hd) == ROWM )
   {
-    setHyph_style(save_style(opt_components(hd)), HYPH_OFF);
-    setMarginkerning(save_style(opt_components(hd)), FALSE);
+    setHyph_style(&save_style(opt_components(hd)), HYPH_OFF);
+    setMarginkerning(&save_style(opt_components(hd)), FALSE);
   }
 
   debug0(DOG, D, "SetOptimize returning:");

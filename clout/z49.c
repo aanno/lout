@@ -1701,14 +1701,14 @@ static void PS_DefineGraphicNames(OBJECT x)
   debug1(DPO, DD, "PS_DefineGraphicNames( %s )", EchoObject(x));
   debug1(DPO, DD, "  style = %s", EchoStyle(&save_style(x)));
 
-  SetBaseLineMarkAndFont(baselinemark(save_style(x)), font(save_style(x)));
-  SetColourAndTexture(colour(save_style(x)), texture(save_style(x))); 
+  SetBaseLineMarkAndFont(baselinemark(&save_style(x)), font(&save_style(x)));
+  SetColourAndTexture(colour(&save_style(x)), texture(&save_style(x))); 
 
   /* now print the actual command that defines the names */
   fprintf(out_fp, "%d %d %d %d %d %d %d LoutGraphic%s",
     size(x, COLM), size(x, ROWM), back(x, COLM), fwd(x, ROWM),
     currentfont <= 0 ? 12*PT : FontSize(currentfont, x),
-    width(&line_gap_m(save_style(x))), width(&space_gap_m(save_style(x))),
+    width(&line_gap_ms(save_style(x))), width(&space_gap_ms(save_style(x))),
     (char *) STR_NEWLINE);
   debug0(DPO, DD, "PS_DefineGraphicNames returning.");
 } /* end PS_DefineGraphicNames */
@@ -1733,9 +1733,9 @@ static void PS_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
   FULL_LENGTH ydist)
 {
   if( gs_stack_top >= MAX_GS - 1 ||
-      font(save_style(x)) != currentfont ||
-      colour(save_style(x)) != currentcolour ||
-      texture(save_style(x)) != currenttexture )
+      font(&save_style(x)) != currentfont ||
+      colour(&save_style(x)) != currentcolour ||
+      texture(&save_style(x)) != currenttexture )
   {
     /* do it bit by bit, will be rare anyway */
     PS_SaveGraphicState(x);
@@ -1774,7 +1774,7 @@ static void PS_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
     fprintf(out_fp, "%d %d %d %d %d %d %d %d %d LoutGr2%s",
       size(x, COLM), size(x, ROWM), back(x, COLM), fwd(x, ROWM),
       currentfont <= 0 ? 12*PT : FontSize(currentfont, x),
-      width(&line_gap_m(save_style(x))), width(&space_gap_m(save_style(x))),
+      width(&line_gap_ms(save_style(x))), width(&space_gap_ms(save_style(x))),
       xdist, ydist, (char *) STR_NEWLINE);
       
   }
@@ -1886,8 +1886,8 @@ static void PS_PrintGraphicInclude(OBJECT x, FULL_LENGTH colmark,
   /* open the include file and get its full path name */
   Child(y, Down(x));
 
-  SetBaseLineMarkAndFont(baselinemark(save_style(x)), font(save_style(x)));
-  SetColourAndTexture(colour(save_style(x)), texture(save_style(x)));
+  SetBaseLineMarkAndFont(baselinemark(&save_style(x)), font(&save_style(x)));
+  SetColourAndTexture(colour(&save_style(x)), texture(&save_style(x)));
 
   fnum = PS_FindIncGRepeated(y, type(x));
   if( fnum != 0 )
