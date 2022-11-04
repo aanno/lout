@@ -641,8 +641,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	if( dim == COLM )
 	{
 	  /* if first occurrence of this font on this page, notify font */
-	  if( font(save_style(x)) > 0 )
-	  { face = finfo[font(save_style(x))].original_face;
+	  if( font(&save_style(x)) > 0 )
+	  { face = finfo[font(&save_style(x))].original_face;
 	    if( font_page(face) < font_curr_page )  FontPageUsed(face);
 	  }
 
@@ -743,10 +743,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  if( incgraphic_ok(x) )
 	  { debug2(DGP, DD, "  %s (style %s)",
 	      EchoObject(x), EchoStyle(&save_style(x)));
-	    face = finfo[font(save_style(x))].original_face;
+	    face = finfo[font(&save_style(x))].original_face;
 	    if( font_page(face) < font_curr_page )
 	    { debug3(DFT, DD, "FAPO-IG: x = %s, font = %d, face = %s",
-		string(x), font(save_style(x)), EchoObject(face));
+		string(x), font(&save_style(x)), EchoObject(face));
 	      FontPageUsed(face);
 	    }
 	  }
@@ -1173,7 +1173,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    adjust_cat(x) = TRUE;
 	    adjust_indent = 0;
 	  }
-	  else switch( display_style(save_style(x)) )
+	  else switch( display_style(&save_style(x)) )
 	  {
 	    case DO_ADJUST:	adjust_cat(x) = TRUE;
 				adjust_indent = 0;
@@ -1247,9 +1247,9 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 		}
 		else
 		{
-	          underline_font = font(save_style(x));
-		  underline_colour = underline_colour_m(save_style(x));
-		  underline_texture = texture(save_style(x));
+	          underline_font = font(&save_style(x));
+		  underline_colour = underline_colour_m(&save_style(x));
+		  underline_texture = texture(&save_style(x));
 		}
 	        underline_xstart = mk - back(prev, dim);
 	      }
@@ -1321,9 +1321,9 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	      }
 	      else
 	      {
-	        underline_font = font(save_style(x));
-	        underline_colour = underline_colour_m(save_style(x));
-	        underline_texture = texture(save_style(x));
+	        underline_font = font(&save_style(x));
+	        underline_colour = underline_colour_m(&save_style(x));
+	        underline_texture = texture(&save_style(x));
 	      }
 	      underline_xstart = mk - back(prev, dim);
 	    }

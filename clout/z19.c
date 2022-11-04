@@ -1002,8 +1002,8 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       { Interpose(dest, ACAT, y, y);
 	Parent(junk, Up(dest));
 	assert( type(junk) == ACAT, "AttachGalley: type(junk) != ACAT!" );
-	StyleCopy(save_style(junk), save_style(dest));
-	adjust_cat(junk) = padjust(save_style(junk));
+	StyleCopy(&save_style(junk), &save_style(dest));
+	adjust_cat(junk) = padjust(&save_style(junk));
       }
       debug1(DGS, D, "calling Promote(hd, %s) from AttachGalley/ACCEPT",
 	link == hd ? "hd" : "NextDown(link)");
