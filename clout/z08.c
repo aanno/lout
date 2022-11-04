@@ -299,16 +299,16 @@ OBJECT *enclose, BOOLEAN fcr)
   STYLE new_style, gap_style;
   debug1(DOM, DD, "[ ManifestCat(%s)", EchoObject(x));
     
-  StyleCopy(new_style, *style);
+  StyleCopy(&new_style, style);
   if( type(x) == HCAT )
   { par = ROWM;
-    adjust_cat(x) = hadjust(*style);
-    setHadjust(new_style, FALSE);
+    adjust_cat(x) = hadjust(style);
+    setHadjust(&new_style, FALSE);
   }
   else
   { par = COLM;
-    adjust_cat(x) = vadjust(*style);
-    setVadjust(new_style, FALSE);
+    adjust_cat(x) = vadjust(style);
+    setVadjust(&new_style, FALSE);
   }
   perp = 1 - par;
   link = Down(x);
@@ -348,9 +348,9 @@ OBJECT *enclose, BOOLEAN fcr)
       FALSE, enclose, fcr);
     debug1(DOM, DD, "after manifesting gap, z = %s", EchoObject(z));
     if( type(z) == ACAT )
-      StyleCopy(gap_style, save_style(z));
+      StyleCopy(&gap_style, &save_style(z));
     else
-      StyleCopy(gap_style, *style);
+      StyleCopy(&gap_style, style);
     z = ReplaceWithTidy(z, ACAT_TIDY);
     debug1(DOM, DD, "calling GetGap, style = %s", EchoStyle(&gap_style));
     GetGap(z, &gap_style, &gap(g), &res_inc);
@@ -665,7 +665,7 @@ OBJECT *enclose, BOOLEAN fcr)
   BOOLEAN symbol_free;
 
   sym = actual(x);
-  StyleCopy(save_style(x), *style);
+  StyleCopy(&save_style(x), style);
   debugcond2(DOM, DD, StringEqual(SymName(sym), "@Section"),
      "manifesting %s at %s", SymName(sym), EchoFilePos(&fpos(x)));
   debug1(DOM, DD,  "  [ manifesting closure %s", SymName(sym));
@@ -996,7 +996,7 @@ OBJECT *enclose, BOOLEAN fcr)
 
     case NULL_CLOS:
 
-      StyleCopy(save_style(x), *style);
+      StyleCopy(&save_style(x), style);
       ReplaceWithSplit(x, bthr, fthr);
       break;
 
@@ -1041,19 +1041,19 @@ OBJECT *enclose, BOOLEAN fcr)
       /* *** patched by JeffK 17/10/06 as suggested by Ludovic Courtes *** */
       /* if( !ok || *crs == nilobj ) */
       if( !ok )
-      {	word_font(x) = font(*style);
-	word_colour(x) = colour(*style);
-	word_underline_colour(x) = underline_colour(*style);
-	word_texture(x) = texture(*style);
-	word_outline(x) = outline(*style);
-	word_language(x) = language(*style);
-	word_baselinemark(x) = baselinemark(*style);
-	word_strut(x) = strut(*style);
-	word_ligatures(x) = ligatures(*style);
-	word_hyph(x) = hyph_style(*style) == HYPH_ON;
+      {	word_font(x) = font(style);
+	word_colour(x) = colour(style);
+	word_underline_colour(x) = underline_colour(style);
+	word_texture(x) = texture(style);
+	word_outline(x) = outline(style);
+	word_language(x) = language(style);
+	word_baselinemark(x) = baselinemark(style);
+	word_strut(x) = strut(style);
+	word_ligatures(x) = ligatures(style);
+	word_hyph(x) = hyph_style(style) == HYPH_ON;
 	debug3(DOM, DDD, "  manfifest/WORD underline() := %s for %s %s",
 	  "UNDER_OFF", Image(type(x)), EchoObject(x));
-	if( small_caps(*style) && ok )  x = MapSmallCaps(x, style);  /* unreachable */
+	if( small_caps(style) && ok )  x = MapSmallCaps(x, style);  /* unreachable */
 	underline(x) = UNDER_OFF;
 	ReplaceWithSplit(x, bthr, fthr);
 	break;
@@ -1067,10 +1067,10 @@ OBJECT *enclose, BOOLEAN fcr)
 
     case ACAT:
     
-      StyleCopy(save_style(x), *style);
-      adjust_cat(x) = padjust(*style);
-      StyleCopy(new_style, *style);
-      setPadjust(new_style, FALSE);
+      StyleCopy(&save_style(x), style);
+      adjust_cat(x) = padjust(style);
+      StyleCopy(&new_style, style);
+      setPadjust(&new_style, FALSE);
       assert(Down(x) != x, "Manifest: ACAT!" );
       link = Down(x);  Child(y, link);
       assert( type(y) != GAP_OBJ, "Manifest ACAT: GAP_OBJ is first!" );
@@ -1078,17 +1078,17 @@ OBJECT *enclose, BOOLEAN fcr)
 
       /* manifest first child and insert any cross references */
       if( is_word(type(y)) )
-      { word_font(y) = font(*style);
-	word_colour(y) = colour(*style);
-	word_underline_colour(y) = underline_colour(*style);
-	word_texture(y) = texture(*style);
-	word_outline(y) = outline(*style);
-	word_language(y) = language(*style);
-	word_baselinemark(y) = baselinemark(*style);
-	word_strut(y) = strut(*style);
-	word_ligatures(y) = ligatures(*style);
-	word_hyph(y) = hyph_style(*style) == HYPH_ON;
-	if( small_caps(*style) && ok )  y = MapSmallCaps(y, style);
+      { word_font(y) = font(style);
+	word_colour(y) = colour(style);
+	word_underline_colour(y) = underline_colour(style);
+	word_texture(y) = texture(style);
+	word_outline(y) = outline(style);
+	word_language(y) = language(style);
+	word_baselinemark(y) = baselinemark(style);
+	word_strut(y) = strut(style);
+	word_ligatures(y) = ligatures(style);
+	word_hyph(y) = hyph_style(style) == HYPH_ON;
+	if( small_caps(style) && ok )  y = MapSmallCaps(y, style);
       }
       else y = Manifest(y, env, &new_style, nbt, nft, target, crs, ok, FALSE, enclose, fcr);
       debug3(DOM, DDD, "  manfifest/ACAT1 underline() := %s for %s %s",
@@ -1120,17 +1120,17 @@ OBJECT *enclose, BOOLEAN fcr)
 	/* manifest the next child */
         debug1(DOM, DD, "  in ACAT (3), style = %s", EchoStyle(style));
 	if( is_word(type(y)) )
-	{ word_font(y) = font(*style);
-	  word_colour(y) = colour(*style);
-	  word_underline_colour(y) = underline_colour(*style);
-	  word_texture(y) = texture(*style);
-	  word_outline(y) = outline(*style);
-	  word_language(y) = language(*style);
-	  word_baselinemark(y) = baselinemark(*style);
-	  word_strut(y) = strut(*style);
-	  word_ligatures(y) = ligatures(*style);
-	  word_hyph(y) = hyph_style(*style) == HYPH_ON;
-	  if( small_caps(*style) && ok )  y = MapSmallCaps(y, style);
+	{ word_font(y) = font(style);
+	  word_colour(y) = colour(style);
+	  word_underline_colour(y) = underline_colour(style);
+	  word_texture(y) = texture(style);
+	  word_outline(y) = outline(style);
+	  word_language(y) = language(style);
+	  word_baselinemark(y) = baselinemark(style);
+	  word_strut(y) = strut(style);
+	  word_ligatures(y) = ligatures(style);
+	  word_hyph(y) = hyph_style(style) == HYPH_ON;
+	  if( small_caps(style) && ok )  y = MapSmallCaps(y, style);
 	}
 	else y = Manifest(y, env, &new_style, nbt, nft, target, crs, ok, FALSE, enclose, fcr);
         debug3(DOM, DDD, "  manifest/ACAT3 underline() := %s for %s %s",
@@ -1150,8 +1150,8 @@ OBJECT *enclose, BOOLEAN fcr)
 	else
 	{
 	  /* implicit & operator */
-	  GapCopy(gap(g), space_gap_m(*style));
-	  switch( space_style(*style) )
+	  GapCopy(gap(g), space_gap_m(style));
+	  switch( space_style(style) )
 	  {
 	    case SPACE_LOUT:
 
@@ -1204,7 +1204,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		    bool(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(*style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
 		}
 	      }
 	      break;
@@ -1237,7 +1237,7 @@ OBJECT *enclose, BOOLEAN fcr)
 		      bool(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(*style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
 	        }
 	      }
 	      break;
@@ -1387,7 +1387,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE,
 	&nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &line_gap_m(save_style(x)), &res_inc);
+      GetGap(y, style, &line_gap_ms(save_style(x)), &res_inc);
 
       /* make vc, a joined VCAT of MAX_HCOPIES copies of the header */
       Child(y, LastDown(x));
@@ -1590,7 +1590,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	  WARN, &fpos(y), KW_XCHAR);
 	res = MakeWord(WORD, STR_EMPTY, &fpos(x));
       }
-      else if( (word_font(y) = font(*style)) == 0 )
+      else if( (word_font(y) = font(style)) == 0 )
       {	Error(8, 31, "%s dropped (no current font at this point)",
 	  WARN, &fpos(y), KW_XCHAR);
 	res = MakeWord(WORD, STR_EMPTY, &fpos(x));
@@ -1617,12 +1617,12 @@ OBJECT *enclose, BOOLEAN fcr)
 
     case CURR_LANG:
 
-      if( language(*style) == 0 )
+      if( language(style) == 0 )
       { Error(8, 33, "no current language at this point, using %s",
 	  WARN, &fpos(x), STR_NONE);
 	res = MakeWord(WORD, STR_NONE, &fpos(x));
       }
-      else res = MakeWord(WORD, LanguageString(language(*style)), &fpos(x));
+      else res = MakeWord(WORD, LanguageString(language(style)), &fpos(x));
       ReplaceNode(res, x);
       DisposeObject(x);
       x = Manifest(res, env, style, bthr, fthr, target, crs, ok, FALSE, enclose, fcr);
@@ -1632,15 +1632,15 @@ OBJECT *enclose, BOOLEAN fcr)
     case CURR_FAMILY:
     case CURR_FACE:
 
-      if( font(*style) == 0 )
+      if( font(style) == 0 )
       { Error(8, 38, "no current font at this point, using %s",
 	  WARN, &fpos(x), STR_NONE);
 	res = MakeWord(WORD, STR_NONE, &fpos(x));
       }
       else if( type(x) == CURR_FAMILY )
-	res = MakeWord(WORD, FontFamily(font(*style)), &fpos(x));
+	res = MakeWord(WORD, FontFamily(font(style)), &fpos(x));
       else
-	res = MakeWord(WORD, FontFace(font(*style)), &fpos(x));
+	res = MakeWord(WORD, FontFace(font(style)), &fpos(x));
       ReplaceNode(res, x);
       DisposeObject(x);
       x = Manifest(res, env, style, bthr, fthr, target, crs, ok, FALSE, enclose, fcr);
@@ -1652,9 +1652,9 @@ OBJECT *enclose, BOOLEAN fcr)
 
       { FULL_CHAR buff[20];
         if( type(x) == CURR_YUNIT )
-          sprintf( (char *) buff, "%dp", yunit(*style) / PT);
+          sprintf( (char *) buff, "%dp", yunit(style) / PT);
         else
-	  sprintf( (char *) buff, "%dp", zunit(*style) / PT);
+	  sprintf( (char *) buff, "%dp", zunit(style) / PT);
         res = MakeWord(WORD, buff, &fpos(x));
       }
       ReplaceNode(res, x);
@@ -1668,9 +1668,9 @@ OBJECT *enclose, BOOLEAN fcr)
       /* change x to an ACAT */
       assert(Down(x) != x && NextDown(Down(x)) == x, "Manifest: UNDERLINE!");
       type(x) = ACAT;
-      adjust_cat(x) = padjust(*style);
-      setPadjust(*style, FALSE);
-      StyleCopy(save_style(x), *style);
+      adjust_cat(x) = padjust(style);
+      setPadjust(style, FALSE);
+      StyleCopy(&save_style(x), style);
 
       /* manifest x's sole child and set underline flags in the child */
       Child(y, Down(x));
@@ -1691,7 +1691,7 @@ OBJECT *enclose, BOOLEAN fcr)
     case LANGUAGE:
     
       assert( Down(x) != x && NextDown(Down(x)) != x, "Manifest: FONT!" );
-      StyleCopy(new_style, *style);
+      StyleCopy(&new_style, style);
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE,
 	&nenclose, fcr);
@@ -1793,11 +1793,11 @@ OBJECT *enclose, BOOLEAN fcr)
 
       /* memorize the key, value, style and environment for use when */
       /* manifesting VALUE in `@GetContext'.  */
-      StyleCopy(new_style, *style);
-      context_key(context_m(new_style)) = key;
-      context_value(context_m(new_style)) = value;
-      context_style(context_m(new_style)) = style;
-      context_env(context_m(new_style)) = env;
+      StyleCopy(&new_style, style);
+      context_key(context_m(&new_style)) = key;
+      context_value(context_m(&new_style)) = value;
+      context_style(context_m(&new_style)) = style;
+      context_env(context_m(&new_style)) = env;
 
       ReplaceNode(z, x);
       DisposeObject(x);
@@ -1821,7 +1821,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	/* looked for (currently Y) is found.  */
 	for( s = style; s != NULL; )
 	{
-	  CONTEXT *ctx = &context_m(*s);
+	  CONTEXT *ctx = &context_m(s);
 	  if( !ctx )
 	  { s = NULL;
 	  }
@@ -1831,8 +1831,8 @@ OBJECT *enclose, BOOLEAN fcr)
 	    value = context_value(*ctx), found = TRUE;
 
 	    /* VALUE is to be manifested with the style associated to CTX */
-	    StyleCopy(new_style, *style);
-	    setContext(new_style, context(*context_style(*ctx)));
+	    StyleCopy(&new_style, style);
+	    setContext(&new_style, &context_m(context_style(*ctx)));
 	    debug3(DOM, D, " @GetContext %s -> value has type %s (%p)", string(y),
 	      Image(type(value)), value);
 
@@ -1847,7 +1847,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	{ Error(8, 33, "no value for context variable `%s', using the empty string",
 	    WARN, &fpos(x), string(y));
 	  res = MakeWord(WORD, STR_EMPTY, &fpos(x));
-	  StyleCopy(new_style, *style);
+	  StyleCopy(&new_style, style);
 	}
 	else res = CopyObject(value, &fpos(value));
       }
@@ -1855,7 +1855,7 @@ OBJECT *enclose, BOOLEAN fcr)
       { Error(8, 33, "%s dropped (right parameter is not a simple word)",
 	  WARN, &fpos(x), KW_GET_CONTEXT);
 	res = MakeWord(WORD, STR_EMPTY, &fpos(x));
-	StyleCopy(new_style, *style);
+	StyleCopy(&new_style, style);
       }
 
       ReplaceNode(res, x);
@@ -1873,11 +1873,11 @@ OBJECT *enclose, BOOLEAN fcr)
     case HADJUST:
     case VADJUST:
 
-      StyleCopy(new_style, *style);
-      if(      type(x) == OUTLINE )  setOutline(new_style, TRUE);
-      else if( type(x) == VADJUST )  setVadjust(new_style, TRUE);
-      else if( type(x) == HADJUST )  setHadjust(new_style, TRUE);
-      else                           setPadjust(new_style, TRUE);
+      StyleCopy(&new_style, style);
+      if(      type(x) == OUTLINE )  setOutline(&new_style, TRUE);
+      else if( type(x) == VADJUST )  setVadjust(&new_style, TRUE);
+      else if( type(x) == HADJUST )  setHadjust(&new_style, TRUE);
+      else                           setPadjust(&new_style, TRUE);
       Child(y, Down(x));
       y = Manifest(y, env, &new_style, bthr, fthr, target, crs, ok, FALSE, enclose, fcr);
       DeleteLink(Down(x));
@@ -1897,8 +1897,8 @@ OBJECT *enclose, BOOLEAN fcr)
       if( type(x1) != ACAT )
       { OBJECT newx1;
 	New(newx1, ACAT);
-        adjust_cat(newx1) = padjust(*style);
-	setPadjust(*style, FALSE);
+        adjust_cat(newx1) = padjust(style);
+	setPadjust(style, FALSE);
         MoveLink(Down(x), newx1, CHILD);
         Link(newx1, x1);
         x1 = newx1;
@@ -1920,8 +1920,8 @@ OBJECT *enclose, BOOLEAN fcr)
       if( type(x2) != ACAT )
       { OBJECT newx2;
 	New(newx2, ACAT);
-        adjust_cat(newx2) = padjust(*style);
-	setPadjust(*style, FALSE);
+        adjust_cat(newx2) = padjust(style);
+	setPadjust(style, FALSE);
         MoveLink(NextDown(Down(x)), newx2, CHILD);
         Link(newx2, x2);
         x2 = newx2;
@@ -2117,7 +2117,7 @@ OBJECT *enclose, BOOLEAN fcr)
       hold_env = nilobj;
       if( type(y) == CLOSURE )
       { AttachEnv(env, y);
-	StyleCopy(save_style(y), *style);
+	StyleCopy(&save_style(y), style);
 	debug0(DCR, DDD, "calling SetEnv from Manifest (b)");
 	res_env = SetEnv(y, nilobj);
 	New(hold_env, ACAT);  Link(hold_env, res_env);
@@ -2167,7 +2167,7 @@ OBJECT *enclose, BOOLEAN fcr)
       debug1(DRS, DD, "  graphic style in Manifest = %s", EchoStyle(style));
       Child(y, LastDown(x));
       y = Manifest(y, env, style, nbt, nft, target, crs, ok, FALSE, enclose, fcr);
-      StyleCopy(save_style(x), *style);
+      StyleCopy(&save_style(x), style);
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       ReplaceWithSplit(x, bthr, fthr);
@@ -2181,7 +2181,7 @@ OBJECT *enclose, BOOLEAN fcr)
       /* save_mark(x) = 0; */
       Child(y, LastDown(x));
       y = Manifest(y, env, style, nbt, nft, target, crs, ok,FALSE,enclose,fcr);
-      StyleCopy(save_style(x), *style);
+      StyleCopy(&save_style(x), style);
       if( type(x) == LINK_DEST && is_indefinite(type(y)) )
 	type(x) = LINK_DEST_NULL;
       Child(y, Down(x));
@@ -2195,7 +2195,7 @@ OBJECT *enclose, BOOLEAN fcr)
     case INCGRAPHIC:
     case SINCGRAPHIC:
 
-      StyleCopy(save_style(x), *style);
+      StyleCopy(&save_style(x), style);
       debug2(DGP, DD, "  manifest at %s (style %s)",
 	EchoObject(x), EchoStyle(&save_style(x)));
       Child(y, Down(x));

@@ -803,10 +803,13 @@ typedef struct style_type
   CONTEXT	ocontext;		/* context stack		     */
 } STYLE;
 
-#define	line_gap_m(x)	(x).oline_gap
-#define	space_gap_m(x)	(x).ospace_gap
-#define	underline_colour_m(x) (x).ounderline_colour
-#define	colour_m(x)	(x).ocolour
+#define	line_gap_ms(x)	(x).oline_gap
+#define	space_gap_ms(x)	(x).ospace_gap
+
+#define	line_gap_m(x)	(x)->oline_gap
+#define	space_gap_m(x)	(x)->ospace_gap
+#define	underline_colour_m(x) (x)->ounderline_colour
+#define	colour_m(x)	(x)->ocolour
 /*
 #define	yunit(x)	(x).oyunit
 #define	zunit(x)	(x).ozunit
@@ -832,98 +835,98 @@ typedef struct style_type
 #define	ligatures(x)	(x).oligatures
 #define	marginkerning(x)(x).omarginkerning
 */
-#define	context_m(x)	(x).ocontext
+#define	context_m(x)	(x)->ocontext
 
-INLINE GAP line_gap(STYLE x) {
-  return (x).oline_gap;
+INLINE GAP line_gap(STYLE* x) {
+  return (x)->oline_gap;
 } 
-INLINE GAP space_gap(STYLE x) {
-  return (x).ospace_gap;
+INLINE GAP space_gap(STYLE* x) {
+  return (x)->ospace_gap;
 }
-INLINE FULL_LENGTH yunit(STYLE x) {
-  return (x).oyunit;
+INLINE FULL_LENGTH yunit(STYLE* x) {
+  return (x)->oyunit;
 }
-INLINE FULL_LENGTH zunit(STYLE x) {
-  return (x).ozunit;
+INLINE FULL_LENGTH zunit(STYLE* x) {
+  return (x)->ozunit;
 }
-INLINE FULL_LENGTH outdent_len(STYLE x) {
-  return (x).ooutdent_len;
+INLINE FULL_LENGTH outdent_len(STYLE* x) {
+  return (x)->ooutdent_len;
 }
-INLINE FULL_LENGTH smallcaps_len(STYLE x) {
-  return (x).osmallcaps_len;
+INLINE FULL_LENGTH smallcaps_len(STYLE* x) {
+  return (x)->osmallcaps_len;
 }
-INLINE FONT_NUM font(STYLE x) {
-  return (x).ofont;
+INLINE FONT_NUM font(STYLE* x) {
+  return (x)->ofont;
 }
-INLINE COLOUR_NUM colour(STYLE x) {
-  return (x).ocolour;
+INLINE COLOUR_NUM colour(STYLE* x) {
+  return (x)->ocolour;
 }
-INLINE COLOUR_NUM underline_colour(STYLE x) {
-  return (x).ounderline_colour;
+INLINE COLOUR_NUM underline_colour(STYLE* x) {
+  return (x)->ounderline_colour;
 }
-INLINE TEXTURE_NUM texture(STYLE x) {
-  return (x).otexture;
+INLINE TEXTURE_NUM texture(STYLE* x) {
+  return (x)->otexture;
 }
-INLINE unsigned short blanklinescale(STYLE x) {
-  return (x).oblanklinescale;
+INLINE unsigned short blanklinescale(STYLE* x) {
+  return (x)->oblanklinescale;
 }
-INLINE LANGUAGE_NUM language(STYLE x) {
-  return (x).olanguage;
+INLINE LANGUAGE_NUM language(STYLE* x) {
+  return (x)->olanguage;
 }
-INLINE BOOLEAN vadjust(STYLE x) {
-  return (x).ovadjust;
+INLINE BOOLEAN vadjust(STYLE* x) {
+  return (x)->ovadjust;
 }
-INLINE BOOLEAN hadjust(STYLE x) {
-  return (x).ohadjust;
+INLINE BOOLEAN hadjust(STYLE* x) {
+  return (x)->ohadjust;
 }
-INLINE BOOLEAN padjust(STYLE x) {
-  return (x).opadjust;
+INLINE BOOLEAN padjust(STYLE* x) {
+  return (x)->opadjust;
 }
-INLINE unsigned small_caps(STYLE x) {
-  return (x).osmall_caps;
+INLINE unsigned small_caps(STYLE* x) {
+  return (x)->osmall_caps;
 }
-INLINE unsigned space_style(STYLE x) {
-  return (x).ospace_style;
+INLINE unsigned space_style(STYLE* x) {
+  return (x)->ospace_style;
 }
-INLINE unsigned hyph_style(STYLE x) {
-  return (x).ohyph_style;
+INLINE unsigned hyph_style(STYLE* x) {
+  return (x)->ohyph_style;
 }
-INLINE unsigned fill_style(STYLE x) {
-  return (x).ofill_style;
+INLINE unsigned fill_style(STYLE* x) {
+  return (x)->ofill_style;
 }
-INLINE unsigned display_style(STYLE x) {
-  return (x).odisplay_style;
+INLINE unsigned display_style(STYLE* x) {
+  return (x)->odisplay_style;
 }
-INLINE BOOLEAN outline(STYLE x) {
-  return (x).ooutline;
+INLINE BOOLEAN outline(STYLE* x) {
+  return (x)->ooutline;
 }
-INLINE BOOLEAN nobreakfirst(STYLE x) {
-  return (x).onobreakfirst;
+INLINE BOOLEAN nobreakfirst(STYLE* x) {
+  return (x)->onobreakfirst;
 }
-INLINE BOOLEAN nobreaklast(STYLE x) {
-  return (x).onobreaklast;
+INLINE BOOLEAN nobreaklast(STYLE* x) {
+  return (x)->onobreaklast;
 }
-INLINE BOOLEAN baselinemark(STYLE x) {
-  return (x).obaselinemark;
+INLINE BOOLEAN baselinemark(STYLE* x) {
+  return (x)->obaselinemark;
 }
-INLINE BOOLEAN strut(STYLE x) {
-  return (x).ostrut;
+INLINE BOOLEAN strut(STYLE* x) {
+  return (x)->ostrut;
 }
-INLINE BOOLEAN ligatures(STYLE x) {
-  return (x).oligatures;
+INLINE BOOLEAN ligatures(STYLE* x) {
+  return (x)->oligatures;
 }
-INLINE BOOLEAN marginkerning(STYLE x) {
-  return (x).omarginkerning;
+INLINE BOOLEAN marginkerning(STYLE* x) {
+  return (x)->omarginkerning;
 }
-INLINE CONTEXT context(STYLE x) {
-  return (x).ocontext;
+INLINE CONTEXT context(STYLE* x) {
+  return (x)->ocontext;
 }
 
-INLINE void setLine_gap(STYLE* x, GAP line_gap) {
-  (x)->oline_gap = line_gap;
+INLINE void setLine_gap(STYLE* x, GAP* line_gap) {
+  (x)->oline_gap = *line_gap;
 } 
-INLINE void setSpace_gap(STYLE* x, GAP space_gap) {
-  (x)->ospace_gap = space_gap;
+INLINE void setSpace_gap(STYLE* x, GAP* space_gap) {
+  (x)->ospace_gap = *space_gap;
 }
 INLINE void setYunit(STYLE* x, FULL_LENGTH yunit) {
   (x)->oyunit = yunit;
@@ -1000,8 +1003,8 @@ INLINE void setLigatures(STYLE* x, BOOLEAN ligatures) {
 INLINE void setMarginkerning(STYLE* x, BOOLEAN marginkerning) {
   (x)->omarginkerning = marginkerning;
 }
-INLINE void setContext(STYLE* x, CONTEXT context) {
-  (x)->ocontext = context;
+INLINE void setContext(STYLE* x, CONTEXT* context) {
+  (x)->ocontext = *context;
 }
 
 /*
@@ -1037,9 +1040,9 @@ INLINE void setContext(STYLE* x, CONTEXT context) {
 )
 */
 
-INLINE void StyleCopy(STYLE* x, STYLE y) {
-  GapCopy(line_gap_m(*x), line_gap_m(y));
-  GapCopy(space_gap_m(*x), space_gap_m(y));
+INLINE void StyleCopy(STYLE* x, STYLE* y) {
+  GapCopyOnRef(&line_gap_m(x), &line_gap_m(y));
+  GapCopyOnRef(&space_gap_m(x), &space_gap_m(y));
   setYunit(x, yunit(y));
   setZunit(x, zunit(y));
   setOutdent_len(x, outdent_len(y));
@@ -1065,7 +1068,7 @@ INLINE void StyleCopy(STYLE* x, STYLE y) {
   setStrut(x, strut(y));
   setLigatures(x, ligatures(y));
   setMarginkerning(x, marginkerning(y));
-  setContext(x, context(y));
+  setContext(x, &context_m(y));
 }
 
 /*@::CONSTRAINT, FILE_NUM, FILE_POS, LIST@************************************/
@@ -2197,9 +2200,9 @@ typedef REAL_OBJECT* OBJECT;
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
 #define	shift_type(x)		width(&space_gap_m(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap_m(save_style(x)), (y))
+#define	setShift_type(x, y)		setWidth(&space_gap_ms(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
-#define	shift_gap(x)		line_gap_m(save_style(x))
+#define	shift_gap(x)		line_gap_m(&save_style(x))
 
 #define actual(x)		(x)->os2.oactual
 #define whereto(x)		(x)->os2.oux.owhereto
