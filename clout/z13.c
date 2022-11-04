@@ -536,23 +536,23 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	fwd(y, ROWM) = fwd(x, ROWM);
 
 	/* set ACAT's save_style; have to invent a line_gap, unfortunately */
-	SetGap(line_gap_m(save_style(y)), FALSE, FALSE, FALSE, FIXED_UNIT,
+	SetGap(line_gap_ms(save_style(y)), FALSE, FALSE, FALSE, FIXED_UNIT,
 	  MARK_MODE, 1.1 * FontSize(word_font(x), x));
-	SetGap(space_gap_m(save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
+	SetGap(space_gap_ms(save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
 	  EDGE_MODE, 0);
-	setHyph_style(save_style(y), HYPH_ON);
-	setFill_style(save_style(y), FILL_ON);
-	setDisplay_style(save_style(y), DISPLAY_LEFT);
-	setSmall_caps(save_style(y), FALSE);
-	setFont(save_style(y), word_font(x));
-	setColour(save_style(y), word_colour(x));
-	setUnderline_colour(save_style(y), word_underline_colour(x));
-	setTexture(save_style(y), word_texture(x));
-	setOutline(save_style(y), word_outline(x));
-	setLanguage(save_style(y), word_language(x));
-	setBaselinemark(save_style(y), word_baselinemark(x));
-	setStrut(save_style(y), word_strut(x));
-	setLigatures(save_style(y), word_ligatures(x));
+	setHyph_style(&save_style(y), HYPH_ON);
+	setFill_style(&save_style(y), FILL_ON);
+	setDisplay_style(&save_style(y), DISPLAY_LEFT);
+	setSmall_caps(&save_style(y), FALSE);
+	setFont(&save_style(y), word_font(x));
+	setColour(&save_style(y), word_colour(x));
+	setUnderline_colour(&save_style(y), word_underline_colour(x));
+	setTexture(&save_style(y), word_texture(x));
+	setOutline(&save_style(y), word_outline(x));
+	setLanguage(&save_style(y), word_language(x));
+	setBaselinemark(&save_style(y), word_baselinemark(x));
+	setStrut(&save_style(y), word_strut(x));
+	setLigatures(&save_style(y), word_ligatures(x));
 	debug3(DOF, DD, "  in BreakObject y %s %s %s",
 	  EchoStyle(&save_style(y)), Image(type(y)), EchoObject(y));
 

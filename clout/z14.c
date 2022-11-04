@@ -222,15 +222,15 @@ typedef struct {
 	    if( hyph_word == nilobj )					\
 	    { hyph_word = MakeWord(WORD, STR_HYPHEN, &fpos(x));		\
 	      word_font(hyph_word) = 0;					\
-	      word_colour(hyph_word) = colour(save_style(x));		\
-	      word_underline_colour(hyph_word)=underline_colour(save_style(x));\
-	      word_texture(hyph_word) = texture(save_style(x));		\
-	      word_outline(hyph_word) = outline(save_style(x));		\
-	      word_language(hyph_word) = language(save_style(x));	\
-	      word_baselinemark(hyph_word) = baselinemark(save_style(x));\
-	      word_strut(hyph_word) = strut(save_style(x));		\
-	      word_ligatures(hyph_word) = ligatures(save_style(x));	\
-	      word_hyph(hyph_word) = hyph_style(save_style(x))==HYPH_ON;\
+	      word_colour(hyph_word) = colour(&save_style(x));		\
+	      word_underline_colour(hyph_word)=underline_colour(&save_style(x));\
+	      word_texture(hyph_word) = texture(&save_style(x));		\
+	      word_outline(hyph_word) = outline(&save_style(x));		\
+	      word_language(hyph_word) = language(&save_style(x));	\
+	      word_baselinemark(hyph_word) = baselinemark(&save_style(x));\
+	      word_strut(hyph_word) = strut(&save_style(x));		\
+	      word_ligatures(hyph_word) = ligatures(&save_style(x));	\
+	      word_hyph(hyph_word) = hyph_style(&save_style(x))==HYPH_ON;\
 	    }								\
 	    if( word_font(hyph_word) != word_font(right) )		\
 	    { word_font(hyph_word) = word_font(right);			\
@@ -239,7 +239,7 @@ typedef struct {
 	    }								\
 									\
 	    setMode(&gap(newg), ADD_HYPH);					\
-	    if( !marginkerning(save_style(x)) )				\
+	    if( !marginkerning(&save_style(x)) )				\
 	      I.nat_width += size(hyph_word, COLM);			\
 	    debug0(DOF, DDD, "   adding hyph_word from nat_width");	\
 	  }								\
@@ -325,7 +325,7 @@ typedef struct {
     /* and increase the badness to discourage breaks at this point */	\
     if( mode(&gap(g)) == ADD_HYPH )					\
     {									\
-      if( !marginkerning(save_style(x)) )				\
+      if( !marginkerning(&save_style(x)) )				\
 	I.nat_width -= size(hyph_word,COLM);				\
       save_badness(g) += HYPH_BAD_INCR;					\
       debug0(DOF, DDD, "   subtracting hyph_word from nat_width");	\
@@ -605,7 +605,7 @@ static void KernWordLeftMargin(OBJECT first_on_line, OBJECT parent)
     word_baselinemark(z) = word_baselinemark(first_on_line);
     word_strut(z) = word_strut(first_on_line);
     word_ligatures(z) = word_ligatures(first_on_line);
-    word_hyph(z) = hyph_style(save_style(z)) == HYPH_ON;
+    word_hyph(z) = hyph_style(&save_style(z)) == HYPH_ON;
     underline(z) = underline(first_on_line);
     FontWordSize(z);
 
@@ -734,7 +734,7 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
     word_baselinemark(z) = word_baselinemark(last_on_line);
     word_strut(z) = word_strut(last_on_line);
     word_ligatures(z) = word_ligatures(last_on_line);
-    word_hyph(z) = hyph_style(save_style(last_on_line)) == HYPH_ON;
+    word_hyph(z) = hyph_style(&save_style(last_on_line)) == HYPH_ON;
     underline(z) = underline(last_on_line);
 
     FontWordSize(z);
@@ -794,32 +794,32 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   {
     /* set max_width (width of 1st line), etc_width (width of later lines) */
     max_width = find_min(fc(*c), bfc(*c));
-    if( display_style(save_style(x)) == DISPLAY_OUTDENT ||
-        display_style(save_style(x)) == DISPLAY_ORAGGED )
+    if( display_style(&save_style(x)) == DISPLAY_OUTDENT ||
+        display_style(&save_style(x)) == DISPLAY_ORAGGED )
     {
       /* outdent_margin = 2 * FontSize(font(save_style(x)), x); */
-      outdent_margin = outdent_len(save_style(x));
+      outdent_margin = outdent_len(&save_style(x));
       etc_width = max_width - outdent_margin;
     }
     else etc_width = max_width;
     assert( size(x, COLM) > max_width, "FillObject: initial size!" );
 
     /* if column width is ridiculously small, exit with error message */
-    if( max_width <= 2 * FontSize(font(save_style(x)), x) )
+    if( max_width <= 2 * FontSize(font(&save_style(x)), x) )
     {
       Error(14, 6, "paragraph deleted (assigned width %s is too narrow)",
          WARN, &fpos(x), EchoLength(max_width));
       res = MakeWord(WORD, STR_EMPTY, &fpos(x));
-      word_font(res) = font(save_style(x));
-      word_colour(res) = colour(save_style(x));
-      word_underline_colour(res) = underline_colour(save_style(x));
-      word_texture(res) = texture(save_style(x));
-      word_outline(res) = outline(save_style(x));
-      word_language(res) = language(save_style(x));
-      word_baselinemark(res) = baselinemark(save_style(x));
-      word_strut(res) = strut(save_style(x));
-      word_ligatures(res) = ligatures(save_style(x));
-      word_hyph(res) = hyph_style(save_style(x)) == HYPH_ON;
+      word_font(res) = font(&save_style(x));
+      word_colour(res) = colour(&save_style(x));
+      word_underline_colour(res) = underline_colour(&save_style(x));
+      word_texture(res) = texture(&save_style(x));
+      word_outline(res) = outline(&save_style(x));
+      word_language(res) = language(&save_style(x));
+      word_baselinemark(res) = baselinemark(&save_style(x));
+      word_strut(res) = strut(&save_style(x));
+      word_ligatures(res) = ligatures(&save_style(x));
+      word_hyph(res) = hyph_style(&save_style(x)) == HYPH_ON;
       back(res, COLM) = fwd(res, COLM) = 0;
       ReplaceNode(res, x);
       DisposeObject(x);
@@ -876,7 +876,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   }
 
   /* initially we can hyphenate if hyphenation is on, but not first pass */
-  if( hyph_style(save_style(x)) == HYPH_UNDEF )
+  if( hyph_style(&save_style(x)) == HYPH_UNDEF )
     Error(14, 7, "hyphen or nohyphen option missing", FATAL, &fpos(x));
   hyph_allowed = FALSE;
 
@@ -1000,15 +1000,15 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     { New(y, ACAT);
       adjust_cat(y) = adjust_cat(x);
       FposCopy(fpos(y), fpos(x));
-      StyleCopy(save_style(y), save_style(x));
+      StyleCopy(&save_style(y), &save_style(x));
       if( Down(res) != res &&
-		(display_style(save_style(y)) == DISPLAY_ADJUST ||
-		 display_style(save_style(y)) == DISPLAY_OUTDENT) )
-	 setDisplay_style(save_style(y), DO_ADJUST);
+		(display_style(&save_style(y)) == DISPLAY_ADJUST ||
+		 display_style(&save_style(y)) == DISPLAY_OUTDENT) )
+	 setDisplay_style(&save_style(y), DO_ADJUST);
       back(y, COLM) = 0;
       fwd(y, COLM) = max_width;
 
-      if( marginkerning(save_style(x)) )
+      if( marginkerning(&save_style(x)) )
       {
        /* Margin kerning: look at this line's first character.  */
        OBJECT first_on_line, parent;
@@ -1022,8 +1022,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       }
 
       /* if outdented paragraphs, add 2.0f @Wide & to front of new line */
-      if( display_style(save_style(x)) == DISPLAY_OUTDENT ||
-          display_style(save_style(x)) == DISPLAY_ORAGGED )
+      if( display_style(&save_style(x)) == DISPLAY_OUTDENT ||
+          display_style(&save_style(x)) == DISPLAY_ORAGGED )
       {
 	OBJECT t1, t2, z;
 	t1 = MakeWord(WORD, STR_EMPTY, &fpos(x));
@@ -1109,10 +1109,10 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	word_baselinemark(z) = word_baselinemark(tmp);
 	word_strut(z) = word_strut(tmp);
 	word_ligatures(z) = word_ligatures(tmp);
-	word_hyph(z) = hyph_style(save_style(x)) == HYPH_ON;
+	word_hyph(z) = hyph_style(&save_style(x)) == HYPH_ON;
 	underline(z) = underline(tmp);
 	FontWordSize(z);
-	if( marginkerning(save_style(x)) )
+	if( marginkerning(&save_style(x)) )
         {
           /* Margin kerning: set the hyphen's width to zero.  */
           back(z, COLM) = 0;
@@ -1120,7 +1120,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
         }
 	Link(x, z);
       }
-      else if( marginkerning(save_style(x)) )
+      else if( marginkerning(&save_style(x)) )
       {
         /* Margin kerning: look at the height of this line's last char.  */
         OBJECT last_on_line;
@@ -1136,7 +1136,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       MoveLink(llink, NextDown(res), PARENT);
       hspace(lgap) = 0;
       vspace(lgap) = 1;
-      GapCopy(gap(lgap), line_gap_m(save_style(x)));
+      GapCopy(gap(lgap), line_gap_ms(save_style(x)));
       if( Down(lgap) != lgap )  DisposeChild(Down(lgap));
 
       /* move on to previous line */
@@ -1147,9 +1147,9 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     Link(NextDown(res), x);
     back(x, COLM) = 0;
     fwd(x, COLM) = max_width;
-    if( display_style(save_style(x)) == DISPLAY_ADJUST ||
-	display_style(save_style(x)) == DISPLAY_OUTDENT )
-	  setDisplay_style(save_style(x), DO_ADJUST);
+    if( display_style(&save_style(x)) == DISPLAY_ADJUST ||
+	display_style(&save_style(x)) == DISPLAY_OUTDENT )
+	  setDisplay_style(&save_style(x), DO_ADJUST);
 
     /* if last line contains only the {} from final &1rt {}, delete the line */
     /* and the preceding gap                                                 */
@@ -1171,12 +1171,12 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     }
 
     /* set unbreakable bit of first and last inter-line gaps, if required */
-    if( nobreakfirst(save_style(x)) && Down(res) != LastDown(res) )
+    if( nobreakfirst(&save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, NextDown(Down(res)));
       assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (a)!" );
       setNobreak(&gap(gp), TRUE);
     }
-    if( nobreaklast(save_style(x)) && Down(res) != LastDown(res) )
+    if( nobreaklast(&save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, PrevDown(LastDown(res)));
       assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (b)!" );
       setNobreak(&gap(gp), TRUE);
@@ -1198,7 +1198,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     fwd(y, COLM) = find_min(MAX_FULL_LENGTH, f + fwd(prev, COLM));
 
     /* make last line DO_ADJUST if it is oversize */
-    if( size(y, COLM) > max_width )  setDisplay_style(save_style(y), DO_ADJUST);
+    if( size(y, COLM) > max_width )  setDisplay_style(&save_style(y), DO_ADJUST);
   }
 
   /* rejoin unused hyphenated gaps so that kerning will work across them */

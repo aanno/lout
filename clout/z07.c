@@ -368,7 +368,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
 	Link(res, tmp);
       }
       actual(res) = actual(x);
-      StyleCopy(&save_style(res), save_style(x));
+      StyleCopy(&save_style(res), &save_style(x));
       break;
 
 
@@ -407,8 +407,8 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
       FposCopy(fpos(res), fpos(x));
       ReplaceNode(res, x);
       Link(res, x);
-      StyleCopy(&save_style(res), *style);
-      adjust_cat(res) = padjust(*style);
+      StyleCopy(&save_style(res), style);
+      adjust_cat(res) = padjust(style);
       res = InsertObject(res, ins, style);
       break;
 
@@ -566,7 +566,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
       if( type(xcomp[xlen-1]) != ACAT )
       {
 	New(res, ACAT);
-	StyleCopy(&save_style(res), save_style(x));
+	StyleCopy(&save_style(res), &save_style(x));
 	Link(res, xcomp[xlen-1]);
 	xcomp[xlen-1] = res;
       }
@@ -603,7 +603,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
       if( type(ycomp[ylen-1]) != ACAT )
       {
 	New(res, ACAT);
-	StyleCopy(&save_style(res), save_style(x));
+	StyleCopy(&save_style(res), &save_style(x));
 	Link(res, ycomp[ylen-1]);
 	ycomp[ylen-1] = res;
       }
@@ -657,7 +657,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
   /* traverse table from [xlen-l][ylen-1] back to [0][0], finding who's in */
   debug0(DOS, DD, "  traversing table[]");
   New(res, ACAT);
-  StyleCopy(&save_style(res), save_style(x));
+  StyleCopy(&save_style(res), &save_style(x));
   for( xi = xlen - 1, yi = ylen - 1;  dir[xi][yi] != NO_DIR; )
   {
     switch( dir[xi][yi] )
@@ -717,7 +717,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 	hspace(g) = 1;  vspace(g) = 0;
 	FposCopy(fpos(g), *no_fpos);
 	SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE,
-	  width(&space_gap_m(save_style(res))));
+	  width(&space_gap_ms(save_style(res))));
 	tmp = MakeWord(WORD, AsciiToFull("1s"), &fpos(g));
 	Link(g, tmp);
         Link(Down(res), g);

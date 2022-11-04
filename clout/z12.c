@@ -905,7 +905,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
     case ACAT:
 
-      if( fill_style(save_style(x)) == FILL_OFF )
+      if( fill_style(&save_style(x)) == FILL_OFF )
       { OBJECT new_line, g, z, res;  BOOLEAN jn;
 
 	/* convert ACAT to VCAT of lines if more than one line */
@@ -942,27 +942,27 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      /* make new line of stuff up to g and append it to res */
 	      New(new_line, ACAT);
 	      TransferLinks(NextDown(x), Up(g), new_line);
-	      StyleCopy(save_style(new_line), save_style(x));
-	      adjust_cat(new_line) = padjust(save_style(x));
+	      StyleCopy(&save_style(new_line), &save_style(x));
+	      adjust_cat(new_line) = padjust(&save_style(x));
 	      Link(res, new_line);
 	      debug2(DSF, D, "  new_line(adjust_cat %s) = %s",
 		bool(adjust_cat(new_line)), EchoObject(new_line));
 
 	      /* may need to insert space at start of remainder */
-	      if( hspace(g)>0 || display_style(save_style(x))==DISPLAY_ORAGGED )
+	      if( hspace(g)>0 || display_style(&save_style(x))==DISPLAY_ORAGGED )
 	      {
 		/* make an empty word to occupy the first spot */
 		z = MakeWord(WORD, STR_EMPTY, &fpos(g));
-		word_font(z) = font(save_style(x));
-		word_colour(z) = colour(save_style(x));
-		word_underline_colour(z) = underline_colour(save_style(x));
-		word_texture(z) = texture(save_style(x));
-		word_outline(z) = outline(save_style(x));
-		word_language(z) = language(save_style(x));
-		word_baselinemark(z) = baselinemark(save_style(x));
-		word_strut(z) = strut(save_style(x));
-		word_ligatures(z) = ligatures(save_style(x));
-		word_hyph(z) = hyph_style(save_style(x)) == HYPH_ON;
+		word_font(z) = font(&save_style(x));
+		word_colour(z) = colour(&save_style(x));
+		word_underline_colour(z) = underline_colour(&save_style(x));
+		word_texture(z) = texture(&save_style(x));
+		word_outline(z) = outline(&save_style(x));
+		word_language(z) = language(&save_style(x));
+		word_baselinemark(z) = baselinemark(&save_style(x));
+		word_strut(z) = strut(&save_style(x));
+		word_ligatures(z) = ligatures(&save_style(x));
+		word_hyph(z) = hyph_style(&save_style(x)) == HYPH_ON;
 		underline(z) = UNDER_OFF;
 		back(z, COLM) = fwd(z, COLM) = 0;
 		Link(Down(x), z);
@@ -972,9 +972,9 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		hspace(z) = hspace(g);
 		vspace(z) = 0;
 		underline(z) = UNDER_OFF;
-		GapCopy(gap(z), space_gap_m(save_style(x)));
-		if( display_style(save_style(x)) == DISPLAY_ORAGGED )
-		  setWidth(&gap(z), outdent_len(save_style(x)));
+		GapCopy(gap(z), space_gap_ms(save_style(x)));
+		if( display_style(&save_style(x)) == DISPLAY_ORAGGED )
+		  setWidth(&gap(z), outdent_len(&save_style(x)));
 		else
 		  setWidth(&gap(z), width(&gap(z)) * hspace(z));
 		Link(NextDown(Down(x)), z);
@@ -985,13 +985,13 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
 	      /* append a gap to res (recycle g) */
 	      MoveLink(Up(g), res, PARENT);
-	      GapCopy(gap(g), line_gap_m(save_style(x)));
+	      GapCopy(gap(g), line_gap_ms(save_style(x)));
 	      /* *** old formula before blanklinescale 
 	      width(gap(g)) *= find_max(1, vspace(g));
 	      *** */
 	      if( vspace(g) > 1 )
 	        setWidth(&gap(g),
-		 (width(&gap(g))*blanklinescale(save_style(x))*(vspace(g)-1))/SF);
+		 (width(&gap(g))*blanklinescale(&save_style(x))*(vspace(g)-1))/SF);
 	    }
 	    NextDefiniteWithGap(x, link, y, g, jn);
 	  }
