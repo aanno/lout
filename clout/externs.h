@@ -746,7 +746,7 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   */
 }
 
-inline BOOLEAN GapEqual(GAP* x, GAP* y) {
+INLINE BOOLEAN GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
              && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
 }
@@ -2579,31 +2579,31 @@ typedef enum objtyp {
     DISPOSED,       /* 159        a disposed record          */
 } OBJTYPE;
 
-inline BOOLEAN is_indefinite(OBJTYPE x) {
+INLINE BOOLEAN is_indefinite(OBJTYPE x) {
     return (x) >= CLOSURE && x <= HEAD;
 }
-inline BOOLEAN is_header(OBJTYPE x) {
+INLINE BOOLEAN is_header(OBJTYPE x) {
     return (x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER;
 }
-inline BOOLEAN is_definite(OBJTYPE x) {
+INLINE BOOLEAN is_definite(OBJTYPE x) {
     return (x) >= SPLIT && (x) <= LINK_URL;
 }
-inline BOOLEAN is_par(OBJTYPE x) {
+INLINE BOOLEAN is_par(OBJTYPE x) {
     return (x) >= LPAR && (x) <= RPAR;
 }
-inline BOOLEAN is_index(OBJTYPE x) {
+INLINE BOOLEAN is_index(OBJTYPE x) {
     return (x) >= DEAD && (x) <= EXPAND_IND;
 }
-inline BOOLEAN is_type(OBJTYPE x) {
+INLINE BOOLEAN is_type(OBJTYPE x) {
     return (x) >= LINK && (x) < DISPOSED;
 }
-inline BOOLEAN is_word(OBJTYPE x) {
+INLINE BOOLEAN is_word(OBJTYPE x) {
     return (x) == WORD || (x) == QWORD;
 }
-inline BOOLEAN is_cross(OBJTYPE x) {
+INLINE BOOLEAN is_cross(OBJTYPE x) {
     return (x) == CROSS || (x) == FORCE_CROSS;
 }
-inline BOOLEAN is_cat_op(OBJTYPE x) {
+INLINE BOOLEAN is_cat_op(OBJTYPE x) {
     return ((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA;
 }
 
@@ -3212,7 +3212,7 @@ INLINE void setdisposed() {
     if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )
         fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,
             Image(type(zz_hold)), STR_NEWLINE);
-    type(zz_hold) = DISPOSED;
+    setType(zz_hold, DISPOSED);
 }
 
 #else

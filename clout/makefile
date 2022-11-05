@@ -320,7 +320,14 @@ WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
 # unknown:
 # -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
 
-CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -O3 -pipe -fPIC $(WARN)
+# https://clang.llvm.org/docs/UsersManual.html
+SANITIZE= -fsanitize=memory -fsanitize=undefined -fsanitize-memory-track-origins=2
+# either -fsanitize=address or -fsanitize=memory
+
+DEBUG = -g $(SANITIZE)
+
+CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -Werror -O1 -pipe -fPIC $(WARN) $(DEBUG)
+# -O3
 
 
 CFLAGS	+= -DOS_UNIX=$(OSUNIX)					\
