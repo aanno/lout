@@ -4,5 +4,14 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.makefile-tools",
+			"ms-vscode.cpptools",
+			"golang.go"
+		],
+		"unwantedRecommendations": []
+	}
 }

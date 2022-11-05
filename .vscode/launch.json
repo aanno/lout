@@ -3,16 +3,16 @@
   // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
   // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
-      // https://code.visualstudio.com/docs/cpp/launch-json-reference
-      "configurations": [
+  // https://code.visualstudio.com/docs/cpp/launch-json-reference
+  "configurations": [
     {
       "name": "(gdb) Starten clout",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/clout/lout",
-      "args": [],
+      "args": ["-a", "-L", "-w", "all", "-o" "../design.ps"],
       "stopAtEntry": false,
-      "cwd": "${fileDirname}",
+      "cwd": "${workspaceFolder}/doc/design",
       "environment": [],
       "envFile": "${workspaceFolder}/.env",
       "externalConsole": false,
