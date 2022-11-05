@@ -10,7 +10,9 @@
 		"recommendations": [
 			"ms-vscode.makefile-tools",
 			"ms-vscode.cpptools",
-			"golang.go"
+			"ms-vscode.cpptools-extension-pack",
+			"golang.go",
+			"hediet.debug-visualizer"
 		],
 		"unwantedRecommendations": []
 	}
