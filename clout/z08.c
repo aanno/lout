@@ -299,6 +299,7 @@ OBJECT *enclose, BOOLEAN fcr)
   STYLE new_style, gap_style;
   // unclear if this should be disposed at end of function
   initStyle(&new_style);
+  initStyle(&gap_style);
 
   debug1(DOM, DD, "[ ManifestCat(%s)", EchoObject(x));
     
