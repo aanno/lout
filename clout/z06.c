@@ -850,6 +850,9 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	else if( type(t) == USE )
 	{
 	  OBJECT crs, res_env;  STYLE style;
+	  // unclear if this should be disposed at end of function
+	  initStyle(&style);
+
 	  Dispose(t);  t = LexGetToken();
 	  if( type(t) != LBR )
 	    Error(6, 15, "%s expected after %s", FATAL, &fpos(t),KW_LBR,KW_USE);

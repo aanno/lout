@@ -457,6 +457,9 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
 { MAPPING m;  int i;  OBJECT new_y, new_x = nilobj, new_acat = nilobj, tmp;
   FULL_CHAR buff[MAX_BUFF], *uc, *p, *q;
   FONT_NUM small_font = 0;  FULL_LENGTH vshift = 0;  int state;  STYLE new_style;
+  // unclear if this should be disposed at end of function
+  initStyle(&new_style);
+
   assert( is_word(type(x)), "MapSmallCaps: !is_word(type(x))" );
   debug2(DCM, D, "MapSmallCaps(%s %s)", Image(type(x)), string(x));
 

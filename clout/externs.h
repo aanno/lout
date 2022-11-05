@@ -677,6 +677,11 @@ typedef struct
 #define	mode_m(x)		(x).omode
 #define	width_m(x)	(x).owidth
 
+// don't forget to free
+INLINE GAP* newGap() {
+  return calloc(1L, ceiling(sizeof(GAP), sizeof(ALIGN)));
+}
+
 INLINE BOOLEAN nobreak(GAP* x) {
   return x->onobreak;
 }
@@ -836,6 +841,21 @@ typedef struct style_type
 #define	marginkerning(x)(x).omarginkerning
 */
 #define	context_m(x)	(x)->ocontext
+
+INLINE void initStyle(STYLE* x) {
+  x->oline_gap = newGap();
+  x->ospace_gap = newGap();
+}
+INLINE void disposeStyle(STYLE* x) {
+  if (x->oline_gap) {
+    free(x->oline_gap);
+  }
+  x->oline_gap = NULL;
+  if (x->ospace_gap) {
+    free(x->ospace_gap);
+  }
+  x->ospace_gap = NULL;
+}
 
 INLINE GAP* line_gap(STYLE* x) {
   return (x)->oline_gap;
@@ -3140,7 +3160,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
   
-  if (typ == GAP_OBJ) {
+  if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
      GAP* g;
      // slow
      g = calloc(1L, zz_lengths[GAP_OBJ]);

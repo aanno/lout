@@ -297,6 +297,9 @@ OBJECT *enclose, BOOLEAN fcr)
   int par, perp;
   unsigned res_inc;  BOOLEAN still_backing;
   STYLE new_style, gap_style;
+  // unclear if this should be disposed at end of function
+  initStyle(&new_style);
+
   debug1(DOM, DD, "[ ManifestCat(%s)", EchoObject(x));
     
   StyleCopy(&new_style, style);
@@ -914,6 +917,9 @@ OBJECT *enclose, BOOLEAN fcr)
   OBJECT res = nilobj, res_env, res_env2, hold_env, hold_env2, z, prev;
   OBJECT link1, link2, x1, x2, y1, y2, vc, value_env, key, value;
   int i, par, num1, num2;  GAP res_gap;  unsigned res_inc;  STYLE new_style;
+  // unclear if this should be disposed at end of function
+  initStyle(&new_style);
+
   #pragma clang diagnostic ignored "-Wunused-but-set-variable"
   BOOLEAN done, multiline;
   FULL_CHAR ch;
