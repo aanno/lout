@@ -10,7 +10,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/clout/lout",
-      "args": ["-a", "-L", "-w", "all", "-o" "../design.ps"],
+      "args": ["-a", "-L", "-w", "all", "-o", "../design.ps"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/doc/design",
       "environment": [],
