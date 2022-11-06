@@ -3169,7 +3169,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   }
   // OBJTYPEs with save_style (x->os2.ou4.osave_style)
   if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
-      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST) {
+      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
     initStyle(&save_style(x));
   }
 
@@ -3362,8 +3362,8 @@ INLINE void Dispose(OBJECT x) {
       free(gap(x));
     }
     // OBJTYPEs with save_style (x->os2.ou4.osave_style)
-  if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
-      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST) {
+    if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
+      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
       disposeStyle(&save_style(x));
     }
 

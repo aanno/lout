@@ -329,7 +329,7 @@ SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2
 
 DEBUG = -g $(SANITIZE)
 
-CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -Werror -O1 -pipe -fPIC $(WARN) $(DEBUG)
+CFLAGS ?= -std=c99 -pedantic -Wall -Wextra -Werror -Os -pipe -fPIC $(WARN) $(DEBUG)
 # -O3
 
 
