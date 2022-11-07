@@ -2091,13 +2091,19 @@ typedef REAL_OBJECT* OBJECT;
 #define	succ(x, dim)		(x)->os1.olist[dim].osucc
 #define	pred(x, dim)		(x)->os1.olist[dim].opred
 
-#define type(x)			(x)->os1.ou1.os11.otype
 #define	rec_size(x)		(x)->os1.ou1.os11.orec_size
 #define font_bbox_lly(x)	(x)->os1.ou2.os25.ofont_bbox_lly
 #define font_bbox_ury(x)	(x)->os1.ou2.os25.ofont_bbox_ury
 #define	precedence(x)		(x)->os1.ou2.os21.oprecedence
 #define	hspace(x)		(x)->os1.ou2.os21.ohspace
 #define	vspace(x)		(x)->os1.ou2.os21.ovspace
+
+INLINE unsigned char type(OBJECT x) {
+  return (x)->os1.ou1.os11.otype;
+}
+INLINE void setType(OBJECT x, unsigned char type) {
+  (x)->os1.ou1.os11.otype = type;
+}
 
 #define	word_font(x)		(x)->os1.ou2.os22.oword_font
 #define spanner_count(x)	word_font(x)
@@ -3133,7 +3139,7 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
 INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checknew(typ);
   zz_hold = GetMem(zz_hold, zz_lengths[typ], no_fpos);
-  type(zz_hold) = typ;
+  setType(zz_hold, typ);
   setmemtype(zz_hold, typ);
   mallocheadercheck(zz_hold,zz_lengths[typ]);
   checkmem(zz_hold, typ);
@@ -3163,7 +3169,7 @@ INLINE OBJECT NewWord(OBJECT x, OBJTYPE typ, size_t len, FILE_POS* pos) {
   checkmem(zz_hold, typ);
   rec_size(zz_hold) = zz_size;
   setmemtype(zz_hold, typ);
-  type(zz_hold) = typ;
+  setType(zz_hold, typ);
   mallocheadercheck(zz_hold,zz_size);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;

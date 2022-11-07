@@ -463,22 +463,22 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 		EchoObject(cover));
 	      debug1(DGM, DDD, "  prnt = %s:", Image(type(prnt)));
 	      ifdebug(DGM, DDD, DebugObject(prnt));
-	      type(cover) = subst;
+	      setType(cover, subst);
 	    }
 	    else if( back(chld, dirn) == 0 && fwd(chld, dirn) == 0 )
 	    {
 	      /* empty object, this is treated as a no-op */
-	      type(cover) = esubst;
+	      setType(cover, esubst);
 	    }
 	    else if( back(chld, dirn) == 0 || fwd(chld, dirn) == 0 )
 	    { Error(21, 9, "%s replaced by %s (infinite scale factor)",
 		WARN, &fpos(cover), Image(type(cover)), Image(subst));
-	      type(cover) = subst;
+	      setType(cover, subst);
 	    }
 	    else if( size(prnt, dirn) == 0 )
 	    { Error(21, 10, "%s replaced by %s (zero scale factor)",
 		WARN, &fpos(cover), Image(type(cover)), Image(subst));
-	      type(cover) = subst;
+	      setType(cover, subst);
 	    }
 	    else /* sensible scale factor exists */
 	    {
@@ -494,7 +494,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      if( FitsConstraint(b, f, c) )
 	      {
 		/* it fits, so make cover a SCALE object with this size */
-		type(cover) = SCALE;
+		setType(cover, SCALE);
 		if( dirn == COLM )
 		{ bc(constraint(cover)) = sf;
 		  fc(constraint(cover)) = SF;
@@ -509,7 +509,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      else
 	      { Error(21, 11, "%s replaced by %s (insufficient space)",
 		  WARN, &fpos(cover), Image(type(cover)), Image(subst));
-		type(cover) = subst;
+		setType(cover, subst);
 	      }
 	    }
 	  }
