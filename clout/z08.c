@@ -1605,7 +1605,7 @@ OBJECT *enclose, BOOLEAN fcr)
       else
       { ch = MapCharEncoding(string(y), FontMapping(word_font(y), &fpos(y)));
         if( ch == '\0' )
-        { type(y) = QWORD;
+        { setType(y, QWORD);
 	  Error(8, 32, "%s dropped (character %s unknown in font %s)",
 	    WARN, &fpos(y), KW_XCHAR, StringQuotedWord(y),
 	    FontFamilyAndFace(word_font(y)));
@@ -1674,7 +1674,7 @@ OBJECT *enclose, BOOLEAN fcr)
 
       /* change x to an ACAT */
       assert(Down(x) != x && NextDown(Down(x)) == x, "Manifest: UNDERLINE!");
-      type(x) = ACAT;
+      setType(x, ACAT);
       adjust_cat(x) = padjust(style);
       setPadjust(style, FALSE);
       StyleCopy(&save_style(x), style);
@@ -2190,7 +2190,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, target, crs, ok,FALSE,enclose,fcr);
       StyleCopy(&save_style(x), style);
       if( type(x) == LINK_DEST && is_indefinite(type(y)) )
-	type(x) = LINK_DEST_NULL;
+	setType(x, LINK_DEST_NULL);
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE,
 	&nenclose, fcr);

@@ -595,7 +595,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
   assert( type(hd) == HEAD, "Promote: hd!" );
   assert( type(stop_link) == LINK || stop_link == hd, "Promote: stop_link!" );
   assert( stop_link != Down(hd), "Promote: stop_link == Down(hd)!" );
-  type(dest_index) = RECEIVING;
+  setType(dest_index, RECEIVING);
   dest = actual(dest_index);
 
   /* insert final gap if galley is ending */
@@ -768,7 +768,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	    /* galley is preceding or foll_or_prec, send to CrossSequence */
 	    OBJECT t;
 	    /* type(y) = GALL_PREC; */
-	    type(y) = foll_or_prec(z);
+	    setType(y, foll_or_prec(z));
 	    pinpoint(y) = nilobj;
 	    Child(t, Down(z));
 	    /* actual(y) = CrossMake(whereto(z), t, GALL_PREC); */
@@ -1044,7 +1044,7 @@ static void MakeDead(OBJECT y)
 
   debug1(DGS, DDD, "MakeDead( %s )", Image(type(y)));
   if( dead_store == nilobj )  New(dead_store, ACAT);
-  type(y) = DEAD;
+  setType(y, DEAD);
   MoveLink(Up(y), dead_store, PARENT);
   if( dead_count >= 150 )
   { DisposeChild(Down(dead_store));

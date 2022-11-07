@@ -648,7 +648,7 @@ static BOOLEAN Reduce(void)
 	  FposCopy(fpos(tmp), fpos(p1));
 	  p1 = tmp;
 	}
-	type(op) = GAP_OBJ;
+	setType(op, GAP_OBJ);
 	Link(p1, op);
 	Link(p1, p2);
 	PushObj(p1);
@@ -1137,7 +1137,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
       
 	if( actual(t) == nilobj )
 	{ Error(6, 23, "%s replaced by %s", WARN, &fpos(t), KW_BEGIN, KW_LBR);
-	  type(t) = LBR;
+	  setType(t, LBR);
 	}
 	/* NB NO BREAK! */
 
@@ -1403,7 +1403,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	  PushScope(actual(new_par), FALSE, FALSE);
 	  tmp = Parse(&t, encl, FALSE, FALSE);
 	  PopScope();
-	  type(new_par) = PAR;
+	  setType(new_par, PAR);
 	  Link(new_par, tmp);
 
 	  /* pop the scopes pushed for the import list */
