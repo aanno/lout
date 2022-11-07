@@ -842,6 +842,10 @@ typedef struct style_type
 */
 #define	context_m(x)	(x)->ocontext
 
+INLINE void clearStyle(STYLE* x) {
+  x->oline_gap = NULL;
+  x->ospace_gap = NULL;
+}
 INLINE void initStyle(STYLE* x) {
   x->oline_gap = newGap();
   x->ospace_gap = newGap();
@@ -3172,7 +3176,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
      // slow
      g = calloc(1L, zz_lengths[GAP_OBJ]);
      gap(x) = g;
-  }
+  } 
   // OBJTYPEs with save_style (x->os2.ou4.osave_style)
   if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
       typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
