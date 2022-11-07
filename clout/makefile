@@ -266,7 +266,7 @@ DBFIX   = 0
 USESTAT = 1
 SAFEDFT = 0
 
-DEBUGGING = 1
+DEBUGGING = 0
 TRACING =
 
 #DEBUGGING = 1
@@ -321,7 +321,7 @@ WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
 # -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
 
 # https://clang.llvm.org/docs/UsersManual.html
-SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2
+SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer
 # SANITIZE= -fsanitize=address
 # SANITIZE=
 # either -fsanitize=address or -fsanitize=memory

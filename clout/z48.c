@@ -1044,6 +1044,7 @@ static PDF_OBJECT_NUM PDFFont_FindFontEncoding(
 void PDFFont_AddFont(FILE* in_fp, const FULL_CHAR* in_short_font_name,
   const FULL_CHAR* in_real_font_name, const FULL_CHAR* in_font_encoding_name)
 {
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
   t_font_list_entry_ptr entry = PDFFont_FindListEntry(in_real_font_name);
   debug4(DPD, D, "PDFFont_AddFont(-, %s, %s, %s) [new = %s]",
     in_short_font_name, in_real_font_name,
