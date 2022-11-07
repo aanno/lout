@@ -677,6 +677,11 @@ typedef struct
 #define	mode_m(x)		(x).omode
 #define	width_m(x)	(x).owidth
 
+// don't forget to free
+INLINE GAP* newGap() {
+  return calloc(1L, ceiling(sizeof(GAP), sizeof(ALIGN)));
+}
+
 INLINE BOOLEAN nobreak(GAP* x) {
   return x->onobreak;
 }
@@ -717,7 +722,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 }
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
-( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
+( SetGapOnRef( (x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
@@ -728,7 +733,7 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 }
 
 #define GapCopy(x, y)							\
-( GapCopyOnRef( &(x), &(y) ) )
+( GapCopyOnRef( (x), (y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   nobreak_m(*x) = nobreak(y);
   mark_m(*x) = mark(y);
@@ -773,8 +778,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP		oline_gap;		/* separation between lines          */
-  GAP		ospace_gap;		/* separation induced by white space */
+  GAP*		oline_gap;		/* separation between lines          */
+  GAP*		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -837,10 +842,25 @@ typedef struct style_type
 */
 #define	context_m(x)	(x)->ocontext
 
-INLINE GAP line_gap(STYLE* x) {
+INLINE void initStyle(STYLE* x) {
+  x->oline_gap = newGap();
+  x->ospace_gap = newGap();
+}
+INLINE void disposeStyle(STYLE* x) {
+  if (x->oline_gap) {
+    free(x->oline_gap);
+  }
+  x->oline_gap = NULL;
+  if (x->ospace_gap) {
+    free(x->ospace_gap);
+  }
+  x->ospace_gap = NULL;
+}
+
+INLINE GAP* line_gap(STYLE* x) {
   return (x)->oline_gap;
 } 
-INLINE GAP space_gap(STYLE* x) {
+INLINE GAP* space_gap(STYLE* x) {
   return (x)->ospace_gap;
 }
 INLINE FULL_LENGTH yunit(STYLE* x) {
@@ -923,10 +943,10 @@ INLINE CONTEXT context(STYLE* x) {
 }
 
 INLINE void setLine_gap(STYLE* x, GAP* line_gap) {
-  (x)->oline_gap = *line_gap;
+  (x)->oline_gap = line_gap;
 } 
 INLINE void setSpace_gap(STYLE* x, GAP* space_gap) {
-  (x)->ospace_gap = *space_gap;
+  (x)->ospace_gap = space_gap;
 }
 INLINE void setYunit(STYLE* x, FULL_LENGTH yunit) {
   (x)->oyunit = yunit;
@@ -1041,8 +1061,8 @@ INLINE void setContext(STYLE* x, CONTEXT* context) {
 */
 
 INLINE void StyleCopy(STYLE* x, STYLE* y) {
-  GapCopyOnRef(&line_gap_m(x), &line_gap_m(y));
-  GapCopyOnRef(&space_gap_m(x), &space_gap_m(y));
+  GapCopyOnRef(line_gap_m(x), line_gap_m(y));
+  GapCopyOnRef(space_gap_m(x), space_gap_m(y));
   setYunit(x, yunit(y));
   setZunit(x, zunit(y));
   setOutdent_len(x, outdent_len(y));
@@ -2008,7 +2028,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP		ogap;
+     GAP*		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */
@@ -2205,8 +2225,8 @@ INLINE void setType(OBJECT x, unsigned char type) {
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(&space_gap_ms(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap_ms(save_style(x)), (y))
+#define	shift_type(x)		width(space_gap_ms(save_style(x)))
+#define	setShift_type(x, y)		setWidth(space_gap_ms(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap_m(&save_style(x))
 
@@ -2417,7 +2437,7 @@ typedef struct back_end_rec {
 /*****************************************************************************/
 
 typedef enum objtyp {
-    LINK = 0,       /*        a link between objects     */
+    LINK = 0,       /*        a link between objects      0 */
     GAP_OBJ,        /*  o     a gap object               */
     CLOSURE,        /* to  n  a closure of a symbol      */
     UNDER_REC,      /*  o  n  record of underlining      */
@@ -2427,7 +2447,7 @@ typedef enum objtyp {
     FORCE_CROSS,    /* to sn  &&& (a forcing cross ref.) */
     LINK_DEST_NULL, /* to sn  @LinkDest (null version)   */
     HEAD,           /*  o  n  a galley header            */
-    SPLIT,          /*  o     @Split                     */
+    SPLIT,          /*  o     @Split                     10 */
     PAR,            /*  o     a parameter of a closure   */
     WORD,           /*  o     a word                     */
     QWORD,          /*  o     a word (was quoted in i/p) */
@@ -2437,7 +2457,7 @@ typedef enum objtyp {
     COL_THR,        /*  o     a column thread            */
     ACAT,           /* to s   a sequence of &-ed objs    */
     HCAT,           /* to s   a sequence of |-ed objs    */
-    VCAT,           /* to s   a sequence of /-ed objs    */
+    VCAT,           /* to s   a sequence of /-ed objs    20 */
     BEGIN_HEADER,   /* to s   @BeginHeaderComponent      */
     END_HEADER,     /* to s   @EndHeaderComponent        */
     SET_HEADER,     /* to s   @SetHeaderComponent        */
@@ -2447,7 +2467,7 @@ typedef enum objtyp {
     WIDE,           /* to s   @Wide                      */
     HIGH,           /* to s   @High                      */
     HSHIFT,         /* to s   @HShift                    */
-    VSHIFT,         /* to s   @VShift                    */
+    VSHIFT,         /* to s   @VShift                    30 */
     HMIRROR,        /* to s   @HScale                    */
     VMIRROR,        /* to s   @VScale                    */
     HSCALE,         /* to s   @HScale                    */
@@ -2457,7 +2477,7 @@ typedef enum objtyp {
     SCALE,          /* to s   @Scale                     */
     KERN_SHRINK,    /* to s   @KernShrink                */
     HCONTRACT,      /* to s   @HContract                 */
-    VCONTRACT,      /* to s   @VContract                 */
+    VCONTRACT,      /* to s   @VContract                 40 */
     HLIMITED,       /* to s   @HLimited                  */
     VLIMITED,       /* to s   @VLimited                  */
     HEXPAND,        /* to s   @HExpand                   */
@@ -2467,7 +2487,7 @@ typedef enum objtyp {
     START_HVSPAN,   /* to s   @StartHVSpan               */
     HSPAN,          /* to s   @HSpan                     */
     VSPAN,          /* to s   @VSpan                     */
-    PADJUST,        /* to s   @PAdjust                   */
+    PADJUST,        /* to s   @PAdjust                   50 */
     HADJUST,        /* to s   @HAdjust                   */
     VADJUST,        /* to s   @VAdjust                   */
     ROTATE,         /* to s   @Rotate                    */
@@ -2477,7 +2497,7 @@ typedef enum objtyp {
     RAW_VERBATIM,   /* to s   @RawVerbatim               */
     YIELD,          /* to s   @Yield                     */
     BACKEND,        /* to s   @BackEnd                   */
-    FILTERED,       /* to s   filtered object (no name)  */
+    FILTERED,       /* to s   filtered object (no name)  60 */
     XCHAR,          /* to s   @Char                      */
     FONT,           /* to s   @Font                      */
     SPACE,          /* to s   @Space                     */
@@ -2487,7 +2507,7 @@ typedef enum objtyp {
     GET_CONTEXT,    /* to s   @GetContext                */
     BREAK,          /* to s   @Break                     */
     UNDERLINE,      /* to s   @Underline                 */
-    UNDERLINE_COLOUR, /* to s   @SetUnderlineColour        */
+    UNDERLINE_COLOUR, /* to s   @SetUnderlineColour      70   */
     COLOUR,         /* to s   @SetColour and @SetColor   */
     TEXTURE,        /* to s   @SetTexture                */
     OUTLINE,        /* to s   @Outline                   */
@@ -2497,7 +2517,7 @@ typedef enum objtyp {
     CURR_FACE,      /* to s   @CurrFace                  */
     CURR_YUNIT,     /* to s   @CurrYUnit                 */
     CURR_ZUNIT,     /* to s   @CurrZUnit                 */
-    COMMON,         /* to s   @Common                    */
+    COMMON,         /* to s   @Common                    80 */
     RUMP,           /* to s   @Rump                      */
     MELD,           /* to s   @Meld                      */
     INSERT,         /* to s   @Insert                    */
@@ -2507,7 +2527,7 @@ typedef enum objtyp {
     MINUS,          /* to s   @Minus                     */
     ENV_OBJ,        /* to s   object with envt (no name) */
     ENV,            /* to s   @LEnv                      */
-    ENVA,           /* to s   @LEnvA                     */
+    ENVA,           /* to s   @LEnvA                     90 */
     ENVB,           /* to s   @LEnvB                     */
     ENVC,           /* to s   @LEnvC                     */
     ENVD,           /* to s   @LEnvD                     */
@@ -2517,7 +2537,7 @@ typedef enum objtyp {
     LUSE,           /* to s   @LUse                      */
     LEO,            /* to s   @LEO                       */
     OPEN,           /* to s   @Open                      */
-    TAGGED,         /* to s   @Tagged                    */
+    TAGGED,         /* to s   @Tagged                   100 */
     INCGRAPHIC,     /* to s   @IncludeGraphic            */
     SINCGRAPHIC,    /* to s   @SysIncludeGraphic         */
     PLAIN_GRAPHIC,  /* to s   @PlainGraphic              */
@@ -2527,7 +2547,7 @@ typedef enum objtyp {
     LINK_URL,       /* to s   @URLLink                   */
     TSPACE,         /* t      a space token, parser only */
     TJUXTA,         /* t      a juxta token, parser only */
-    LBR,            /* t  s   left brace token           */
+    LBR,            /* t  s   left brace token          110 */
     RBR,            /* t  s   right brace token          */
     BEGIN,          /* t  s   @Begin token               */
     END,            /* t  s   @End token                 */
@@ -2537,7 +2557,7 @@ typedef enum objtyp {
     GSTUB_INT,      /* t      galley stub internal rpar  */
     GSTUB_EXT,      /* t      galley stub external rpar  */
     UNEXPECTED_EOF, /* t      unexpected end of file     */
-    INCLUDE,        /*    s   @Include                   */
+    INCLUDE,        /*    s   @Include                  120 */
     SYS_INCLUDE,    /*    s   @SysInclude                */
     PREPEND,        /*    s   @Prepend                   */
     SYS_PREPEND,    /*    s   @SysPrepend                */
@@ -2547,7 +2567,7 @@ typedef enum objtyp {
     SYS_DATABASE,   /*    s   @SysDatabase               */
     DEAD,           /*   i    a dead galley              */
     UNATTACHED,     /*   i    an inner, unsized galley   */
-    RECEPTIVE,      /*   i    a receptive object index   */
+    RECEPTIVE,      /*   i    a receptive object index  130 */
     RECEIVING,      /*   i    a receiving object index   */
     RECURSIVE,      /*   i    a recursive definite obj.  */
     PRECEDES,       /*   i    an ordering constraint     */
@@ -2557,7 +2577,7 @@ typedef enum objtyp {
     CROSS_FOLL_OR_PREC, /*   i    follorprec type cross-ref  */
     GALL_FOLL,      /*   i    galley with &&following    */
     GALL_FOLL_OR_PREC,  /*   i    galley with &&following    */
-    CROSS_TARG,     /*   i    value of cross-ref         */
+    CROSS_TARG,     /*   i    value of cross-ref        140 */
     GALL_TARG,      /*   i    target of these galleys    */
     GALL_PREC,      /*   i    galley with &&preceding    */
     CROSS_PREC,     /*   i    preceding type cross-ref   */
@@ -2567,7 +2587,7 @@ typedef enum objtyp {
     EXPAND_IND,     /*   i    index of HEXPAND or VEXPD  */
     THREAD,         /*        a sequence of threads      */
     CROSS_SYM,      /*        cross-ref info             */
-    CR_ROOT,        /*        RootCross                  */
+    CR_ROOT,        /*        RootCross                 150 */
     MACRO,          /*        a macro symbol             */
     LOCAL,          /*        a local symbol             */
     LPAR,           /*        a left parameter           */
@@ -2576,7 +2596,7 @@ typedef enum objtyp {
     EXT_GALL,       /*        an external galley         */
     CR_LIST,        /*        a list of cross references */
     SCOPE_SNAPSHOT, /*        a scope snapshot	     */
-    DISPOSED,       /* 159        a disposed record          */
+    DISPOSED,       /* 159        a disposed record     159     */
 } OBJTYPE;
 
 INLINE BOOLEAN is_indefinite(OBJTYPE x) {
@@ -3145,6 +3165,20 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  
+  // OBJTYPEs with gap (x->os5.ogap)
+  if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
+     GAP* g;
+     // slow
+     g = calloc(1L, zz_lengths[GAP_OBJ]);
+     gap(x) = g;
+  }
+  // OBJTYPEs with save_style (x->os2.ou4.osave_style)
+  if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
+      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
+    initStyle(&save_style(x));
+  }
+
   return x;
 }
 
@@ -3326,6 +3360,19 @@ INLINE void PutMem(POINTER x, int size) {
 }
 */
 INLINE void Dispose(OBJECT x) {
+    OBJTYPE typ = type(x);
+
+    // OBJTYPEs with gap (x->os5.ogap)
+    if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
+      // slow
+      free(gap(x));
+    }
+    // OBJTYPEs with save_style (x->os2.ou4.osave_style)
+    if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
+      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
+      disposeStyle(&save_style(x));
+    }
+
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
@@ -3594,7 +3641,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  jn = jn && join(&gap(y));			\
+    if( type(y) == GAP_OBJ )  jn = jn && join(gap(y));			\
     else if( type(y)==SPLIT ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
@@ -3658,7 +3705,7 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(&gap(y));		\
+    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(gap(y));		\
     else if( type(y)==SPLIT ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\

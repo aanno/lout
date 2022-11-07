@@ -166,7 +166,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 
           debug2(DGM, DD, "  cleaning %s: %s", Image(type(y)), EchoObject(y));
 	  /* prev_gap = y; */
-	  if( !join(&gap(y)) )  seen_nojoin(hd) = TRUE;
+	  if( !join(gap(y)) )  seen_nojoin(hd) = TRUE;
 	  break;
 
 

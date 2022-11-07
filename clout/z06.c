@@ -293,9 +293,9 @@ if( obj_prev )								\
   if( obj_prev )							\
   { New(tmp, typ);  precedence(tmp) = prec;				\
     vspace(tmp) = vspace(t);  hspace(tmp) = hspace(t);			\
-    setWidth(&gap(tmp), 0);  setNobreak(&gap(tmp), TRUE);			\
-    setMark(&gap(tmp), FALSE);  setJoin(&gap(tmp), TRUE);			\
-    setUnits(&gap(tmp), FIXED_UNIT);  setMode(&gap(tmp), EDGE_MODE);		\
+    setWidth(gap(tmp), 0);  setNobreak(gap(tmp), TRUE);			\
+    setMark(gap(tmp), FALSE);  setJoin(gap(tmp), TRUE);			\
+    setUnits(gap(tmp), FIXED_UNIT);  setMode(gap(tmp), EDGE_MODE);		\
     FposCopy(fpos(tmp), fpos(t));					\
     PushToken(tmp);							\
   }									\
@@ -850,6 +850,9 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	else if( type(t) == USE )
 	{
 	  OBJECT crs, res_env;  STYLE style;
+	  // unclear if this should be disposed at end of function
+	  initStyle(&style);
+
 	  Dispose(t);  t = LexGetToken();
 	  if( type(t) != LBR )
 	    Error(6, 15, "%s expected after %s", FATAL, &fpos(t),KW_LBR,KW_USE);
@@ -990,8 +993,8 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	/* push GAP_OBJ token, to cope with 3 parameters */
 	New(x, GAP_OBJ);
-	setMark(&gap(x), has_mark(actual(t)));
-	setJoin(&gap(x), has_join(actual(t)));
+	setMark(gap(x), has_mark(actual(t)));
+	setJoin(gap(x), has_join(actual(t)));
 	hspace(x) = hspace(t);
 	vspace(x) = vspace(t);
 	precedence(x) = GAP_PREC;

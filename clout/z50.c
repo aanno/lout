@@ -746,7 +746,7 @@ static void PDF_DefineGraphicNames(OBJECT x)
 
   PDFPage_SetVars(size(x, COLM), size(x, ROWM), back(x, COLM), fwd(x, ROWM),
     currentfont <= 0 ? 12*PT : FontSize(currentfont, x),
-    width(&line_gap_ms(save_style(x))), width(&space_gap_ms(save_style(x))));
+    width(line_gap_ms(save_style(x))), width(space_gap_ms(save_style(x))));
 
   debug0(DPF, D, "PDF_DefineGraphicNames returning.");
 } /* end PDF_DefineGraphicNames */
