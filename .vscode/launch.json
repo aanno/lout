@@ -87,7 +87,7 @@
       "program": "${workspaceFolder}/clout/lout",
       "args": ["-a", "-L", "-w", "all", "-o", "../slides.ps"],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/doc/design",
+      "cwd": "${workspaceFolder}/doc/slides",
       "environment": [],
       "envFile": "${workspaceFolder}/.env",
       "externalConsole": false,

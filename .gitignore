@@ -4,6 +4,9 @@ _obj/
 .idea/
 lout.iml
 
+*.ldx
+*.lix
+
 /main
 /example
 /clout/liblout.so
