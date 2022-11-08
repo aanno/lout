@@ -847,8 +847,12 @@ INLINE void clearStyle(STYLE* x) {
   x->ospace_gap = NULL;
 }
 INLINE void initStyle(STYLE* x) {
-  x->oline_gap = newGap();
-  x->ospace_gap = newGap();
+  // if (!x->oline_gap) {
+    x->oline_gap = newGap();
+  // }
+  // if (!x->ospace_gap) {
+    x->ospace_gap = newGap();
+  // }
 }
 INLINE void disposeStyle(STYLE* x) {
   if (x->oline_gap) {
@@ -2122,11 +2126,17 @@ typedef REAL_OBJECT* OBJECT;
 #define	hspace(x)		(x)->os1.ou2.os21.ohspace
 #define	vspace(x)		(x)->os1.ou2.os21.ovspace
 
+#pragma clang diagnostic ignored "-Wfixed-enum-extension"
+enum objtyp : unsigned char;
+INLINE void initObject(OBJECT x, enum objtyp);
+
 INLINE unsigned char type(OBJECT x) {
   return (x)->os1.ou1.os11.otype;
 }
 INLINE void setType(OBJECT x, unsigned char type) {
   (x)->os1.ou1.os11.otype = type;
+  // potential leak?
+  initObject(x, type);
 }
 
 #define	word_font(x)		(x)->os1.ou2.os22.oword_font
@@ -2440,7 +2450,7 @@ typedef struct back_end_rec {
 /*                                                                           */
 /*****************************************************************************/
 
-typedef enum objtyp {
+typedef enum objtyp : unsigned char {
     LINK = 0,       /*        a link between objects      0 */
     GAP_OBJ,        /*  o     a gap object               */
     CLOSURE,        /* to  n  a closure of a symbol      */
@@ -3159,6 +3169,23 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
 */
 #define New(x, typ) (x) = returnNew((x), (typ))
 
+INLINE void initObject(OBJECT x, OBJTYPE typ) {
+  // OBJTYPEs with gap (x->os5.ogap)
+  // if (!gap(x)) {
+    if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
+      GAP* g;
+      // slow
+      g = calloc(1L, zz_lengths[GAP_OBJ]);
+      gap(x) = g;
+    } 
+  // }
+  // OBJTYPEs with save_style (x->os2.ou4.osave_style)
+  if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
+      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
+    initStyle(&save_style(x));
+  }
+}
+
 #pragma clang diagnostic ignored "-Wuninitialized"
 INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checknew(typ);
@@ -3169,20 +3196,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
-  
-  // OBJTYPEs with gap (x->os5.ogap)
-  if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
-     GAP* g;
-     // slow
-     g = calloc(1L, zz_lengths[GAP_OBJ]);
-     gap(x) = g;
-  } 
-  // OBJTYPEs with save_style (x->os2.ou4.osave_style)
-  if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
-      typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
-    initStyle(&save_style(x));
-  }
-
+  initObject(x, typ);
   return x;
 }
 
@@ -3363,20 +3377,25 @@ INLINE void PutMem(POINTER x, int size) {
   setdisposed;								\
 }
 */
-INLINE void Dispose(OBJECT x) {
-    OBJTYPE typ = type(x);
 
+INLINE void finalizeObject(OBJECT x, OBJTYPE typ) {
     // OBJTYPEs with gap (x->os5.ogap)
-    if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
-      // slow
-      free(gap(x));
+    if (gap(x)) {
+      if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
+        // slow
+        free(gap(x));
+      }
     }
     // OBJTYPEs with save_style (x->os2.ou4.osave_style)
     if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
       typ == GRAPHIC || typ == PLAIN_GRAPHIC || typ == LINK_DEST || typ == LINK_SOURCE) {
       disposeStyle(&save_style(x));
     }
+}
 
+INLINE void Dispose(OBJECT x) {
+    OBJTYPE typ = type(x);
+    finalizeObject(x, typ);
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
