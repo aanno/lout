@@ -3182,7 +3182,8 @@ INLINE void initObject(OBJECT x, OBJTYPE typ) {
   // OBJTYPEs with save_style (x->os2.ou4.osave_style)
   if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
       typ == INCGRAPHIC || typ == SINCGRAPHIC || typ == GRAPHIC || typ == PLAIN_GRAPHIC || 
-      typ == LINK_DEST || typ == LINK_SOURCE || typ == LINK_URL) {
+      typ == LINK_DEST || typ == LINK_SOURCE || typ == LINK_URL ||
+      typ == BEGIN_HEADER || typ == SET_HEADER) {
     initStyle(&save_style(x));
   }
 }
@@ -3390,7 +3391,8 @@ INLINE void finalizeObject(OBJECT x, OBJTYPE typ) {
     // OBJTYPEs with save_style (x->os2.ou4.osave_style)
   if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
       typ == INCGRAPHIC || typ == SINCGRAPHIC || typ == GRAPHIC || typ == PLAIN_GRAPHIC || 
-      typ == LINK_DEST || typ == LINK_SOURCE || typ == LINK_URL) {
+      typ == LINK_DEST || typ == LINK_SOURCE || typ == LINK_URL ||
+      typ == BEGIN_HEADER || typ == SET_HEADER) {
       disposeStyle(&save_style(x));
     }
 }

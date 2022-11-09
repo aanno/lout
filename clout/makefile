@@ -329,9 +329,11 @@ SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2 -fno-omit-frame-po
 
 DEBUG = -g $(SANITIZE)
 
-CFLAGS ?= -std=c17 -pedantic -Wall -Wextra -Werror -Os -pipe -fPIC $(WARN) $(DEBUG)
-# -O3
+LDFLAGS ?=
+# -Wl,-z -Wl,stack-size=0x1000000
 
+CFLAGS ?= -std=c17 -pedantic -Wall -Wextra -Werror -O1 -pipe -fPIC $(WARN) $(DEBUG)
+# -O3
 
 CFLAGS	+= -DOS_UNIX=$(OSUNIX)					\
 	  -DOS_DOS=$(OSDOS)					\
