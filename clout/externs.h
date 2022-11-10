@@ -3386,6 +3386,7 @@ INLINE void finalizeObject(OBJECT x, OBJTYPE typ) {
       if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
         // slow
         free(gap(x));
+        gap(x) = NULL;
       }
     }
     // OBJTYPEs with save_style (x->os2.ou4.osave_style)
