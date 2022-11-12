@@ -149,6 +149,7 @@
       "mode": "exec",
       "asRoot": false,
       "program": "${workspaceFolder}/__debug_bin",
+      "args": ["-test.v"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "preLaunchTask": "go test (debug)"
