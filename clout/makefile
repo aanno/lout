@@ -322,7 +322,8 @@ WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
 
 # https://clang.llvm.org/docs/UsersManual.html
 SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer
-# SANITIZE= -fsanitize=address
+# -fsanitize=address seems to have problems with bitfields (no usable)
+# SANITIZE= -fsanitize=address -fno-omit-frame-pointer
 # SANITIZE=
 # either -fsanitize=address or -fsanitize=memory
 # -fsanitize=undefined 
