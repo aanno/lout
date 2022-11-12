@@ -1,7 +1,7 @@
 package main
 
 // #include "go_linux_64.h"
-// #include "clout/externs.h"
+// #include "clout/lout.h"
 //
 import "C"
 import (
@@ -76,9 +76,8 @@ type GapCptr = *Gp[Gap_t]
 
 var mapGap GapCptr = NewGp[Gap_t]()
 
-
 //export newGap
-func newGap()GAP {
+func newGap() GAP {
 	gap := Gap_t{}
 	return mapGap.assoc(gap)
 }
@@ -139,37 +138,42 @@ func GapEqual(x, y GAP) bool {
 #define	width(x)	(x)->owidth
 */
 //export nobreak
-func nobreak(x GAP)bool {
+func nobreak(x GAP) bool {
 
 	gap := mapGap.ref(x)
 	return gap.onobreak
 }
+
 //export mark
-func mark(x GAP)bool {
+func mark(x GAP) bool {
 
 	gap := mapGap.ref(x)
 	return gap.omark
 }
+
 //export join
-func join(x GAP)bool {
+func join(x GAP) bool {
 
 	gap := mapGap.ref(x)
 	return gap.ojoin
 }
+
 //export units
-func units(x GAP)uint8 {
+func units(x GAP) uint8 {
 
 	gap := mapGap.ref(x)
 	return gap.ounits
 }
+
 //export mode
-func mode(x GAP)uint8 {
+func mode(x GAP) uint8 {
 
 	gap := mapGap.ref(x)
 	return gap.omode
 }
+
 //export width
-func width(x GAP)FULL_LENGTH {
+func width(x GAP) FULL_LENGTH {
 
 	gap := mapGap.ref(x)
 	return gap.owidth
@@ -181,30 +185,35 @@ func setNobreak(x GAP, nobreak bool) {
 	gap := mapGap.ref(x)
 	gap.onobreak = nobreak
 }
+
 //export setMark
 func setMark(x GAP, mark bool) {
 
 	gap := mapGap.ref(x)
 	gap.omark = mark
 }
+
 //export setJoin
 func setJoin(x GAP, join bool) {
 
 	gap := mapGap.ref(x)
 	gap.ojoin = join
 }
+
 //export setUnits
 func setUnits(x GAP, units uint8) {
 
 	gap := mapGap.ref(x)
 	gap.ounits = units
 }
+
 //export setMode
 func setMode(x GAP, mode uint8) {
 
 	gap := mapGap.ref(x)
 	gap.omode = mode
 }
+
 //export setWidth
 func setWidth(x GAP, width FULL_LENGTH) {
 

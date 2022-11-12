@@ -321,10 +321,11 @@ WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
 # -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
 
 # https://clang.llvm.org/docs/UsersManual.html
-SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer
+# SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer
 # -fsanitize=address seems to have problems with bitfields (no usable)
 # SANITIZE= -fsanitize=address -fno-omit-frame-pointer
-# SANITIZE=
+# sanitize is mostly unusable from go-land
+SANITIZE=
 # either -fsanitize=address or -fsanitize=memory
 # -fsanitize=undefined 
 

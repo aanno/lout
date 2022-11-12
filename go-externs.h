@@ -21,7 +21,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 
 #line 3 "go-externs.go"
  #include "go_linux_64.h"
- #include "clout/externs.h"
+ #include "clout/lout.h"
 
 
 #line 1 "cgo-generated-wrapper"

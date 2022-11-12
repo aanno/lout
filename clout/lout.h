@@ -5,5 +5,6 @@
 // #include "externs.h"
 #include "../go-externs.h"
 // #include "mem.h"
+#include "externs.h"
 
 #endif

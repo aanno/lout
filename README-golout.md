@@ -34,3 +34,13 @@ However, there number of steps towards the goal:
 - [ ] Structs from `externs.h`: Remove unions (not supported in go)
 - [ ] Turn structs from `externs.h` to go struct (_not_ go `C.struct`)
 - [ ] Use these golang structs from remaining C lout code.
+
+## Documentation as test
+
+```bash
+$ ls -l *.ps
+-rw-r--r--. 1 tpasch tpasch  442256 12. Nov 11:50 design.ps
+-rw-r--r--. 1 tpasch tpasch  959965 12. Nov 11:51 expert.ps
+-rw-r--r--. 1 tpasch tpasch  153900 12. Nov 11:51 slides.ps
+-rw-r--r--. 1 tpasch tpasch 4370432 12. Nov 11:50 user.ps
+```
