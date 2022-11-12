@@ -1,3 +1,6 @@
+#ifndef GOLOUT_HEADER_H
+#define GOLOUT_HEADER_H
+
 #include <stddef.h>
 
 typedef signed char GoInt8;
@@ -71,4 +74,6 @@ extern void setWidth(GoUintptr x, GoInt32 width);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
