@@ -1071,7 +1071,6 @@ static OBJECT FontRead(FULL_CHAR *family_name, FULL_CHAR *face_name, OBJECT err)
   return face;
 
 } /* end FontRead */
-
 
 /*@::FontChange()@************************************************************/
 /*                                                                           */
@@ -1090,7 +1089,8 @@ void FontChange(STYLE *style, OBJECT x)
 { /* register */ int i;
   OBJECT requested_family, requested_face, requested_size;
   OBJECT par[3], family, face, fsize, y = nilobj, link, new, old, tmpf;
-  GAP gp;  FULL_LENGTH flen = 0;  int num, c;  unsigned inc;
+  GAP gp = newGap();
+  FULL_LENGTH flen = 0;  int num, c;  unsigned inc;
   struct metrics *newfnt, *oldfnt;
   FULL_CHAR *lig, *old_lig;
   int cmptop;
@@ -1380,22 +1380,22 @@ void FontChange(STYLE *style, OBJECT x)
   if( requested_size == nilobj )
     flen = font_size(finfo[font(style)].font_table);
   else 
-  { GetGap(requested_size, style, &gp, &inc);
-    if( mode(&gp) != EDGE_MODE || units(&gp) != FIXED_UNIT )
+  { GetGap(requested_size, style, gp, &inc);
+    if( mode(gp) != EDGE_MODE || units(gp) != FIXED_UNIT )
     { Error(37, 47, "syntax error in font size %s; ignoring it",
 	WARN, &fpos(requested_size), string(requested_size));
       flen = font_size(finfo[font(style)].font_table);
     }
     else if( inc == GAP_ABS )
-      flen = width(&gp);
+      flen = width(gp);
     else if( font(style) == NO_FONT )
     { Error(37, 48, "no current font on which to base size change %s",
 	FATAL, &fpos(requested_size), string(requested_size));
     }
     else if( inc == GAP_INC )
-      flen = font_size(finfo[font(style)].font_table) + width(&gp);
+      flen = font_size(finfo[font(style)].font_table) + width(gp);
     else if( inc == GAP_DEC )
-      flen = font_size(finfo[font(style)].font_table) - width(&gp);
+      flen = font_size(finfo[font(style)].font_table) - width(gp);
     else Error(37, 49, "FontChange: %d", INTERN, &fpos(x), inc);
   }
 
@@ -1412,7 +1412,7 @@ void FontChange(STYLE *style, OBJECT x)
   { Child(fsize, link);
     if( font_size(fsize) == flen )
     { setFont(style, font_num(fsize));
-      SetGapOnRef(space_gap_m(style), nobreak(space_gap_m(style)), FALSE, TRUE,
+      SetGap(space_gap_m(style), nobreak(space_gap_m(style)), FALSE, TRUE,
 	FIXED_UNIT, EDGE_MODE, font_spacewidth(fsize));
       debug2(DFT, D,"FontChange returning (old) %d (XHeight2 = %d)",
 	font(style), font_xheight2(finfo[font(style)].font_table));

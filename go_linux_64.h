@@ -23,6 +23,6 @@
 #define CHAR_OUT  0
 #define DLOCALE_ON  1
 #define ASSERT_ON 1
-#define DEBUG_ON  1
+// #define DEBUG_ON  1
 #define PDF_COMPRESSION 1
 

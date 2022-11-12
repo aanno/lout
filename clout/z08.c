@@ -1462,15 +1462,15 @@ OBJECT *enclose, BOOLEAN fcr)
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &res_gap, &res_inc);
-      if( res_inc != GAP_ABS || mode(&res_gap) != EDGE_MODE ||
-		units(&res_gap) != DEG_UNIT )
+      GetGap(y, style, res_gap, &res_inc);
+      if( res_inc != GAP_ABS || mode(res_gap) != EDGE_MODE ||
+		units(res_gap) != DEG_UNIT )
       {	Error(8, 28, "replacing invalid left parameter of %s by 0d",
 	  WARN, &fpos(y), Image(type(x)) );
-	setUnits(&res_gap, DEG_UNIT);
-	setWidth(&res_gap, 0);
+	setUnits(res_gap, DEG_UNIT);
+	setWidth(res_gap, 0);
       }
-      sparec(constraint(x)) = width(&res_gap);
+      sparec(constraint(x)) = width(res_gap);
       DisposeChild(Down(x));
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, target, crs, ok, FALSE,enclose,fcr);

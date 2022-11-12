@@ -1,12 +1,13 @@
 package main
 
-// #cgo LDFLAGS: -lz -lm -L. -llout
+// #cgo CFLAGS: -std=c17 -pedantic -Wall -O1 -pipe -fPIC
+// #cgo LDFLAGS: -lz -lm -Lclout -llout
 //
 // #include <stdio.h>
 // #include <stdlib.h>
 //
 // #include "go_linux_64.h"
-// #include "./externs.h"
+// #include "clout/lout.h"
 //
 // static void myprint(char* s) {
 //   printf("%s\n", s);
@@ -45,4 +46,9 @@ func main2() {
 	C.free(unsafe.Pointer(cs))
 
 	C.PrintUsage(C.stdout)
+}
+
+// e// xport test_export
+func test_export() {
+
 }

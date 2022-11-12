@@ -33,6 +33,7 @@
 #include <locale.h>
 
 #define INLINE __attribute__((always_inline)) inline
+#define GONULL 0L
 
 #if LOCALE_ON
 #include <nl_types.h>
@@ -660,16 +661,21 @@ extern const FULL_CHAR* const STR_SCALE_DOWN;
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 typedef struct
-{ FULL_LENGTH	owidth;			/* width of the gap                  */
-  BOOLEAN	onobreak : 1;		/* TRUE if this gap is unbreakable   */
-  BOOLEAN	omark	 : 1;		/* TRUE if this gap is marked        */
-  BOOLEAN	ojoin	 : 1;		/* TRUE if joins exist across gap    */
-  unsigned	ounits	 : 3;		/* units of measurement: fixed, etc  */
-  unsigned	omode	 : 3;		/* spacing mode: edge-to-edge, etc   */
+{ FULL_LENGTH	owidth;			/ width of the gap                  /
+  BOOLEAN	onobreak : 1;		/ TRUE if this gap is unbreakable   /
+  BOOLEAN	omark	 : 1;		/ TRUE if this gap is marked        /
+  BOOLEAN	ojoin	 : 1;		/ TRUE if joins exist across gap    /
+  unsigned	ounits	 : 3;		/ units of measurement: fixed, etc  /
+  unsigned	omode	 : 3;		/ spacing mode: edge-to-edge, etc   /
 } GAP;
+*/
+#pragma clang diagnostic ignored "-Wtypedef-redefinition"
+typedef size_t GoUintptr;
+typedef GoUintptr GAP; 
 
-/** inline function not possible - also used for setters */
+/*
 #define	nobreak_m(x)	(x).onobreak
 #define	mark_m(x)		(x).omark
 #define	join_m(x)		(x).ojoin
@@ -720,10 +726,9 @@ INLINE void setMode(GAP* x, unsigned xmode) {
 INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
   x->owidth = xwidth;
 }
-
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( (x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
-INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
+INLINE void SetGapOnRef(GAP x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
   setJoin(x, xjoin);
@@ -734,27 +739,28 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
 
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( (x), (y) ) )
-INLINE void GapCopyOnRef(GAP* x, GAP* y) {
+INLINE void GapCopyOnRef(GAP x, GAP y) {
   nobreak_m(*x) = nobreak(y);
   mark_m(*x) = mark(y);
   join_m(*x) = join(y);
   units_m(*x) = units(y);
   mode_m(*x) = mode(y);
   width_m(*x) = width(y);
-  /* not working!
+  / not working!
   setNobreak(x, nobreak(y));
   setMark(x, mark(y));
   setJoin(x, join(y));
   setUnits(x, nobreak(y));
   setMode(x, mode(y));
   setWidth(x, width(y));
-  */
+  /
 }
 
 INLINE BOOLEAN GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
              && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
 }
+*/
 
 /*****************************************************************************/
 /*                                                                           */
@@ -778,8 +784,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP*		oline_gap;		/* separation between lines          */
-  GAP*		ospace_gap;		/* separation induced by white space */
+  GAP		oline_gap;		/* separation between lines          */
+  GAP		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -843,8 +849,8 @@ typedef struct style_type
 #define	context_m(x)	(x)->ocontext
 
 INLINE void clearStyle(STYLE* x) {
-  x->oline_gap = NULL;
-  x->ospace_gap = NULL;
+  x->oline_gap = GONULL;
+  x->ospace_gap = GONULL;
 }
 INLINE void initStyle(STYLE* x) {
   // if (!x->oline_gap) {
@@ -856,19 +862,21 @@ INLINE void initStyle(STYLE* x) {
 }
 INLINE void disposeStyle(STYLE* x) {
   if (x->oline_gap) {
-    free(x->oline_gap);
+    // gced
+    // free(x->oline_gap);
   }
-  x->oline_gap = NULL;
+  x->oline_gap = GONULL;
   if (x->ospace_gap) {
-    free(x->ospace_gap);
+    // gced
+    // free(x->ospace_gap);
   }
-  x->ospace_gap = NULL;
+  x->ospace_gap = GONULL;
 }
 
-INLINE GAP* line_gap(STYLE* x) {
+INLINE GAP line_gap(STYLE* x) {
   return (x)->oline_gap;
 } 
-INLINE GAP* space_gap(STYLE* x) {
+INLINE GAP space_gap(STYLE* x) {
   return (x)->ospace_gap;
 }
 INLINE FULL_LENGTH yunit(STYLE* x) {
@@ -950,10 +958,10 @@ INLINE CONTEXT context(STYLE* x) {
   return (x)->ocontext;
 }
 
-INLINE void setLine_gap(STYLE* x, GAP* line_gap) {
+INLINE void setLine_gap(STYLE* x, GAP line_gap) {
   (x)->oline_gap = line_gap;
 } 
-INLINE void setSpace_gap(STYLE* x, GAP* space_gap) {
+INLINE void setSpace_gap(STYLE* x, GAP space_gap) {
   (x)->ospace_gap = space_gap;
 }
 INLINE void setYunit(STYLE* x, FULL_LENGTH yunit) {
@@ -1069,8 +1077,8 @@ INLINE void setContext(STYLE* x, CONTEXT* context) {
 */
 
 INLINE void StyleCopy(STYLE* x, STYLE* y) {
-  GapCopyOnRef(line_gap_m(x), line_gap_m(y));
-  GapCopyOnRef(space_gap_m(x), space_gap_m(y));
+  GapCopy(line_gap_m(x), line_gap_m(y));
+  GapCopy(space_gap_m(x), space_gap_m(y));
   setYunit(x, yunit(y));
   setZunit(x, zunit(y));
   setOutdent_len(x, outdent_len(y));
@@ -2036,7 +2044,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP*		ogap;
+     GAP		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */
@@ -3173,9 +3181,10 @@ INLINE void initObject(OBJECT x, OBJTYPE typ) {
   // OBJTYPEs with gap (x->os5.ogap)
   // if (!gap(x)) {
     if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
-      GAP* g;
+      GAP g;
       // slow
-      g = calloc(1L, zz_lengths[GAP_OBJ]);
+      // g = calloc(1L, zz_lengths[GAP_OBJ]);
+      g = newGap();
       gap(x) = g;
     } 
   // }
@@ -3328,6 +3337,7 @@ INLINE void Dispose(POINTER x) {
   free( (x) );								\
 }
 */
+#pragma clang diagnostic ignored "-Wunused-parameter"
 INLINE void PutMem(POINTER x , int size) {
     disposecount();
     free( (x) );
@@ -3340,7 +3350,7 @@ INLINE void PutMem(POINTER x , int size) {
   PutMem(zz_hold,0);							\
 }
 */
-INLINE Dispose(POINTER x) {
+INLINE void Dispose(POINTER x) {
     zz_hold = (x);
     setdisposed();
     PutMem(zz_hold, 0);
@@ -3974,13 +3984,13 @@ extern	void	  AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim);
 
 /*****  z17.c	  Gap Widths		**************************************/
 extern	int	  GetWidth(OBJECT x, STYLE *style);
-extern	void	  GetGap(OBJECT x, STYLE *style, GAP *res_gap,
+extern	void	  GetGap(OBJECT x, STYLE *style, GAP res_gap,
 		    unsigned *res_inc);
-extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap);
-extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir);
+extern	FULL_LENGTH  MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP xgap);
+extern	FULL_LENGTH  ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP xgap, int dir);
 extern	FULL_LENGTH  ActualGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c,
-		       GAP *xgap, FULL_LENGTH f, FULL_LENGTH mk);
-extern	FULL_CHAR *EchoGap(GAP *xgap);
+		       GAP xgap, FULL_LENGTH f, FULL_LENGTH mk);
+extern	FULL_CHAR *EchoGap(GAP xgap);
 
 /*****  z18.c	  Galley Transfer	**************************************/
 extern	STYLE	  InitialStyle;

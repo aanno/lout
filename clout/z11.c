@@ -106,7 +106,8 @@ FULL_CHAR *EchoStyle(STYLE *style)
 /*****************************************************************************/
 
 static void changespace(STYLE *style, OBJECT x)
-{ GAP res_gap;  unsigned gap_inc;
+{ GAP res_gap = newGap();
+  unsigned gap_inc;
   assert( is_word(type(x)), "changespace: type(x)!" );
   if( beginsbreakstyle(string(x)[0]) )
   {
@@ -125,17 +126,17 @@ static void changespace(STYLE *style, OBJECT x)
 	   WARN, &fpos(x), KW_SPACE, string(x));
   }
   else /* should be a new space gap */
-  { GetGap(x, style, &res_gap, &gap_inc);
-    if( gap_inc != GAP_ABS && units(&res_gap) != units(space_gap_m(style)) )
+  { GetGap(x, style, res_gap, &gap_inc);
+    if( gap_inc != GAP_ABS && units(res_gap) != units(space_gap_m(style)) )
     { Error(11, 2, "spacing %s is not compatible with current spacing",
 	WARN, &fpos(x), string(x));
     }
     else
-    { setUnits(space_gap_m(style), units(&res_gap));
-      setMode(space_gap_m(style), mode(&res_gap));
-      setWidth(space_gap_m(style), gap_inc == GAP_ABS ? width(&res_gap) :
-	     gap_inc == GAP_INC ? width(space_gap_m(style)) + width(&res_gap) :
-	     find_max(width(space_gap_m(style)) - width(&res_gap), 0));
+    { setUnits(space_gap_m(style), units(res_gap));
+      setMode(space_gap_m(style), mode(res_gap));
+      setWidth(space_gap_m(style), gap_inc == GAP_ABS ? width(res_gap) :
+	     gap_inc == GAP_INC ? width(space_gap_m(style)) + width(res_gap) :
+	     find_max(width(space_gap_m(style)) - width(res_gap), 0));
     }
   }
   debug1(DSS, D, "SpaceChange returning %s", EchoStyle(style));
@@ -185,7 +186,8 @@ void SpaceChange(STYLE *style, OBJECT x)
 /*****************************************************************************/
 
 static void changebreak(STYLE *style, OBJECT x)
-{ GAP res_gap;  unsigned gap_inc;
+{ GAP res_gap = newGap();
+  unsigned gap_inc;
   debug0(DSS, D, "[ changebreak");
   if( beginsbreakstyle(string(x)[0]) )
   {
@@ -230,16 +232,16 @@ static void changebreak(STYLE *style, OBJECT x)
 	   WARN, &fpos(x), KW_BREAK, string(x));
   }
   else /* should be a new inter-line gap */
-  { GetGap(x, style, &res_gap, &gap_inc);
-    if( gap_inc != GAP_ABS && units(&res_gap) != units(line_gap_m(style)) )
+  { GetGap(x, style, res_gap, &gap_inc);
+    if( gap_inc != GAP_ABS && units(res_gap) != units(line_gap_m(style)) )
       Error(11, 6, "line spacing %s is not compatible with current spacing",
         WARN, &fpos(x), string(x));
     else
-    { setUnits(line_gap_m(style), units(&res_gap));
-      setMode(line_gap_m(style), mode(&res_gap));
-      setWidth(line_gap_m(style), gap_inc == GAP_ABS ? width(&res_gap) :
-	gap_inc == GAP_INC ? width(line_gap_m(style)) + width(&res_gap) :
-	find_max(width(line_gap_m(style)) - width(&res_gap), 0));
+    { setUnits(line_gap_m(style), units(res_gap));
+      setMode(line_gap_m(style), mode(res_gap));
+      setWidth(line_gap_m(style), gap_inc == GAP_ABS ? width(res_gap) :
+	gap_inc == GAP_INC ? width(line_gap_m(style)) + width(res_gap) :
+	find_max(width(line_gap_m(style)) - width(res_gap), 0));
     }
   }
   debug0(DSS, D, "] changebreak");
@@ -247,7 +249,8 @@ static void changebreak(STYLE *style, OBJECT x)
 
 void BreakChange(STYLE *style, OBJECT x)
 { OBJECT link, y;
-  GAP res_gap;  unsigned gap_inc;
+  GAP res_gap = newGap();
+  unsigned gap_inc;
   debug3(DSS, D, "BreakChange(%s, %s at %s)", EchoStyle(style),
     EchoObject(x), EchoFilePos(&fpos(x)));
   switch( type(x) )
@@ -292,11 +295,11 @@ void BreakChange(STYLE *style, OBJECT x)
 			{
 			  link = NextDown(NextDown(link));
 			  Child(y, link);
-			  GetGap(y, style, &res_gap, &gap_inc);
+			  GetGap(y, style, res_gap, &gap_inc);
 			  setOutdent_len(style, gap_inc == GAP_ABS ?
-			    width(&res_gap) : gap_inc == GAP_INC ?
-			    outdent_len(style) + width(&res_gap) :
-			    find_max(outdent_len(style) - width(&res_gap), 0));
+			    width(res_gap) : gap_inc == GAP_INC ?
+			    outdent_len(style) + width(res_gap) :
+			    find_max(outdent_len(style) - width(res_gap), 0));
 			}
 		      }
 		      else if( StringEqual(string(y), STR_BREAK_SCALE) )
@@ -347,14 +350,14 @@ void BreakChange(STYLE *style, OBJECT x)
 
 void YUnitChange(STYLE *style, OBJECT x)
 { GAP res_gap; unsigned gap_inc;
-  GetGap(x, style, &res_gap, &gap_inc);
-  if( units(&res_gap) != FIXED_UNIT )
+  GetGap(x, style, res_gap, &gap_inc);
+  if( units(res_gap) != FIXED_UNIT )
     Error(11, 9, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_YUNIT);
   else
-  { if( gap_inc == GAP_ABS ) setYunit(style, width(&res_gap));
-    else if( gap_inc == GAP_INC ) setYunit(style, yunit(style) + width(&res_gap));
-    else setYunit(style, find_max(yunit(style) - width(&res_gap), 0));
+  { if( gap_inc == GAP_ABS ) setYunit(style, width(res_gap));
+    else if( gap_inc == GAP_INC ) setYunit(style, yunit(style) + width(res_gap));
+    else setYunit(style, find_max(yunit(style) - width(res_gap), 0));
   }
 } /* end YUnitChange */
 
@@ -369,13 +372,13 @@ void YUnitChange(STYLE *style, OBJECT x)
 
 void ZUnitChange(STYLE *style, OBJECT x)
 { GAP res_gap; unsigned gap_inc;
-  GetGap(x, style, &res_gap, &gap_inc);
-  if( units(&res_gap) != FIXED_UNIT )
+  GetGap(x, style, res_gap, &gap_inc);
+  if( units(res_gap) != FIXED_UNIT )
     Error(11, 10, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_ZUNIT);
   else
-  { if( gap_inc == GAP_ABS ) setZunit(style, width(&res_gap));
-    else if( gap_inc == GAP_INC ) setZunit(style, zunit(style) + width(&res_gap));
-    else setZunit(style, find_max(zunit(style) - width(&res_gap), 0));
+  { if( gap_inc == GAP_ABS ) setZunit(style, width(res_gap));
+    else if( gap_inc == GAP_INC ) setZunit(style, zunit(style) + width(res_gap));
+    else setZunit(style, find_max(zunit(style) - width(res_gap), 0));
   }
 } /* end ZUnitChange */

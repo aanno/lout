@@ -367,8 +367,9 @@ OBJS	= z00.o z01.o z02.o z03.o z04.o z05.o z06.o z07.o z08.o	\
 	  z41.o z42.o z43.o z44.o z45.o z46.o z47.o z48.o	\
 	  z49.o z50.o z51.o z52.o
 
-lout:	liblout.so main.c
-	$(CC) $(LDFLAGS) $(CFLAGS) -o lout main.c $(ZLIB) -L. -llout -lm -lz
+# not possible any more (as we use goland functions and data)
+#lout:	liblout.so main.c
+#	$(CC) $(LDFLAGS) $(CFLAGS) -o lout main.c $(ZLIB) -L. -llout -lm -lz
 
 liblout.so:	$(OBJS)
 	$(CC) $(LDFLAGS) $(CFLAGS) -shared -o liblout.so $(OBJS) $(ZLIB) -lm -lz
@@ -380,7 +381,7 @@ externs.h:
 prg2lout:	prg2lout.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o prg2lout prg2lout.c
 
-all:	liblout.so lout prg2lout
+all:	liblout.so prg2lout
 
 install: lout prg2lout
 	@echo ""
