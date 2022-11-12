@@ -9,10 +9,6 @@ package main
 // #include "go_linux_64.h"
 // #include "clout/lout.h"
 //
-// // no idea why this is needed (tp)
-// extern	void	  PrintUsage(FILE *fp);
-// extern  int   main1(char* all_in_one);
-//
 // static void myprint(char* s) {
 //   printf("%s\n", s);
 // }

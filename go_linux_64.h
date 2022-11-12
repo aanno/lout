@@ -5,6 +5,9 @@
 // go tool cgo --dynimport liblout.so --dynlinker main.go
 // readelf -s liblout.so
 
+#ifndef GO_LINUX_64_HEADER_H
+#define GO_LINUX_64_HEADER_H
+
 #define OS_UNIX   1 
 #define OS_DOS    0
 #define OS_MAC    0
@@ -26,3 +29,4 @@
 // #define DEBUG_ON  1
 #define PDF_COMPRESSION 1
 
+#endif

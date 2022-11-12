@@ -104,6 +104,31 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "name": " gdb golout design",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/example",
+      "args": ["-a", "-L", "-w", "all", "-o", "../design.ps"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/doc/design",
+      "environment": [],
+      "envFile": "${workspaceFolder}/.env",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Automatische Strukturierung und Einrückung für \"gdb\" aktivieren",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Disassemblierungsvariante auf Intel festlegen",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ]
     }
   ]
 }
