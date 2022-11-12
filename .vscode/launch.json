@@ -141,6 +141,17 @@
       "args": ["-a", "-L", "-w", "all", "-o", "../../design.ps"],
       "cwd": "${workspaceFolder}/doc/design",
       "envFile": "${workspaceFolder}/.env",
+    },
+    {
+      "name": "delve test",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "asRoot": false,
+      "program": "${workspaceFolder}/__debug_bin",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "go test (debug)"
     }
   ]
 }
