@@ -91,14 +91,14 @@ func freeGap(gap GAP) {
 func SetGap(x GAP, xnobreak bool, xmark bool, xjoin bool,
 	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
 
-	gap := mapGap.ref(x)
+	gap := mapGap.ptr(x)
 
-	gap.onobreak = xnobreak
-	gap.omark = xmark
-	gap.ojoin = xjoin
-	gap.ounits = xunits
-	gap.omode = xmode
-	gap.owidth = xwidth
+	(*gap).onobreak = xnobreak
+	(*gap).omark = xmark
+	(*gap).ojoin = xjoin
+	(*gap).ounits = xunits
+	(*gap).omode = xmode
+	(*gap).owidth = xwidth
 }
 
 //export GapCopy
