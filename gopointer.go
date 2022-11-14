@@ -35,33 +35,33 @@ type Gp[G any] map_gopointer[Ptr, G]
 func (gp Gp[G]) assoc(goland *G) Ptr {
 	c := gp.generate()
 	// c := generatePointer()
-	gp.abstract_map_gopointer.m[c] = goland
-	// fmt.Println("assoc", gp.abstract_map_gopointer.m)
+	gp.m[c] = goland
+	// fmt.Println("assoc", gp.m)
 	return c
 }
 
-func (gp Gp[G]) ref(cland Ptr) G {
-	// fmt.Println("ref", gp.abstract_map_gopointer.m)
-	result, prs := gp.abstract_map_gopointer.m[cland]
+func (gp abstract_map_gopointer[C, G]) ref(cland C) G {
+	// fmt.Println("ref", gp.m)
+	result, prs := gp.m[cland]
 	if !prs {
-		fmt.Println("cland", cland, "not presend in", gp.abstract_map_gopointer.m)
+		fmt.Println("cland", cland, "not presend in", gp.m)
 		panic(cland)
 	}
 	return *result
 }
 
-func (gp Gp[G]) ptr(cland Ptr) *G {
-	// fmt.Println("ptr", gp.abstract_map_gopointer.m)
-	result, prs := gp.abstract_map_gopointer.m[cland]
+func (gp abstract_map_gopointer[C, G]) ptr(cland C) *G {
+	// fmt.Println("ptr", gp.m)
+	result, prs := gp.m[cland]
 	if !prs {
 		return nil
 	}
 	return result
 }
 
-func (gp Gp[G]) free(clands ...Ptr) {
+func (gp abstract_map_gopointer[C, G]) free(clands ...C) {
 	for _, cland := range clands {
-		delete(gp.abstract_map_gopointer.m, cland)
+		delete(gp.m, cland)
 	}
 }
 
