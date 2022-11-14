@@ -104,29 +104,29 @@ func SetGap(x GAP, xnobreak bool, xmark bool, xjoin bool,
 //export GapCopy
 func GapCopy(x, y GAP) {
 
-	xgap := mapGap.ref(x)
-	ygap := mapGap.ref(y)
+	xgap := mapGap.ptr(x)
+	ygap := mapGap.ptr(y)
 
-	xgap.onobreak = ygap.onobreak
-	xgap.omark = ygap.omark
-	xgap.ojoin = ygap.ojoin
-	xgap.ounits = ygap.ounits
-	xgap.omode = ygap.omode
-	xgap.owidth = ygap.owidth
+	(*xgap).onobreak = (*ygap).onobreak
+	(*xgap).omark = (*ygap).omark
+	(*xgap).ojoin = (*ygap).ojoin
+	(*xgap).ounits = (*ygap).ounits
+	(*xgap).omode = (*ygap).omode
+	(*xgap).owidth = (*ygap).owidth
 }
 
 //export GapEqual
 func GapEqual(x, y GAP) bool {
 
-	xgap := mapGap.ref(x)
-	ygap := mapGap.ref(y)
+	xgap := mapGap.ptr(x)
+	ygap := mapGap.ptr(y)
 
-	return xgap.onobreak == ygap.onobreak &&
-		xgap.omark == ygap.omark &&
-		xgap.ojoin == ygap.ojoin &&
-		xgap.ounits == ygap.ounits &&
-		xgap.omode == ygap.omode &&
-		xgap.owidth == ygap.owidth
+	return (*xgap).onobreak == (*ygap).onobreak &&
+		(*xgap).omark == (*ygap).omark &&
+		(*xgap).ojoin == (*ygap).ojoin &&
+		(*xgap).ounits == (*ygap).ounits &&
+		(*xgap).omode == (*ygap).omode &&
+		(*xgap).owidth == (*ygap).owidth
 }
 
 /*
