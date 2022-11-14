@@ -147,78 +147,78 @@ func nobreak(x GAP) bool {
 //export mark
 func mark(x GAP) bool {
 
-	gap := MapGap.ref(x)
-	return gap.omark
+	gap := MapGap.ptr(x)
+	return (*gap).omark
 }
 
 //export join
 func join(x GAP) bool {
 
-	gap := MapGap.ref(x)
-	return gap.ojoin
+	gap := MapGap.ptr(x)
+	return (*gap).ojoin
 }
 
 //export units
 func units(x GAP) uint8 {
 
-	gap := MapGap.ref(x)
-	return gap.ounits
+	gap := MapGap.ptr(x)
+	return (*gap).ounits
 }
 
 //export mode
 func mode(x GAP) uint8 {
 
-	gap := MapGap.ref(x)
-	return gap.omode
+	gap := MapGap.ptr(x)
+	return (*gap).omode
 }
 
 //export width
 func width(x GAP) FULL_LENGTH {
 
-	gap := MapGap.ref(x)
-	return gap.owidth
+	gap := MapGap.ptr(x)
+	return (*gap).owidth
 }
 
 //export setNobreak
 func setNobreak(x GAP, nobreak bool) {
 
-	gap := MapGap.ref(x)
-	gap.onobreak = nobreak
+	gap := MapGap.ptr(x)
+	(*gap).onobreak = nobreak
 }
 
 //export setMark
 func setMark(x GAP, mark bool) {
 
-	gap := MapGap.ref(x)
-	gap.omark = mark
+	gap := MapGap.ptr(x)
+	(*gap).omark = mark
 }
 
 //export setJoin
 func setJoin(x GAP, join bool) {
 
-	gap := MapGap.ref(x)
-	gap.ojoin = join
+	gap := MapGap.ptr(x)
+	(*gap).ojoin = join
 }
 
 //export setUnits
 func setUnits(x GAP, units uint8) {
 
-	gap := MapGap.ref(x)
-	gap.ounits = units
+	gap := MapGap.ptr(x)
+	(*gap).ounits = units
 }
 
 //export setMode
 func setMode(x GAP, mode uint8) {
 
-	gap := MapGap.ref(x)
-	gap.omode = mode
+	gap := MapGap.ptr(x)
+	(*gap).omode = mode
 }
 
 //export setWidth
 func setWidth(x GAP, width FULL_LENGTH) {
 
-	gap := MapGap.ref(x)
-	gap.owidth = width
+	gap := MapGap.ptr(x)
+	(*gap).owidth = width
 }
 
 /*****  z17.c	  Gap Widths		*************************************
