@@ -36,12 +36,12 @@ func (gp Gp[G]) assoc(goland *G) Ptr {
 	c := gp.generate()
 	// c := generatePointer()
 	gp.abstract_map_gopointer.m[c] = goland
-	fmt.Println("assoc", gp.abstract_map_gopointer.m)
+	// fmt.Println("assoc", gp.abstract_map_gopointer.m)
 	return c
 }
 
 func (gp Gp[G]) ref(cland Ptr) G {
-	fmt.Println("ref", gp.abstract_map_gopointer.m)
+	// fmt.Println("ref", gp.abstract_map_gopointer.m)
 	result, prs := gp.abstract_map_gopointer.m[cland]
 	if !prs {
 		fmt.Println("cland", cland, "not presend in", gp.abstract_map_gopointer.m)
@@ -51,7 +51,7 @@ func (gp Gp[G]) ref(cland Ptr) G {
 }
 
 func (gp Gp[G]) ptr(cland Ptr) *G {
-	fmt.Println("ptr", gp.abstract_map_gopointer.m)
+	// fmt.Println("ptr", gp.abstract_map_gopointer.m)
 	result, prs := gp.abstract_map_gopointer.m[cland]
 	if !prs {
 		return nil

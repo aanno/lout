@@ -74,24 +74,24 @@ type Style_t struct {
 
 type GapCptr = *Gp[Gap_t]
 
-var mapGap GapCptr = NewGp[Gap_t]()
+var MapGap GapCptr = NewGp[Gap_t]()
 
 //export newGap
 func newGap() GAP {
 	gap := Gap_t{}
-	return mapGap.assoc(&gap)
+	return MapGap.assoc(&gap)
 }
 
 //export freeGap
 func freeGap(gap GAP) {
-	mapGap.free(gap)
+	MapGap.free(gap)
 }
 
 //export SetGap
 func SetGap(x GAP, xnobreak bool, xmark bool, xjoin bool,
 	xunits uint8, xmode uint8, xwidth FULL_LENGTH) {
 
-	gap := mapGap.ptr(x)
+	gap := MapGap.ptr(x)
 
 	(*gap).onobreak = xnobreak
 	(*gap).omark = xmark
@@ -104,8 +104,8 @@ func SetGap(x GAP, xnobreak bool, xmark bool, xjoin bool,
 //export GapCopy
 func GapCopy(x, y GAP) {
 
-	xgap := mapGap.ptr(x)
-	ygap := mapGap.ptr(y)
+	xgap := MapGap.ptr(x)
+	ygap := MapGap.ptr(y)
 
 	(*xgap).onobreak = (*ygap).onobreak
 	(*xgap).omark = (*ygap).omark
@@ -118,8 +118,8 @@ func GapCopy(x, y GAP) {
 //export GapEqual
 func GapEqual(x, y GAP) bool {
 
-	xgap := mapGap.ptr(x)
-	ygap := mapGap.ptr(y)
+	xgap := MapGap.ptr(x)
+	ygap := MapGap.ptr(y)
 
 	return (*xgap).onobreak == (*ygap).onobreak &&
 		(*xgap).omark == (*ygap).omark &&
@@ -140,84 +140,84 @@ func GapEqual(x, y GAP) bool {
 //export nobreak
 func nobreak(x GAP) bool {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	return gap.onobreak
 }
 
 //export mark
 func mark(x GAP) bool {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	return gap.omark
 }
 
 //export join
 func join(x GAP) bool {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	return gap.ojoin
 }
 
 //export units
 func units(x GAP) uint8 {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	return gap.ounits
 }
 
 //export mode
 func mode(x GAP) uint8 {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	return gap.omode
 }
 
 //export width
 func width(x GAP) FULL_LENGTH {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	return gap.owidth
 }
 
 //export setNobreak
 func setNobreak(x GAP, nobreak bool) {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	gap.onobreak = nobreak
 }
 
 //export setMark
 func setMark(x GAP, mark bool) {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	gap.omark = mark
 }
 
 //export setJoin
 func setJoin(x GAP, join bool) {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	gap.ojoin = join
 }
 
 //export setUnits
 func setUnits(x GAP, units uint8) {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	gap.ounits = units
 }
 
 //export setMode
 func setMode(x GAP, mode uint8) {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	gap.omode = mode
 }
 
 //export setWidth
 func setWidth(x GAP, width FULL_LENGTH) {
 
-	gap := mapGap.ref(x)
+	gap := MapGap.ref(x)
 	gap.owidth = width
 }
 
