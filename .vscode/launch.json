@@ -137,10 +137,12 @@
       "type": "go",
       "request": "launch",
       "mode": "exec",
+      "asRoot": false,
       "program": "${workspaceFolder}/example",
       "args": ["-a", "-L", "-w", "all", "-o", "../../design.ps"],
       "cwd": "${workspaceFolder}/doc/design",
       "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal"
     },
     {
       "name": "delve test",
