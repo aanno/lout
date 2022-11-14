@@ -79,7 +79,7 @@ var mapGap GapCptr = NewGp[Gap_t]()
 //export newGap
 func newGap() GAP {
 	gap := Gap_t{}
-	return mapGap.assoc(gap)
+	return mapGap.assoc(&gap)
 }
 
 //export freeGap

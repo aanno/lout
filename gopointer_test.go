@@ -19,8 +19,8 @@ func TestSimple(t *testing.T) {
 
 	ts1 := testStruct{1, "test"}
 	ts2 := testStruct{2, "test2"}
-	c1 := mapGp.assoc(ts1)
-	c2 := mapGp.assoc(ts2)
+	c1 := mapGp.assoc(&ts1)
+	c2 := mapGp.assoc(&ts2)
 
 	defer mapGp.free(c1, c2)
 

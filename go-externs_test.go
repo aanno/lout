@@ -21,8 +21,8 @@ func TestGapT(t *testing.T) {
 	ts2 := Gap_t{}
 	// end struct setup
 
-	var c1 GAP = mapGp.assoc(ts1)
-	var c2 GAP = mapGp.assoc(ts2)
+	var c1 GAP = mapGp.assoc(&ts1)
+	var c2 GAP = mapGp.assoc(&ts2)
 	
 	defer mapGp.free(c1, c2)
 
