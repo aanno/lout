@@ -45,7 +45,7 @@ typedef void *GoChan;
 extern "C" {
 #endif
 
-extern GoUintptr newGap();
+extern GoUintptr newGap(void);
 extern void freeGap(GoUintptr gap);
 extern void SetGap(GoUintptr x, GoUint8 xnobreak, GoUint8 xmark, GoUint8 xjoin, GoUint8 xunits, GoUint8 xmode, GoInt32 xwidth);
 extern void GapCopy(GoUintptr x, GoUintptr y);

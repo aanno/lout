@@ -6,6 +6,7 @@ package main
 import "C"
 import (
 	"unsafe"
+	"fmt"
 )
 
 type OBJECT = unsafe.Pointer
@@ -140,14 +141,22 @@ func GapEqual(x, y GAP) bool {
 //export nobreak
 func nobreak(x GAP) bool {
 
-	gap := MapGap.ref(x)
-	return gap.onobreak
+	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("nobreak: gap", x, "unknown")
+		panic(x)
+	}
+	return (*gap).onobreak
 }
 
 //export mark
 func mark(x GAP) bool {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("mark: gap", x, "unknown")
+		panic(x)
+	}
 	return (*gap).omark
 }
 
@@ -155,6 +164,10 @@ func mark(x GAP) bool {
 func join(x GAP) bool {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("join: gap", x, "unknown")
+		panic(x)
+	}
 	return (*gap).ojoin
 }
 
@@ -162,6 +175,10 @@ func join(x GAP) bool {
 func units(x GAP) uint8 {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("units: gap", x, "unknown")
+		panic(x)
+	}
 	return (*gap).ounits
 }
 
@@ -169,6 +186,10 @@ func units(x GAP) uint8 {
 func mode(x GAP) uint8 {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("mode: gap", x, "unknown")
+		panic(x)
+	}
 	return (*gap).omode
 }
 
@@ -176,6 +197,10 @@ func mode(x GAP) uint8 {
 func width(x GAP) FULL_LENGTH {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("width: gap", x, "unknown")
+		panic(x)
+	}
 	return (*gap).owidth
 }
 
@@ -183,6 +208,10 @@ func width(x GAP) FULL_LENGTH {
 func setNobreak(x GAP, nobreak bool) {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("setNobreak: gap", x, "unknown")
+		panic(x)
+	}
 	(*gap).onobreak = nobreak
 }
 
@@ -190,6 +219,10 @@ func setNobreak(x GAP, nobreak bool) {
 func setMark(x GAP, mark bool) {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("setMark: gap", x, "unknown")
+		panic(x)
+	}
 	(*gap).omark = mark
 }
 
@@ -197,6 +230,10 @@ func setMark(x GAP, mark bool) {
 func setJoin(x GAP, join bool) {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("setJoin: gap", x, "unknown")
+		panic(x)
+	}
 	(*gap).ojoin = join
 }
 
@@ -204,6 +241,10 @@ func setJoin(x GAP, join bool) {
 func setUnits(x GAP, units uint8) {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("setUnits: gap", x, "unknown")
+		panic(x)
+	}
 	(*gap).ounits = units
 }
 
@@ -211,6 +252,10 @@ func setUnits(x GAP, units uint8) {
 func setMode(x GAP, mode uint8) {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("setMode: gap", x, "unknown")
+		panic(x)
+	}
 	(*gap).omode = mode
 }
 
@@ -218,6 +263,10 @@ func setMode(x GAP, mode uint8) {
 func setWidth(x GAP, width FULL_LENGTH) {
 
 	gap := MapGap.ptr(x)
+	if gap == nil {
+		fmt.Println("setWidth: gap", x, "unknown")
+		panic(x)
+	}
 	(*gap).owidth = width
 }
 
