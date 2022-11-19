@@ -917,7 +917,11 @@ OBJECT *enclose, BOOLEAN fcr)
   register FULL_CHAR *p;
   OBJECT res = nilobj, res_env, res_env2, hold_env, hold_env2, z, prev;
   OBJECT link1, link2, x1, x2, y1, y2, vc, value_env, key, value;
-  int i, par, num1, num2;  GAP res_gap;  unsigned res_inc;  STYLE new_style;
+  int i, par, num1, num2;
+  // unclear if this should be disposed at end of function
+  GAP res_gap = newGap();
+  unsigned res_inc;
+  STYLE new_style;
   // unclear if this should be disposed at end of function
   initStyle(&new_style);
 

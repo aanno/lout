@@ -296,7 +296,7 @@ void GetGap(OBJECT x, STYLE *style, GAP res_gap, unsigned *res_inc)
     if( mode(res_gap) == HYPH_MODE )
       Error(17, 9, "replacing self-contradictory gap %s by breakable version",
 	WARN, &fpos(x), string(x));
-    else setNobreak(res_gap, TRUE);
+     else setNobreak(res_gap, TRUE);
     str++;
   }
 

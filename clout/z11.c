@@ -349,7 +349,10 @@ void BreakChange(STYLE *style, OBJECT x)
 /*****************************************************************************/
 
 void YUnitChange(STYLE *style, OBJECT x)
-{ GAP res_gap; unsigned gap_inc;
+{
+  // unclear if this should be disposed at end of function
+  GAP res_gap = newGap();
+  unsigned gap_inc;
   GetGap(x, style, res_gap, &gap_inc);
   if( units(res_gap) != FIXED_UNIT )
     Error(11, 9, "this unit not allowed with %s symbol",
@@ -371,7 +374,10 @@ void YUnitChange(STYLE *style, OBJECT x)
 /*****************************************************************************/
 
 void ZUnitChange(STYLE *style, OBJECT x)
-{ GAP res_gap; unsigned gap_inc;
+{
+  // unclear if this should be disposed at end of function
+  GAP res_gap = newGap(); 
+  unsigned gap_inc;
   GetGap(x, style, res_gap, &gap_inc);
   if( units(res_gap) != FIXED_UNIT )
     Error(11, 10, "this unit not allowed with %s symbol",
