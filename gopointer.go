@@ -54,6 +54,20 @@ func (gp abstract_map_gopointer[C, G]) ptr(cland C) *G {
 	// fmt.Println("ptr", gp.m)
 	result, prs := gp.m[cland]
 	if !prs {
+		fmt.Println("cland", cland, "empty in map")
+		return nil
+	}
+	return result
+}
+
+func (gp Gp[G]) ptr(cland Ptr) *G {
+	// fmt.Println("ptr", gp.m)
+	result, prs := gp.m[cland]
+	if !prs {
+		fmt.Println("cland", cland, "empty in map")
+		if cland > ptr0 {
+			fmt.Println("cland refs are at", ptr0, "only")
+		}
 		return nil
 	}
 	return result
