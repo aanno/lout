@@ -183,6 +183,7 @@ typedef struct objtype { OBJTYPE_T objtype; } OBJTYPE;
 
 // 0 where OBJTYPE is not relevant (tp)
 #define DUMMY ((OBJTYPE) {LINK_E})
+#define DUMMY_E LINK_E
 
 #define LINK ((OBJTYPE) {LINK_E})
 #define GAP_OBJ ((OBJTYPE) {GAP_OBJ_E})

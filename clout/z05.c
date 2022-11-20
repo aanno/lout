@@ -39,7 +39,7 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#define is_string(t, str)    (type(t) == WORD && StringEqual(string(t), str) )
+#define is_string(t, str)    (type(t).objtype == WORD_E && StringEqual(string(t), str) )
 
 
 /*****************************************************************************/
@@ -60,7 +60,7 @@ static void ReadLangDef(OBJECT encl)
   { Link(names, t);
     t = LexGetToken();
   }
-  if( type(t) != LBR )
+  if( type(t).objtype != LBR_E )
   { Error(5, 4, "expected opening %s of langdef here", WARN, &fpos(t), KW_LBR);
     Dispose(t);
     return;
@@ -82,11 +82,11 @@ static void ReadLangDef(OBJECT encl)
 /*                                                                           */
 /*****************************************************************************/
 
-void ReadPrependDef(unsigned typ, OBJECT encl)
+void ReadPrependDef(OBJTYPE typ, OBJECT encl)
 { OBJECT t, fname;
   FILE_NUM fnum;
   t = LexGetToken();
-  if( type(t) != LBR )
+  if( type(t).objtype != LBR_E )
   { Error(5, 5, "left brace expected here in %s declaration",
       WARN, &fpos(t), KW_PREPEND);
     Dispose(t);
@@ -103,7 +103,7 @@ void ReadPrependDef(unsigned typ, OBJECT encl)
   fnum = FileNum(string(fname), STR_EMPTY);
   if( fnum == NO_FILE || FileType(fnum) != PREPEND_FILE )
     DefineFile(string(fname), STR_EMPTY, &fpos(fname), PREPEND_FILE,
-	   typ == PREPEND ? INCLUDE_PATH : SYSINCLUDE_PATH);
+	   typ.objtype == PREPEND_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
 
 } /* end ReadPrependDef */
 
@@ -116,10 +116,10 @@ void ReadPrependDef(unsigned typ, OBJECT encl)
 /*                                                                           */
 /*****************************************************************************/
 
-void ReadIncGRepeatedDef(unsigned typ, OBJECT encl)
+void ReadIncGRepeatedDef(OBJTYPE typ, OBJECT encl)
 { OBJECT t, fname;
   t = LexGetToken();
-  if( type(t) != LBR )
+  if( type(t).objtype != LBR_E )
   { Error(5, 5, "left brace expected here in %s declaration",
       WARN, &fpos(t), KW_INCG_REPEATED);
     Dispose(t);
@@ -134,7 +134,7 @@ void ReadIncGRepeatedDef(unsigned typ, OBJECT encl)
     return;
   }
   debug0(DFS, D, "  calling PS_IncGRepeated from ReadPrependDef");
-  incg_type(fname) = (typ == INCG_REPEATED ? INCGRAPHIC : SINCGRAPHIC);
+  incg_type(fname) = (typ.objtype == INCG_REPEATED_E ? INCGRAPHIC_E : SINCGRAPHIC_E);
   PS_IncGRepeated(fname);
 } /* end ReadPrependDef */
 
@@ -147,12 +147,12 @@ void ReadIncGRepeatedDef(unsigned typ, OBJECT encl)
 /*                                                                           */
 /*****************************************************************************/
 
-void ReadDatabaseDef(unsigned typ, OBJECT encl)
+void ReadDatabaseDef(OBJTYPE typ, OBJECT encl)
 { OBJECT symbs, t, fname;
   New(symbs, ACAT);
   t = LexGetToken();
-  while( type(t)==CLOSURE || (type(t)==WORD && string(t)[0]==CH_SYMSTART) )
-  { if( type(t) == CLOSURE )
+  while( type(t).objtype==CLOSURE_E || (type(t).objtype==WORD_E && string(t)[0]==CH_SYMSTART) )
+  { if( type(t).objtype == CLOSURE_E )
     { Link(symbs, t);
     }
     else
@@ -161,7 +161,7 @@ void ReadDatabaseDef(unsigned typ, OBJECT encl)
     }
     t = LexGetToken();
   }
-  if( type(t) != LBR )
+  if( type(t).objtype != LBR_E )
   { Error(5, 8, "symbol name or %s expected here (%s declaration)",
       WARN, &fpos(t), KW_LBR, KW_DATABASE);
     Dispose(t);
@@ -186,7 +186,7 @@ void ReadDatabaseDef(unsigned typ, OBJECT encl)
     return;
   }
   if( Down(symbs) != symbs )
-    (void) DbLoad(fname, typ == DATABASE ? DATABASE_PATH : SYSDATABASE_PATH,
+    (void) DbLoad(fname, typ.objtype == DATABASE_E ? DATABASE_PATH : SYSDATABASE_PATH,
       TRUE, symbs, InMemoryDbIndexes);
 } /* end ReadDatabaseDef */
 
@@ -207,9 +207,9 @@ void ReadDatabaseDef(unsigned typ, OBJECT encl)
 static void ReadTokenList(OBJECT token, OBJECT res)
 { OBJECT t, xsym, new_par, imps, link, y;  int scope_count, i;
   NextToken(t, res);
-  for(;;) switch(type(t))
+  for(;;) switch(type(t).objtype)
   {
-    case WORD:
+    case WORD_E:
 
       if( string(t)[0] == CH_SYMSTART )
 	Error(5, 11, "symbol %s unknown or misspelt", WARN, &fpos(t),
@@ -218,111 +218,111 @@ static void ReadTokenList(OBJECT token, OBJECT res)
       break;
 
 
-    case QWORD:
+    case QWORD_E:
 
       NextToken(t, res);
       break;
 
 
-    case VCAT:
-    case HCAT:
-    case ACAT:
-    case CROSS:
-    case FORCE_CROSS:
-    case NULL_CLOS:
-    case PAGE_LABEL:
-    case BEGIN_HEADER:
-    case END_HEADER:
-    case SET_HEADER:
-    case CLEAR_HEADER:
-    case ONE_COL:
-    case ONE_ROW:
-    case WIDE:
-    case HIGH:
-    case HSHIFT:
-    case VSHIFT:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case HCOVER:
-    case VCOVER:
-    case SCALE:
-    case KERN_SHRINK:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HLIMITED:
-    case VLIMITED:
-    case HEXPAND:
-    case VEXPAND:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
-    case HSPAN:
-    case VSPAN:
-    case PADJUST:
-    case HADJUST:
-    case VADJUST:
-    case ROTATE:
-    case BACKGROUND:
-    case RAW_VERBATIM:
-    case VERBATIM:
-    case CASE:
-    case YIELD:
-    case BACKEND:
-    case XCHAR:
-    case FONT:
-    case SPACE:
-    case YUNIT:
-    case ZUNIT:
-    case SET_CONTEXT:
-    case GET_CONTEXT:
-    case BREAK:
-    case UNDERLINE:
-    case UNDERLINE_COLOUR:
-    case COLOUR:
-    case TEXTURE:
-    case OUTLINE:
-    case LANGUAGE:
-    case CURR_LANG:
-    case CURR_FAMILY:
-    case CURR_FACE:
-    case CURR_YUNIT:
-    case CURR_ZUNIT:
-    case COMMON:
-    case RUMP:
-    case MELD:
-    case INSERT:
-    case ONE_OF:
-    case NEXT:
-    case PLUS:
-    case MINUS:
-    case TAGGED:
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case NOT_REVEALED:
+    case VCAT_E:
+    case HCAT_E:
+    case ACAT_E:
+    case CROSS_E:
+    case FORCE_CROSS_E:
+    case NULL_CLOS_E:
+    case PAGE_LABEL_E:
+    case BEGIN_HEADER_E:
+    case END_HEADER_E:
+    case SET_HEADER_E:
+    case CLEAR_HEADER_E:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case WIDE_E:
+    case HIGH_E:
+    case HSHIFT_E:
+    case VSHIFT_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case SCALE_E:
+    case KERN_SHRINK_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HLIMITED_E:
+    case VLIMITED_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case HSPAN_E:
+    case VSPAN_E:
+    case PADJUST_E:
+    case HADJUST_E:
+    case VADJUST_E:
+    case ROTATE_E:
+    case BACKGROUND_E:
+    case RAW_VERBATIM_E:
+    case VERBATIM_E:
+    case CASE_E:
+    case YIELD_E:
+    case BACKEND_E:
+    case XCHAR_E:
+    case FONT_E:
+    case SPACE_E:
+    case YUNIT_E:
+    case ZUNIT_E:
+    case SET_CONTEXT_E:
+    case GET_CONTEXT_E:
+    case BREAK_E:
+    case UNDERLINE_E:
+    case UNDERLINE_COLOUR_E:
+    case COLOUR_E:
+    case TEXTURE_E:
+    case OUTLINE_E:
+    case LANGUAGE_E:
+    case CURR_LANG_E:
+    case CURR_FAMILY_E:
+    case CURR_FACE_E:
+    case CURR_YUNIT_E:
+    case CURR_ZUNIT_E:
+    case COMMON_E:
+    case RUMP_E:
+    case MELD_E:
+    case INSERT_E:
+    case ONE_OF_E:
+    case NEXT_E:
+    case PLUS_E:
+    case MINUS_E:
+    case TAGGED_E:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case NOT_REVEALED_E:
 
       NextToken(t, res);
       break;
 
 
-    case LUSE:
-    case LVIS:
-    case ENV:
-    case USE:
-    case DATABASE:
-    case SYS_DATABASE:
-    case PREPEND:
-    case SYS_PREPEND:
-    case INCG_REPEATED:
-    case SINCG_REPEATED:
-    case OPEN:
+    case LUSE_E:
+    case LVIS_E:
+    case ENV_E:
+    case USE_E:
+    case DATABASE_E:
+    case SYS_DATABASE_E:
+    case PREPEND_E:
+    case SYS_PREPEND_E:
+    case INCG_REPEATED_E:
+    case SINCG_REPEATED_E:
+    case OPEN_E:
 
       Error(5, 12, "symbol %s not allowed in macro", WARN, &fpos(t),
 	SymName(actual(t)));
@@ -330,42 +330,42 @@ static void ReadTokenList(OBJECT token, OBJECT res)
       break;
 
 
-    case LBR:
+    case LBR_E:
 
       ReadTokenList(t, res);
       NextToken(t, res);
       break;
 
 
-    case UNEXPECTED_EOF:
+    case UNEXPECTED_EOF_E:
 
       Error(5, 13, "unexpected end of input", FATAL, &fpos(t));
       break;
 
 
-    case BEGIN:
+    case BEGIN_E:
 
       Error(5, 14, "%s not expected here", WARN, &fpos(t), SymName(actual(t)));
       NextToken(t, res);
       break;
 
 
-    case RBR:
+    case RBR_E:
 
-      if( type(token) != LBR )
+      if( type(token).objtype != LBR_E )
 	Error(5, 15, "unmatched %s in macro", WARN, &fpos(t), KW_RBR);
       return;
 
 
-    case END:
+    case END_E:
 
-      if( type(token) != BEGIN )
+      if( type(token).objtype != BEGIN_E )
 	Error(5, 16, "unmatched %s in macro", WARN, &fpos(t), KW_END);
       else
       { NextToken(t, res);
-        if( type(t) != CLOSURE )
+        if( type(t).objtype != CLOSURE_E )
 	{
-	  if( type(t) == WORD && string(t)[0] == CH_SYMSTART )
+	  if( type(t).objtype == WORD_E && string(t)[0] == CH_SYMSTART )
 	    Error(5, 17, "symbol %s unknown or misspelt",
 	      WARN, &fpos(t), string(t));
 	  else
@@ -378,25 +378,25 @@ static void ReadTokenList(OBJECT token, OBJECT res)
       return;
 
 
-    case CLOSURE:
+    case CLOSURE_E:
 
       xsym = actual(t);
       PushScope(xsym, TRUE, FALSE);
       NextToken(t, res);
       PopScope();
-      if( type(t) == CROSS || type(t) == FORCE_CROSS )
+      if( type(t).objtype == CROSS_E || type(t).objtype == FORCE_CROSS_E )
       { NextToken(t, res);
 	break;
       }
 
       /* read named parameters */
-      while( type(t) == CLOSURE && enclosing(actual(t)) == xsym &&
-	     type(actual(t)) == NPAR )
+      while( type(t).objtype == CLOSURE_E && enclosing(actual(t)) == xsym &&
+	     type(actual(t)).objtype == NPAR_E )
       {	new_par = t;
 	NextToken(t, res);
-	if( type(t) != LBR )
-	{ if( type(t) == RBR )
-	  { if( type(token) != LBR )
+	if( type(t).objtype != LBR_E )
+	{ if( type(t).objtype == RBR_E )
+	  { if( type(token).objtype != LBR_E )
 	      Error(5, 20, "unmatched %s in macro", WARN, &fpos(t), KW_RBR);
 	    return;
 	  }
@@ -434,16 +434,16 @@ static void ReadTokenList(OBJECT token, OBJECT res)
       /* read body parameter, if any */
       if( has_body(xsym) )
       {
-	if( type(t) == LBR || type(t) == BEGIN )
+	if( type(t).objtype == LBR_E || type(t).objtype == BEGIN_E )
 	{ PushScope(xsym, FALSE, TRUE);
 	  PushScope(ChildSym(xsym, RPAR), FALSE, FALSE);
-	  if( type(t) == BEGIN )  actual(t) = xsym;
+	  if( type(t).objtype == BEGIN_E )  actual(t) = xsym;
 	  ReadTokenList(t, res);
 	  PopScope();
 	  PopScope();
 	  NextToken(t, res);
 	}
-	else if( type(t) != RBR && type(t) != END )
+	else if( type(t).objtype != RBR_E && type(t).objtype != END_E )
 	  Error(5, 22, "right parameter of %s must begin with %s",
 	    WARN, &fpos(t), SymName(xsym), KW_LBR);
       }
@@ -497,7 +497,7 @@ static OBJECT ReadMacro(OBJECT *token, OBJECT curr_encl, OBJECT encl)
   }
 
   /* find opening left brace */
-  if( type(t) != LBR )
+  if( type(t).objtype != LBR_E )
   { Error(5, 25, "%s ignored (opening %s is missing)",
       WARN, &fpos(t), KW_MACRO, KW_LBR);
     *token = t;
@@ -530,12 +530,12 @@ static OBJECT ReadMacro(OBJECT *token, OBJECT curr_encl, OBJECT encl)
 /*                                                                           */
 /*****************************************************************************/
 
-void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
+void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 { OBJECT t, res, res_target, export_list, import_list, link, y, z;
   OBJECT curr_encl;  BOOLEAN compulsory_par, has_import_encl;
   t = *token;
 
-  while( res_type==LOCAL || is_string(t, KW_NAMED) || is_string(t, KW_IMPORT) )
+  while( res_type.objtype==LOCAL_E || is_string(t, KW_NAMED) || is_string(t, KW_IMPORT) )
   {
     curr_encl = encl;
 
@@ -544,19 +544,19 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
       t = LexGetToken();
       continue;  /* next definition */
     }
-    else if( type(t) == PREPEND || type(t) == SYS_PREPEND )
+    else if( type(t).objtype == PREPEND_E || type(t).objtype == SYS_PREPEND_E )
     { ReadPrependDef(type(t), encl);
       Dispose(t);
       t = LexGetToken();
       continue;  /* next definition */
     }
-    else if( type(t) == INCG_REPEATED || type(t) == SINCG_REPEATED )
+    else if( type(t).objtype == INCG_REPEATED_E || type(t).objtype == SINCG_REPEATED_E )
     { ReadIncGRepeatedDef(type(t), encl);
       Dispose(t);
       t = LexGetToken();
       continue;  /* next definition */
     }
-    else if( type(t) == DATABASE || type(t) == SYS_DATABASE )
+    else if( type(t).objtype == DATABASE_E || type(t).objtype == SYS_DATABASE_E )
     { ReadDatabaseDef(type(t), encl);
       Dispose(t);
       t = LexGetToken();
@@ -575,11 +575,11 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
     if( is_string(t, KW_IMPORT) )
     { Dispose(t);
       t = LexGetToken();
-      while( type(t) == CLOSURE ||
-	       (type(t)==WORD && !is_string(t,KW_EXPORT) && !is_string(t,KW_DEF)
+      while( type(t).objtype == CLOSURE_E ||
+	       (type(t).objtype==WORD_E && !is_string(t,KW_EXPORT) && !is_string(t,KW_DEF)
 	       && !is_string(t, KW_MACRO) && !is_string(t, KW_NAMED)) )
-      {	if( type(t) == CLOSURE )
-	{ if( type(actual(t)) == LOCAL )
+      {	if( type(t).objtype == CLOSURE_E )
+	{ if( type(actual(t)).objtype == LOCAL_E )
 	  {
 	    /* *** letting this through now
 	    if( res_type == NPAR && has_par(actual(t)) )
@@ -612,15 +612,15 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
     else if( is_string(t, KW_EXTEND) )
     { Dispose(t);
       t = LexGetToken();
-      while( type(t) == CLOSURE ||
-	       (type(t)==WORD && !is_string(t,KW_EXPORT) && !is_string(t,KW_DEF)
+      while( type(t).objtype == CLOSURE_E ||
+	       (type(t).objtype==WORD_E && !is_string(t,KW_EXPORT) && !is_string(t,KW_DEF)
 	       && !is_string(t, KW_MACRO)) )
-      {	if( type(t) == CLOSURE )
+      {	if( type(t).objtype == CLOSURE_E )
 	{ if( imports(actual(t)) != nilobj )
 	  { Error(5, 48, "%s has %s clause, so cannot be extended",
 	      WARN, &fpos(t), SymName(actual(t)), KW_IMPORT);
 	  }
-	  else if( type(actual(t)) == LOCAL )
+	  else if( type(actual(t)).objtype == LOCAL_E )
 	  { PushScope(actual(t), FALSE, FALSE);
 	    curr_encl = actual(t);
             debug1(DRD, D, "  curr_encl = %s", SymName(curr_encl));
@@ -655,12 +655,12 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
     }
 
 
-    if( res_type == LOCAL && !is_string(t, KW_DEF) && !is_string(t, KW_MACRO) )
+    if( res_type.objtype == LOCAL_E && !is_string(t, KW_DEF) && !is_string(t, KW_MACRO) )
     { Error(5, 30, "keyword %s or %s expected here", WARN, &fpos(t),
 	KW_DEF, KW_MACRO);
       break;
     }
-    if( res_type == NPAR && !is_string(t, KW_NAMED) )
+    if( res_type.objtype == NPAR_E && !is_string(t, KW_NAMED) )
     { Error(5, 31, "keyword %s expected here", WARN, &fpos(t), KW_NAMED);
       break;
     }
@@ -675,7 +675,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
       SuppressScope();  Dispose(t);  t = LexGetToken();
 
       /* check for compulsory keyword */
-      if( res_type == NPAR && is_string(t, KW_COMPULSORY) )
+      if( res_type.objtype == NPAR_E && is_string(t, KW_COMPULSORY) )
       { compulsory_par = TRUE;
 	Dispose(t);  t = LexGetToken();
       }
@@ -739,7 +739,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
       if( is_string(t, KW_INTO) )
       { UnSuppressScope();
 	Dispose(t);  t = LexGetToken();
-	if( type(t) != LBR )
+	if( type(t).objtype != LBR_E )
 	{ Error(5, 36, "%s expected here", WARN, &fpos(t), KW_LBR);
 	  debug1(ANY, D, "offending type is %s", Image(type(t)));
 	  UnSuppressScope();
@@ -757,7 +757,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
 	UnSuppressScope();
 	Dispose(t);
 	t = LexGetToken();
-	while( type(t) == WORD && decimaldigit(string(t)[0]) )
+	while( type(t).objtype == WORD_E && decimaldigit(string(t)[0]) )
 	{
 	  prec = prec * 10 + digitchartonum(string(t)[0]);
 	  Dispose(t);  t = LexGetToken();
@@ -792,7 +792,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
       /* find left parameter, if any */
       if( is_string(t, KW_LEFT) )
       {	Dispose(t);  t = LexGetToken();
-	if( type(t) != WORD )
+	if( type(t).objtype != WORD_E )
 	{ Error(5, 40, "cannot find %s parameter name", WARN, &fpos(t), KW_LEFT);
 	  debug1(ANY, D, "offending type is %s", Image(type(t)));
 	  UnSuppressScope();
@@ -813,7 +813,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
       {	has_body(res) = is_string(t, KW_BODY);
 	SuppressScope();
 	Dispose(t);  t = LexGetToken();
-	if( type(t) != WORD )
+	if( type(t).objtype != WORD_E )
 	{ Error(5, 41, "cannot find %s parameter name", WARN,&fpos(t),KW_RIGHT);
 	  debug1(ANY, D, "offending type is %s", Image(type(t)));
 	  UnSuppressScope();
@@ -830,20 +830,20 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
       if( res_target != nilobj )
 	InsertSym(KW_TARGET, LOCAL, &fpos(res_target), DEFAULT_PREC,
 			FALSE, FALSE, 0, res, res_target);
-      if( type(t) == WORD && StringEqual(string(t), KW_LBR) )
+      if( type(t).objtype == WORD_E && StringEqual(string(t), KW_LBR) )
       {	z = NewToken(LBR, &fpos(t), 0, 0, LBR_PREC, StartSym);
 	Dispose(t);
 	t = z;
       }
-      else if( type(t) == WORD && StringEqual(string(t), KW_BEGIN) )
+      else if( type(t).objtype == WORD_E && StringEqual(string(t), KW_BEGIN) )
       {	z = NewToken(BEGIN, &fpos(t), 0, 0, BEGIN_PREC, StartSym);
 	Dispose(t);
 	t = z;
       }
-      else if( type(t) != LBR && type(t) != BEGIN )
+      else if( type(t).objtype != LBR_E && type(t).objtype != BEGIN_E )
 	Error(5, 42, "opening left brace or @Begin of %s expected",
 	  FATAL, &fpos(t), SymName(res));
-      if( type(t) == BEGIN )  actual(t) = res;
+      if( type(t).objtype == BEGIN_E )  actual(t) = res;
       PushScope(res, FALSE, FALSE);
       BodyParAllowed();
       sym_body(res) = Parse(&t, res, TRUE, FALSE);
@@ -855,7 +855,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, unsigned char res_type)
 	if( z == nilobj || enclosing(z) != res )
 	  Error(5, 43, "exported symbol %s is not defined in %s",
 	    WARN, &fpos(y), string(y), SymName(res));
-	else if( has_body(res) && type(z) == RPAR )
+	else if( has_body(res) && type(z).objtype == RPAR_E )
 	  Error(5, 44, "body parameter %s may not be exported",
 	    WARN, &fpos(y), string(y));
 	else if( visible(z) )

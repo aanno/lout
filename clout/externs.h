@@ -2043,7 +2043,7 @@ typedef union rec
      union rec		*oimports;
      union rec		*ofilter;
      union rec		*ouse_invocation;
-     unsigned short 	opredefined;
+     OBJTYPE 	opredefined;
      unsigned short 	ohas_compulsory;
      unsigned char	ouses_count;
      unsigned char	onpar_code;
@@ -3630,7 +3630,7 @@ extern	FULL_CHAR *EchoFileSource(FILE_NUM fnum);
 extern	FULL_CHAR *EchoFileLine(FILE_POS *pos);
 extern	FILE_POS  *PosOfFile(FILE_NUM fnum);
 extern	FILE	  *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt);
-extern	FILE	  *OpenIncGraphicFile(const FULL_CHAR *str, unsigned char typ,
+extern	FILE	  *OpenIncGraphicFile(const FULL_CHAR *str, OBJTYPE typ,
 		    OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed);
 extern	void	  FileSetUpdated(FILE_NUM fnum, int newlines);
 extern	int	  FileGetLineCount(FILE_NUM fnum);
@@ -3641,15 +3641,14 @@ extern	OBJECT	  NewToken(OBJTYPE xtype, FILE_POS *xfpos,
 		    unsigned char xvspace, unsigned char xhspace,
 		    unsigned char xprec, OBJECT xactual);
 extern	OBJECT	  CopyTokenList(OBJECT x, FILE_POS *pos);
-extern	const FULL_CHAR *EchoCatOp(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin);
+extern	const FULL_CHAR *EchoCatOp(OBJTYPE xtype, BOOLEAN xmark, BOOLEAN xjoin);
 extern	const FULL_CHAR *EchoToken(OBJECT x);
 
 /*****  z05.c	  Read Definitions  	**************************************/
-extern	void	  ReadPrependDef(unsigned typ, OBJECT encl);
-extern	void	  ReadIncGRepeatedDef(unsigned typ, OBJECT encl);
-extern	void	  ReadDatabaseDef(unsigned typ, OBJECT encl);
-extern	void	  ReadDefinitions(OBJECT *token, OBJECT encl,
-		    unsigned char res_type);
+extern	void	  ReadPrependDef(OBJTYPE typ, OBJECT encl);
+extern	void	  ReadIncGRepeatedDef(OBJTYPE typ, OBJECT encl);
+extern	void	  ReadDatabaseDef(OBJTYPE typ, OBJECT encl);
+extern	void	  ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type);
 
 /*****  z06.c	  Object Parser	        **************************************/
 extern	BOOLEAN	  InDefinitions;
@@ -3857,7 +3856,7 @@ extern	void	  InsertAlternativeName(FULL_CHAR *str, OBJECT s,
 extern	OBJECT	  SearchSym(FULL_CHAR *str, int len);
 extern	FULL_CHAR *SymName(OBJECT s);
 extern	FULL_CHAR *FullSymName(OBJECT x, FULL_CHAR *str);
-extern	OBJECT	  ChildSym(OBJECT s, unsigned typ);
+extern	OBJECT	  ChildSym(OBJECT s, OBJTYPE typ);
 extern	OBJECT	  ChildSymWithCode(OBJECT s, unsigned char code);
 extern	void	  CheckSymSpread(void);
 extern	void	  DeleteEverySym(void);

@@ -155,7 +155,7 @@ static void ftab_debug(FILE_TABLE S)
     {
       debug1(DFS, D, "  ftab_name(S, %d) = <nilobj>", i);
     }
-    else if( type(x) != ACAT )
+    else if( type(x).objtype != ACAT_E )
     {
       debug1(DFS, D, "  ftab_name(S, %d) = not ACAT!>", i);
     }
@@ -292,7 +292,7 @@ FILE_NUM FirstFile(int ftype)
   OBJECT link, y;
   debug1(DFS, DD, "FirstFile( %s )", file_types[ftype]);
   link = Down(file_type[ftype]);
-  if( type(link) == ACAT )  i = NO_FILE;
+  if( type(link).objtype == ACAT_E )  i = NO_FILE;
   else
   { Child(y, link);
     i = file_number(y);
@@ -314,7 +314,7 @@ FILE_NUM NextFile(FILE_NUM i)
 { OBJECT link, y;
   debug1(DFS, DD, "NextFile( %s )", FileName(i));
   link = NextDown(Up(ftab_num(file_tab, i)));
-  if( type(link) == ACAT )  i = NO_FILE;
+  if( type(link).objtype == ACAT_E )  i = NO_FILE;
   else
   { Child(y, link);
     i = file_number(y);
@@ -842,14 +842,14 @@ FILE *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt)
 static char *compress_suffixes[MAX_COMPRESSED]
   = { ".gz", "-gz", ".z", "-z", "_z", ".Z" };
 
-FILE *OpenIncGraphicFile(const FULL_CHAR *str, unsigned char typ,
+FILE *OpenIncGraphicFile(const FULL_CHAR *str, OBJTYPE typ,
 OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed)
 { FILE *fp = NULL;  int p, i;  BOOLEAN used_source_suffix;
   FULL_CHAR sort_name[128];  int sort_start = 0, sort_end = 0;
   static FULL_CHAR last_sort_name[128];  static FILE *last_ceps_fp = NULL;
   debug2(DFS, DD, "OpenIncGraphicFile(%s, %s, -)", str, Image(typ));
-  assert( typ == INCGRAPHIC || typ == SINCGRAPHIC, "OpenIncGraphicFile!" );
-  p = (typ == INCGRAPHIC ? INCLUDE_PATH : SYSINCLUDE_PATH);
+  assert( typ.objtype == INCGRAPHIC_E || typ.objtype == SINCGRAPHIC_E, "OpenIncGraphicFile!" );
+  p = (typ.objtype == INCGRAPHIC_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
   if (str[0] == '@')
   {
     /* parse @name@start:end */

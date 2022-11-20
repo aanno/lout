@@ -638,7 +638,7 @@ OBJECT LexGetToken(void)
 	MORE: if( res == nilobj )
 	{ setword(WORD, res, file_pos, startpos, p-startpos);
 	}
-	else if( type(res) == MACRO )
+	else if( type(res).objtype == MACRO_E )
 	{ if( recursive(res) )
 	  { Error(2, 8, "recursion in macro", WARN, &file_pos);
 	    setword(WORD, res, file_pos, startpos, p-startpos);
@@ -649,7 +649,7 @@ OBJECT LexGetToken(void)
 	    else hcount = 0;
 	  }
 	}
-	else if( predefined(res) == 0 )
+	else if( predefined(res).objtype == DUMMY_E )
 	{
 	  /* nice try but does not work for @Database @FontDef { ... } !! ***
 	  if( res == FontDefSym && ftype != DATABASE_FILE )
@@ -658,13 +658,13 @@ OBJECT LexGetToken(void)
 	  *** */
 	  res = NewToken(CLOSURE, &file_pos, 0, 0, precedence(res), res);
 	}
-	else if( predefined(res) == INCLUDE || predefined(res) == SYS_INCLUDE )
+	else if( predefined(res).objtype == INCLUDE_E || predefined(res).objtype == SYS_INCLUDE_E )
 	{ OBJECT t, fname;  FILE_NUM fnum;  int len;  BOOLEAN scope_suppressed;
 	  chpt = p;
 	  t = LexGetToken();
-	  scope_suppressed = (type(t)==WORD && StringEqual(string(t), KW_LBR));
+	  scope_suppressed = (type(t).objtype==WORD_E && StringEqual(string(t), KW_LBR));
 
-	  if( type(t)!=LBR && !scope_suppressed )
+	  if( type(t).objtype!=LBR_E && !scope_suppressed )
 	  { Error(2, 9, "%s expected (after %s)",
 	      WARN, &fpos(t), KW_LBR, SymName(res));
 	    Dispose(t);
@@ -700,7 +700,7 @@ OBJECT LexGetToken(void)
 		FileNum(string(fname), SOURCE_SUFFIX));
 	    fnum = DefineFile(string(fname), STR_EMPTY, &fpos(fname),
 	      INCLUDE_FILE,
-	      predefined(res)==INCLUDE ? INCLUDE_PATH : SYSINCLUDE_PATH);
+	      predefined(res).objtype==INCLUDE_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
 	    Dispose(fname);
 	    LexPush(fnum, 0, INCLUDE_FILE, 1, FALSE);
 	    res = LexGetToken();
@@ -717,7 +717,7 @@ OBJECT LexGetToken(void)
 	    break;
 	  }
 	}
-	else if( predefined(res) == END )
+	else if( predefined(res).objtype == END_E )
 	  res = NewToken(predefined(res), &file_pos,0,0,precedence(res),nilobj);
 	else
 	  res = NewToken(predefined(res), &file_pos,0,0,precedence(res),res);
@@ -915,7 +915,7 @@ static OBJECT BuildLines(OBJECT current, FULL_CHAR *buff, int *bufftop, int ladj
   else
   {
     /* if this is the second word, make the result a VCAT */
-    if( type(current) == WORD )
+    if( type(current).objtype == WORD_E )
     { New(res, VCAT);
       FposCopy(fpos(res), fpos(current));
       Link(res, current);
@@ -1061,7 +1061,7 @@ OBJECT LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos, BOOLEAN le
 	    p += sysinc ? StringLength(KW_SYSINCLUDE):StringLength(KW_INCLUDE);
 	    chpt = p;
 	    t = LexGetToken();
-	    if( type(t) != LBR )  Error(2, 18, "expected %s here (after %s)",
+	    if( type(t).objtype != LBR_E )  Error(2, 18, "expected %s here (after %s)",
 		FATAL, &fpos(t), KW_LBR, sysinc ? KW_SYSINCLUDE : KW_INCLUDE);
 	    incl_fname = Parse(&t, nilobj, FALSE, FALSE);
 	    p = chpt;

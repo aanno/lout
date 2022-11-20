@@ -690,7 +690,7 @@ FULL_CHAR *FullSymName(OBJECT x, FULL_CHAR *str)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT ChildSym(OBJECT s, unsigned typ)
+OBJECT ChildSym(OBJECT s, OBJTYPE typ)
 { OBJECT link, y;
   for( link = Down(s);  link != s;  link = NextDown(link) )
   { Child(y, link);
