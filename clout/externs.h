@@ -3037,13 +3037,13 @@ INLINE void setdisposed() {
 #define disposecheck()
 #define	setdisposed()
 */
-INLINE void disposecount() {
+INLINE void disposecount(void) {
 }
 
-INLINE void disposecheck() {
+INLINE void disposecheck(void) {
 }
 
-INLINE void setdisposed() {
+INLINE void setdisposed(void) {
 }
 
 #endif

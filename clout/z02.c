@@ -38,6 +38,7 @@
 /*****************************************************************************/
 // #include "externs.h"
 #include "lout.h"
+
 #define	BUFFER_SIZE    8192		/* size of buffer for block read     */
 #define	OTHER		0		/* punctuation or other character    */
 #define	LETTER		1		/* letter type                       */
@@ -935,8 +936,7 @@ static OBJECT BuildLines(OBJECT current, FULL_CHAR *buff, int *bufftop, int ladj
   return res;
 }
 
-OBJECT LexScanVerbatim(fp, end_stop, err_pos, lessskip)
-FILE *fp;  BOOLEAN end_stop;  FILE_POS *err_pos;  BOOLEAN lessskip;
+OBJECT LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos, BOOLEAN lessskip)
 {
   register FULL_CHAR *p;		/* pointer to current input char     */
   int depth;				/* depth of nesting of { ... }       */
