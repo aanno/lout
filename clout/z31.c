@@ -359,6 +359,7 @@ void MemInit(void)
 
 OBJECT GetMemory(int siz, FILE_POS *pos)
 { static ALIGN *next_free = (ALIGN *) nilobj;
+#pragma clang diagnostic ignored "-Wunused-variable"
   static ALIGN *top_free  = (ALIGN *) nilobj;
   OBJECT res;
 

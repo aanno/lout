@@ -2994,7 +2994,7 @@ extern	POINTER	  MemCheck;
 // from z26 headers below - but used here
 extern	const FULL_CHAR *Image(unsigned int c);
 
-#define	USE_SYSTEM_MALLOC	0
+#define	USE_SYSTEM_MALLOC	1
 #define	USE_MALLOC_DEBUG	0
 
 // defined in z31.c
@@ -3245,7 +3245,7 @@ INLINE void setdisposed() {
   free( malloc_oheader(x) );						\
 }
 */
-INLINE void PutMem(POINTER x, int size) {
+INLINE void PutMem(POINTER x, int siz) {
     disposecount();
     zz_hold = (x);
     zz_size = (siz);

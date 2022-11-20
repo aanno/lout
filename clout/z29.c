@@ -767,6 +767,7 @@ void CheckSymSpread(void)
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma clang diagnostic ignored "-Wunused-parameter"
 static void DeleteSymBody(OBJECT s)
 {
 #if USE_SYSTEM_MALLOC
