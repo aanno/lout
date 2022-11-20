@@ -136,7 +136,7 @@ int DisposeObject(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT MakeWord(unsigned typ, const FULL_CHAR *str, FILE_POS *pos)
+OBJECT MakeWord(OBJTYPE typ, const FULL_CHAR *str, FILE_POS *pos)
 { OBJECT res;
   res = NewWord(res, typ, StringLength(str), pos);
   StringCopy(string(res), str);

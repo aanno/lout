@@ -1175,7 +1175,9 @@ typedef union
 {
   FILE_POS	ofpos;
   struct
-  {	unsigned char	otype, orec_size;
+  {
+  OBJTYPE	otype;
+  unsigned char orec_size;
 	int		oword_save_mark;
   } os11;
 
@@ -2110,10 +2112,10 @@ typedef REAL_OBJECT* OBJECT;
 #define	hspace(x)		(x)->os1.ou2.os21.ohspace
 #define	vspace(x)		(x)->os1.ou2.os21.ovspace
 
-INLINE unsigned char type(OBJECT x) {
+INLINE OBJTYPE type(OBJECT x) {
   return (x)->os1.ou1.os11.otype;
 }
-INLINE void setType(OBJECT x, unsigned char type) {
+INLINE void setType(OBJECT x, OBJTYPE type) {
   (x)->os1.ou1.os11.otype = type;
 }
 
@@ -2415,31 +2417,31 @@ typedef struct back_end_rec {
 
 
 INLINE BOOLEAN is_indefinite(OBJTYPE x) {
-    return (x) >= CLOSURE && x <= HEAD;
+    return (x).objtype >= CLOSURE_E && (x).objtype <= HEAD_E;
 }
 INLINE BOOLEAN is_header(OBJTYPE x) {
-    return (x) >= BEGIN_HEADER && (x) <= CLEAR_HEADER;
+    return (x).objtype >= BEGIN_HEADER_E && (x).objtype <= CLEAR_HEADER_E;
 }
 INLINE BOOLEAN is_definite(OBJTYPE x) {
-    return (x) >= SPLIT && (x) <= LINK_URL;
+    return (x).objtype >= SPLIT_E && (x).objtype <= LINK_URL_E;
 }
 INLINE BOOLEAN is_par(OBJTYPE x) {
-    return (x) >= LPAR && (x) <= RPAR;
+    return (x).objtype >= LPAR_E && (x).objtype <= RPAR_E;
 }
 INLINE BOOLEAN is_index(OBJTYPE x) {
-    return (x) >= DEAD && (x) <= EXPAND_IND;
+    return (x).objtype >= DEAD_E && (x).objtype <= EXPAND_IND_E;
 }
 INLINE BOOLEAN is_type(OBJTYPE x) {
-    return (x) >= LINK && (x) < DISPOSED;
+    return (x).objtype >= LINK_E && (x).objtype < DISPOSED_E;
 }
 INLINE BOOLEAN is_word(OBJTYPE x) {
-    return (x) == WORD || (x) == QWORD;
+    return (x).objtype == WORD_E || (x).objtype == QWORD_E;
 }
 INLINE BOOLEAN is_cross(OBJTYPE x) {
-    return (x) == CROSS || (x) == FORCE_CROSS;
+    return (x).objtype == CROSS_E || (x).objtype == FORCE_CROSS_E;
 }
 INLINE BOOLEAN is_cat_op(OBJTYPE x) {
-    return ((x)>=ACAT && (x)<=VCAT) || (x)==TSPACE || (x)<=TJUXTA;
+    return ((x).objtype>=ACAT_E && (x).objtype<=VCAT_E) || (x).objtype==TSPACE_E || (x).objtype<=TJUXTA_E;
 }
 
 
@@ -2831,7 +2833,7 @@ extern  OBJECT    xx_hold, xx_res;
 // from z01 headers below - but used here
 extern	POINTER	  MemCheck;
 // from z26 headers below - but used here
-extern	const FULL_CHAR *Image(unsigned int c);
+extern	const FULL_CHAR *Image(OBJTYPE c);
 
 #define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
@@ -2856,7 +2858,7 @@ extern int	zz_listcount;	/* number of elements in zz_free[]   */
 
 #define checknew(typ)							\
 { assert1( is_type(typ), "New: type", Image(typ) );			\
-  assert(  zz_lengths[typ] > 0, "New: zero length!" );			\
+  assert(  zz_lengths[typ.objtype] > 0, "New: zero length!" );			\
 }
 
 #define checkmem(z, typ)						\
@@ -2979,7 +2981,7 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
 #pragma clang diagnostic ignored "-Wuninitialized"
 INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checknew(typ);
-  zz_hold = GetMem(zz_hold, zz_lengths[typ], no_fpos);
+  zz_hold = GetMem(zz_hold, zz_lengths[typ.objtype], no_fpos);
   setType(zz_hold, typ);
   setmemtype(zz_hold, typ);
   mallocheadercheck(zz_hold,zz_lengths[typ]);
@@ -3170,7 +3172,7 @@ INLINE void PutMem(POINTER x, int size) {
 INLINE void Dispose(OBJECT x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
-        rec_size(zz_hold) : zz_lengths[type(zz_hold)]);
+        rec_size(zz_hold) : zz_lengths[type(zz_hold).objtype]);
     setdisposed();
 }
 
@@ -3253,17 +3255,17 @@ INLINE OBJECT Delete(OBJECT x, int dir) {
 
 // cannot inline
 #define	Child(y, link)							\
-for( y = pred(link, PARENT);  type(y) == LINK;  y = pred(y, PARENT) ) \
+for( y = pred(link, PARENT);  type(y).objtype == LINK_E;  y = pred(y, PARENT) ) \
 ;
 
 // cannot inline
 #define CountChild(y, link, i)                                          \
-for( y=pred(link, PARENT), i=1; type(y)==LINK;  y = pred(y, PARENT), i++ ) \
+for( y=pred(link, PARENT), i=1; type(y).objtype == LINK_E;  y = pred(y, PARENT), i++ ) \
 ;
 
 // cannot inline
 #define	Parent(y, link)							\
-for( y = pred(link, CHILD);   type(y) == LINK;  y = pred(y, CHILD) ) \
+for( y = pred(link, CHILD);   type(y).objtype == LINK_E;  y = pred(y, CHILD) ) \
 ;
 
 
@@ -3361,7 +3363,7 @@ INLINE void TransferLinks(OBJECT start_link, OBJECT stop_link, OBJECT dest_link)
     OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;
     if( xxstart != xxstop )
     {
-        assert( type(xxstart) == LINK, "TransferLinks: start_link!" );	\
+        assert( type(xxstart).objtype == LINK_E, "TransferLinks: start_link!" );	\
         Append(xxstart, xxstop, CHILD); /* actually a split */
         Append(xxstart, xxdest, CHILD);
     }
@@ -3531,7 +3533,7 @@ INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = LastDown(x);  link != x;  link = PrevDown(link) )
     {
         Child(y, link);
-        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+        if( type(y).objtype == SPLIT_E ? SplitIsDefinite(y) : is_definite(type(y)) )
             break;
     }
 }
@@ -3555,7 +3557,7 @@ INLINE void PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
     {
         Child(y, link);
-        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+        if( type(y).objtype == SPLIT_E ? SplitIsDefinite(y) : is_definite(type(y)) )
             break;
     }
 }
@@ -3635,7 +3637,7 @@ extern	int	  FileGetLineCount(FILE_NUM fnum);
 extern	BOOLEAN	  FileTestUpdated(FILE_NUM fnum);
 
 /*****  z04.c	  Token Service	        **************************************/
-extern	OBJECT	  NewToken(unsigned char xtype, FILE_POS *xfpos,
+extern	OBJECT	  NewToken(OBJTYPE xtype, FILE_POS *xfpos,
 		    unsigned char xvspace, unsigned char xhspace,
 		    unsigned char xprec, OBJECT xactual);
 extern	OBJECT	  CopyTokenList(OBJECT x, FILE_POS *pos);
@@ -3659,8 +3661,8 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 /*****  z07.c	  Object Service	**************************************/
 // extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
 // extern	int	  DisposeObject(OBJECT x);
-extern	OBJECT	  MakeWord(unsigned typ, const FULL_CHAR *str, FILE_POS *pos);
-extern	OBJECT	  MakeWordTwo(unsigned typ, const FULL_CHAR *str1, const FULL_CHAR *str2,
+extern	OBJECT	  MakeWord(OBJTYPE typ, const FULL_CHAR *str, FILE_POS *pos);
+extern	OBJECT	  MakeWordTwo(OBJTYPE typ, const FULL_CHAR *str1, const FULL_CHAR *str2,
 		    FILE_POS *pos);
 extern	OBJECT	  MakeWordThree(const FULL_CHAR *s1, const FULL_CHAR *s2, const FULL_CHAR *s3);
 extern	OBJECT	  CopyObject(OBJECT x, FILE_POS *pos);
@@ -3846,7 +3848,7 @@ extern	void	  BodyParNotAllowed(void);
 extern	OBJECT	  GetScopeSnapshot(void);
 extern	void	  LoadScopeSnapshot(OBJECT ss);
 extern	void	  ClearScopeSnapshot(OBJECT ss);
-extern	OBJECT	  InsertSym(const FULL_CHAR *str, unsigned char xtype,
+extern	OBJECT	  InsertSym(const FULL_CHAR *str, OBJTYPE xtype,
 		    FILE_POS *xfpos, unsigned char xprecedence,
 		    BOOLEAN xindefinite, BOOLEAN xrecursive,
 		    unsigned xpredefined, OBJECT xenclosing, OBJECT xbody);

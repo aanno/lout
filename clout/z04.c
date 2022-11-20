@@ -39,7 +39,7 @@
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT NewToken(unsigned char xtype, FILE_POS *xfpos, unsigned char xvspace,
+OBJECT NewToken(OBJTYPE xtype, FILE_POS *xfpos, unsigned char xvspace,
 unsigned char xhspace, unsigned char xprec, OBJECT xactual)
 { OBJECT res;
   debug1(DTS, DDD, "NewToken(%s, ...)", Image(xtype));

@@ -111,16 +111,16 @@ int TotalWordCount;
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT load(const FULL_CHAR *xstr, unsigned xpre,
+static OBJECT load(const FULL_CHAR *xstr, OBJTYPE xpre,
 BOOLEAN xleft, BOOLEAN xright, BOOLEAN xindef, unsigned char xprec)
 { OBJECT s;
-  s = InsertSym(xstr, LOCAL, no_fpos, xprec, xindef, FALSE, xpre,
+  s = InsertSym(xstr, LOCAL, no_fpos, xprec, xindef, FALSE, xpre.objtype,
 	StartSym, nilobj);
   if( xleft )  InsertSym( AsciiToFull("pa"), LPAR, no_fpos, DEFAULT_PREC,
     FALSE, FALSE, 0, s, nilobj);
   if( xright )  InsertSym( AsciiToFull("pb"), RPAR, no_fpos, DEFAULT_PREC,
     FALSE, FALSE, 0, s, nilobj);
-  if( xleft && xright && xpre != PLUS && xpre != MINUS )
+  if( xleft && xright && xpre.objtype != PLUS_E && xpre.objtype != MINUS_E )
     right_assoc(s) = TRUE;
   return s;
 } /* end load */
@@ -729,15 +729,15 @@ void run(int argc, char *argv[], int run_num, int *runs_to_do,
 
   /* load predefined symbols into symbol table */
   StartSym      = nilobj;  /* Not a mistake */
-  StartSym      = load(KW_START,        0, FALSE,  FALSE,  TRUE,  NO_PREC     );
-  GalleySym     = load(KW_GALLEY,       0, FALSE,  FALSE,  TRUE,  NO_PREC     );
-  ForceGalleySym= load(KW_FORCE_GALLEY, 0, FALSE,  FALSE,  TRUE,  NO_PREC     );
-  InputSym      = load(KW_INPUT,        0, FALSE,  FALSE,  TRUE,  NO_PREC     );
-  PrintSym      = load(KW_PRINT,        0, FALSE,  FALSE,  TRUE,  NO_PREC     );
-  FilterInSym   = load(KW_FILTERIN,     0, FALSE,  FALSE,  FALSE, NO_PREC     );
-  FilterOutSym  = load(KW_FILTEROUT,    0, FALSE,  FALSE,  FALSE, NO_PREC     );
-  FilterErrSym  = load(KW_FILTERERR,    0, FALSE,  FALSE,  FALSE, NO_PREC     );
-  OptGallSym    = load(KW_OPTGALL,      0, FALSE,  TRUE,   FALSE, DEFAULT_PREC);
+  StartSym      = load(KW_START,        DUMMY, FALSE,  FALSE,  TRUE,  NO_PREC     );
+  GalleySym     = load(KW_GALLEY,       DUMMY, FALSE,  FALSE,  TRUE,  NO_PREC     );
+  ForceGalleySym= load(KW_FORCE_GALLEY, DUMMY, FALSE,  FALSE,  TRUE,  NO_PREC     );
+  InputSym      = load(KW_INPUT,        DUMMY, FALSE,  FALSE,  TRUE,  NO_PREC     );
+  PrintSym      = load(KW_PRINT,        DUMMY, FALSE,  FALSE,  TRUE,  NO_PREC     );
+  FilterInSym   = load(KW_FILTERIN,     DUMMY, FALSE,  FALSE,  FALSE, NO_PREC     );
+  FilterOutSym  = load(KW_FILTEROUT,    DUMMY, FALSE,  FALSE,  FALSE, NO_PREC     );
+  FilterErrSym  = load(KW_FILTERERR,    DUMMY, FALSE,  FALSE,  FALSE, NO_PREC     );
+  OptGallSym    = load(KW_OPTGALL,      DUMMY, FALSE,  TRUE,   FALSE, DEFAULT_PREC);
   VerbatimSym   = load(KW_VERBATIM,VERBATIM,FALSE, TRUE,   FALSE, DEFAULT_PREC);
   RawVerbatimSym= load(KW_RAWVERBATIM,RAW_VERBATIM,FALSE,TRUE,FALSE,DEFAULT_PREC);
 
