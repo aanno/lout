@@ -2810,7 +2810,7 @@ extern	POINTER	  MemCheck;
 // from z26 headers below - but used here
 extern	const FULL_CHAR *Image(unsigned int c);
 
-#define	USE_SYSTEM_MALLOC	1
+#define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
 
 // defined in z31.c
@@ -3002,7 +3002,7 @@ INLINE OBJECT NewWord(OBJECT x, OBJTYPE typ, size_t len, FILE_POS* pos) {
 /*****************************************************************************/
 #if DEBUG_ON
 // #define disposecount zz_disposecount++; zz_listcount++;
-INLINE void disposecount() {
+INLINE void disposecount(void) {
     zz_disposecount++;
     zz_listcount++;
 }
@@ -3012,7 +3012,7 @@ INLINE void disposecount() {
 { assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );	\
 }
 */
-INLINE void disposecheck() {
+INLINE void disposecheck(void) {
     assert( zz_size >= 0 && zz_size < MAX_OBJECT_REC, "Dispose: size" );
 }
 
@@ -3024,7 +3024,7 @@ INLINE void disposecheck() {
   type(zz_hold) = DISPOSED;						\
 }
 */
-INLINE void setdisposed() {
+INLINE void setdisposed(void) {
     if( (MemCheck != 0) && ((POINTER) zz_hold == MemCheck) )
         fprintf(stderr, "Dispose(%ld, %s)%s", (long) zz_hold,
             Image(type(zz_hold)), STR_NEWLINE);
@@ -3090,6 +3090,7 @@ INLINE void Dispose(POINTER x) {
   free( (x) );								\
 }
 */
+#pragma clang diagnostic ignored "-Wunused-parameter"
 INLINE void PutMem(POINTER x , int size) {
     disposecount();
     free( (x) );
@@ -3102,7 +3103,7 @@ INLINE void PutMem(POINTER x , int size) {
   PutMem(zz_hold,0);							\
 }
 */
-INLINE Dispose(POINTER x) {
+INLINE void Dispose(POINTER x) {
     zz_hold = (x);
     setdisposed();
     PutMem(zz_hold, 0);

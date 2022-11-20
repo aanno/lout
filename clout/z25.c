@@ -145,7 +145,9 @@ static unsigned DiffChildrenParents(OBJECT x)
 
 static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 { OBJECT link, y, tmp, sym, z;
-  char *op;  unsigned prec, i, childcount, ycount;
+  char *op;  
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+  unsigned prec, i, childcount, ycount;
   BOOLEAN npar_seen, name_printed, lbr_printed, braces_needed;
   unsigned cpcount;
 

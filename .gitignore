@@ -3,6 +3,10 @@
 _obj/
 .idea/
 lout.iml
+__debug_bin
+
+*.ldx
+*.lix
 
 /main
 /example
