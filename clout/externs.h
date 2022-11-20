@@ -732,6 +732,13 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, 
   setWidth(x, xwidth);
 }
 
+#define ClearGap(x)     SetGap(x, FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0)
+/*
+inline void ClearGap(GAP x) {
+    SetGap(x, FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0);
+}
+*/
+
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( &(x), &(y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
@@ -2804,7 +2811,23 @@ extern const FULL_CHAR* const KW_GET_CONTEXT;
 /*                      size, type and allocation point of each object.      */
 /*****************************************************************************/
 
-#include "z31.h"
+/*****  z31.c     Memory Allocator      **************************************/
+extern  void      DebugRegisterUsage(int typ, int delta_num, int delta_size);
+extern  void      DebugMemory(void);
+extern  void      MemInit(void);
+extern  OBJECT    GetMemory(int siz, FILE_POS *pos);
+extern  OBJECT    zz_free[];
+extern  unsigned char   zz_lengths[];
+extern  int       zz_newcount;
+extern  int       zz_disposecount;
+extern  int       zz_listcount;
+extern  OBJECT    zz_hold;
+extern  OBJECT    zz_tmp;
+extern  OBJECT    zz_res;
+extern  int       zz_size;
+extern  OBJECT    xx_link, xx_tmp;
+extern  OBJECT    xx_hold, xx_res;
+
 // from z01 headers below - but used here
 extern	POINTER	  MemCheck;
 // from z26 headers below - but used here
@@ -2814,10 +2837,12 @@ extern	const FULL_CHAR *Image(unsigned int c);
 #define	USE_MALLOC_DEBUG	0
 
 // defined in z31.c
+/*
 extern OBJECT		zz_free[], zz_hold, zz_tmp, zz_res;
 extern int		zz_size;
-extern unsigned char	zz_lengths[];		/* DISPOSED is 1 + max type */
+extern unsigned char	zz_lengths[];		/ DISPOSED is 1 + max type /
 extern OBJECT 		xx_link, xx_tmp, xx_res, xx_hold;
+*/
 
 #if DEBUG_ON
 
@@ -4202,7 +4227,5 @@ extern	struct dbs 	dbg[];
 #define	debug_init(str)	Error(1, 4, "%s - debug flags not implemented", \
 	FATAL, no_fpos, str)
 #endif
-
-#include "inlines.h"
 
 #endif

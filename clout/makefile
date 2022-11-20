@@ -316,7 +316,8 @@ MKDIR	= mkdir -p
 # Add WARN to CFLAGS for more checking
 WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
   -Wtype-limits -Wuninitialized -Winit-self -Wmissing-prototypes \
-  -Wmissing-declarations -Wnested-externs -Wbad-function-cast
+  -Wmissing-declarations -Wnested-externs -Wbad-function-cast \
+  -Wenum-conversion
 # unknown:
 # -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
 
