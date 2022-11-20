@@ -5,6 +5,9 @@
 		}
 	],
 	"settings": {
+		"files.associations": {
+			"go-externs.h": "c"
+		}
 	},
 	"extensions": {
 		"recommendations": [
