@@ -43,7 +43,7 @@
 
 BOOLEAN SplitIsDefinite(OBJECT x)
 { OBJECT y1, y2;
-  assert( type(x) == SPLIT, "SplitIsDefinite: x not a SPLIT!" );
+  assert( type(x).objtype == SPLIT_E, "SplitIsDefinite: x not a SPLIT!" );
   Child(y1, DownDim(x, COLM));
   Child(y2, DownDim(x, ROWM));
   return is_definite(type(y1)) && is_definite(type(y2));
@@ -63,14 +63,14 @@ static void DisposeSplitObject(OBJECT x)
 { int i, count;
   OBJECT y, link, uplink;
   debug1(DOS, DDD, "[ DisposeSplitObject( %ld )", (long) x);
-  assert(type(x) == SPLIT, "DisposeSplitObject: type(x) != SPLIT!");
+  assert(type(x).objtype == SPLIT_E, "DisposeSplitObject: type(x) != SPLIT!");
   assert(Down(x) != x, "DisposeSplitObject: x has no children!")
   assert(LastDown(x) != Down(x), "DisposeSplitObject: x has one child!")
   assert(LastDown(x) == NextDown(Down(x)), "DisposeSplitObject: children!")
 
   /* handle first child */
   CountChild(y, Down(x), count);
-  if( type(y) == COL_THR )
+  if( type(y).objtype == COL_THR_E )
   {
     /* find corresponding child link out of y and delete that link */
     for( link = Down(y), uplink = Up(y), i = 1;
@@ -84,7 +84,7 @@ static void DisposeSplitObject(OBJECT x)
 
   /* handle second child */
   CountChild(y, LastDown(x), count);
-  if( type(y) == ROW_THR )
+  if( type(y).objtype == ROW_THR_E )
   {
     /* find corresponding child link out of y and delete that link */
     for( link = Down(y), uplink = Up(y), i = 1;
@@ -117,7 +117,7 @@ int DisposeObject(OBJECT x)
   ifdebug(DOS, DDD, DebugObject(x));
   if ( x == NULL ) return 0;
   assert( Up(x) == x, "DisposeObject: x has a parent!" );
-  if( type(x) == SPLIT )
+  if( type(x).objtype == SPLIT_E )
     DisposeSplitObject(x);
   else
   { while( x != NULL && Down(x) != x )  DisposeChild(Down(x));
@@ -155,7 +155,7 @@ OBJECT MakeWord(OBJTYPE typ, const FULL_CHAR *str, FILE_POS *pos)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT MakeWordTwo(unsigned typ, const FULL_CHAR *str1, const FULL_CHAR *str2, FILE_POS *pos)
+OBJECT MakeWordTwo(OBJTYPE typ, const FULL_CHAR *str1, const FULL_CHAR *str2, FILE_POS *pos)
 { int len1 = StringLength(str1);
   int len2 = StringLength(str2);
   OBJECT res;
@@ -209,18 +209,18 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
 { OBJECT y, link, res, tmp;
 
   debug2(DOS, DDD, "[ CopyObject(%s, %s)", EchoObject(x), EchoFilePos(pos));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
 
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
     
       res = NewWord(res, type(x), StringLength(string(x)), pos);
       StringCopy(string(res), string(x));
       break;
 
 
-    case GAP_OBJ:
+    case GAP_OBJ_E:
     
       New(res, GAP_OBJ);
       GapCopy(gap(res), gap(x));
@@ -235,90 +235,90 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
 
 
     /* case HEAD: */
-    case NULL_CLOS:
-    case PAGE_LABEL:
-    case CROSS:
-    case FORCE_CROSS:
-    case BEGIN_HEADER:
-    case END_HEADER:
-    case SET_HEADER:
-    case CLEAR_HEADER:
-    case ONE_COL:
-    case ONE_ROW:
-    case WIDE:
-    case HIGH:
-    case HSHIFT:
-    case VSHIFT:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case HCOVER:
-    case VCOVER:
-    case SCALE:
-    case KERN_SHRINK:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HLIMITED:
-    case VLIMITED:
-    case HEXPAND:
-    case VEXPAND:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
-    case HSPAN:
-    case VSPAN:
-    case PADJUST:
-    case HADJUST:
-    case VADJUST:
-    case ROTATE:
-    case BACKGROUND:
-    case RAW_VERBATIM:
-    case VERBATIM:
-    case CASE:
-    case YIELD:
-    case BACKEND:
-    case XCHAR:
-    case FONT:
-    case SPACE:
-    case YUNIT:
-    case ZUNIT:
-    case SET_CONTEXT:
-    case GET_CONTEXT:
-    case BREAK:
-    case UNDERLINE:
-    case UNDERLINE_COLOUR:
-    case COLOUR:
-    case TEXTURE:
-    case OUTLINE:
-    case LANGUAGE:
-    case CURR_LANG:
-    case CURR_FAMILY:
-    case CURR_FACE:
-    case CURR_YUNIT:
-    case CURR_ZUNIT:
-    case COMMON:
-    case RUMP:
-    case MELD:
-    case INSERT:
-    case ONE_OF:
-    case NEXT:
-    case PLUS:
-    case MINUS:
-    case OPEN:
-    case TAGGED:
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case VCAT:
-    case HCAT:
-    case ACAT:
-    case ENV_OBJ:
+    case NULL_CLOS_E:
+    case PAGE_LABEL_E:
+    case CROSS_E:
+    case FORCE_CROSS_E:
+    case BEGIN_HEADER_E:
+    case END_HEADER_E:
+    case SET_HEADER_E:
+    case CLEAR_HEADER_E:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case WIDE_E:
+    case HIGH_E:
+    case HSHIFT_E:
+    case VSHIFT_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case SCALE_E:
+    case KERN_SHRINK_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HLIMITED_E:
+    case VLIMITED_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case HSPAN_E:
+    case VSPAN_E:
+    case PADJUST_E:
+    case HADJUST_E:
+    case VADJUST_E:
+    case ROTATE_E:
+    case BACKGROUND_E:
+    case RAW_VERBATIM_E:
+    case VERBATIM_E:
+    case CASE_E:
+    case YIELD_E:
+    case BACKEND_E:
+    case XCHAR_E:
+    case FONT_E:
+    case SPACE_E:
+    case YUNIT_E:
+    case ZUNIT_E:
+    case SET_CONTEXT_E:
+    case GET_CONTEXT_E:
+    case BREAK_E:
+    case UNDERLINE_E:
+    case UNDERLINE_COLOUR_E:
+    case COLOUR_E:
+    case TEXTURE_E:
+    case OUTLINE_E:
+    case LANGUAGE_E:
+    case CURR_LANG_E:
+    case CURR_FAMILY_E:
+    case CURR_FACE_E:
+    case CURR_YUNIT_E:
+    case CURR_ZUNIT_E:
+    case COMMON_E:
+    case RUMP_E:
+    case MELD_E:
+    case INSERT_E:
+    case ONE_OF_E:
+    case NEXT_E:
+    case PLUS_E:
+    case MINUS_E:
+    case OPEN_E:
+    case TAGGED_E:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case VCAT_E:
+    case HCAT_E:
+    case ACAT_E:
+    case ENV_OBJ_E:
     
       New(res, type(x));
       back(res, COLM) = back(res, ROWM) = fwd(res, COLM) = fwd(res, ROWM) = 0;
@@ -330,7 +330,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       break;
 
 
-    case FILTERED:
+    case FILTERED_E:
 
       New(res, type(x));
       for( link = Down(x);  link != x;  link = NextDown(link) )
@@ -341,13 +341,13 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       break;
 
 
-    case ENV:
+    case ENV_E:
     
       res = x;  /* do not copy environments */
       break;
 
 
-    case PAR:
+    case PAR_E:
     
       New(res, PAR);
       actual(res) = actual(x);
@@ -358,12 +358,12 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       break;
 
 
-    case CLOSURE:
+    case CLOSURE_E:
     
       New(res, CLOSURE);
       for( link = Down(x);  link != x;  link = NextDown(link) )
       {	Child(y, link);
-	assert( type(y) != CLOSURE, "CopyObject: CLOSURE!" );
+	assert( type(y).objtype != CLOSURE_E, "CopyObject: CLOSURE!" );
 	tmp = CopyObject(y, pos);
 	Link(res, tmp);
       }
@@ -398,10 +398,10 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
 OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
 { OBJECT link, y, g, res;
   debug2(DOS, D, "InsertObject(%s, %s)", EchoObject(x), EchoObject(*ins));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
 
       New(res, ACAT);
       FposCopy(fpos(res), fpos(x));
@@ -413,30 +413,30 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
       break;
 
 
-    case NULL_CLOS:
-    case BEGIN_HEADER:
-    case END_HEADER:
-    case SET_HEADER:
-    case CLEAR_HEADER:
-    case HEAD:
-    case CROSS:
-    case FORCE_CROSS:
-    case PAGE_LABEL:
-    case CLOSURE:
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case HSPAN:
-    case VSPAN:
+    case NULL_CLOS_E:
+    case BEGIN_HEADER_E:
+    case END_HEADER_E:
+    case SET_HEADER_E:
+    case CLEAR_HEADER_E:
+    case HEAD_E:
+    case CROSS_E:
+    case FORCE_CROSS_E:
+    case PAGE_LABEL_E:
+    case CLOSURE_E:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case HSPAN_E:
+    case VSPAN_E:
 
       res = x;
       break;
 
 
-    case HCAT:
-    case VCAT:
-    case COL_THR:
-    case ROW_THR:
-    case SPLIT:
+    case HCAT_E:
+    case VCAT_E:
+    case COL_THR_E:
+    case ROW_THR_E:
+    case SPLIT_E:
 
       for( link = Down(x);  link != x && *ins != nilobj;  link = NextDown(link) )
       { Child(y, link);
@@ -446,40 +446,40 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
       break;
 
 
-    case ONE_COL:
-    case ONE_ROW:
-    case PADJUST:
-    case HADJUST:
-    case VADJUST:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HLIMITED:
-    case VLIMITED:
-    case HEXPAND:
-    case VEXPAND:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case HCOVER:
-    case VCOVER:
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case ROTATE:
-    case BACKGROUND:
-    case SCALE:
-    case KERN_SHRINK:
-    case WIDE:
-    case HIGH:
-    case HSHIFT:
-    case VSHIFT:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case PADJUST_E:
+    case HADJUST_E:
+    case VADJUST_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HLIMITED_E:
+    case VLIMITED_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case ROTATE_E:
+    case BACKGROUND_E:
+    case SCALE_E:
+    case KERN_SHRINK_E:
+    case WIDE_E:
+    case HIGH_E:
+    case HSHIFT_E:
+    case VSHIFT_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
 
       Child(y, LastDown(x));
       y = InsertObject(y, ins, style);
@@ -487,7 +487,7 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
       break;
 
 
-    case ACAT:
+    case ACAT_E:
 
       New(g, GAP_OBJ);
       SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
@@ -536,8 +536,8 @@ OBJECT Meld(OBJECT x, OBJECT y)
   OBJECT link, z = nilobj, g;  BOOLEAN jn;
   int xlen, ylen, xi, yi;
   debug2(DOS, D, "Meld(%s, %s)", EchoObject(x), EchoObject(y));
-  assert(type(x) == ACAT, "Meld: type(x) != ACAT");
-  assert(type(y) == ACAT, "Meld: type(y) != ACAT");
+  assert(type(x).objtype == ACAT_E, "Meld: type(x) != ACAT");
+  assert(type(y).objtype == ACAT_E, "Meld: type(y) != ACAT");
 
   /* initialize xcomp, xgaps, xlen */
   debug0(DOS, DD, "  initializing xcomp[]");
@@ -550,7 +550,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
   { if( xlen >= MAX_MELD )
       Error(7, 1, "%s: maximum paragraph length (%d) exceeded", FATAL, &fpos(x),
 	KW_MELD, MAX_MELD-1);
-    assert( type(z) != ACAT, "Meld: xcomp is ACAT!");
+    assert( type(z).objtype != ACAT_E, "Meld: xcomp is ACAT!");
     if( g == nilobj || width(&gap(g)) != 0 )
     {
       debug3(DOS, DD, "  initializing xcomp[%d] to %s %s",
@@ -563,7 +563,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
     {
       debug3(DOS, DD, "  extending xcomp[%d] with %s %s",
         xlen-1, Image(type(z)), EchoObject(z));
-      if( type(xcomp[xlen-1]) != ACAT )
+      if( type(xcomp[xlen-1]).objtype != ACAT_E )
       {
 	New(res, ACAT);
 	StyleCopy(&save_style(res), &save_style(x));
@@ -587,7 +587,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
   { if( ylen >= MAX_MELD )
       Error(7, 1, "%s: maximum paragraph length (%d) exceeded", FATAL, &fpos(y),
 	KW_MELD, MAX_MELD-1);
-    assert( type(z) != ACAT, "Meld: ycomp is ACAT!");
+    assert( type(z).objtype != ACAT_E, "Meld: ycomp is ACAT!");
     if( g == nilobj || width(&gap(g)) != 0 )
     {
       debug3(DOS, DD, "  initializing ycomp[%d] to %s %s",
@@ -600,7 +600,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
     {
       debug3(DOS, DD, "  extending ycomp[%d] with %s %s",
         ylen-1, Image(type(z)), EchoObject(z));
-      if( type(ycomp[ylen-1]) != ACAT )
+      if( type(ycomp[ylen-1]).objtype != ACAT_E )
       {
 	New(res, ACAT);
 	StyleCopy(&save_style(res), &save_style(x));
@@ -666,7 +666,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
         debug3(DOS, DD, "  at table[%d][%d] (XY) linking %s",
 	  xi, yi, EchoObject(xcomp[xi]));
-	if( type(xcomp[xi]) != ACAT )
+	if( type(xcomp[xi]).objtype != ACAT_E )
 	{
           Link(Down(res), xcomp[xi]);
 	}
@@ -682,7 +682,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
         debug3(DOS, DD, "  at table[%d][%d] (ydec) linking %s",
 	  xi, yi, EchoObject(ycomp[yi]));
-	if( type(ycomp[yi]) != ACAT )
+	if( type(ycomp[yi]).objtype != ACAT_E )
 	{
           Link(Down(res), ycomp[yi]);
 	}
@@ -697,7 +697,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
         debug3(DOS, DD, "  at table[%d][%d] (xdec) linking %s",
 	  xi, yi, EchoObject(xcomp[xi]));
-	if( type(xcomp[xi]) != ACAT )
+	if( type(xcomp[xi]).objtype != ACAT_E )
 	{
           Link(Down(res), xcomp[xi]);
 	}
@@ -772,20 +772,20 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
   {
     return StringEqual(string(x), string(y));
   }
-  else if( type(x) != type(y) )
+  else if( type(x).objtype != type(y).objtype )
   {
     return FALSE;
   }
-  else switch( type(x) )
+  else switch( type(x).objtype )
   {
-    case GAP_OBJ:
+    case GAP_OBJ_E:
 
       /* objects are equal if the two gaps are equal */
       return GapEqual(&gap(x), &gap(y));
       break;
 
 
-    case CLOSURE:
+    case CLOSURE_E:
 
       /* objects are equal if it's the same symbol and same parameters */
       if( actual(x) != actual(y) )
@@ -794,57 +794,57 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
       break;
 
 
-    case PAGE_LABEL:
-    case NULL_CLOS:
-    case CROSS:
-    case FORCE_CROSS:
-    case HEAD:
-    case SPLIT:
-    case HSPANNER:
-    case VSPANNER:
-    case COL_THR:
-    case ROW_THR:
-    case ACAT:
-    case HCAT:
-    case VCAT:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case BEGIN_HEADER:
-    case SET_HEADER:
-    case END_HEADER:
-    case CLEAR_HEADER:
-    case ONE_COL:
-    case ONE_ROW:
-    case HCOVER:
-    case VCOVER:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HEXPAND:
-    case VEXPAND:
-    case START_HSPAN:
-    case START_VSPAN:
-    case START_HVSPAN:
-    case HSPAN:
-    case VSPAN:
-    case KERN_SHRINK:
-    case BACKGROUND:
-    case GRAPHIC:
-    case PLAIN_GRAPHIC:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case PAR:
+    case PAGE_LABEL_E:
+    case NULL_CLOS_E:
+    case CROSS_E:
+    case FORCE_CROSS_E:
+    case HEAD_E:
+    case SPLIT_E:
+    case HSPANNER_E:
+    case VSPANNER_E:
+    case COL_THR_E:
+    case ROW_THR_E:
+    case ACAT_E:
+    case HCAT_E:
+    case VCAT_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case BEGIN_HEADER_E:
+    case SET_HEADER_E:
+    case END_HEADER_E:
+    case CLEAR_HEADER_E:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case START_HVSPAN_E:
+    case HSPAN_E:
+    case VSPAN_E:
+    case KERN_SHRINK_E:
+    case BACKGROUND_E:
+    case GRAPHIC_E:
+    case PLAIN_GRAPHIC_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case PAR_E:
 
       /* objects are equal if the children are equal */
       return EqualChildren(x, y);
       break;
 
 
-    case LINK_SOURCE:
+    case LINK_SOURCE_E:
 
       /* objects are equal if right children are equal */
       Child(xc, LastDown(x));
@@ -853,8 +853,8 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
       break;
 
 
-    case WIDE:
-    case HIGH:
+    case WIDE_E:
+    case HIGH_E:
 
       /* objects are equal if constraints and children are equal */
       return EqualConstraint(constraint(x), constraint(y)) &&
@@ -862,8 +862,8 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
       break;
 
 
-    case HSHIFT:
-    case VSHIFT:
+    case HSHIFT_E:
+    case VSHIFT_E:
 
       /* objects are equal if constraints and children are equal */
       return shift_type(x) == shift_type(y) &&
@@ -871,7 +871,7 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
       break;
 
 
-    case SCALE:
+    case SCALE_E:
 
       /* objects are equal if constraints and children are equal */
       return bc(constraint(x)) == bc(constraint(y)) &&
@@ -880,7 +880,7 @@ BOOLEAN EqualManifested(OBJECT x, OBJECT y)
       break;
 
 
-    case ROTATE:
+    case ROTATE_E:
 
       /* objects are equal if angle is equal and children are equal */
       return sparec(constraint(x)) == sparec(constraint(y)) &&

@@ -3438,8 +3438,8 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  jn = jn && join(&gap(y));			\
-    else if( type(y)==SPLIT ? SplitIsDefinite(y) : is_definite(type(y)))\
+    if( type(y).objtype == GAP_OBJ_E )  jn = jn && join(&gap(y));			\
+    else if( type(y).objtype==SPLIT_E ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
 } /* end FirstDefinite */
@@ -3502,8 +3502,8 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(&gap(y));		\
-    else if( type(y)==SPLIT ? SplitIsDefinite(y):is_definite(type(y)) )	\
+    if( type(y).objtype == GAP_OBJ_E )  g = y, jn = jn && join(&gap(y));		\
+    else if( type(y).objtype==SPLIT_E ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\
 	Image(type(y)), EchoObject(y));					\

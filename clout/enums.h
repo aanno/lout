@@ -33,8 +33,8 @@ typedef enum objtyp_t {
     QWORD_E,          /*  o     a word (was quoted in i/p) */
     HSPANNER_E,       /*  o     a horizontal spanner       */
     VSPANNER_E,       /*  o     a vertical spanner         */
-    ROW_EHR_E,        /*  o     a row thread               */
-    COL_EHR_E,        /*  o     a column thread            */
+    ROW_THR_E,        /*  o     a row thread               */
+    COL_THR_E,        /*  o     a column thread            */
     ACAT_E,           /* to s   a sequence of &-ed objs    */
     HCAT_E,           /* to s   a sequence of |-ed objs    */
     VCAT_E,           /* to s   a sequence of /-ed objs    20 */
@@ -202,7 +202,7 @@ typedef struct objtype { OBJTYPE_T objtype; } OBJTYPE;
 #define HSPANNER ((OBJTYPE) {HSPANNER_E})
 #define VSPANNER ((OBJTYPE) {VSPANNER_E})
 #define ROW_THR ((OBJTYPE) {ROW_THR_E})
-#define COL_THR ((OBJTYPE) {COLHR_E})
+#define COL_THR ((OBJTYPE) {COL_THR_E})
 #define ACAT ((OBJTYPE) {ACAT_E})
 #define HCAT ((OBJTYPE) {HCAT_E})
 #define VCAT ((OBJTYPE) {VCAT_E})
