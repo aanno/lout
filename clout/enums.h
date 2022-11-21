@@ -157,8 +157,8 @@ typedef enum objtyp_t {
     CROSS_FOLL_OR_PREC_E, /*   i    follorprec type cross-ref  */
     GALL_FOLL_E,      /*   i    galley with &&following    */
     GALL_FOLL_OR_PREC_E,  /*   i    galley with &&following    */
-    CROSS_EARG_E,     /*   i    value of cross-ref        140 */
-    GALL_EARG_E,      /*   i    target of these galleys    */
+    CROSS_TARG_E,     /*   i    value of cross-ref        140 */
+    GALL_TARG_E,      /*   i    target of these galleys    */
     GALL_PREC_E,      /*   i    galley with &&preceding    */
     CROSS_PREC_E,     /*   i    preceding type cross-ref   */
     PAGE_LABEL_IND_E, /*   i    index of PAGE_LABEL        */
@@ -184,6 +184,12 @@ typedef struct objtype { OBJTYPE_T objtype; } OBJTYPE;
 // 0 where OBJTYPE is not relevant (tp)
 #define DUMMY ((OBJTYPE) {LINK_E})
 #define DUMMY_E LINK_E
+// 1 where OBJTYPE is not relevant (tp)
+#define DUMMY1 ((OBJTYPE) {GAP_OBJ_E})
+#define DUMMY1_E GAP_OBJ_E
+// 2 where OBJTYPE is not relevant (tp)
+#define DUMMY2 ((OBJTYPE) {CLOSURE_E})
+#define DUMMY2_E CLOSURE_E
 
 #define LINK ((OBJTYPE) {LINK_E})
 #define GAP_OBJ ((OBJTYPE) {GAP_OBJ_E})
@@ -325,8 +331,8 @@ typedef struct objtype { OBJTYPE_T objtype; } OBJTYPE;
 #define CROSS_FOLL_OR_PREC ((OBJTYPE) {CROSS_FOLL_OR_PREC_E})
 #define GALL_FOLL ((OBJTYPE) {GALL_FOLL_E})
 #define GALL_FOLL_OR_PREC ((OBJTYPE) {GALL_FOLL_OR_PREC_E})
-#define CROSSARG ((OBJTYPE) {CROSSARG_E})
-#define GALLARG ((OBJTYPE) {GALLARG_E})
+#define CROSS_TARG ((OBJTYPE) {CROSS_TARG_E})
+#define GALL_TARG ((OBJTYPE) {GALL_TARG_E})
 #define GALL_PREC ((OBJTYPE) {GALL_PREC_E})
 #define CROSS_PREC ((OBJTYPE) {CROSS_PREC_E})
 #define PAGE_LABEL_IND ((OBJTYPE) {PAGE_LABEL_IND_E})

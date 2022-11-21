@@ -202,7 +202,7 @@ void CrossInit(OBJECT sym)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT CrossMake(OBJECT sym, OBJECT val, int ctype)
+OBJECT CrossMake(OBJECT sym, OBJECT val, OBJTYPE ctype)
 { OBJECT v1, res;
   debug3(DCR, DD, "CrossMake(%s, %s, %s)", SymName(sym),
     EchoObject(val), Image(ctype));
@@ -293,7 +293,7 @@ void CrossAddTag(OBJECT x)
   /* search the parameter list of x for a @Tag parameter */
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(par, link);
-    if( type(par) == PAR && is_tag(actual(par)) )
+    if( objectOfType(par, PAR) && is_tag(actual(par)) )
     {
       /* has tag, but if value is empty object, delete it */
       Child(y, Down(par));
@@ -324,25 +324,29 @@ void CrossAddTag(OBJECT x)
 	Link(par, y);
 
 	/* find the right spot, then link it to x */
-	switch( type(ppar) )
+	switch( type(ppar).objtype )
 	{
-	  case LPAR:	link = Down(x);
+	  case LPAR_E:	link = Down(x);
 			break;
 
-	  case NPAR:	link = Down(x);
+	  case NPAR_E:	link = Down(x);
 			if( Down(x) != x )
 			{ Child(y, Down(x));
-			  if( type(y) == PAR && type(actual(y)) == LPAR )
+			  if( objectOfType(y, PAR) && objectOfType(actual(y), LPAR) )
 				link = NextDown(link);
 			}
 			break;
 
-	  case RPAR:	for( link = Down(x); link != x; link = NextDown(link) )
+	  case RPAR_E:	for( link = Down(x); link != x; link = NextDown(link) )
 			{ Child(y, link);
-			  if( type(y) != PAR )  break;
+			  if( !objectOfType(y, PAR) )  break;
 			}
 			break;
-	}
+
+    default:
+      // do nothing
+      ;
+	} /* end inner switch */
 	Link(link, par);
       }
   }
@@ -363,7 +367,8 @@ void CrossAddTag(OBJECT x)
 OBJECT CrossExpand(OBJECT x, OBJECT env, STYLE *style,
 OBJECT *crs, OBJECT *res_env)
 { OBJECT sym, res, tag, y, cs, link, db, tmp, index;
-  int ctype, count, i;  FULL_CHAR buff[MAX_BUFF], seq[MAX_BUFF], *str;
+  OBJTYPE ctype; 
+  int count, i;  FULL_CHAR buff[MAX_BUFF], seq[MAX_BUFF], *str;
   FILE_NUM fnum, dfnum;  BOOLEAN tagerror = FALSE;
   long cont, dfpos;  int dlnum;
   OBJECT nbt[2], nft[2], ntarget, nenclose;
@@ -383,25 +388,25 @@ OBJECT *crs, OBJECT *res_env)
 
   /* extract sym (the symbol name) and tag (the tag value) from x */
   Child(y, Down(x));
-  assert( type(y) == CLOSURE, "ClosureExpand: type(y) != CLOSURE!" );
+  assert( objectOfType(y, CLOSURE), "ClosureExpand: type(y) != CLOSURE!" );
   sym = actual(y);
-  ctype = !is_word(type(tag)) ? 1 :
-	  StringEqual(string(tag), STR_EMPTY) ? 2 :
+  ctype = !is_word(type(tag)) ? DUMMY1 :
+	  StringEqual(string(tag), STR_EMPTY) ? DUMMY2 :
 	  StringEqual(string(tag), KW_PRECEDING) ? CROSS_PREC :
 	  StringEqual(string(tag), KW_FOLL_OR_PREC) ? CROSS_FOLL_OR_PREC :
 	  StringEqual(string(tag), KW_FOLLOWING) ? CROSS_FOLL : CROSS_LIT;
 
   res = nilobj;
-  switch( ctype )
+  switch( ctype.objtype )
   {
-
+    // TODO
     case 1:
 
       Error(10, 4, "value of right parameter of %s is not a simple word",
 	WARN, &fpos(tag), KW_CROSS);
       break;
 
-
+    // TODO
     case 2:
     
       Error(10, 5, "value of right parameter of %s is an empty word",
@@ -409,7 +414,7 @@ OBJECT *crs, OBJECT *res_env)
       break;
 
 
-    case CROSS_LIT:
+    case CROSS_LIT_E:
     
       debug2(DCR, DD, "  CROSS_LIT sym %s, tag %s", SymName(sym), string(tag));
       if( cross_sym(sym) == nilobj )  CrossInit(sym);
@@ -457,16 +462,16 @@ OBJECT *crs, OBJECT *res_env)
       break;
 
 
-    case CROSS_PREC:
-    case CROSS_FOLL:
-    case CROSS_FOLL_OR_PREC:
+    case CROSS_PREC_E:
+    case CROSS_FOLL_E:
+    case CROSS_FOLL_OR_PREC_E:
     
       if( has_tag(sym) )
       { int new_seq;
 	if( cross_sym(sym) == nilobj )  CrossInit(sym);
         cs = cross_sym(sym);
         assert( cs != nilobj, "CrossExpand/CROSS_FOLL: cs == nilobj!" );
-        assert( type(cs) == CROSS_SYM, "CrossExpand/CROSS_FOLL: type(cs)!" );
+        assert( objectOfType(cs, CROSS_SYM), "CrossExpand/CROSS_FOLL: type(cs)!" );
 
 	/* generate literal tag buff, used to track this cross reference */
         fnum = file_num(fpos(tag));
@@ -519,7 +524,7 @@ OBJECT *crs, OBJECT *res_env)
     /* *** reporting this now whether or not crs_wanted
     if( ctype > 1 && !tagerror && crs_wanted )
     *** */
-    if( ctype > 1 && !tagerror )
+    if( ctype.objtype > DUMMY1_E && !tagerror )
     { debug3(DCR, DD, "  reporting unresolved cross reference %s%s%s",
 	SymName(sym), KW_CROSS, string(tag));
       Error(10, 9, "unresolved cross reference %s%s%s",
@@ -547,7 +552,7 @@ OBJECT *crs, OBJECT *res_env)
   *res_env = DetachEnv(res);
   ReplaceNode(res, x);
   DisposeObject(x);
-  assert( type(res) == CLOSURE, "CrossExpand: type(res) != CLOSURE!" );
+  assert( objectOfType(res, CLOSURE), "CrossExpand: type(res) != CLOSURE!" );
   assert( actual(res) == sym, "CrossExpand: actual(res) != sym!" );
   debug1(DCR, DD, "] CrossExpand returning %s", EchoObject(res));
   debug1(DCR, DD, "  *crs = %s", EchoObject(*crs));
@@ -567,7 +572,7 @@ OBJECT *crs, OBJECT *res_env)
 
 void CrossSequence(OBJECT x)
 { OBJECT sym, tag, val, tmp, cs, par, key, hold_key, link, y, env, hold_env;
-  unsigned ctype;  FULL_CHAR buff[MAX_BUFF];
+  OBJTYPE ctype;  FULL_CHAR buff[MAX_BUFF];
   const FULL_CHAR* seq;
   FILE_NUM dfnum;  int dfpos, dlnum;
 
@@ -584,11 +589,11 @@ void CrossSequence(OBJECT x)
   assert( is_cross(type(x)), "CrossSequence: type(x)!" );
   ctype = cross_type(x);
   Child(tmp, Down(x));
-  assert( type(tmp) == CLOSURE, "CrossSequence: type(tmp)!" );
+  assert( objectOfType(tmp, CLOSURE), "CrossSequence: type(tmp)!" );
   sym = actual(tmp);
   if( cross_sym(sym) == nilobj )  CrossInit(sym);
   cs = cross_sym(sym);
-  assert( type(cs) == CROSS_SYM, "CrossSequence: cs!" );
+  assert( objectOfType(cs, CROSS_SYM), "CrossSequence: cs!" );
 
   /* debug output */
   debug2(DCR, D, "[ CrossSequence %s %s", Image(ctype), EchoObject(x));
@@ -600,15 +605,15 @@ void CrossSequence(OBJECT x)
   DeleteLink(NextDown(Down(x)));
   if( Up(x) == x )  DisposeObject(x);
 
-  switch( ctype )
+  switch( ctype.objtype )
   {
-    case GALL_FOLL:
-    case GALL_FOLL_OR_PREC:
-    case GALL_PREC:
+    case GALL_FOLL_E:
+    case GALL_FOLL_OR_PREC_E:
+    case GALL_PREC_E:
 
       /* find the value of key of the galley, if any */
       val = tag;  key = hold_key = nilobj;
-      assert( type(val) == CLOSURE, "CrossSequence/GALL_FOLL: type(val)!" );
+      assert( objectOfType(val, CLOSURE), "CrossSequence/GALL_FOLL: type(val)!" );
       if( has_key(actual(val)) )
       { for( link=Down(actual(val)); link != actual(val); link=NextDown(link) )
 	{ Child(y, link);
@@ -658,10 +663,10 @@ void CrossSequence(OBJECT x)
 
       /* either write out the index immediately or store it for later */
       /* if( ctype == GALL_PREC || ctype == GALL_FOLL_OR_PREC ) */
-      if( ctype == GALL_PREC )
+      if( ctype.objtype == GALL_PREC_E )
       {	if( gall_tag(cs) == nilobj )
 	{
-	  if( ctype == GALL_PREC )
+	  if( ctype.objtype == GALL_PREC_E )
 	    Error(10, 12, "no %s galley target precedes this %s%s%s", WARN,
 	      &fpos(val), SymName(sym), SymName(sym), KW_CROSS, KW_PRECEDING);
 	  else
@@ -675,7 +680,7 @@ void CrossSequence(OBJECT x)
 	  !StringEqual(string(gall_tag(cs)), STR_EMPTY),
 	  "CrossSequence: gall_tag!" );
 	debug4(DCR, DD, "  inserting galley (%s) %s&%s %s",
-	  ctype == GALL_PREC ? "GALL_PREC" : "GALL_FOLL_OR_PREC", SymName(sym),
+	  ctype.objtype == GALL_PREC_E ? "GALL_PREC" : "GALL_FOLL_OR_PREC", SymName(sym),
 	  string(gall_tag(cs)), seq);
 	DbInsert(NewCrossDb, TRUE, sym, string(gall_tag(cs)), no_fpos, seq,
 			dfnum, (long) dfpos, dlnum, FALSE);
@@ -694,7 +699,7 @@ void CrossSequence(OBJECT x)
       break;
 
 
-    case GALL_TARG:
+    case GALL_TARG_E:
 
       if( gall_tag(cs) != nilobj )  DisposeObject(gall_tag(cs));
       if( !is_word(type(tag)) || StringEqual(string(tag), STR_EMPTY) )
@@ -711,12 +716,12 @@ void CrossSequence(OBJECT x)
       {	Child(y, link);
 	assert( is_word(type(y)) && !StringEqual(string(y), STR_EMPTY),
 				"CrossSequence: GALL_TARG y!" );
-	switch( cs_type(y) )
+	switch( cs_type(y).objtype )
 	{
 
-	  case GALL_PREC:
-	  case GALL_FOLL:
-	  case GALL_FOLL_OR_PREC:
+	  case GALL_PREC_E:
+	  case GALL_FOLL_E:
+	  case GALL_FOLL_OR_PREC_E:
 
 	    debug4(DCR, D, "  inserting galley (%s) %s&%s %s",
 	      Image(cs_type(y)), SymName(sym), string(gall_tag(cs)), string(y));
@@ -732,10 +737,10 @@ void CrossSequence(OBJECT x)
 	    break;
 
 
-	  case CROSS_LIT:
-	  case CROSS_PREC:
-	  case CROSS_FOLL:
-	  case CROSS_FOLL_OR_PREC:
+	  case CROSS_LIT_E:
+	  case CROSS_PREC_E:
+	  case CROSS_FOLL_E:
+	  case CROSS_FOLL_OR_PREC_E:
 
 	    break;
 
@@ -749,7 +754,7 @@ void CrossSequence(OBJECT x)
       break;
 
 
-    case CROSS_PREC:
+    case CROSS_PREC_E:
 
       if( target_state(cs) == NO_TARGET )
       {	Error(10, 13, "no %s precedes this %s%s%s", WARN, &fpos(tag),
@@ -781,8 +786,8 @@ void CrossSequence(OBJECT x)
       break;
 
 
-    case CROSS_FOLL:
-    case CROSS_FOLL_OR_PREC:
+    case CROSS_FOLL_E:
+    case CROSS_FOLL_OR_PREC_E:
 
       if( !is_word(type(tag)) )
       {	Error(10, 14, "tag of %s is not a simple word",
@@ -803,7 +808,7 @@ void CrossSequence(OBJECT x)
       break;
 
 
-    case CROSS_TARG:
+    case CROSS_TARG_E:
 
       /* get rid of old target, if any, and add new one */
       if( target_state(cs) == SEEN_TARGET )
@@ -822,11 +827,11 @@ void CrossSequence(OBJECT x)
 
       /* store tag of the galley, if any, and delete excessive right pars */
       tag = nilobj;
-      assert( type(target_val(cs)) == CLOSURE, "CrossSequence: target_val!" );
+      assert( objectOfType(target_val(cs), CLOSURE), "CrossSequence: target_val!" );
       link = Down(target_val(cs));
       for( ;  link != target_val(cs);  link = NextDown(link) )
       {	Child(par, link);
-	if( type(par) == PAR )
+	if( objectOfType(par, PAR) )
 	{
 	  assert( Down(par) != par, "CrossSequence: Down(PAR)!" );
 	  if( is_tag(actual(par)) )
@@ -853,21 +858,21 @@ void CrossSequence(OBJECT x)
 		Image(cs_type(tag)), SymName(sym), string(tag), "?");
 	    }
 	  }
-	  else if( type(actual(par)) == RPAR )
+	  else if( objectOfType(actual(par), RPAR) )
 	  {
 	    /* replace any oversized right parameter by question marks */
 	    Child(y, Down(par));
-	    switch( type(y) )
+	    switch( type(y).objtype )
 	    {
-	      case WORD:
-	      case QWORD:
-	      case ACAT:
-	      case OPEN:
-	      case NEXT:
-	      case NULL_CLOS:
-	      case CROSS:
-	      case FORCE_CROSS:
-	      case TAGGED:
+	      case WORD_E:
+	      case QWORD_E:
+	      case ACAT_E:
+	      case OPEN_E:
+	      case NEXT_E:
+	      case NULL_CLOS_E:
+	      case CROSS_E:
+	      case FORCE_CROSS_E:
+	      case TAGGED_E:
 
 		/* leave objects of these types as is */
 		break;
@@ -899,12 +904,12 @@ void CrossSequence(OBJECT x)
 	{ Child(tag, link);
 	  assert( is_word(type(tag)) && !StringEqual(string(tag), STR_EMPTY),
 			"CrossSeq: non-WORD or empty tag!" );
-	  switch( cs_type(tag) )
+	  switch( cs_type(tag).objtype )
 	  {
 
-	    case CROSS_LIT:
-	    case CROSS_FOLL:
-	    case CROSS_FOLL_OR_PREC:
+	    case CROSS_LIT_E:
+	    case CROSS_FOLL_E:
+	    case CROSS_FOLL_OR_PREC_E:
 
 	      debug3(DCR, DD, "  inserting cross (foll) %s&%s %s", SymName(sym),
 	        string(tag), "0");
@@ -916,9 +921,9 @@ void CrossSequence(OBJECT x)
 	      break;
 
 
-	    case GALL_FOLL:
-	    case GALL_PREC:
-	    case GALL_FOLL_OR_PREC:
+	    case GALL_FOLL_E:
+	    case GALL_PREC_E:
+	    case GALL_FOLL_OR_PREC_E:
 
 	      break;
 
@@ -973,16 +978,16 @@ void CrossClose(void)
   { for( link = Down(RootCross);  link != RootCross;  link = NextDown(link) )
     { Child(cs, link);
       sym = symb(cs);
-      assert( type(cs) == CROSS_SYM, "CrossClose: type(cs)!" );
+      assert( objectOfType(cs, CROSS_SYM), "CrossClose: type(cs)!" );
       count = 0;
       for( ylink = Down(cs);  ylink != cs;  ylink = NextDown(ylink) )
       {	Child(y, ylink);
 	assert( is_word(type(y)) && !StringEqual(string(y), STR_EMPTY),
 				"CrossClose: GALL_TARG y!" );
-	switch( cs_type(y) )
+	switch( cs_type(y).objtype )
 	{
 
-	  case CROSS_FOLL:
+	  case CROSS_FOLL_E:
 
 	    debug2(DCR, DD, "cs_type(y) = %s, y = %s",
 	      Image(cs_type(y)), EchoObject(y));
@@ -996,7 +1001,7 @@ void CrossClose(void)
 	    break;
 
 
-	  case CROSS_FOLL_OR_PREC:
+	  case CROSS_FOLL_OR_PREC_E:
 
 	    /* no following target, so switch to preceding */
 	    if( target_state(cs) == NO_TARGET )
@@ -1027,7 +1032,7 @@ void CrossClose(void)
 	    break;
 
 
-	  case GALL_FOLL:
+	  case GALL_FOLL_E:
 
 	    debug2(DCR, DD, "cs_type(y) = %s, y = %s",
 	      Image(cs_type(y)), EchoObject(y));
@@ -1043,7 +1048,7 @@ void CrossClose(void)
 	    break;
 
 
-	  case GALL_FOLL_OR_PREC:
+	  case GALL_FOLL_OR_PREC_E:
 
 	    if( gall_tag(cs) == nilobj )
 	    { Error(10, 21, "no %s precedes or follows this %s%s%s", WARN,

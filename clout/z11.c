@@ -145,19 +145,19 @@ static void changespace(STYLE *style, OBJECT x)
 void SpaceChange(STYLE *style, OBJECT x)
 { OBJECT link, y;
   debug2(DSS, D, "SpaceChange(%s, %s)", EchoStyle(style), EchoObject(x));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case NULL_CLOS: break;
+    case NULL_CLOS_E: break;
 
-    case WORD:
-    case QWORD:	if( !StringEqual(string(x), STR_EMPTY) )
+    case WORD_E:
+    case QWORD_E:	if( !StringEqual(string(x), STR_EMPTY) )
 		  changespace(style, x);
 		break;
 
 
-    case ACAT:	for( link = Down(x);  link != x;  link = NextDown(link) )
+    case ACAT_E:	for( link = Down(x);  link != x;  link = NextDown(link) )
 		{ Child(y, link);
-		  if( type(y) == GAP_OBJ || type(y) == NULL_CLOS )  continue;
+		  if( objectOfType(y, GAP_OBJ) || objectOfType(y, NULL_CLOS) )  continue;
 		  else if( is_word(type(y)) )
 		  { if( !StringEqual(string(y), STR_EMPTY) )
 		      changespace(style, y);
@@ -250,12 +250,12 @@ void BreakChange(STYLE *style, OBJECT x)
   GAP res_gap;  unsigned gap_inc;
   debug3(DSS, D, "BreakChange(%s, %s at %s)", EchoStyle(style),
     EchoObject(x), EchoFilePos(&fpos(x)));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case NULL_CLOS: break;
+    case NULL_CLOS_E: break;
 
-    case WORD:
-    case QWORD:	if( !StringEqual(string(x), STR_EMPTY) )
+    case WORD_E:
+    case QWORD_E:	if( !StringEqual(string(x), STR_EMPTY) )
 		{
 		  debug1(DSS, D, "BreakChange WORD examining %s", (string(x)));
 		  if( StringEqual(string(x), STR_BREAK_SETOUTDENT) )
@@ -273,9 +273,9 @@ void BreakChange(STYLE *style, OBJECT x)
 		break;
 
 
-    case ACAT:	for( link = Down(x);  link != x;  link = NextDown(link) )
+    case ACAT_E:	for( link = Down(x);  link != x;  link = NextDown(link) )
 		{ Child(y, link);
-		  if( type(y) == GAP_OBJ || type(y) == NULL_CLOS )  continue;
+		  if( objectOfType(y, GAP_OBJ) || objectOfType(y, NULL_CLOS) )  continue;
 		  else if( is_word(type(y)) )
 		  { if( !StringEqual(string(y), STR_EMPTY) )
 		    {

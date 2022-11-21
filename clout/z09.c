@@ -46,13 +46,13 @@ OBJECT SearchEnv(OBJECT env, OBJECT sym)
   for(;;)
   {
     debug1(DCE, DDD, "  searching env %s", EchoObject(env));
-    assert( env != nilobj && type(env) == ENV, "SearchEnv: env!" );
+    assert( env != nilobj && objectOfType(env, ENV), "SearchEnv: env!" );
     if( Down(env) == env )
     { debug0(DCE, DD, "] SearchEnv returning <nilobj>");
       return nilobj;
     }
     Child(y, Down(env));
-    assert( type(y) == CLOSURE, "SearchEnv: type(y) != CLOSURE!" );
+    assert( objectOfType(y, CLOSURE), "SearchEnv: type(y) != CLOSURE!" );
     if( actual(y) == sym )
     { debug1(DCE, DD, "] SearchEnv returning %s", EchoObject(y));
       return y;
@@ -76,8 +76,8 @@ OBJECT SetEnv(OBJECT x, OBJECT y)
 { OBJECT res;
   debug1(DCE, DD, "SetEnv( x, %s ), x =", EchoObject(y));
   ifdebug(DCE, DD, DebugObject(x));
-  assert( x!=nilobj && type(x)==CLOSURE, "SetEnv: x==nilobj or not CLOSURE!" );
-  assert( y==nilobj || type(y)==ENV, "SetEnv: y!=nilobj && type(y) != ENV!" );
+  assert( x!=nilobj && objectOfType(x, CLOSURE), "SetEnv: x==nilobj or not CLOSURE!" );
+  assert( y==nilobj || objectOfType(y, ENV), "SetEnv: y!=nilobj && type(y) != ENV!" );
   New(res, ENV);  Link(res, x);
   if( y != nilobj )  Link(res, y);
   debug1(DCE, DD, "SetEnv returning %s", EchoObject(res));
@@ -95,8 +95,8 @@ OBJECT SetEnv(OBJECT x, OBJECT y)
 
 void AttachEnv(OBJECT env, OBJECT x)
 { debug2(DCE, DD, "AttachEnv( %s, %s )", EchoObject(env), EchoObject(x));
-  assert( env != nilobj && type(env) == ENV, "AttachEnv: type(env) != ENV!" );
-  assert( type(x) == CLOSURE || type(x) == ENV_OBJ, "AttachEnv: type(x)!" );
+  assert( env != nilobj && objectOfType(env, ENV), "AttachEnv: type(env) != ENV!" );
+  assert( objectOfType(x, CLOSURE) || objectOfType(x, ENV_OBJ), "AttachEnv: type(x)!" );
   Link(x, env);
   debug0(DCE, DD, "AttachEnv returning.");
 } /* end AttachEnv */
@@ -112,10 +112,10 @@ void AttachEnv(OBJECT env, OBJECT x)
 
 OBJECT GetEnv(OBJECT x)
 { OBJECT env;
-  assert( type(x) == CLOSURE, "GetEnv: type(x) != CLOSURE!" );
+  assert( objectOfType(x, CLOSURE), "GetEnv: type(x) != CLOSURE!" );
   assert( LastDown(x) != x, "GetEnv: LastDown(x) == x!" );
   Child(env, LastDown(x));
-  assert( type(env) == ENV, "GetEnv: type(env) != ENV!" );
+  assert( objectOfType(env, ENV), "GetEnv: type(env) != ENV!" );
   return env;
 } /* end GetEnv */
 
@@ -131,11 +131,11 @@ OBJECT GetEnv(OBJECT x)
 OBJECT DetachEnv(OBJECT x)
 { OBJECT env;
   debug1(DCE, DD, "DetachEnv( %s )", EchoObject(x));
-  assert( type(x) == CLOSURE, "DetachEnv: type(x) != CLOSURE!" );
+  assert( objectOfType(x, CLOSURE), "DetachEnv: type(x) != CLOSURE!" );
   assert( LastDown(x) != x, "DetachEnv: LastDown(x) == x!" );
   Child(env, LastDown(x));
   DeleteLink(LastDown(x));
-  assert( type(env) == ENV, "DetachEnv: type(env) != ENV!" );
+  assert( objectOfType(env, ENV), "DetachEnv: type(env) != ENV!" );
   debug1(DCE, DD, "DetachEnv resturning %s", EchoObject(env));
   return env;
 } /* end DetachEnv */
@@ -157,8 +157,9 @@ OBJECT *crs, OBJECT *res_env)
 { OBJECT link, y, res, prnt_env, par, prnt;
   debug3(DCE, D, "[ ClosureExpand( %s, %s, %s, crs, res_env )",
     EchoObject(x), EchoObject(env), bool(crs_wanted));
-  assert( type(x) == CLOSURE, "ClosureExpand given non-CLOSURE!");
-  assert( predefined(actual(x)) == FALSE, "ClosureExpand given predefined!" );
+  assert( objectOfType(x, CLOSURE), "ClosureExpand given non-CLOSURE!");
+  // TODO
+  assert( predefined(actual(x)).objtype == FALSE, "ClosureExpand given predefined!" );
 
   /* add tag to x if needed but not provided;  add cross-reference to crs  */
   if( has_tag(actual(x)) )  CrossAddTag(x);
@@ -178,7 +179,7 @@ OBJECT *crs, OBJECT *res_env)
       prnt_env = GetEnv(prnt);
       for( link = Down(prnt);  link != prnt;  link = NextDown(link) )
       { Child(par, link);
-        if( type(par) == PAR && actual(par) == actual(x) )
+        if( objectOfType(par, PAR) && actual(par) == actual(x) )
         { assert( Down(par) != par, "ExpandCLosure: Down(par)!");
 	  Child(res, Down(par));
 	  if( dirty(enclosing(actual(par))) || is_enclose(actual(par)) )
@@ -194,11 +195,11 @@ OBJECT *crs, OBJECT *res_env)
 	    Link(par, y);
 	  }
 	  ReplaceNode(res, x);
-	  if( type(actual(x)) == RPAR && has_body(enclosing(actual(x))) )
+	  if( objectOfType(actual(x), RPAR) && has_body(enclosing(actual(x))) )
 	  { debug0(DCR, DDD, "  calling SetEnv from ClosureExpand (a)");
 	    *res_env = SetEnv(prnt, nilobj);  DisposeObject(x);
 	  }
-	  else if( type(actual(x)) == NPAR && imports_encl(actual(x)) )
+	  else if( objectOfType(actual(x), NPAR) && imports_encl(actual(x)) )
 	  { debug0(DCR, DDD, "  calling SetEnv from ClosureExpand (x)");
 	    AttachEnv(env, x);
 	    *res_env = SetEnv(x, nilobj);
@@ -237,7 +238,7 @@ OBJECT *crs, OBJECT *res_env)
     *res_env = SetEnv(x, nilobj);
   }
 
-  assert( *res_env!=nilobj && type(*res_env)==ENV, "ClosureExpand: *res_env!");
+  assert( *res_env!=nilobj && objectOfType(*res_env, ENV), "ClosureExpand: *res_env!");
   debug0(DCE, D, "] ClosureExpand returning, res =");
   ifdebug(DCE, D, DebugObject(res));
   debug1(DCE, D, "  environment = %s", EchoObject(*res_env));
@@ -258,7 +259,7 @@ OBJECT *crs, OBJECT *res_env)
 OBJECT ParameterCheck(OBJECT x, OBJECT env)
 { OBJECT link, y, res, prnt_env, par, prnt;
   debug2(DCE, DD, "ParameterCheck(%s, %s)", EchoObject(x), EchoObject(env));
-  assert( type(x) == CLOSURE, "ParameterCheck given non-CLOSURE!");
+  assert( objectOfType(x, CLOSURE), "ParameterCheck given non-CLOSURE!");
 
   /* case x is a parameter */
   prnt = SearchEnv(env, enclosing(actual(x)));
@@ -269,7 +270,7 @@ OBJECT ParameterCheck(OBJECT x, OBJECT env)
   prnt_env = GetEnv(prnt);
   for( link = Down(prnt);  link != prnt;  link = NextDown(link) )
   { Child(par, link);
-    if( type(par) == PAR && actual(par) == actual(x) )
+    if( objectOfType(par, PAR) && actual(par) == actual(x) )
     {	assert( Down(par) != par, "ParameterCheck: Down(par)!");
 	Child(y, Down(par));
 	res = is_word(type(y)) ? CopyObject(y, no_fpos) : nilobj;
@@ -286,7 +287,7 @@ OBJECT ParameterCheck(OBJECT x, OBJECT env)
   else if( is_word(type(y)) )
   { res = CopyObject(y, &fpos(y));
   }
-  else if( type(y) == CLOSURE && is_par(type(actual(y))) )
+  else if( objectOfType(y, CLOSURE) && is_par(type(actual(y))) )
   { res = ParameterCheck(y, prnt_env);
   }
   else

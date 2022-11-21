@@ -1213,7 +1213,8 @@ typedef union
   } os22;
 
   struct /* used by non-WORD objects */
-  {	unsigned short	ofoll_or_prec;
+  {
+  OBJTYPE ofoll_or_prec;
 	OBJTYPE	ocross_type;	     /* CROSS objects only */
 	unsigned short  ounused_os23_a;
 	unsigned short  ounused_os23_b;
@@ -1309,7 +1310,8 @@ typedef union
   } os32;
 
   struct
-  {	unsigned char	ocs_type;
+  {	
+  OBJTYPE	ocs_type;
 	FILE_NUM	ocs_fnum;
 	int		ocs_pos;
 	int		ocs_lnum;
@@ -2509,8 +2511,8 @@ INLINE BOOLEAN is_cat_op(OBJTYPE x) {
 /* statuses of thread objects */
 // TODO
 #define	NOTSIZED	     DUMMY		/* this thread object is not sized   */
-#define	SIZED		     1		/* thread is sized but not printed   */
-#define	FINALSIZE	     2		/* thread object size is now final   */
+#define	SIZED		     DUMMY1		/* thread is sized but not printed   */
+#define	FINALSIZE	     DUMMY2		/* thread object size is now final   */
 
 /* file types */
 #define	SOURCE_FILE	     0		/* input file from command line      */
@@ -3693,7 +3695,7 @@ extern	OBJECT	  ParameterCheck(OBJECT x, OBJECT env);
 /*****  z10.c	  Cross References	**************************************/
 extern	void	  CrossInitModule(void);
 extern	void	  CrossInit(OBJECT sym);
-extern	OBJECT	  CrossMake(OBJECT sym, OBJECT val, int ctype);
+extern	OBJECT	  CrossMake(OBJECT sym, OBJECT val, OBJTYPE ctype);
 extern	OBJECT	  GallTargEval(OBJECT sym, FILE_POS *dfpos);
 extern	void	  CrossAddTag(OBJECT x);
 extern	OBJECT	  CrossExpand(OBJECT x, OBJECT env, STYLE *style,
