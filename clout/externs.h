@@ -3259,17 +3259,17 @@ INLINE OBJECT Delete(OBJECT x, int dir) {
 
 // cannot inline
 #define	Child(y, link)							\
-for( y = pred(link, PARENT);  type(y).objtype == LINK_E;  y = pred(y, PARENT) ) \
+for( y = pred(link, PARENT);  objectOfType(y, LINK);  y = pred(y, PARENT) ) \
 ;
 
 // cannot inline
 #define CountChild(y, link, i)                                          \
-for( y=pred(link, PARENT), i=1; type(y).objtype == LINK_E;  y = pred(y, PARENT), i++ ) \
+for( y=pred(link, PARENT), i=1; objectOfType(y, LINK);  y = pred(y, PARENT), i++ ) \
 ;
 
 // cannot inline
 #define	Parent(y, link)							\
-for( y = pred(link, CHILD);   type(y).objtype == LINK_E;  y = pred(y, CHILD) ) \
+for( y = pred(link, CHILD);   objectOfType(y, LINK);  y = pred(y, CHILD) ) \
 ;
 
 
@@ -3367,7 +3367,7 @@ INLINE void TransferLinks(OBJECT start_link, OBJECT stop_link, OBJECT dest_link)
     OBJECT xxstart = start_link, xxstop = stop_link, xxdest = dest_link;
     if( xxstart != xxstop )
     {
-        assert( type(xxstart).objtype == LINK_E, "TransferLinks: start_link!" );	\
+        assert( objectOfType(xxstart, LINK), "TransferLinks: start_link!" );	\
         Append(xxstart, xxstop, CHILD); /* actually a split */
         Append(xxstart, xxdest, CHILD);
     }
@@ -3442,8 +3442,8 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y).objtype == GAP_OBJ_E )  jn = jn && join(&gap(y));			\
-    else if( type(y).objtype==SPLIT_E ? SplitIsDefinite(y) : is_definite(type(y)))\
+    if( objectOfType(y, GAP_OBJ) )  jn = jn && join(&gap(y));			\
+    else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
 } /* end FirstDefinite */
@@ -3506,8 +3506,8 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y).objtype == GAP_OBJ_E )  g = y, jn = jn && join(&gap(y));		\
-    else if( type(y).objtype==SPLIT_E ? SplitIsDefinite(y):is_definite(type(y)) )	\
+    if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(&gap(y));		\
+    else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\
 	Image(type(y)), EchoObject(y));					\
@@ -3537,7 +3537,7 @@ INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = LastDown(x);  link != x;  link = PrevDown(link) )
     {
         Child(y, link);
-        if( type(y).objtype == SPLIT_E ? SplitIsDefinite(y) : is_definite(type(y)) )
+        if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)) )
             break;
     }
 }
@@ -3561,7 +3561,7 @@ INLINE void PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
     {
         Child(y, link);
-        if( type(y).objtype == SPLIT_E ? SplitIsDefinite(y) : is_definite(type(y)) )
+        if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)) )
             break;
     }
 }

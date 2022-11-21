@@ -155,7 +155,7 @@ static void ftab_debug(FILE_TABLE S)
     {
       debug1(DFS, D, "  ftab_name(S, %d) = <nilobj>", i);
     }
-    else if( type(x).objtype != ACAT_E )
+    else if( !objectOfType(x, ACAT) )
     {
       debug1(DFS, D, "  ftab_name(S, %d) = not ACAT!>", i);
     }
@@ -292,7 +292,7 @@ FILE_NUM FirstFile(int ftype)
   OBJECT link, y;
   debug1(DFS, DD, "FirstFile( %s )", file_types[ftype]);
   link = Down(file_type[ftype]);
-  if( type(link).objtype == ACAT_E )  i = NO_FILE;
+  if( objectOfType(link, ACAT) )  i = NO_FILE;
   else
   { Child(y, link);
     i = file_number(y);
@@ -314,7 +314,7 @@ FILE_NUM NextFile(FILE_NUM i)
 { OBJECT link, y;
   debug1(DFS, DD, "NextFile( %s )", FileName(i));
   link = NextDown(Up(ftab_num(file_tab, i)));
-  if( type(link).objtype == ACAT_E )  i = NO_FILE;
+  if( objectOfType(link, ACAT) )  i = NO_FILE;
   else
   { Child(y, link);
     i = file_number(y);
