@@ -43,7 +43,7 @@
 
 BOOLEAN SplitIsDefinite(OBJECT x)
 { OBJECT y1, y2;
-  assert( type(x).objtype == SPLIT_E, "SplitIsDefinite: x not a SPLIT!" );
+  assert( objectOfType(x, SPLIT), "SplitIsDefinite: x not a SPLIT!" );
   Child(y1, DownDim(x, COLM));
   Child(y2, DownDim(x, ROWM));
   return is_definite(type(y1)) && is_definite(type(y2));
@@ -63,7 +63,7 @@ static void DisposeSplitObject(OBJECT x)
 { int i, count;
   OBJECT y, link, uplink;
   debug1(DOS, DDD, "[ DisposeSplitObject( %ld )", (long) x);
-  assert(type(x).objtype == SPLIT_E, "DisposeSplitObject: type(x) != SPLIT!");
+  assert(objectOfType(x, SPLIT), "DisposeSplitObject: type(x) != SPLIT!");
   assert(Down(x) != x, "DisposeSplitObject: x has no children!")
   assert(LastDown(x) != Down(x), "DisposeSplitObject: x has one child!")
   assert(LastDown(x) == NextDown(Down(x)), "DisposeSplitObject: children!")
@@ -117,7 +117,7 @@ int DisposeObject(OBJECT x)
   ifdebug(DOS, DDD, DebugObject(x));
   if ( x == NULL ) return 0;
   assert( Up(x) == x, "DisposeObject: x has a parent!" );
-  if( type(x).objtype == SPLIT_E )
+  if( objectOfType(x, SPLIT) )
     DisposeSplitObject(x);
   else
   { while( x != NULL && Down(x) != x )  DisposeChild(Down(x));
@@ -363,7 +363,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       New(res, CLOSURE);
       for( link = Down(x);  link != x;  link = NextDown(link) )
       {	Child(y, link);
-	assert( type(y).objtype != CLOSURE_E, "CopyObject: CLOSURE!" );
+	assert( !objectOfType(y, CLOSURE), "CopyObject: CLOSURE!" );
 	tmp = CopyObject(y, pos);
 	Link(res, tmp);
       }
@@ -536,8 +536,8 @@ OBJECT Meld(OBJECT x, OBJECT y)
   OBJECT link, z = nilobj, g;  BOOLEAN jn;
   int xlen, ylen, xi, yi;
   debug2(DOS, D, "Meld(%s, %s)", EchoObject(x), EchoObject(y));
-  assert(type(x).objtype == ACAT_E, "Meld: type(x) != ACAT");
-  assert(type(y).objtype == ACAT_E, "Meld: type(y) != ACAT");
+  assert(objectOfType(x, ACAT), "Meld: type(x) != ACAT");
+  assert(objectOfType(y, ACAT), "Meld: type(y) != ACAT");
 
   /* initialize xcomp, xgaps, xlen */
   debug0(DOS, DD, "  initializing xcomp[]");
@@ -550,7 +550,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
   { if( xlen >= MAX_MELD )
       Error(7, 1, "%s: maximum paragraph length (%d) exceeded", FATAL, &fpos(x),
 	KW_MELD, MAX_MELD-1);
-    assert( type(z).objtype != ACAT_E, "Meld: xcomp is ACAT!");
+    assert( !objectOfType(z, ACAT), "Meld: xcomp is ACAT!");
     if( g == nilobj || width(&gap(g)) != 0 )
     {
       debug3(DOS, DD, "  initializing xcomp[%d] to %s %s",
@@ -563,7 +563,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
     {
       debug3(DOS, DD, "  extending xcomp[%d] with %s %s",
         xlen-1, Image(type(z)), EchoObject(z));
-      if( type(xcomp[xlen-1]).objtype != ACAT_E )
+      if( !objectOfType(xcomp[xlen-1], ACAT) )
       {
 	New(res, ACAT);
 	StyleCopy(&save_style(res), &save_style(x));
@@ -587,7 +587,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
   { if( ylen >= MAX_MELD )
       Error(7, 1, "%s: maximum paragraph length (%d) exceeded", FATAL, &fpos(y),
 	KW_MELD, MAX_MELD-1);
-    assert( type(z).objtype != ACAT_E, "Meld: ycomp is ACAT!");
+    assert( !objectOfType(z, ACAT), "Meld: ycomp is ACAT!");
     if( g == nilobj || width(&gap(g)) != 0 )
     {
       debug3(DOS, DD, "  initializing ycomp[%d] to %s %s",
@@ -600,7 +600,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
     {
       debug3(DOS, DD, "  extending ycomp[%d] with %s %s",
         ylen-1, Image(type(z)), EchoObject(z));
-      if( type(ycomp[ylen-1]).objtype != ACAT_E )
+      if( !objectOfType(ycomp[ylen-1], ACAT) )
       {
 	New(res, ACAT);
 	StyleCopy(&save_style(res), &save_style(x));
@@ -666,7 +666,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
         debug3(DOS, DD, "  at table[%d][%d] (XY) linking %s",
 	  xi, yi, EchoObject(xcomp[xi]));
-	if( type(xcomp[xi]).objtype != ACAT_E )
+	if( !objectOfType(xcomp[xi], ACAT) )
 	{
           Link(Down(res), xcomp[xi]);
 	}
@@ -682,7 +682,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
         debug3(DOS, DD, "  at table[%d][%d] (ydec) linking %s",
 	  xi, yi, EchoObject(ycomp[yi]));
-	if( type(ycomp[yi]).objtype != ACAT_E )
+	if( !objectOfType(ycomp[yi], ACAT) )
 	{
           Link(Down(res), ycomp[yi]);
 	}
@@ -697,7 +697,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
         debug3(DOS, DD, "  at table[%d][%d] (xdec) linking %s",
 	  xi, yi, EchoObject(xcomp[xi]));
-	if( type(xcomp[xi]).objtype != ACAT_E )
+	if( !objectOfType(xcomp[xi], ACAT) )
 	{
           Link(Down(res), xcomp[xi]);
 	}

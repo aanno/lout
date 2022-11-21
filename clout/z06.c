@@ -70,10 +70,10 @@ static void check_yield(OBJECT y, OBJECT *res_yield, BOOLEAN *all_literals)
 	StringEqual(string(s1),STR_ELSE) )
       if( *res_yield == nilobj )  *res_yield = y;
   }
-  else if( type(s1).objtype == ACAT_E )
+  else if( objectOfType(s1, ACAT) )
   { for( link = Down(s1);  link != s1;  link = NextDown(link) )
     { Child(z, link);
-      if( type(z).objtype == GAP_OBJ_E )  continue;
+      if( objectOfType(z, GAP_OBJ) )  continue;
       if( is_word(type(z)) )
       { if( StringEqual(string(z), BackEnd->name) ||
 	    StringEqual(string(s1), STR_ELSE))
@@ -97,21 +97,21 @@ static void check_yield(OBJECT y, OBJECT *res_yield, BOOLEAN *all_literals)
 static OBJECT OptimizeCase(OBJECT x)
 { OBJECT link, s2, y, res_yield, res;  BOOLEAN all_literals;  
   debug1(DOP, DD, "OptimizeCase(%s)", EchoObject(x));
-  assert( type(x).objtype == CASE_E, "OptimizeCase:  type(x) != CASE!" );
+  assert( objectOfType(x, CASE), "OptimizeCase:  type(x) != CASE!" );
 
   Child(s2, LastDown(x));
   all_literals = TRUE;  res_yield = nilobj;
-  if( type(s2).objtype == YIELD_E )
+  if( objectOfType(s2, YIELD) )
   { check_yield(s2, &res_yield, &all_literals);
   }
-  else if( type(s2).objtype == ACAT_E )
+  else if( objectOfType(s2, ACAT) )
   { for( link = Down(s2);  link != s2 && all_literals;  link = NextDown(link) )
     {
       Child(y, link);
       debug2(DOP, DD, "  OptimizeCase examining %s %s", Image(type(y)),
 	EchoObject(y));
-      if( type(y).objtype == GAP_OBJ_E )  continue;
-      if( type(y).objtype == YIELD_E )
+      if( objectOfType(y, GAP_OBJ) )  continue;
+      if( objectOfType(y, YIELD) )
       { check_yield(y, &res_yield, &all_literals);
       }
       else
@@ -164,7 +164,7 @@ static void HuntCommandOptions(OBJECT x)
     found = FALSE;
     for( link = Down(sym);  link != sym;  link = NextDown(link) )
     { Child(opt, link);
-      if( type(opt).objtype == NPAR_E && StringEqual(SymName(opt), string(coname)) )
+      if( objectOfType(opt, NPAR) && StringEqual(SymName(opt), string(coname)) )
       { found = TRUE;
 	debug2(DOP, DD, "  %s is an option of %s", string(coname),SymName(sym));
 	break;
@@ -177,7 +177,7 @@ static void HuntCommandOptions(OBJECT x)
       found = FALSE;
       for( link = Down(x);  link != x;  link = NextDown(link) )
       { Child(y, link);
-	if( type(y).objtype == PAR_E && actual(y) == opt )
+	if( objectOfType(y, PAR) && actual(y) == opt )
 	{ found = TRUE;
 	  debug2(DOP, DD, "  %s is set in %s", string(coname), SymName(sym));
 	  break;
@@ -262,7 +262,7 @@ static void DebugStacks(int initial_ttop, int obj_prev)
   for( i = 0;  i <= ttop;  i++ )
   { if( i == initial_ttop+1 ) debug0(DOP, DD, "  $");
     debug3(ANY, D, "  tok[%d] = %s (precedence %d)", i,
-      type(tok_stack[i]).objtype == CLOSURE_E ?
+      objectOfType(tok_stack[i], CLOSURE) ?
 	SymName(actual(tok_stack[i])) : Image(type(tok_stack[i])),
       precedence(tok_stack[i]));
   }
@@ -283,7 +283,7 @@ if( obj_prev )								\
 { int prec;	OBJTYPE typ;						\
   if( hspace(t) + vspace(t) > 0 )					\
     typ = TSPACE, prec = ACAT_PREC;					\
-  else if( type(t).objtype == LBR_E || obj_prev == PREV_RBR )			\
+  else if( objectOfType(t, LBR) || obj_prev == PREV_RBR )			\
     typ = TJUXTA, prec = ACAT_PREC;					\
   else									\
     typ = TJUXTA, prec = JUXTA_PREC;					\
@@ -498,7 +498,7 @@ static BOOLEAN Reduce(void)
 	if( has_lpar(actual(op)) )
 	{ s1 = PopObj();
 	  Link(Down(op), s1);
-	  if( type(s1).objtype == BACKEND_E )
+	  if( objectOfType(s1, BACKEND) )
 	  { op = OptimizeCase(op);
 	  }
 	}
@@ -513,7 +513,7 @@ static BOOLEAN Reduce(void)
 	Link(op, s2);
 	s1 = PopObj();
 	Link(Down(op), s1);
-	if( type(s1).objtype != CLOSURE_E )
+	if( !objectOfType(s1, CLOSURE) )
 	  Error(6, 3, "left parameter of %s is not a symbol (or not visible)",
 	    WARN, &fpos(s1), Image(type(op)));
 	PushObj(op);
@@ -559,11 +559,11 @@ static BOOLEAN Reduce(void)
 
     case RBR_E:
     
-	if( type(TokenTop).objtype == LBR_E )
+	if( objectOfType(TokenTop, LBR) )
 	{ /* *** FposCopy(fpos(ObjTop), fpos(TokenTop)); *** */
 	  Dispose( PopToken() );
 	}
-	else if( type(TokenTop).objtype == BEGIN_E )
+	else if( objectOfType(TokenTop, BEGIN) )
 	{ if( file_num(fpos(TokenTop)) > 0 )
 	    Error(6, 5, "unmatched %s; inserted %s at%s (after %s)",
 	      WARN, &fpos(op), KW_RBR, KW_LBR,
@@ -582,7 +582,7 @@ static BOOLEAN Reduce(void)
 
     case END_E:
     
-	if( type(TokenTop).objtype != BEGIN_E )
+	if( !objectOfType(TokenTop, BEGIN) )
 	{ assert1(FALSE, "Reduce: unmatched", KW_END);
 	}
 	else
@@ -642,7 +642,7 @@ static BOOLEAN Reduce(void)
     case TJUXTA_E:
 
 	p2 = PopObj();  p1 = PopObj();
-	if( type(p1).objtype != ACAT_E )
+	if( !objectOfType(p1, ACAT) )
 	{ New(tmp, ACAT);
 	  Link(tmp, p1);
 	  FposCopy(fpos(tmp), fpos(p1));
@@ -683,13 +683,13 @@ static BOOLEAN Reduce(void)
 void SetScope(OBJECT env, int *count, BOOLEAN vis_only)
 { OBJECT link, y, yenv;  BOOLEAN visible_only;
   debugcond2(DOP,DD, debug_now, "[ SetScope(%s, %d)", EchoObject(env), *count);
-  assert( env != nilobj && type(env).objtype == ENV_E, "SetScope: type(env) != ENV!" );
+  assert( env != nilobj && objectOfType(env, ENV), "SetScope: type(env) != ENV!" );
   if( Down(env) != env )
   { Child(y, Down(env));
     assert( LastDown(y) != y, "SetScope: LastDown(y)!" );
     link = LastDown(env) != Down(env) ? LastDown(env) : LastDown(y);
     Child(yenv, link);
-    assert( type(yenv).objtype == ENV_E, "SetScope: type(yenv) != ENV!" );
+    assert( objectOfType(yenv, ENV), "SetScope: type(yenv) != ENV!" );
     SetScope(yenv, count, FALSE);
     visible_only = vis_only || (use_invocation(actual(y)) != nilobj);
     /* i.e. from @Use clause */
@@ -742,14 +742,14 @@ void InitParser(const FULL_CHAR *cross_db)
 static OBJECT ParseEnvClosure(OBJECT t, OBJECT encl)
 { OBJECT env, res, y;  int count, i;
   debugcond0(DOP, DDD, debug_now, "ParseEnvClosure(t, encl)");
-  assert( type(t).objtype == ENV_E, "ParseEnvClosure: type(t) != ENV!" );
+  assert( objectOfType(t, ENV), "ParseEnvClosure: type(t) != ENV!" );
   env = t;  t = LexGetToken();
-  while( type(t).objtype != CLOS_E )  switch( type(t).objtype )
+  while( !objectOfType(t, CLOS) )  switch( type(t).objtype )
   {
     case LBR_E:	count = 0;
 		SetScope(env, &count, FALSE);
 		y = Parse(&t, encl, FALSE, FALSE);
-		if( type(y).objtype != CLOSURE_E )
+		if( !objectOfType(y, CLOSURE) )
 		{
 		  debug1(DIO, D, "  Parse() returning %s:", Image(type(y)));
 		  ifdebug(DIO, D, DebugObject(y));
@@ -779,7 +779,7 @@ static OBJECT ParseEnvClosure(OBJECT t, OBJECT encl)
   Child(res, Down(env));
   DeleteNode(env);
   debugcond1(DOP, DDD, debug_now, "ParseEnvClosure ret. %s", EchoObject(res));
-  assert( type(res).objtype == CLOSURE_E, "ParseEnvClosure: type(res) != CLOSURE!" );
+  assert( objectOfType(res, CLOSURE), "ParseEnvClosure: type(res) != CLOSURE!" );
   return res;
 } /* end ParseEnvClosure */
 
@@ -813,7 +813,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
   debugcond4(DOP, DD, debug_now, "[ Parse(%s, %s, %s, %s)", EchoToken(*token),
       SymName(encl), bool(defs_allowed), bool(transfer_allowed));
-  assert( type(*token).objtype == LBR_E || type(*token).objtype == BEGIN_E, "Parse: *token!" );
+  assert( objectOfType(*token, LBR) || objectOfType(*token, BEGIN), "Parse: *token!" );
 
   obj_prev = PREV_OP;
   Shift(*token, precedence(*token), 0, FALSE, TRUE);
@@ -831,7 +831,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
       New(env, ENV);
       for(;;)
       {
-	if( type(t).objtype == WORD_E && (
+	if( objectOfType(t, WORD) && (
 	    StringEqual(string(t), KW_DEF)     ||
 	    /* StringEqual(string(t), KW_FONTDEF) || */
 	    StringEqual(string(t), KW_LANGDEF) ||
@@ -847,18 +847,18 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    Error(6, 39, "exiting now (error in definitions)", FATAL, &fpos(t));
 
 	}
-	else if( type(t).objtype == USE_E )
+	else if( objectOfType(t, USE) )
 	{
 	  OBJECT crs, res_env;  STYLE style;
 	  Dispose(t);  t = LexGetToken();
-	  if( type(t).objtype != LBR_E )
+	  if( !objectOfType(t, LBR) )
 	    Error(6, 15, "%s expected after %s", FATAL, &fpos(t),KW_LBR,KW_USE);
 	  debug0(DOP, DD, "  Parse() calling Parse for @Use clause");
 	  y = Parse(&t, encl, FALSE, FALSE);
 	  if( is_cross(type(y)) )
 	  { OBJECT z;
 	    Child(z, Down(y));
-	    if( type(z).objtype == CLOSURE_E )
+	    if( objectOfType(z, CLOSURE) )
 	    { crs = nilobj;
 	      y = CrossExpand(y, env, &style, &crs, &res_env);
 	      if( crs != nilobj )
@@ -872,7 +872,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    }
 	    else Error(6, 17, "invalid parameter of %s", FATAL, &fpos(y), KW_USE);
 	  }
-	  else if( type(y).objtype == CLOSURE_E )
+	  else if( objectOfType(y, CLOSURE) )
 	  { if( use_invocation(actual(y)) != nilobj )
 	      Error(6, 18, "symbol %s occurs in two %s clauses",
 		FATAL, &fpos(y), SymName(actual(y)), KW_USE);
@@ -886,17 +886,17 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	  PushScope(actual(y), FALSE, TRUE);
 	  t = LexGetToken();
         }
-	else if( type(t).objtype == PREPEND_E || type(t).objtype == SYS_PREPEND_E )
+	else if( objectOfType(t, PREPEND) || objectOfType(t, SYS_PREPEND) )
 	{ ReadPrependDef(type(t), encl);
 	  Dispose(t);
 	  t = LexGetToken();
 	}
-	else if( type(t).objtype == INCG_REPEATED_E || type(t).objtype == SINCG_REPEATED_E )
+	else if( objectOfType(t, INCG_REPEATED) || objectOfType(t, SINCG_REPEATED) )
 	{ ReadIncGRepeatedDef(type(t), encl);
 	  Dispose(t);
 	  t = LexGetToken();
 	}
-	else if( type(t).objtype == DATABASE_E || type(t).objtype == SYS_DATABASE_E )
+	else if( objectOfType(t, DATABASE) || objectOfType(t, SYS_DATABASE) )
 	{ ReadDatabaseDef(type(t), encl);
 	  Dispose(t);
 	  t = LexGetToken();
@@ -977,8 +977,8 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	/* invoke transfer subroutines if appropriate */
 	/* *** if( type(t) == VCAT && !has_join(actual(t)) *** */
-	if( transfer_allowed && type(t).objtype == VCAT_E && !has_join(actual(t))
-		&& type(tok_stack[ttop-2]).objtype == GSTUB_EXT_E )
+	if( transfer_allowed && objectOfType(t, VCAT) && !has_join(actual(t))
+		&& objectOfType(tok_stack[ttop-2], GSTUB_EXT) )
 	{
 	  debug0(DGT, DD, "  calling TransferComponent from Parse:");
 	  ifdebug(DGT, DD, DebugStacks(0, obj_prev));
@@ -1098,14 +1098,14 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	
 	/* check for opening brace or begin following, and shift it onto the stacks */
 	t = LexGetToken();
-	if( type(t).objtype != BEGIN_E && type(t).objtype != LBR_E )
+	if( !objectOfType(t, BEGIN) && !objectOfType(t, LBR) )
 	  Error(6, 40, "right parameter of %s or %s must be enclosed in braces",
 	    FATAL, &fpos(x), KW_VERBATIM, KW_RAWVERBATIM);
-        actual(t) = type(x).objtype == VERBATIM_E ? VerbatimSym : RawVerbatimSym;
+        actual(t) = objectOfType(x, VERBATIM) ? VerbatimSym : RawVerbatimSym;
 	Shift(t, LBR_PREC, 0, FALSE, TRUE);
 
 	/* read right parameter and add it to the stacks, and reduce */
-	y = LexScanVerbatim( (FILE *) NULL, type(t).objtype == BEGIN_E, &fpos(t),
+	y = LexScanVerbatim( (FILE *) NULL, objectOfType(t, BEGIN), &fpos(t),
 	  type(x).objtype == RAW_VERBATIM_E);
 	ShiftObj(y, PREV_OBJ);
 
@@ -1150,12 +1150,12 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
       
 	if( actual(t) == nilobj )  /* haven't sought following symbol yet */
 	{ x = LexGetToken();
-	  if( type(x).objtype == CLOSURE_E )
+	  if( objectOfType(x, CLOSURE) )
 	  { actual(t) = actual(x);
 	    Dispose(x);
 	    x = nilobj;
 	  }
-	  else if( type(x).objtype == VERBATIM_E )
+	  else if( objectOfType(x, VERBATIM) )
 	  { actual(t) = VerbatimSym;
 	    Dispose(x);
 	    x = nilobj;
@@ -1165,7 +1165,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    Dispose(x);
 	    x = nilobj;
 	  }
-	  else if( type(x).objtype == WORD_E && string(x)[0] == CH_SYMSTART )
+	  else if( objectOfType(x, WORD) && string(x)[0] == CH_SYMSTART )
 	  { Error(6, 24, "unknown or misspelt symbol %s after %s deleted",
 	      WARN, &fpos(x), string(x), KW_END);
 	    actual(t) = nilobj;
@@ -1235,7 +1235,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	t = LexGetToken();
 	res = Parse(&t, encl, FALSE, FALSE);
 	/* env = SetEnv(res, env); fails sometimes, below is yukky patch JK */
-	env = SetEnv(res, type(env).objtype == ENV_E ? env : NULL);
+	env = SetEnv(res, objectOfType(env, ENV) ? env : NULL);
 	ShiftObj(env, PREV_OBJ);
 	t = LexGetToken();
 	EnvReadInsert(file_num(fpos(t)), offset, env);
@@ -1255,7 +1255,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
       
 	/* only occurs in cross reference databases */
 	Dispose(t); t = LexGetToken();
-	if( type(t).objtype != QWORD_E ||
+	if( !objectOfType(t, QWORD) ||
 	  sscanf((char *) string(t), "%d %d", &offset, &lnum) != 2 )
 	  Error(6, 37, "error in cross reference database", FATAL, &fpos(t));
 	if( !EnvReadRetrieve(file_num(fpos(t)), offset, &env) )
@@ -1293,7 +1293,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	/* only occurs in cross-reference databases */
 	/* copy invocation from use_invocation(xsym), don't read it */
 	Dispose(t);  t = LexGetToken();
-	if( type(t).objtype != CLOSURE_E )
+	if( !objectOfType(t, CLOSURE) )
 	  Error(6, 27, "symbol expected following %s", FATAL,&fpos(t),KW_LUSE);
 	xsym = actual(t);
 	if( use_invocation(xsym) == nilobj )
@@ -1302,7 +1302,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	x = CopyObject(use_invocation(xsym), no_fpos);
 	for( link = LastDown(x);  link != x;  link = PrevDown(link) )
 	{ Child(y, link);
-	  if( type(y).objtype == ENV_E )
+	  if( objectOfType(y, ENV) )
 	  { DeleteLink(link);
 	    break;
 	  }
@@ -1318,7 +1318,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	SuppressVisible();
 	Dispose(t);  t = LexGetToken();
 	UnSuppressVisible();
-	if( type(t).objtype != CLOSURE_E )
+	if( !objectOfType(t, CLOSURE) )
 	  Error(6, 29, "symbol expected following %s", FATAL,&fpos(t),KW_LVIS);
 	/* NB NO BREAK! */
 
@@ -1359,18 +1359,18 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	/* read named parameters */
 	compulsory_count = 0;
-	while( (type(t).objtype == CLOSURE_E && enclosing(actual(t)) == xsym
-				       && type(actual(t)).objtype == NPAR_E)
-	  || (type(t).objtype == LBR_E && precedence(t) != LBR_PREC) )
+	while( (objectOfType(t, CLOSURE) && enclosing(actual(t)) == xsym
+				       && objectOfType(actual(t), NPAR))
+	  || (objectOfType(t, LBR) && precedence(t) != LBR_PREC) )
 	{	
 	  OBJECT new_par;
 
 	  /* check syntax and attach the named parameter to x */
-	  if( type(t).objtype == CLOSURE_E )
+	  if( objectOfType(t, CLOSURE) )
 	  {
 	    new_par = t;
 	    t = LexGetToken();
-	    if( type(t).objtype != LBR_E )
+	    if( !objectOfType(t, LBR) )
 	    { Error(6, 30, "%s must follow named parameter %s",
 	        WARN, &fpos(new_par), KW_LBR, SymName(actual(new_par)));
 	      Dispose(new_par);
@@ -1410,7 +1410,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	  /* check that new_par has not already occurred, then link it to x */
 	  for( link = Down(x);  link != x;  link = NextDown(link) )
 	  { Child(y, link);
-	    assert( type(y).objtype == PAR_E, "Parse: type(y) != PAR!" );
+	    assert( objectOfType(y, PAR), "Parse: type(y) != PAR!" );
 	    if( actual(new_par) == actual(y) )
 	    { Error(6, 31, "named parameter %s of %s appears twice", WARN,
 		&fpos(new_par), SymName(actual(new_par)), SymName(actual(x)));
@@ -1442,10 +1442,10 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	{
 	  for( xlink = Down(xsym);  xlink != xsym;  xlink = NextDown(xlink) )
 	  { Child(tmp, xlink);
-	    if( type(tmp).objtype == NPAR_E && is_compulsory(tmp) )
+	    if( objectOfType(tmp, NPAR) && is_compulsory(tmp) )
 	    { for( link = Down(x);  link != x;  link = NextDown(link) )
 	      { Child(y, link);
-		if( type(y).objtype == PAR_E && actual(y) == tmp )
+		if( objectOfType(y, PAR) && actual(y) == tmp )
 		  break;
 	      }
 	      if( link == x )
@@ -1458,7 +1458,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	}
 
 	/* record symbol name in BEGIN following, if any */
-	if( type(t).objtype == BEGIN_E )
+	if( objectOfType(t, BEGIN) )
 	{ if( !has_rpar(xsym) )
 	    Error(6, 32, "%s out of place here (%s has no right parameter)",
 	      WARN, &fpos(x), KW_BEGIN, SymName(xsym));
@@ -1476,7 +1476,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    i = has_rpar(xsym) ? ttop -1 : ttop;
 	    while( is_cat_op(type(tok_stack[i])) )   i--;
 	    if( (type(tok_stack[i]).objtype==LBR_E || type(tok_stack[i]).objtype==BEGIN_E)
-		  && type(tok_stack[i-1]).objtype == GSTUB_EXT_E )
+		  && objectOfType(tok_stack[i-1], GSTUB_EXT) )
 	    {
 	      /* at this point it is likely that x is transferable */
 	      if( has_rpar(xsym) )
@@ -1488,7 +1488,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	      }
 	      x = PopObj();
 	      x = TransferBegin(x);
-	      if( type(x).objtype == CLOSURE_E )	/* failure: unReduce */
+	      if( objectOfType(x, CLOSURE) )	/* failure: unReduce */
 	      {	if( has_rpar(xsym) )
 		{ Child(tmp, LastDown(x));
 		  assert(type(tmp).objtype==PAR_E && type(actual(tmp)).objtype==RPAR_E,
@@ -1520,10 +1520,10 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	if( filter(xsym) != nilobj )
 	{
-	  if( type(t).objtype == BEGIN_E || type(t).objtype == LBR_E )
+	  if( objectOfType(t, BEGIN) || objectOfType(t, LBR) )
 	  {
 	    /* create filter object and copy parameter into temp file */
-	    tmp = FilterCreate((BOOLEAN) (type(t).objtype == BEGIN_E), xsym, &fpos(t));
+	    tmp = FilterCreate((BOOLEAN) (objectOfType(t, BEGIN)), xsym, &fpos(t));
 
 	    /* push filter object onto stacks and keep going */
 	    Shift(t, precedence(t), 0, FALSE, TRUE);
@@ -1535,7 +1535,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	}
 
 	else if( has_body(xsym) )
-	{ if( type(t).objtype == BEGIN_E || type(t).objtype == LBR_E )
+	{ if( objectOfType(t, BEGIN) || objectOfType(t, LBR) )
 	  { PushScope(xsym, FALSE, TRUE);
 	    PushScope(ChildSym(xsym, RPAR), FALSE, FALSE);
 	    PushObj( Parse(&t, encl, FALSE, TRUE) );
@@ -1556,16 +1556,16 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	x = t;  xsym = nilobj;
 	Shift(t, precedence(t), RIGHT_ASSOC, TRUE, TRUE);
-	if( type(ObjTop).objtype == CLOSURE_E )  xsym = actual(ObjTop);
+	if( objectOfType(ObjTop, CLOSURE) )  xsym = actual(ObjTop);
 	else if( is_cross(type(ObjTop)) && Down(ObjTop) != ObjTop )
 	{ Child(tmp, Down(ObjTop));
-	  if( type(tmp).objtype == CLOSURE_E )  xsym = actual(tmp);
+	  if( objectOfType(tmp, CLOSURE) )  xsym = actual(tmp);
 	}
 	t = LexGetToken();
 
 	if( xsym == nilobj )
 	  Error(6, 35, "invalid left parameter of %s", WARN, &fpos(x), KW_OPEN);
-	else if( type(t).objtype != BEGIN_E && type(t).objtype != LBR_E )
+	else if( !objectOfType(t, BEGIN) && !objectOfType(t, LBR) )
 	  Error(6, 36, "right parameter of %s must be enclosed in braces",
 	    WARN, &fpos(t), KW_OPEN);
 	else
