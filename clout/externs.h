@@ -1214,7 +1214,7 @@ typedef union
 
   struct /* used by non-WORD objects */
   {	unsigned short	ofoll_or_prec;
-	unsigned short	ocross_type;	     /* CROSS objects only */
+	OBJTYPE	ocross_type;	     /* CROSS objects only */
 	unsigned short  ounused_os23_a;
 	unsigned short  ounused_os23_b;
 	unsigned	ounderline   : 2;    /* aligns with os22.underline */
@@ -2299,6 +2299,9 @@ INLINE void setType(OBJECT x, OBJTYPE type) {
 #define	font_mapping(x)		(x)->os1.ou3.os32.ofont_mapping
 #define	font_recoded(x)		(x)->os1.ou3.os32.ofont_recoded
 
+INLINE BOOLEAN objectOfType(OBJECT x, OBJTYPE typ) {
+  return type(x).objtype == typ.objtype;
+}
 
 /*@::FONT_INFO@***************************************************************/
 /*                                                                           */
@@ -2504,7 +2507,8 @@ INLINE BOOLEAN is_cat_op(OBJTYPE x) {
 #define	SMALL_CAPS_ON	     1		/* small capitals                    */
 
 /* statuses of thread objects */
-#define	NOTSIZED	     0		/* this thread object is not sized   */
+// TODO
+#define	NOTSIZED	     DUMMY		/* this thread object is not sized   */
 #define	SIZED		     1		/* thread is sized but not printed   */
 #define	FINALSIZE	     2		/* thread object size is now final   */
 
