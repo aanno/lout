@@ -63,7 +63,7 @@ void PromoteInit(void)
 /*                                                                           */
 /*****************************************************************************/
 
-void Interpose(OBJECT z, int typ, OBJECT x, OBJECT y)
+void Interpose(OBJECT z, OBJTYPE typ, OBJECT x, OBJECT y)
 { OBJECT encl;
   New(encl, typ);
   FposCopy(fpos(encl), fpos(y));

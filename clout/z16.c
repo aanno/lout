@@ -107,30 +107,30 @@ OBJECT *sg, OBJECT *sdef, int *side)
 
   /* find preceding definite; if it exists, set *pg */
   *pg = nilobj;
-  for( plink = PrevDown(link);  type(plink) == LINK;  plink = PrevDown(plink) )
+  for( plink = PrevDown(link);  objectOfType(plink, LINK);  plink = PrevDown(plink) )
   { Child(*pdef, plink);
-    if( type(*pdef) == SPLIT ? SplitIsDefinite(*pdef) : is_definite(type(*pdef)) )
+    if( objectOfType(*pdef, SPLIT) ? SplitIsDefinite(*pdef) : is_definite(type(*pdef)) )
     { Child(*pg, PrevDown(link));
       while( is_index(type(*pg)) )
       {	link = PrevDown(link);
 	Child(*pg, PrevDown(link));
       }
-      assert( type(*pg) == GAP_OBJ, "SetNeighbours: type(*pg)!" );
+      assert( objectOfType(*pg, GAP_OBJ), "SetNeighbours: type(*pg)!" );
       break;
     }
   }
 
   /* find succeeding definite; if it exists, set *sg */
   *sg = nilobj;
-  for( slink = NextDown(link);  type(slink) == LINK;  slink = NextDown(slink) )
+  for( slink = NextDown(link);  objectOfType(slink, LINK);  slink = NextDown(slink) )
   { Child(*sdef, slink);
-    if( type(*sdef) == SPLIT ? SplitIsDefinite(*sdef) : is_definite(type(*sdef)) )
+    if( objectOfType(*sdef, SPLIT) ? SplitIsDefinite(*sdef) : is_definite(type(*sdef)) )
     { Child(*sg, PrevDown(slink));
       while( is_index(type(*sg)) )
       {	slink = PrevDown(slink);
 	Child(*sg, PrevDown(slink));
       }
-      assert( type(*sg) == GAP_OBJ, "SetNeighbours: type(*sg)!" );
+      assert( objectOfType(*sg, GAP_OBJ), "SetNeighbours: type(*sg)!" );
       break;
     }
   }
@@ -168,7 +168,7 @@ OBJECT y, int dim)
   ifdebug(DSA, DD, DebugObject(y));
 
   /* DO_ADJUST ACAT is a special case because adjustment affects its size */
-  if( dim==COLM && type(y)==ACAT && display_style(&save_style(y)) == DO_ADJUST )
+  if( dim==COLM && objectOfType(y, ACAT) && display_style(&save_style(y)) == DO_ADJUST )
   { back(x, dim) = *b;  fwd(x, dim) = *f;
     *b = back(y, dim);  *f = fwd(y, dim);
     debug2(DSA, DD, "CatAdjustSize ACAT %s,%s", EchoLength(*b), EchoLength(*f));
@@ -216,7 +216,7 @@ OBJECT y, int dim)
 
   debug3(DSA, D, "  pg = %s, sg = %s, side = %s",
     pg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(pg)),
-    sg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(sg)), Image(side));
+    sg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(sg)), Image4Constraints(side));
   debug3(DSA, D, "  beffect = %s, feffect = %s, seffect = %s",
     EchoLength(beffect), EchoLength(feffect), EchoLength(seffect));
   back(x, dim) = *b;  fwd(x, dim) = *f;
@@ -256,31 +256,31 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 
   SetLengthDim(dim);
   debug6(DSA, D, "[ AdjustSize( %s(%s,%s), %s, %s, %s ), x =",
-	type(x) == CLOSURE ? SymName(actual(x)) : Image(type(x)),
+	objectOfType(x, CLOSURE) ? SymName(actual(x)) : Image(type(x)),
 	EchoLength(back(x, dim)), EchoLength(fwd(x, dim)),
 	EchoLength(b), EchoLength(f), dimen(dim));
   ifdebug(DSA, DD, DebugObject(x) );
-  is_rotate = type(x) == ROTATE;
+  is_rotate = objectOfType(x, ROTATE);
 
   while( b != back(x, dim) || f != fwd(x, dim) || is_indefinite(type(x)) )
   { assert( Up(x) != x, "AdjustSize: Up(x) == x!" );
     if (b < 0) {
       fprintf(stderr,
         "b %d < 0, back(x, dim %d) = %d, type(x) %d is_rotate %d, declared %s:%d\n",
-        b, dim, back(x, dim), type(x), is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
+        b, dim, back(x, dim), type(x).objtype, is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
       ifdebug(DSA, D, DebugObject(x));
     }
     if (f < 0) {
       fprintf(stderr,
         "f %d < 0, fwd(x, dim %d) = %d, type(x) %d is_rotate %d, declared %s:%d\n",
-        f, dim, fwd(x, dim), type(x), is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
+        f, dim, fwd(x, dim), type(x).objtype, is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
       ifdebug(DSA, D, DebugObject(x));
     }
     if (b < 0 || f < 0) {
       OBJECT p;
       Parent(p, Up(x));
-      fprintf(stderr, "  Up type %d declared %s:%d\n", type(Up(x)), malloc_oalloc_file_name(Up(x)), malloc_oalloc_line_num(Up(x)));
-      fprintf(stderr, "  Parent type %d declared %s:%d\n", type(p), malloc_oalloc_file_name(p), malloc_oalloc_line_num(p));
+      fprintf(stderr, "  Up type %d declared %s:%d\n", type(Up(x)).objtype, malloc_oalloc_file_name(Up(x)), malloc_oalloc_line_num(Up(x)));
+      fprintf(stderr, "  Parent type %d declared %s:%d\n", type(p).objtype, malloc_oalloc_file_name(p), malloc_oalloc_line_num(p));
     }
     if( b < 0 && !is_rotate)
       Error(16, 5, "back < 0; cannot recover from earlier errors", FATAL, &fpos(x));
@@ -288,12 +288,12 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       Error(16, 5, "fwd < 0 and not rotate; cannot recover from earlier errors", FATAL, &fpos(x));
 
     /* these cases are unique because they have multiple parents */
-    if( type(x) == COL_THR || type(x) == ROW_THR )
-    { assert( (type(x)==COL_THR) == (dim==COLM), "AdjustSize: COL_THR!" );
+    if( objectOfType(x, COL_THR) || objectOfType(x, ROW_THR) )
+    { assert( (objectOfType(x, COL_THR)) == (dim==COLM), "AdjustSize: COL_THR!" );
       back(x, dim) = b;  fwd(x, dim) = f;
       for( link = Up(x);  link != x;  link = NextUp(link) )
       { Parent(y, link);
-	assert( type(y) == SPLIT, "AdjustSize: type(y) != SPLIT!") ;
+	assert( objectOfType(y, SPLIT), "AdjustSize: type(y) != SPLIT!") ;
 	AdjustSize(y, b, f, dim);
       }
       debug0(DSA, D, "] AdjustSize (thread case) returning.");
@@ -301,9 +301,9 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
     }
 
     link = UpDim(x, dim);  ratm = FALSE;
-    for( tlink=NextDown(link);  type(tlink) == LINK;  tlink=NextDown(tlink) )
+    for( tlink=NextDown(link);  objectOfType(tlink, LINK);  tlink=NextDown(tlink) )
     { Child(y, tlink);
-      if( type(y) == GAP_OBJ && mark(&gap(y)) )  ratm = TRUE;
+      if( objectOfType(y, GAP_OBJ) && mark(&gap(y)) )  ratm = TRUE;
     }
     y = tlink;
 
@@ -312,10 +312,10 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	EchoLength(back(y, dim)), EchoLength(fwd(y, dim)));
     ifdebug(DSA, DD, DebugObject(x) );
 
-    switch( type(y) )
+    switch( type(y).objtype )
     {
 
-      case HEAD:
+      case HEAD_E:
       
 	if( gall_dir(y) == COLM )
 	{ back(x, dim) = b, fwd(x, dim) = f;
@@ -333,11 +333,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	  /* components joined to x                            */
 	  for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	  { Child(z, lp);
-	    if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 	  for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	  { Child(z, rp);
-	    if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 
 	  back(x, dim) = b;  fwd(x, dim) = f;
@@ -357,11 +357,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	    tb = tf = 0;
 	    for( link = NextDown(lp);  link != rp;  link = NextDown(link) )
 	    { Child(z, link);
-	      debugcond1(DSA, D, type(z) == GAP_OBJ,
+	      debugcond1(DSA, D, objectOfType(z, GAP_OBJ),
 		"    gap %s", EchoCatOp(VCAT, mark(&gap(z)), join(&gap(z))));
-	      if( type(z) == GAP_OBJ || is_index(type(z)) )  continue;
+	      if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
 	      debug6(DSA, D,  "    component %s %s(%s, %s) so tb = %s, tf = %s",
-		Image(type(z)), type(z) == CLOSURE ?  SymName(actual(z)) : STR_EMPTY,
+		Image(type(z)), objectOfType(z, CLOSURE) ?  SymName(actual(z)) : STR_EMPTY,
 		EchoLength(back(z, dim)), EchoLength(fwd(z, dim)),
 		EchoLength(tb), EchoLength(tf));
 	      ifdebugcond(DSA, DD,  dim == COLM && fwd(z, dim) > 20*CM, DebugObject(z));
@@ -388,13 +388,13 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	    return;
 	  }
 	  Parent(index, Up(y));
-	  if( type(index) != RECEIVING )
+	  if( !objectOfType(index, RECEIVING) )
 	  {
 	    debug1(DSA,D, "] AdjustSize ret. at HEAD (%s)", Image(type(index)));
 	    return;
 	  }
 	  assert(actual(index)!=nilobj, "AdjustSize: actual(index)==nilobj!" );
-	  assert( type(actual(index)) == CLOSURE, "AdjustSize: index non-C!" );
+	  assert( objectOfType(actual(index), CLOSURE), "AdjustSize: index non-C!" );
 	  if( actual(actual(index)) != GalleySym &&
 	      actual(actual(index)) != ForceGalleySym )
 	  {
@@ -408,65 +408,65 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case SPLIT:
-      case HCONTRACT:
-      case VCONTRACT:
-      case HEXPAND:
-      case VEXPAND:
-      case BEGIN_HEADER:
-      case END_HEADER:
-      case SET_HEADER:
-      case CLEAR_HEADER:
-      case ONE_COL:
-      case ONE_ROW:
-      case PLAIN_GRAPHIC:
-      case GRAPHIC:
-      case LINK_SOURCE:
-      case LINK_DEST:
-      case LINK_DEST_NULL:
-      case LINK_URL:
-      case KERN_SHRINK:
-      case BACKGROUND:
+      case SPLIT_E:
+      case HCONTRACT_E:
+      case VCONTRACT_E:
+      case HEXPAND_E:
+      case VEXPAND_E:
+      case BEGIN_HEADER_E:
+      case END_HEADER_E:
+      case SET_HEADER_E:
+      case CLEAR_HEADER_E:
+      case ONE_COL_E:
+      case ONE_ROW_E:
+      case PLAIN_GRAPHIC_E:
+      case GRAPHIC_E:
+      case LINK_SOURCE_E:
+      case LINK_DEST_E:
+      case LINK_DEST_NULL_E:
+      case LINK_URL_E:
+      case KERN_SHRINK_E:
+      case BACKGROUND_E:
 
 	back(x, dim) = b;  fwd(x, dim) = f;
 	break;
 
 
-      case HMIRROR:
-      case VMIRROR:
+      case HMIRROR_E:
+      case VMIRROR_E:
 
 	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (dim == COLM) == (type(y) == HMIRROR) )
+	if( (dim == COLM) == (objectOfType(y, HMIRROR)) )
 	{
 	  tb = b; b = f; f = tb;
 	}
 	break;
 
 
-      case HSCALE:
-      case VSCALE:
+      case HSCALE_E:
+      case VSCALE_E:
 
 	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (dim==COLM) == (type(y)==HSCALE) )
+	if( (dim==COLM) == (objectOfType(y, HSCALE)) )
 	{ debug0(DSA, D, "] AdjustSize returning at HSCALE or VSCALE");
 	  return;
 	}
 	break;
 
 
-      case HCOVER:
-      case VCOVER:
+      case HCOVER_E:
+      case VCOVER_E:
 
 	/* dubious, but not likely to arise in practice */
 	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (dim==COLM) == (type(y)==HCOVER) )
+	if( (dim==COLM) == (objectOfType(y, HCOVER)) )
 	{ debug0(DSA, D, "] AdjustSize returning at HCOVER or VCOVER");
 	  return;
 	}
 	break;
 
 
-      case SCALE:
+      case SCALE_E:
 
 	back(x, dim) = b;  fwd(x, dim) = f;
 	if( dim == COLM )
@@ -480,7 +480,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case ROTATE:
+      case ROTATE_E:
       
 	back(x, dim) = b;  fwd(x, dim) = f;
 	RotateSize(&cby, &cfy, &rby, &rfy, x, sparec(constraint(y)));
@@ -492,10 +492,10 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	return;
 
 
-      case WIDE:
-      case HIGH:
+      case WIDE_E:
+      case HIGH_E:
       
-	if( (type(y) == WIDE) == (dim == COLM) )
+	if( (objectOfType(y, WIDE)) == (dim == COLM) )
 	{ if( !FitsConstraint(b, f, constraint(y)) )
 	  { Error(16, 2, "size constraint %s,%s,%s broken by %s,%s",
 	      WARN, &fpos(y),
@@ -513,10 +513,10 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case HLIMITED:
-      case VLIMITED:
+      case HLIMITED_E:
+      case VLIMITED_E:
       
-	if( (type(y) == HLIMITED) == (dim == COLM) )
+	if( (objectOfType(y, HLIMITED)) == (dim == COLM) )
 	{
 	  /* ***
           Parent(z, UpDim(y, dim));
@@ -544,11 +544,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case HSHIFT:
-      case VSHIFT:
+      case HSHIFT_E:
+      case VSHIFT_E:
 
 	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (type(y) == HSHIFT) == (dim == COLM) )
+	if( (objectOfType(y, HSHIFT)) == (dim == COLM) )
 	{ tf = FindShift(y, x, dim);
 	  b = find_min(MAX_FULL_LENGTH, find_max(0, b + tf));
 	  f = find_min(MAX_FULL_LENGTH, find_max(0, f - tf));
@@ -556,32 +556,32 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case COL_THR:
-      case ROW_THR:
+      case COL_THR_E:
+      case ROW_THR_E:
 
-	assert( (type(y)==COL_THR) == (dim==COLM), "AdjustSize: COL_THR!" );
+	assert( (objectOfType(y, COL_THR)) == (dim==COLM), "AdjustSize: COL_THR!" );
 	back(x, dim) = b;  fwd(x, dim) = f;
 	b = find_max(b, back(y, dim));
 	f = find_max(f, fwd(y, dim));
 	break;
 
 
-      case VCAT:
-      case HCAT:
-      case ACAT:
+      case VCAT_E:
+      case HCAT_E:
+      case ACAT_E:
 
-	if( (type(y) == VCAT) == (dim == ROWM) )
+	if( (objectOfType(y, VCAT)) == (dim == ROWM) )
 	  CatAdjustSize(x, &b, &f, ratm, y, dim);
 	else
 	{
 	  /* let lp and rp be the gaps bracketing the components joined to x */
 	  for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	  { Child(z, lp);
-	    if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 	  for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	  { Child(z, rp);
-	    if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 
 	  back(x, dim) = b;  fwd(x, dim) = f;
@@ -596,7 +596,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	    tb = tf = 0;
 	    for( link = NextDown(lp); link != rp;  link = NextDown(link) )
 	    { Child(z, link);
-	      if( type(z) == GAP_OBJ || is_index(type(z)) )  continue;
+	      if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
 	      tb = find_max(tb, back(z, dim));
 	      tf = find_max(tf, fwd(z, dim));
 	    }
@@ -606,15 +606,15 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case START_HVSPAN:
+      case START_HVSPAN_E:
 
 	Error(16, 4, "size adjustment of %s not implemented",
 	       WARN, &fpos(y), Image(type(y)));
 	break;
 
 
-      case START_VSPAN:
-      case VSPAN:
+      case START_VSPAN_E:
+      case VSPAN_E:
 
 	if( dim == COLM )
 	{
@@ -625,8 +625,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case START_HSPAN:
-      case HSPAN:
+      case START_HSPAN_E:
+      case HSPAN_E:
 
 	if( dim == ROWM )
 	{
@@ -637,10 +637,10 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case HSPANNER:
-      case VSPANNER:
+      case HSPANNER_E:
+      case VSPANNER_E:
 
-	assert( (dim == COLM) == (type(y) == HSPANNER), "AdjustSize: span");
+	assert( (dim == COLM) == (objectOfType(y, HSPANNER)), "AdjustSize: span");
 	back(x, dim) = b;  fwd(x, dim) = f;
 	debug5(DSC, D, "  adjusting %s from (%s,%s) to (%s,%s)",
 	  Image(type(y)), EchoLength(back(y, dim)), EchoLength(fwd(y, dim)),
@@ -651,13 +651,13 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	break;
 
 
-      case WORD:
-      case QWORD:
-      case CLOSURE:
-      case NULL_CLOS:
-      case PAGE_LABEL:
-      case CROSS:
-      case FORCE_CROSS:
+      case WORD_E:
+      case QWORD_E:
+      case CLOSURE_E:
+      case NULL_CLOS_E:
+      case PAGE_LABEL_E:
+      case CROSS_E:
+      case FORCE_CROSS_E:
       default:
       
 	assert1(FALSE, "AdjustSize:", Image(type(y)));

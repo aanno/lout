@@ -1067,7 +1067,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		    NextDown(NextDown(Up(prev))) == link
 		    )
 		{
-		  unsigned typ;
+		  OBJTYPE typ;
 		  debug3(DSF, DD, "compressing %s and %s at %s",
 		    EchoObject(prev), EchoObject(y), EchoFilePos(&fpos(prev)));
 		  if( StringLength(string(prev)) + StringLength(string(y))
@@ -1344,7 +1344,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
       Child(y, Down(x));
       fp = OpenIncGraphicFile(string(y), type(x), &full_name, &fpos(y), &cp);
       incgraphic_ok(x) = PS_FindBoundingBox(fp, &fpos(y),
-	  &back(y, COLM), &back(y, ROWM), &fwd(y, COLM), &fwd(y, ROWM));
+	  &back(y, COLM), &back(y, ROWM), &fwd(y, COLM), &fwd(y, ROWM)) == TRUE ? DUMMY1 : DUMMY;
       b = (fwd(y, COLM) - back(y, COLM)) * PT;
       b = find_min(MAX_FULL_LENGTH, find_max(0, b));
       back(x, COLM) = fwd(x, COLM) = b / 2;

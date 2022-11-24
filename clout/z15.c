@@ -385,7 +385,7 @@ OBJECT y, int dim, OBJECT *why)
     }
 
     debug5(DSC, DD, "  side: %s, backy: %s, fwdy: %s, be: %s, fe: %s",
-		Image(side), EchoLength(backy), EchoLength(fwdy),
+		Image4Constraints(side), EchoLength(backy), EchoLength(fwdy),
 		EchoLength(be), EchoLength(fe) );
 
     if( !FitsConstraint(backy, fwdy, yc) )
@@ -459,7 +459,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 
   /* a CLOSURE which is external_ver is unconstrained in the ROWM direction */
   /* a CLOSURE which is external_hor is unconstrained in both directions   */
-  if( type(x) == CLOSURE && ((dim==ROWM && external_ver(x)) || external_hor(x)) )
+  if( objectOfType(x, CLOSURE) && ((dim==ROWM && external_ver(x)) || external_hor(x)) )
   {
     SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
     debug1(DSC, DD, "] Constrained returning %s (external)",EchoConstraint(xc));
@@ -468,45 +468,45 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 
   /* find y, the parent of x */
   link = UpDim(x, dim);  ratm = FALSE;
-  for( tlink = NextDown(link);  type(tlink) == LINK;  tlink = NextDown(tlink) )
+  for( tlink = NextDown(link);  objectOfType(tlink, LINK);  tlink = NextDown(tlink) )
   { Child(g, tlink);
-    if( type(g) == GAP_OBJ && mark(&gap(g)) )  ratm = TRUE;
+    if( objectOfType(g, GAP_OBJ) && mark(&gap(g)) )  ratm = TRUE;
   }
   y = tlink;
   debug1(DSC, DDD, "parent y = %s", Image(type(y)));
   ifdebug(DSC, DDD, DebugObject(y));
 
-  switch( type(y) )
+  switch( type(y).objtype )
   {
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case KERN_SHRINK:
-    case BEGIN_HEADER:
-    case SET_HEADER:
-    case ONE_COL:
-    case ONE_ROW:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HEXPAND:
-    case VEXPAND:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
-    case SPLIT:
-    case BACKGROUND:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case KERN_SHRINK_E:
+    case BEGIN_HEADER_E:
+    case SET_HEADER_E:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case SPLIT_E:
+    case BACKGROUND_E:
 
       Constrained(y, xc, dim, why);
       break;
 
 
-    case HMIRROR:
-    case VMIRROR:
+    case HMIRROR_E:
+    case VMIRROR_E:
     
-      if( (dim == COLM) == (type(y) == HMIRROR) )
+      if( (dim == COLM) == (objectOfType(y, HMIRROR)) )
       {
         Constrained(y, &yc, dim, why);
 	FlipConstraint(*xc, yc);
@@ -516,24 +516,24 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case HSCALE:
-    case VSCALE:
+    case HSCALE_E:
+    case VSCALE_E:
     
-      if( (dim == COLM) != (type(y) == HSCALE) )  Constrained(y, xc, dim, why);
+      if( (dim == COLM) != objectOfType(y, HSCALE) )  Constrained(y, xc, dim, why);
       else SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       break;
 
 
-    case HCOVER:
-    case VCOVER:
+    case HCOVER_E:
+    case VCOVER_E:
     
       /* dubious, but not likely to arise anyway */
-      if( (dim == COLM) != (type(y) == HCOVER) )  Constrained(y, xc, dim, why);
+      if( (dim == COLM) != (objectOfType(y, HCOVER)) )  Constrained(y, xc, dim, why);
       else SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       break;
 
 
-    case SCALE:
+    case SCALE_E:
 
       Constrained(y, &yc, dim, why);
       if( dim == COLM && bc(constraint(y)) == 0 )
@@ -548,28 +548,28 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case ROTATE:
+    case ROTATE_E:
     
       Constrained(y, &hc, COLM, why);  Constrained(y, &vc, ROWM, why);
       RotateConstraint(xc, x, sparec(constraint(y)), &hc, &vc, dim);
       break;
 
 
-    case WIDE:
-    case HIGH:
+    case WIDE_E:
+    case HIGH_E:
     
       Constrained(y, xc, dim, why);
-      if( (type(y)==WIDE) == (dim==COLM) )
+      if( (objectOfType(y, WIDE)) == (dim==COLM) )
       { MinConstraint(xc, &constraint(y));
 	*why = y;
       }
       break;
 
 
-    case HLIMITED:
-    case VLIMITED:
+    case HLIMITED_E:
+    case VLIMITED_E:
 
-      if( (type(y) == HLIMITED) == (dim == COLM) )
+      if( (objectOfType(y, HLIMITED)) == (dim == COLM) )
       {
 	BOOLEAN still_searching = TRUE;
 	z = y;
@@ -578,19 +578,19 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	while( still_searching && Up(z) != z )
 	{
           Parent(z, UpDim(z, dim));
-	  switch( type(z) )
+	  switch( type(z).objtype )
 	  {
-	    case VLIMITED:
-	    case HLIMITED:
-	    case COL_THR:
-	    case ROW_THR:
-	    case ONE_COL:
-	    case ONE_ROW:
-	    case HCONTRACT:
-	    case VCONTRACT:
-	    case SPLIT:
-	    case START_VSPAN:
-	    case START_HSPAN:
+	    case VLIMITED_E:
+	    case HLIMITED_E:
+	    case COL_THR_E:
+	    case ROW_THR_E:
+	    case ONE_COL_E:
+	    case ONE_ROW_E:
+	    case HCONTRACT_E:
+	    case VCONTRACT_E:
+	    case SPLIT_E:
+	    case START_VSPAN_E:
+	    case START_HSPAN_E:
 
 	      SetConstraint(*xc, back(z, dim), size(z, dim), fwd(z, dim));
 	      debug2(DSC, DD, "    let s = %s (%s)", Image(type(z)),
@@ -598,8 +598,8 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	      break;
 
 
-	    case HSPANNER:
-	    case VSPANNER:
+	    case HSPANNER_E:
+	    case VSPANNER_E:
 
 	      /* SpannerAvailableSpace(z, dim, &b, &f); */
 	      CopyConstraint(*xc, constraint(z));
@@ -625,8 +625,8 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case VSPANNER:
-    case HSPANNER:
+    case VSPANNER_E:
+    case HSPANNER_E:
 
       /* we're saying that a spanner has a fixed constraint that is */
       /* determined just once in its life                           */
@@ -636,10 +636,10 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case HSHIFT:
-    case VSHIFT:
+    case HSHIFT_E:
+    case VSHIFT_E:
 
-      if( (type(y) == HSHIFT) == (dim == COLM) )
+      if( (objectOfType(y, HSHIFT)) == (dim == COLM) )
       { Constrained(y, &yc, dim, why);
 	tf = FindShift(y, x, dim);
 	SetConstraint(*xc,
@@ -649,7 +649,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case HEAD:
+    case HEAD_E:
     
       if( dim == ROWM )
 	SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
@@ -662,10 +662,10 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case COL_THR:
-    case ROW_THR:
+    case COL_THR_E:
+    case ROW_THR_E:
 
-      assert( (type(y)==COL_THR) == (dim==COLM), "Constrained: COL_THR!" );
+      assert( (objectOfType(y, COL_THR)) == (dim==COLM), "Constrained: COL_THR!" );
       Constrained(y, &yc, dim, why);
       tb = bfc(yc) == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : bfc(yc) - fwd(y, dim);
       tb = find_min(bc(yc), tb);
@@ -675,11 +675,11 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       break;
 
 
-    case VCAT:
-    case HCAT:
-    case ACAT:
+    case VCAT_E:
+    case HCAT_E:
+    case ACAT_E:
     
-      if( (type(y)==VCAT) == (dim==ROWM) )
+      if( (objectOfType(y, VCAT)) == (dim==ROWM) )
       {	CatConstrained(x, xc, ratm, y, dim, why);
 	break;
       }
@@ -693,13 +693,13 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	/* the components joined to x (or parent if no such) */
 	for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	{ Child(z, lp);
-	  if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	  if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	}
 	for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	{ Child(z, rp);
-	  if( type(z) == GAP_OBJ && !join(&gap(z)) )  break;
+	  if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	}
-	if( lp == y && rp == y && !(type(y) == HEAD && seen_nojoin(y)) )
+	if( lp == y && rp == y && !(objectOfType(y, HEAD) && seen_nojoin(y)) )
 	{
 	  /* if whole object is joined, do this */
           tb = bfc(yc) == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : bfc(yc) - fwd(y, dim);
@@ -714,7 +714,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	  xback = xfwd = 0;
 	  for(link = NextDown(lp); link != rp;  link = NextDown(link) )
 	  { Child(z, link);
-	    if( type(z) == GAP_OBJ || is_index(type(z)) )  continue;
+	    if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
 	    xback = find_max(xback, back(z, dim));
 	    xfwd = find_max(xfwd, fwd(z, dim));
 	  }
@@ -772,34 +772,34 @@ void DebugConstrained(OBJECT x)
 { OBJECT y, link, why;
   CONSTRAINT c;
   debug1(DSC, DDD, "DebugConstrained( %s )", EchoObject(x) );
-  switch( type(x) )
+  switch( type(x).objtype )
   {
 
-    case CROSS:
-    case FORCE_CROSS:
-    case ROTATE:
-    case BACKGROUND:
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case KERN_SHRINK:
-    case WORD:
-    case QWORD:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
-    case HSPAN:
-    case VSPAN:
+    case CROSS_E:
+    case FORCE_CROSS_E:
+    case ROTATE_E:
+    case BACKGROUND_E:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case KERN_SHRINK_E:
+    case WORD_E:
+    case QWORD_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case HSPAN_E:
+    case VSPAN_E:
     
       break;
 
 
-    case CLOSURE:
+    case CLOSURE_E:
     
       Constrained(x, &c, COLM, &why);
       debug2(DSC, DD, "Constrained( %s, &c, COLM ) = %s",
@@ -810,45 +810,45 @@ void DebugConstrained(OBJECT x)
       break;
 
 
-    case SPLIT:
+    case SPLIT_E:
     
       link = DownDim(x, COLM);  Child(y, link);
       DebugConstrained(y);
       break;
 
 
-    case HEAD:
-    case ONE_COL:
-    case ONE_ROW:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HLIMITED:
-    case VLIMITED:
-    case HEXPAND:
-    case VEXPAND:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case HCOVER:
-    case VCOVER:
-    case SCALE:
-    case WIDE:
-    case HIGH:
+    case HEAD_E:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HLIMITED_E:
+    case VLIMITED_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case SCALE_E:
+    case WIDE_E:
+    case HIGH_E:
     
       link = Down(x);  Child(y, link);
       DebugConstrained(y);
       break;
 
 
-    case COL_THR:
-    case VCAT:
-    case HCAT:
-    case ACAT:
+    case COL_THR_E:
+    case VCAT_E:
+    case HCAT_E:
+    case ACAT_E:
     
       for( link = Down(x);  link != x;  link =NextDown(link) )
       {	Child(y, link);
-	if( type(y) != GAP_OBJ && !is_index(type(y)) )  DebugConstrained(y);
+	if( !objectOfType(y, GAP_OBJ) && !is_index(type(y)) )  DebugConstrained(y);
       }
       break;
 

@@ -95,7 +95,7 @@ static OBJECT InterposeWideOrHigh(OBJECT y, int dim)
 
 void DetachGalley(OBJECT hd)
 { OBJECT prnt, index;
-  assert( type(hd) == HEAD && Up(hd) != hd, "DetachGalley: precondition!" );
+  assert( objectOfType(hd, HEAD) && Up(hd) != hd, "DetachGalley: precondition!" );
   debug1(DGA, D, "DetachGalley( %s )", SymName(actual(hd)));
   Parent(prnt, Up(hd));
   assert( Up(prnt) != prnt, "DetachGalley: parent!" );
@@ -130,21 +130,21 @@ BOOLEAN subgalleys, BOOLEAN closures, BOOLEAN input)
 { OBJECT y, res, z, zlink, link;
   ifdebug(DGA, D, Parent(y, start));
   debug6(DGA, D, "[ SearchGalley(%s, %s, %s, %s, %s, %s)",
-        type(start) == HEAD ? (char *) SymName(actual(start)) :
-        type(y) == HEAD ? (char *) SymName(actual(y)) : "link",
+        objectOfType(start, HEAD) ? (char *) SymName(actual(start)) :
+        objectOfType(y, HEAD) ? (char *) SymName(actual(y)) : "link",
 	SymName(sym),
 	forwards ? "fwd" : "back", subgalleys ? "subgalleys" : "nosubgalleys",
 	closures ? "closures" : "noclosures", input ? "input" : "noinput");
-  assert( type(start) == LINK || type(start) == HEAD, "SearchGalley: start!" );
+  assert( objectOfType(start, LINK) || objectOfType(start, HEAD), "SearchGalley: start!" );
 
   link = forwards ? NextDown(start) : PrevDown(start);
   res = nilobj;
-  while( res == nilobj && type(link) != HEAD )
+  while( res == nilobj && !objectOfType(link, HEAD) )
   { Child(y, link);
-    switch( type(y) )
+    switch( type(y).objtype )
     {
-      case UNATTACHED:
-      case RECEIVING:
+      case UNATTACHED_E:
+      case RECEIVING_E:
 	
         debug1(DGA, D, "  examining %s", EchoIndex(y));
 	if( subgalleys )
@@ -152,16 +152,16 @@ BOOLEAN subgalleys, BOOLEAN closures, BOOLEAN input)
 	{ Child(z, zlink);
 	  res = SearchGalley(z, sym, TRUE, TRUE, TRUE, input);
 	}
-	if( res == nilobj && input && type(y) == RECEIVING &&
+	if( res == nilobj && input && objectOfType(y, RECEIVING) &&
 	    actual(actual(y)) == InputSym )
 	  res = y;
 	break;
 
 
-      case RECEPTIVE:
+      case RECEPTIVE_E:
 	
         debug1(DGA, D, "  examining %s", EchoIndex(y));
-	if( closures && type(actual(y)) == CLOSURE
+	if( closures && objectOfType(actual(y), CLOSURE)
 		     && SearchUses(actual(actual(y)), sym) )  res = y;
 	else if( input && actual(actual(y)) == InputSym )  res = y;
 	break;
@@ -249,7 +249,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
   ifdebug(DGA, DD, DebugGalley(hd, nilobj, 4));
   assert( Up(hd) != hd, "AttachGalley: no index!" );
   Parent(hd_index, Up(hd));
-  assert( type(hd_index) == UNATTACHED, "AttachGalley: not UNATTACHED!" );
+  assert( objectOfType(hd_index, UNATTACHED), "AttachGalley: not UNATTACHED!" );
   hd_inners = tg_inners = nilobj;
   was_sized = sized(hd);
   dim = gall_dir(hd);
@@ -276,7 +276,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	/* search failed to find any new target, so kill the galley */
 	for( link = Down(hd); link != hd; link = NextDown(link) )
 	{ Child(y, link);
-	  if( type(y) == SPLIT )  Child(y, DownDim(y, dim));
+	  if( objectOfType(y, SPLIT) )  Child(y, DownDim(y, dim));
 	  if( is_definite(type(y)) )  break;
 	}
 	if( link != hd )
@@ -302,7 +302,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     }
     else /* unsized galley, either backwards or normal */
     {
-      if( foll_or_prec(hd) == GALL_PREC )
+      if( foll_or_prec(hd).objtype == GALL_PREC_E )
       {	target_index= SearchGalley(Up(hd_index), sym, FALSE, TRUE,TRUE,FALSE);
 	need_precedes = FALSE;
       }
@@ -320,9 +320,9 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	return ATTACH_NOTARGET;
       }
     }
-    assert( type(target_index) == RECEPTIVE, "AttachGalley: target_index!" );
+    assert( objectOfType(target_index, RECEPTIVE), "AttachGalley: target_index!" );
     target = actual(target_index);
-    assert( type(target) == CLOSURE, "AttachGalley: target!" );
+    assert( objectOfType(target, CLOSURE), "AttachGalley: target!" );
 
     /* set target_galley to the expanded value of target */
     debug1(DYY, D, "[ EnterErrorBlock(FALSE) (expanding target %s)",
@@ -444,28 +444,28 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     {
       Child(y, link);
       debug1(DGA, DDD, "  examining %s", EchoIndex(y));
-      if( type(y) == SPLIT )  Child(y, DownDim(y, dim));
-      switch( type(y) )
+      if( objectOfType(y, SPLIT) )  Child(y, DownDim(y, dim));
+      switch( type(y).objtype )
       {
 
-	case EXPAND_IND:
-	case SCALE_IND:
-	case COVER_IND:
-	case GALL_PREC:
-	case GALL_FOLL:
-	case GALL_FOLL_OR_PREC:
-	case GALL_TARG:
-	case CROSS_PREC:
-	case CROSS_FOLL:
-	case CROSS_FOLL_OR_PREC:
-	case CROSS_TARG:
-	case PAGE_LABEL_IND:
+	case EXPAND_IND_E:
+	case SCALE_IND_E:
+	case COVER_IND_E:
+	case GALL_PREC_E:
+	case GALL_FOLL_E:
+	case GALL_FOLL_OR_PREC_E:
+	case GALL_TARG_E:
+	case CROSS_PREC_E:
+	case CROSS_FOLL_E:
+	case CROSS_FOLL_OR_PREC_E:
+	case CROSS_TARG_E:
+	case PAGE_LABEL_IND_E:
 	    
 	  break;
 
 
-	case PRECEDES:
-	case UNATTACHED:
+	case PRECEDES_E:
+	case UNATTACHED_E:
 	    
 	  if( was_sized )
 	  { /* SizeGalley was not called, so hd_inners was not set by it */
@@ -475,17 +475,17 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  break;
 
 
-	case RECEPTIVE:
+	case RECEPTIVE_E:
 
 	  goto SUSPEND;
 
 
-	case RECEIVING:
+	case RECEIVING_E:
 	    
 	  goto SUSPEND;
 
 
-	case FOLLOWS:
+	case FOLLOWS_E:
 	    
 	  Child(tmp, Down(y));
 	  if( Up(tmp) == LastUp(tmp) )
@@ -495,7 +495,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    break;
 	  }
 	  Parent(tmp, Up(tmp));
-	  assert(type(tmp) == PRECEDES, "Attach: PRECEDES!");
+	  assert(objectOfType(tmp, PRECEDES), "Attach: PRECEDES!");
 	  switch( CheckComponentOrder(tmp, target_index) )
 	  {
 	    case CLEAR:		DeleteNode(tmp);
@@ -514,75 +514,75 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  break;
 
 
-	case GAP_OBJ:
+	case GAP_OBJ_E:
 
 	  underline(y) = underline(dest);
 	  if( !join(&gap(y)) )  seen_nojoin(hd) = TRUE;
 	  break;
 
 
-	case BEGIN_HEADER:
-	case END_HEADER:
-	case SET_HEADER:
-	case CLEAR_HEADER:
+	case BEGIN_HEADER_E:
+	case END_HEADER_E:
+	case SET_HEADER_E:
+	case CLEAR_HEADER_E:
 
 	  /* do nothing until actually promoted out of here */
 	  underline(y) = underline(dest);
 	  break;
 
 
-	case CLOSURE:
-	case CROSS:
-	case FORCE_CROSS:
-	case NULL_CLOS:
-	case PAGE_LABEL:
+	case CLOSURE_E:
+	case CROSS_E:
+	case FORCE_CROSS_E:
+	case NULL_CLOS_E:
+	case PAGE_LABEL_E:
 
 	  underline(y) = underline(dest);
 	  break;
 
 
-	case WORD:
-	case QWORD:
-	case ONE_COL:
-	case ONE_ROW:
-	case WIDE:
-	case HIGH:
-	case HSHIFT:
-	case VSHIFT:
-	case HMIRROR:
-	case VMIRROR:
-	case HSCALE:
-	case VSCALE:
-	case HCOVER:
-	case VCOVER:
-	case HCONTRACT:
-	case VCONTRACT:
-	case HLIMITED:
-	case VLIMITED:
-	case HEXPAND:
-	case VEXPAND:
-	case START_HVSPAN:
-	case START_HSPAN:
-	case START_VSPAN:
-	case HSPAN:
-	case VSPAN:
-	case ROTATE:
-	case BACKGROUND:
-	case SCALE:
-	case KERN_SHRINK:
-	case INCGRAPHIC:
-	case SINCGRAPHIC:
-	case PLAIN_GRAPHIC:
-	case GRAPHIC:
-	case LINK_SOURCE:
-	case LINK_DEST:
-	case LINK_DEST_NULL:
-	case LINK_URL:
-	case ACAT:
-	case HCAT:
-	case VCAT:
-	case ROW_THR:
-	case COL_THR:
+	case WORD_E:
+	case QWORD_E:
+	case ONE_COL_E:
+	case ONE_ROW_E:
+	case WIDE_E:
+	case HIGH_E:
+	case HSHIFT_E:
+	case VSHIFT_E:
+	case HMIRROR_E:
+	case VMIRROR_E:
+	case HSCALE_E:
+	case VSCALE_E:
+	case HCOVER_E:
+	case VCOVER_E:
+	case HCONTRACT_E:
+	case VCONTRACT_E:
+	case HLIMITED_E:
+	case VLIMITED_E:
+	case HEXPAND_E:
+	case VEXPAND_E:
+	case START_HVSPAN_E:
+	case START_HSPAN_E:
+	case START_VSPAN_E:
+	case HSPAN_E:
+	case VSPAN_E:
+	case ROTATE_E:
+	case BACKGROUND_E:
+	case SCALE_E:
+	case KERN_SHRINK_E:
+	case INCGRAPHIC_E:
+	case SINCGRAPHIC_E:
+	case PLAIN_GRAPHIC_E:
+	case GRAPHIC_E:
+	case LINK_SOURCE_E:
+	case LINK_DEST_E:
+	case LINK_DEST_NULL_E:
+	case LINK_URL_E:
+	case ACAT_E:
+	case HCAT_E:
+	case VCAT_E:
+	case ROW_THR_E:
+	case COL_THR_E:
 	    
 
 	  underline(y) = underline(dest);
@@ -591,9 +591,9 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    /* make sure y is not joined to a target below (vertical only) */
 	    for( zlink = NextDown(link); zlink != hd; zlink = NextDown(zlink) )
 	    { Child(z, zlink);
-	      switch( type(z) )
+	      switch( type(z).objtype )
 	      {
-	        case RECEPTIVE:
+	        case RECEPTIVE_E:
 		
 		  if( non_blocking(z) )
 		  { zlink = PrevDown(zlink);
@@ -606,7 +606,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 		  break;
 
 
-	        case RECEIVING:
+	        case RECEIVING_E:
 		
 		  if( non_blocking(z) )
 		  { zlink = PrevDown(zlink);
@@ -630,7 +630,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 		  break;
 
 
-	        case GAP_OBJ:
+	        case GAP_OBJ_E:
 		
 		  if( !join(&gap(z)) )  zlink = PrevDown(hd);
 		  break;
@@ -641,7 +641,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    }
 
 	    /* if HCAT, try vertical hyphenation (vertical galleys only) */
-	    if( type(y) == HCAT )  VerticalHyphenate(y);
+	    if( objectOfType(y, HCAT) )  VerticalHyphenate(y);
 	  }
 
 
@@ -897,15 +897,15 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     /* don't use Promote() since it does extra unwanted things here  */
     for( link = Down(hd);  link != hd;  link = NextDown(link) )
     { Child(y, link);
-      switch( type(y) )
+      switch( type(y).objtype )
       {
 
-	case GAP_OBJ:
-	case CLOSURE:
-	case CROSS:
-	case FORCE_CROSS:
-	case NULL_CLOS:
-	case PAGE_LABEL:
+	case GAP_OBJ_E:
+	case CLOSURE_E:
+	case CROSS_E:
+	case FORCE_CROSS_E:
+	case NULL_CLOS_E:
+	case PAGE_LABEL_E:
 	
 	  link = PrevDown(link);
 	  debug1(DGA, D, "  null galley, disposing %s", Image(type(y)));
@@ -922,7 +922,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 
     /* attach hd temporarily to target_index */
     MoveLink(Up(hd), target_index, PARENT);
-    assert( type(hd_index) == UNATTACHED, "AttachGalley: type(hd_index)!" );
+    assert( objectOfType(hd_index, UNATTACHED), "AttachGalley: type(hd_index)!" );
     DeleteNode(hd_index);
 
     /* return; only hd_inners needs to be flushed now */
@@ -940,7 +940,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       debug0(DYY, D, "] LeaveErrorBlock(TRUE) (REJECT)");
       if( tg_inners != nilobj )  DisposeObject(tg_inners), tg_inners = nilobj;
       DisposeObject(target_galley);
-      if( foll_or_prec(hd) == GALL_PREC && !sized(hd) )
+      if( foll_or_prec(hd).objtype == GALL_PREC_E && !sized(hd) )
       {
 	/* move to just before the failed target */
 	MoveLink(Up(hd_index), Up(target_index), PARENT);
@@ -991,7 +991,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 
       /* attach hd to dest */
       MoveLink(Up(hd), dest_index, PARENT);
-      assert( type(hd_index) == UNATTACHED, "AttachGalley: type(hd_index)!" );
+      assert( objectOfType(hd_index, UNATTACHED), "AttachGalley: type(hd_index)!" );
       DeleteNode(hd_index);
 
       /* move first component of hd into dest */
@@ -1001,7 +1001,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       else if( dim == COLM && !external_hor(dest) )
       { Interpose(dest, ACAT, y, y);
 	Parent(junk, Up(dest));
-	assert( type(junk) == ACAT, "AttachGalley: type(junk) != ACAT!" );
+	assert( objectOfType(junk, ACAT), "AttachGalley: type(junk) != ACAT!" );
 	StyleCopy(&save_style(junk), &save_style(dest));
 	adjust_cat(junk) = padjust(&save_style(junk));
       }

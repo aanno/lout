@@ -105,9 +105,9 @@ typedef struct {
   /* penalize widow lines, of the form [ <object> &1rt ... ] */		\
   if( I.tab_count > 0 )							\
   { OBJECT glink = NextDown(NextDown(I.llink));				\
-    assert( type(glink) == LINK, "SIB: glink!");			\
+    assert( objectOfType(glink, LINK), "SIB: glink!");			\
     Child(g, glink);							\
-    if( type(g) == GAP_OBJ && mode(&gap(g)) == TAB_MODE &&		\
+    if( objectOfType(g, GAP_OBJ) && mode(&gap(g)) == TAB_MODE &&		\
 	units(&gap(g)) == AVAIL_UNIT && width(&gap(g)) == 1*FR )		\
       I.badness += WIDOW_BAD_INCR;					\
   }									\
@@ -316,7 +316,7 @@ typedef struct {
   {									\
     /* I is optimal here so save its badness and left endpoint */	\
     Child(g, rlink);							\
-    assert( type(g) == GAP_OBJ, "IntervalShiftRightEnd: type(g)!" );	\
+    assert( objectOfType(g, GAP_OBJ), "IntervalShiftRightEnd: type(g)!" );	\
     save_badness(g) = I.badness;					\
     save_prev(g) = I.llink;						\
     save_cwid(g) = I.cwid;						\
@@ -403,7 +403,7 @@ typedef struct {
     if( save_cwid(lgap) != nilobj )					\
     { OBJECT tlink;							\
       tlink = NextDown(Up(save_cwid(lgap)));				\
-      if( type(tlink) == ACAT )  I.cwid = save_cwid(lgap);		\
+      if( objectOfType(tlink, ACAT) )  I.cwid = save_cwid(lgap);		\
       else Child(I.cwid, tlink);					\
     }									\
     SetIntervalBadness(I, max_width, etc_width);			\
@@ -466,7 +466,7 @@ static FULL_CHAR *IntervalPrint(INTERVAL I, OBJECT x)
     Child(y, link);
     debug2(DOF, DDD, "IntervalPrint at %s %s", Image(type(y)), EchoObject(y));
     assert(y != x, "IntervalPrint: y == x!");
-    if( type(y) == GAP_OBJ )
+    if( objectOfType(y, GAP_OBJ) )
     { g = y;
       if( Down(g) != g )
       {	Child(z, Down(g));
@@ -778,10 +778,11 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   BOOLEAN allow_shrink, BOOLEAN extend_unbreakable, BOOLEAN *hyph_used)
 { INTERVAL I, BestI;
   OBJECT res, gp, tmp, z = nilobj, y = nilobj, link, ylink, prev, next;
-  int max_width, etc_width, outdent_margin = 0, f;  BOOLEAN jn;  unsigned typ;
+  int max_width, etc_width, outdent_margin = 0, f;  BOOLEAN jn;
+  OBJTYPE typ;
   static OBJECT hyph_word = nilobj;
   BOOLEAN hyph_allowed;	    /* TRUE when hyphenation of words is permitted  */
-  assert( type(x) == ACAT, "FillObject: type(x) != ACAT!" );
+  assert( objectOfType(x, ACAT), "FillObject: type(x) != ACAT!" );
 
   debug4(DOF, D, "FillObject(x, %s, can_hyph = %s, %s); %s",
     EchoConstraint(c), bool(can_hyphenate),
@@ -1163,22 +1164,22 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     /* else delete the final &1rt {} from the last line, to help clines */
     else
     { Child(z, LastDown(y));
-      assert( type(z)==WORD && string(z)[0]=='\0', "FillObject: last word!" );
+      assert( objectOfType(z, WORD) && string(z)[0]=='\0', "FillObject: last word!" );
       DisposeChild(LastDown(y));
       Child(z, LastDown(y));
-      assert( type(z) == GAP_OBJ, "FillObject: last gap_obj!" );
+      assert( objectOfType(z, GAP_OBJ), "FillObject: last gap_obj!" );
       DisposeChild(LastDown(y));
     }
 
     /* set unbreakable bit of first and last inter-line gaps, if required */
     if( nobreakfirst(&save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, NextDown(Down(res)));
-      assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (a)!" );
+      assert( objectOfType(gp, GAP_OBJ), "FillObject: type(gp) != GAP_OBJ (a)!" );
       setNobreak(&gap(gp), TRUE);
     }
     if( nobreaklast(&save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, PrevDown(LastDown(res)));
-      assert( type(gp) == GAP_OBJ, "FillObject: type(gp) != GAP_OBJ (b)!" );
+      assert( objectOfType(gp, GAP_OBJ), "FillObject: type(gp) != GAP_OBJ (b)!" );
       setNobreak(&gap(gp), TRUE);
     }
 
@@ -1202,13 +1203,13 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   }
 
   /* rejoin unused hyphenated gaps so that kerning will work across them */
-  if( *hyph_used && type(res) == VCAT )
+  if( *hyph_used && objectOfType(res, VCAT) )
   { for( link = Down(res);  link != res;  link = NextDown(link) )
     { Child(y, link);
-      if( type(y) == ACAT )
+      if( objectOfType(y, ACAT) )
       { for( ylink = Down(y);  ylink != y;  ylink = NextDown(ylink) )
         { Child(gp, ylink);
-	  if( type(gp) == GAP_OBJ && width(&gap(gp)) == 0 &&
+	  if( objectOfType(gp, GAP_OBJ) && width(&gap(gp)) == 0 &&
 	      mode(&gap(gp)) == ADD_HYPH )
 	  {
 	    /* possible candidate for joining, look into what's on each side */
@@ -1228,7 +1229,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	    { 
 	      debug2(DOF, DD, "joining %s with %s", EchoObject(prev),
 		EchoObject(next));
-	      typ = type(prev) == QWORD || type(next) == QWORD ? QWORD : WORD;
+	      typ = objectOfType(prev, QWORD) || objectOfType(next, QWORD) ? QWORD : WORD;
 	      tmp = MakeWordTwo(typ, string(prev), string(next), &fpos(prev));
 	      word_font(tmp) = word_font(prev);
 	      word_colour(tmp) = word_colour(prev);

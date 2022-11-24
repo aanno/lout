@@ -2840,6 +2840,7 @@ extern  OBJECT    xx_hold, xx_res;
 extern	POINTER	  MemCheck;
 // from z26 headers below - but used here
 extern	const FULL_CHAR *Image(OBJTYPE c);
+extern	const FULL_CHAR *Image4Constraints(int c);
 
 #define	USE_SYSTEM_MALLOC	0
 #define	USE_MALLOC_DEBUG	0
@@ -3469,7 +3470,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 #define NextDefinite(x, link, y)					\
 { for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )	\
+    if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)) )	\
 	break;								\
   }									\
 } /* end NextDefinite */
@@ -3786,7 +3787,7 @@ extern	void	  SizeGalley(OBJECT hd, OBJECT env, BOOLEAN rows,
 /***    z22.c	  Galley Service	**************************************/
 extern	void	  PromoteInit(void);
 extern	void	  ClearHeaders(OBJECT hd);
-extern	void	  Interpose(OBJECT z, int typ, OBJECT x, OBJECT y);
+extern	void	  Interpose(OBJECT z, OBJTYPE typ, OBJECT x, OBJECT y);
 extern	void	  FlushInners(OBJECT inners, OBJECT hd);
 extern	void	  ExpandRecursives(OBJECT recs);
 extern	void	  HandleHeader(OBJECT hd, OBJECT header);

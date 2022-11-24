@@ -327,3 +327,25 @@ const FULL_CHAR *Image(OBJTYPE c)
 				return b;
   } /* end switch */
 } /* end Image */
+
+const FULL_CHAR *Image4Constraints(int c)
+{ static FULL_CHAR b[20];
+  switch(c)
+  {
+    case BACK:			return  AsciiToFull("back");
+    case ON:			return  AsciiToFull("on");
+    case FWD:			return  AsciiToFull("fwd");
+
+    case PROMOTE:		return  AsciiToFull("promote");
+    case CLOSE:			return  AsciiToFull("close");
+    case BLOCK:			return  AsciiToFull("block");
+    case CLEAR:			return  AsciiToFull("clear");
+
+    case GAP_ABS:		return  AsciiToFull("abs");
+    case GAP_INC:		return  AsciiToFull("inc");
+    case GAP_DEC:		return  AsciiToFull("dec");
+
+    default:			sprintf( (char *) b, "?? (%d)", c);
+				return b;
+  } /* end switch */
+} /* end Image4Constraints */

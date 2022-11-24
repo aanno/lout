@@ -304,7 +304,7 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
     Error(17, 8, "invalid width or gap %s", WARN, &fpos(x), string(x));
 
   debug2(DGW, D, "GetGap returning (res_gap = %s, res_inc = %s)",
-    EchoGap(res_gap), Image( (int) *res_inc) );
+    EchoGap(res_gap), Image4Constraints( (int) *res_inc) );
 } /* end GetGap */
 
 
@@ -422,7 +422,7 @@ FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir)
 
   }
   debug5(DGW, DD, "ExtraGap( %s, %s, %s, %s ) = %s", EchoLength(a),
-		EchoLength(b), EchoGap(xgap), Image(dir), EchoLength(res));
+		EchoLength(b), EchoGap(xgap), Image4Constraints(dir), EchoLength(res));
   return res;
 } /* end ExtraGap */
 

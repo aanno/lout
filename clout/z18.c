@@ -148,7 +148,7 @@ void TransferInit(OBJECT InitEnv)
 
   /* initialise target and constraint stacks */
   Child(y, Down(root_galley));
-  assert( type(y) == RECEPTIVE && type(actual(y)) == CLOSURE &&
+  assert( objectOfType(y, RECEPTIVE) && objectOfType(actual(y), CLOSURE) &&
 	actual(actual(y)) == InputSym, "TransferInit: initial galley!" );
   assert( external_ver(actual(y)), "TransferInit: input sym not external!" );
   blocked(y) = TRUE;
@@ -178,7 +178,7 @@ OBJECT TransferBegin(OBJECT x)
   CONSTRAINT c;
   debug1(DGT, D, "[ [ TransferBegin( %s )", EchoObject(x));
   ifdebug(DGT, DD, debug_targets());
-  assert( type(x) == CLOSURE, "TransferBegin: non-CLOSURE!" );
+  assert( objectOfType(x, CLOSURE), "TransferBegin: non-CLOSURE!" );
 
   /* add an automatically generated @Tag parameter to x if required */
   if( has_tag(actual(x)) )  CrossAddTag(x);
@@ -239,12 +239,12 @@ OBJECT TransferBegin(OBJECT x)
 
   /* if failed to flush, undo everything and exit */
   Parent(index, Up(hd));
-  if( type(index) == UNATTACHED && !sized(hd) )
+  if( objectOfType(index, UNATTACHED) && !sized(hd) )
   { DeleteNode(index);
     DisposeObject(hold_env);
     if( LastDown(x) != x )
     { Child(env, LastDown(x));
-      if( type(env) == ENV )  DisposeChild(LastDown(x));
+      if( objectOfType(env, ENV) )  DisposeChild(LastDown(x));
     }
     debug1(DGT,D, "] TransferBegin returning failed, x: %s", EchoObject(x));
     return x;
@@ -259,7 +259,7 @@ OBJECT TransferBegin(OBJECT x)
     New(targets[itop], ACAT);  target = nilobj;
     for( link = Down(hd);  link != hd;  link = NextDown(link) )
     { Child(y, link);
-      if( type(y) == RECEPTIVE && actual(actual(y)) == InputSym )
+      if( objectOfType(y, RECEPTIVE) && actual(actual(y)) == InputSym )
       {
 	Constrained(actual(y), &constraints[itop], COLM, &why);
 	if( FitsConstraint(0, 0, constraints[itop]) )
@@ -352,7 +352,7 @@ void TransferComponent(OBJECT x)
     EchoFilePos(&fpos(hd)));
   ifdebug(DSA, D,
     Child(y, Down(hd));
-    while( type(y) == VCAT )  Child(y, Down(y));
+    while( objectOfType(y, VCAT) )  Child(y, Down(y));
     debug2(DSA, D, "  first component is %s at %s",
       Image(type(y)), EchoFilePos(&fpos(y)));
     if( NextDown(Down(hd)) != hd && NextDown(NextDown(Down(hd))) != hd )
@@ -372,7 +372,7 @@ void TransferComponent(OBJECT x)
     New(tinners, ACAT);
     while( Down(dest_index) != dest_index )
     { Child(y, Down(dest_index));
-      assert( type(y) == HEAD, "TransferComponent: input child!" );
+      assert( objectOfType(y, HEAD), "TransferComponent: input child!" );
       if( opt_components(y) != nilobj )
       { DisposeObject(opt_components(y));
 	opt_components(y) = nilobj;
@@ -469,7 +469,7 @@ void TransferEnd(OBJECT x)
     New(tinners, ACAT);
     while( Down(dest_index) != dest_index )
     { Child(y, Down(dest_index));
-      assert( type(y) == HEAD, "TransferEnd: input child!" );
+      assert( objectOfType(y, HEAD), "TransferEnd: input child!" );
       if( opt_components(y) != nilobj )
       { DisposeObject(opt_components(y));
 	opt_components(y) = nilobj;

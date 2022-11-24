@@ -39,11 +39,11 @@ FULL_CHAR *DebugInnersNames(OBJECT inners)
   { for( link = Down(inners);  link != inners;  link = NextDown(link) )
     { Child(y, link);
       if( link != Down(inners) )  StringCat(buff, STR_SPACE);
-      switch( type(y) )
+      switch( type(y).objtype )
       {
 
-        case RECEIVING:
-        case UNATTACHED:
+        case RECEIVING_E:
+        case UNATTACHED_E:
       
 	  assert( Down(y) != y, "DebugInnersNames: UNATTACHED!");
 	  Child(z, Down(y));
@@ -51,10 +51,10 @@ FULL_CHAR *DebugInnersNames(OBJECT inners)
 	  break;
 
 
-        case PRECEDES:
-        case GALL_FOLL_OR_PREC:
-        case GALL_PREC:
-        case DEAD:
+        case PRECEDES_E:
+        case GALL_FOLL_OR_PREC_E:
+        case GALL_PREC_E:
+        case DEAD_E:
       
 	  StringCat(buff, Image(type(y)));
 	  break;
@@ -143,7 +143,7 @@ void FlushGalley(OBJECT hd)
   dim = gall_dir(hd);
 
   RESUME:
-  assert( type(hd) == HEAD, "FlushGalley: type(hd) != HEAD!" );
+  assert( objectOfType(hd, HEAD), "FlushGalley: type(hd) != HEAD!" );
   debug1(DGF, D, "  resuming FlushGalley %s, hd =", SymName(actual(hd)));
   ifdebugcond(DGF, DD, actual(hd) == nilobj, DebugGalley(hd, nilobj, 4));
   assert( Up(hd) != hd, "FlushGalley: resume found no parent to hd!" );
@@ -163,17 +163,17 @@ void FlushGalley(OBJECT hd)
   /***************************************************************************/
 
   Parent(dest_index, Up(hd));
-  switch( type(dest_index) )
+  switch( type(dest_index).objtype )
   {
 
-    case DEAD:
+    case DEAD_E:
     
       /* the galley has been killed off while this process was sleeping */
       debug1(DGF, D, "] FlushGalley %s returning (DEAD)", SymName(actual(hd)));
       return;
 
 
-    case UNATTACHED:
+    case UNATTACHED_E:
     
       /* the galley is currently not attached to a destination */
       attach_status = AttachGalley(hd, &inners, &y);
@@ -300,7 +300,7 @@ void FlushGalley(OBJECT hd)
       break;
 
 
-    case RECEIVING:
+    case RECEIVING_E:
     
       if( actual(actual(dest_index)) == InputSym )
       { ParentFlush(prnt_flush, dest_index, FALSE);
@@ -400,12 +400,12 @@ void FlushGalley(OBJECT hd)
   for( link = Down(hd);  link != hd;  link = NextDown(link) )
   {
     Child(y, link);
-    if( type(y) == SPLIT )  Child(y, DownDim(y, dim));
+    if( objectOfType(y, SPLIT) )  Child(y, DownDim(y, dim));
     debug2(DGF, D, "  examining %s %s", Image(type(y)), EchoObject(y));
-    switch( type(y) )
+    switch( type(y).objtype )
     {
 
-      case GAP_OBJ:
+      case GAP_OBJ_E:
 
 	underline(y) = underline(dest);
 	prec_gap = y;
@@ -428,38 +428,38 @@ void FlushGalley(OBJECT hd)
 	break;
 
 
-      case SCALE_IND:
-      case COVER_IND:
-      case EXPAND_IND:
-      case GALL_PREC:
-      case GALL_FOLL:
-      case GALL_FOLL_OR_PREC:
-      case GALL_TARG:
-      case CROSS_PREC:
-      case CROSS_FOLL:
-      case CROSS_FOLL_OR_PREC:
-      case CROSS_TARG:
-      case PAGE_LABEL_IND:
+      case SCALE_IND_E:
+      case COVER_IND_E:
+      case EXPAND_IND_E:
+      case GALL_PREC_E:
+      case GALL_FOLL_E:
+      case GALL_FOLL_OR_PREC_E:
+      case GALL_TARG_E:
+      case CROSS_PREC_E:
+      case CROSS_FOLL_E:
+      case CROSS_FOLL_OR_PREC_E:
+      case CROSS_TARG_E:
+      case PAGE_LABEL_IND_E:
 
 	underline(y) = underline(dest);
 	break;
 
 
-      case PRECEDES:
-      case UNATTACHED:
+      case PRECEDES_E:
+      case UNATTACHED_E:
 	  
 	if( inners == nilobj )  New(inners, ACAT);
 	Link(inners, y);
 	break;
 
 
-      case RECEIVING:
-      case RECEPTIVE:
+      case RECEIVING_E:
+      case RECEPTIVE_E:
 	  
 	goto SUSPEND;
 
 
-      case FOLLOWS:
+      case FOLLOWS_E:
 	  
 	Child(tmp, Down(y));
 	if( Up(tmp) == LastUp(tmp) )
@@ -468,7 +468,7 @@ void FlushGalley(OBJECT hd)
 	  break;
 	}
 	Parent(tmp, Up(tmp));
-	assert(type(tmp) == PRECEDES, "Flush: PRECEDES!");
+	assert(objectOfType(tmp, PRECEDES), "Flush: PRECEDES!");
 	switch( CheckComponentOrder(tmp, dest_index) )
 	{
 	  case CLEAR:	DeleteNode(tmp);
@@ -492,62 +492,62 @@ void FlushGalley(OBJECT hd)
 	break;
 
 
-      case BEGIN_HEADER:
-      case END_HEADER:
-      case SET_HEADER:
-      case CLEAR_HEADER:
+      case BEGIN_HEADER_E:
+      case END_HEADER_E:
+      case SET_HEADER_E:
+      case CLEAR_HEADER_E:
 
 	/* do nothing except take note, until actually promoted out of here */
 	headers_seen = TRUE;
 	break;
 
 
-      case NULL_CLOS:
-      case PAGE_LABEL:
-      case WORD:
-      case QWORD:
-      case ONE_COL:
-      case ONE_ROW:
-      case WIDE:
-      case HIGH:
-      case HSHIFT:
-      case VSHIFT:
-      case HMIRROR:
-      case VMIRROR:
-      case HSCALE:
-      case VSCALE:
-      case HCOVER:
-      case VCOVER:
-      case HCONTRACT:
-      case VCONTRACT:
-      case HLIMITED:
-      case VLIMITED:
-      case HEXPAND:
-      case VEXPAND:
-      case START_HVSPAN:
-      case START_HSPAN:
-      case START_VSPAN:
-      case HSPAN:
-      case VSPAN:
-      case ROTATE:
-      case BACKGROUND:
-      case SCALE:
-      case KERN_SHRINK:
-      case INCGRAPHIC:
-      case SINCGRAPHIC:
-      case PLAIN_GRAPHIC:
-      case GRAPHIC:
-      case LINK_SOURCE:
-      case LINK_DEST:
-      case LINK_DEST_NULL:
-      case LINK_URL:
-      case ACAT:
-      case HCAT:
-      case VCAT:
-      case ROW_THR:
-      case CLOSURE:
-      case CROSS:
-      case FORCE_CROSS:
+      case NULL_CLOS_E:
+      case PAGE_LABEL_E:
+      case WORD_E:
+      case QWORD_E:
+      case ONE_COL_E:
+      case ONE_ROW_E:
+      case WIDE_E:
+      case HIGH_E:
+      case HSHIFT_E:
+      case VSHIFT_E:
+      case HMIRROR_E:
+      case VMIRROR_E:
+      case HSCALE_E:
+      case VSCALE_E:
+      case HCOVER_E:
+      case VCOVER_E:
+      case HCONTRACT_E:
+      case VCONTRACT_E:
+      case HLIMITED_E:
+      case VLIMITED_E:
+      case HEXPAND_E:
+      case VEXPAND_E:
+      case START_HVSPAN_E:
+      case START_HSPAN_E:
+      case START_VSPAN_E:
+      case HSPAN_E:
+      case VSPAN_E:
+      case ROTATE_E:
+      case BACKGROUND_E:
+      case SCALE_E:
+      case KERN_SHRINK_E:
+      case INCGRAPHIC_E:
+      case SINCGRAPHIC_E:
+      case PLAIN_GRAPHIC_E:
+      case GRAPHIC_E:
+      case LINK_SOURCE_E:
+      case LINK_DEST_E:
+      case LINK_DEST_NULL_E:
+      case LINK_URL_E:
+      case ACAT_E:
+      case HCAT_E:
+      case VCAT_E:
+      case ROW_THR_E:
+      case CLOSURE_E:
+      case CROSS_E:
+      case FORCE_CROSS_E:
 
 	underline(y) = underline(dest);
 	if( dim == ROWM )
@@ -555,13 +555,13 @@ void FlushGalley(OBJECT hd)
 	  /* make sure y is not joined to a target below (vertical case only) */
 	  for( zlink = NextDown(link); zlink != hd; zlink = NextDown(zlink) )
 	  { Child(z, zlink);
-	    switch( type(z) )
+	    switch( type(z).objtype )
 	    {
-	      case RECEPTIVE:
-	      case RECEIVING:	y = z;
+	      case RECEPTIVE_E:
+	      case RECEIVING_E:	y = z;
 				goto SUSPEND;
 
-	      case GAP_OBJ:	if( !join(&gap(z)) )  zlink = PrevDown(hd);
+	      case GAP_OBJ_E:	if( !join(&gap(z)) )  zlink = PrevDown(hd);
 				break;
 
 	      default:		break;
@@ -569,7 +569,7 @@ void FlushGalley(OBJECT hd)
 	  }
 
 	  /* try vertical hyphenation before anything else */
-	  if( type(y) == HCAT )  VerticalHyphenate(y);
+	  if( objectOfType(y, HCAT) )  VerticalHyphenate(y);
 
 	}
 
@@ -586,8 +586,8 @@ void FlushGalley(OBJECT hd)
 	    debug4(DGF, DD, "  flush dest = %s %s, dest_encl = %s %s",
 	      Image(type(dest)), EchoObject(dest),
 	      Image(type(dest_encl)), EchoObject(dest_encl));
-	    assert( (dim==ROWM && type(dest_encl)==VCAT) ||
-	            (dim==COLM && type(dest_encl)==ACAT),
+	    assert( (dim==ROWM && objectOfType(dest_encl, VCAT)) ||
+	            (dim==COLM && objectOfType(dest_encl, ACAT)),
 	      "FlushGalley: dest != VCAT or ACAT!" );
 	    SetNeighbours(Up(dest), FALSE, &prec_gap, &prec_def,
 	      &succ_gap, &succ_def, &dest_side);
@@ -735,9 +735,9 @@ void FlushGalley(OBJECT hd)
 	  /* a chance.  However this is not possible unless the following */
 	  /* gap (if any) is breakable                                    */
 
-	  if( type(NextDown(link)) == LINK )
+	  if( objectOfType(NextDown(link), LINK) )
 	  { Child(tgp, NextDown(link));
-	    assert( type(tgp) == GAP_OBJ, "FlushGalley:  tgp!" );
+	    assert( objectOfType(tgp, GAP_OBJ), "FlushGalley:  tgp!" );
 	    promotable = !nobreak(&gap(tgp));
 	  }
 	  else promotable = TRUE;
@@ -834,7 +834,7 @@ void FlushGalley(OBJECT hd)
 	top_z = z;
 	debug2(DGF, D, "FlushGalley(%s)/REJECT header-examining %s",
 	  SymName(actual(hd)), EchoObject(z));
-	if( type(z) == SPLIT )
+	if( objectOfType(z, SPLIT) )
 	  Child(z, DownDim(z, dim));
 	if( is_header(type(z)) )
 	{
@@ -861,7 +861,7 @@ void FlushGalley(OBJECT hd)
       { Child(y, link);
         debug2(DGS, D, "FlushGalley(%s)/REJECT linking %s",
 	  SymName(actual(hd)), EchoObject(y));
-	assert(type(y)!=COL_THR && type(y)!=ROW_THR, "FlushGalley/REJECT THR!");
+	assert(!objectOfType(y, COL_THR) && !objectOfType(y, ROW_THR), "FlushGalley/REJECT THR!");
 	Link(tmp, y);
 	headers_count++;
       }
@@ -874,7 +874,7 @@ void FlushGalley(OBJECT hd)
 
     /* now detach and resume */
     DetachGalley(hd);
-    assert( type(dest_index) == RECEIVING, "FlushGalley/REJECT: dest_index!" );
+    assert( objectOfType(dest_index, RECEIVING), "FlushGalley/REJECT: dest_index!" );
     prnt_flush = prnt_flush || blocked(dest_index);
     DeleteNode(dest_index);
     goto RESUME;
@@ -897,7 +897,7 @@ void FlushGalley(OBJECT hd)
     }
 
     /* check whether external galleys can remove the blockage */
-    if( type(y) == RECEPTIVE && ready_galls(hd) != nilobj && AllowCrossDb )
+    if( objectOfType(y, RECEPTIVE) && ready_galls(hd) != nilobj && AllowCrossDb )
     { OBJECT eg, val, index2, hd2, tag, seq, newsym;
       BOOLEAN found, gall;  FULL_CHAR newtag[MAX_BUFF], newseq[MAX_BUFF];
 
@@ -909,7 +909,7 @@ void FlushGalley(OBJECT hd)
       if( val == nilobj )
 	Error(20, 1, "error in database file %s",
 	  FATAL, &fpos(y), FileName(eg_fnum(eg)));
-      assert( type(val) == CLOSURE, "AttachG: db CLOSURE!" );
+      assert( objectOfType(val, CLOSURE), "AttachG: db CLOSURE!" );
       New(index2, UNATTACHED);
       actual(index2) = nilobj;
       non_blocking(index2) = TRUE;
@@ -958,10 +958,10 @@ void FlushGalley(OBJECT hd)
 	  if( val == nilobj )
 	    Error(20, 2, "error in database file %s",
 	      FATAL, &fpos(y), FileName(eg_fnum(eg)));
-	  assert( type(val) == CLOSURE, "AttachG: db CLOSURE!" );
+	  assert( objectOfType(val, CLOSURE), "AttachG: db CLOSURE!" );
 	  if( !has_merge(actual(val)) )  DisposeObject(val);
 	  else /* add val to hd2 */
-	  { if( type(hd2) != ACAT )
+	  { if( !objectOfType(hd2, ACAT) )
 	    { OBJECT tmp = hd2;
 	      New(hd2, ACAT);
 	      MoveLink(Up(tmp), hd2, CHILD);
@@ -994,12 +994,12 @@ void FlushGalley(OBJECT hd)
       debug2(DGF, DD, "  ext gall FlushGalley (%s into %s)",
 	SymName(actual(hd2)), SymName(whereto(hd2)));
       debug0(DGF, DD, "  calling FlushGalley from FlushGalley/SUSPEND");
-      if( type(hd2) == ACAT )
+      if( objectOfType(hd2, ACAT) )
 	hd2 = ConvertGalleyList(hd2);
       FlushGalley(hd2);
       goto RESUME;
     }
-    else if( type(y) == RECEPTIVE && trigger_externs(y) && AllowCrossDb )
+    else if( objectOfType(y, RECEPTIVE) && trigger_externs(y) && AllowCrossDb )
     { OBJECT sym, cr, ins, tag, seq, eg, cnt;  BOOLEAN found;
       FULL_CHAR newseq[MAX_BUFF];  FILE_NUM tfnum;  long tfpos, tcont;
       int tlnum;
@@ -1037,11 +1037,11 @@ void FlushGalley(OBJECT hd)
     } /* end if external galleys */
 
     /* if non-blocking, delete the index and resume */
-    if( type(y) == RECEPTIVE && non_blocking(y) )
+    if( objectOfType(y, RECEPTIVE) && non_blocking(y) )
     { DeleteNode(y);
       goto RESUME;
     }
-    else if( type(y) == RECEIVING && non_blocking(y) )
+    else if( objectOfType(y, RECEIVING) && non_blocking(y) )
     {	
       if( Down(y) == y )
       {	DeleteNode(y);
