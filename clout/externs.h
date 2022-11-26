@@ -3014,6 +3014,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  assert(objectOfType(x, typ), "returnNew: created object has unexpected token type");
   return x;
 }
 

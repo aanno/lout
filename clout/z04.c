@@ -47,6 +47,7 @@ unsigned char xhspace, unsigned char xprec, OBJECT xactual)
   vspace(res) = xvspace;  hspace(res) = xhspace;
   precedence(res) = xprec;  actual(res) = xactual;
   debug1(DTS, DDD, "NewToken returning %s", EchoToken(res));
+  assert(objectOfType(res, xtype), "NewToken: created object has unexpected token type");
   return res;
 } /* end NewToken */
 
