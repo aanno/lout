@@ -288,7 +288,7 @@ static void ltab_debug(LINK_DEST_TABLE S, FILE *fp)
     fprintf(fp, "ltab_item(S, %d) =", i);
     if( x == nilobj )
       fprintf(fp, " <nilobj>");
-    else if( type(x) != ACAT )
+    else if( !objectOfType(x, ACAT) )
       fprintf(fp, " not ACAT!");
     else for( link = Down(x);  link != x;  link = NextDown(link) )
     { Child(y, link);
@@ -393,8 +393,9 @@ void PS_IncGRepeated(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-static int PS_FindIncGRepeated(OBJECT x, int typ)
+static int PS_FindIncGRepeated(OBJECT x, OBJTYPE typ)
 { OBJECT link, y;  int i;
+  unsigned objtype = typ.objtype;
   if( incg_files != nilobj )
   {
     for( i=1, link=Down(incg_files); link!=incg_files; i++, link=NextDown(link))
@@ -402,13 +403,13 @@ static int PS_FindIncGRepeated(OBJECT x, int typ)
       Child(y, link);
       if( StringEqual(string(x), string(y)) )
       {
-	if( typ == INCGRAPHIC && incg_type(y) == SINCGRAPHIC )
+	if( objtype == INCGRAPHIC_E && incg_type(y).objtype == SINCGRAPHIC.objtype )
 	{
           Error(49, 15, "use of %s rather than %s contradicts prior %s at %s",
 	    WARN, &fpos(x), KW_INCGRAPHIC, KW_SINCGRAPHIC,
 	    KW_SINCG_REPEATED, EchoFilePos(&fpos(y)));
 	}
-	else if( typ == SINCGRAPHIC && incg_type(y) == INCGRAPHIC )
+	else if( objtype == SINCGRAPHIC_E && incg_type(y).objtype == INCGRAPHIC.objtype )
 	{
           Error(49, 16, "use of %s rather than %s contradicts prior %s at %s",
 	    WARN, &fpos(x), KW_SINCGRAPHIC, KW_INCGRAPHIC,
@@ -1642,27 +1643,27 @@ static void PS_PrintGraphicObject(OBJECT x)
 { OBJECT y, link;
   debug3(DPO, DD, "PS_PrintGraphicObject(%s %s %s)",
     EchoFilePos(&fpos(x)), Image(type(x)), EchoObject(x));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
 
       StringFPuts(string(x), out_fp);
       break;
 	
 
-    case ACAT:
+    case ACAT_E:
     
       for( link = Down(x);  link != x;  link = NextDown(link) )
       {	Child(y, link);
-	if( type(y) == GAP_OBJ )
+	if( objectOfType(y, GAP_OBJ) )
 	{
 	  if( vspace(y) > 0 )  pnl;
 	  else if( hspace(y) > 0 ) fputs(" ", out_fp);
 	}
-	else if( is_word(type(y)) || type(y) == ACAT )
+	else if( is_word(type(y)) || objectOfType(y, ACAT) )
 	  PS_PrintGraphicObject(y);
-	else if( type(y) == WIDE || is_index(type(y)) )
+	else if( objectOfType(y, WIDE) || is_index(type(y)) )
 	{
 	  /* ignore: @Wide, indexes are sometimes inserted by Manifest */
 	}
@@ -1697,7 +1698,7 @@ static void PS_PrintGraphicObject(OBJECT x)
 /*****************************************************************************/
 
 static void PS_DefineGraphicNames(OBJECT x)
-{ assert( type(x) == GRAPHIC, "PrintGraphic: type(x) != GRAPHIC!" );
+{ assert( objectOfType(x, GRAPHIC), "PrintGraphic: type(x) != GRAPHIC!" );
   debug1(DPO, DD, "PS_DefineGraphicNames( %s )", EchoObject(x));
   debug1(DPO, DD, "  style = %s", EchoStyle(&save_style(x)));
 
@@ -1880,8 +1881,8 @@ static void PS_PrintGraphicInclude(OBJECT x, FULL_LENGTH colmark,
 { OBJECT y, full_name;  FILE *fp;  BOOLEAN compressed;  int fnum;
   debug0(DPO, DD, "PS_PrintGraphicInclude(x)");
 
-  assert(type(x)==INCGRAPHIC || type(x)==SINCGRAPHIC, "PrintGraphicInclude!");
-  assert(incgraphic_ok(x), "PrintGraphicInclude: !incgraphic_ok(x)!");
+  assert(objectOfType(x, INCGRAPHIC) || objectOfType(x, SINCGRAPHIC), "PrintGraphicInclude!");
+  assert(incgraphic_ok(x).objtype, "PrintGraphicInclude: !incgraphic_ok(x)!");
 
   /* open the include file and get its full path name */
   Child(y, Down(x));

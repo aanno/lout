@@ -33,8 +33,8 @@
 
 #define load(str, typ, encl)						\
   sym = InsertSym(str, typ, no_fpos, DEFAULT_PREC,  			\
-  FALSE, FALSE, 0, encl, MakeWord(WORD, STR_EMPTY, no_fpos));		\
-  if( typ == NPAR )  visible(sym) = TRUE
+  FALSE, FALSE, DUMMY, encl, MakeWord(WORD, STR_EMPTY, no_fpos));		\
+  if( typ.objtype == NPAR_E )  visible(sym) = TRUE
 
 #define add_par(format, val, sym)					\
   sprintf( (char *) buff, format, val);					\

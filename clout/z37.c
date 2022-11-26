@@ -162,11 +162,11 @@ static	OBJECT		fd_recode;		/* @FontDef @Recode entry    */
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT load(const FULL_CHAR *name, unsigned dtype, OBJECT encl, BOOLEAN compulsory)
+static OBJECT load(const FULL_CHAR *name, OBJTYPE dtype, OBJECT encl, BOOLEAN compulsory)
 { OBJECT res;
-  res = InsertSym(name, dtype, no_fpos, DEFAULT_PREC, FALSE, FALSE, 0, encl,
+  res = InsertSym(name, dtype, no_fpos, DEFAULT_PREC, FALSE, FALSE, DUMMY, encl,
     MakeWord(WORD, STR_EMPTY, no_fpos));
-  if( dtype == NPAR ) visible(res) = TRUE;
+  if( dtype.objtype == NPAR_E ) visible(res) = TRUE;
   if( compulsory )
   { has_compulsory(encl)++;
     is_compulsory(res) = TRUE;
@@ -213,7 +213,7 @@ void FontInit(void)
 #if DEBUG_ON
 static void FontDebug(void)
 { OBJECT family, face, link, flink, zlink, z;  int i;
-  assert(font_root!=nilobj && type(font_root)==ACAT, "FontDebug: font_root!");
+  assert(font_root!=nilobj && objectOfType(font_root, ACAT), "FontDebug: font_root!");
   for( link = Down(font_root);  link != font_root;  link = NextDown(link) )
   { Child(family, link);
     assert( is_word(type(family)), "FontDebug: family!" );
@@ -549,9 +549,9 @@ static OBJECT FontRead(FULL_CHAR *family_name, FULL_CHAR *face_name, OBJECT err)
   Extrafilename = LCMfilename = recode = nilobj;
   for( ylink=Down(fontdef_obj);  ylink != fontdef_obj;  ylink=NextDown(ylink) )
   { Child(y, ylink);
-    if( type(y) == PAR )
+    if( objectOfType(y, PAR) )
     {
-      assert( type(y) == PAR, "FontRead: type(y) != PAR!" );
+      assert( objectOfType(y, PAR), "FontRead: type(y) != PAR!" );
       if( actual(y) == fd_tag )
       {
 	/* do nothing with this one */
@@ -1109,16 +1109,16 @@ void FontChange(STYLE *style, OBJECT x)
   /***************************************************************************/
 
   num = 0;
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case NULL_CLOS:
+    case NULL_CLOS_E:
 
       /* acceptable, but do nothing */
       break;
 
 
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
 
       if( StringEqual(string(x), STR_SMALL_CAPS_ON) )
         setSmall_caps(style, SMALL_CAPS_ON);
@@ -1144,12 +1144,12 @@ void FontChange(STYLE *style, OBJECT x)
       break;
 
 
-    case ACAT:
+    case ACAT_E:
 
       for( link = Down(x);  link != x;  link = NextDown(link) )
       { Child(y, link);
         debug1(DFT, DDD, "  pars examining y = %s", EchoObject(y));
-        if( type(y) == GAP_OBJ || type(y)  == NULL_CLOS )  continue;
+        if( objectOfType(y, GAP_OBJ) || objectOfType(y, NULL_CLOS) )  continue;
         if( is_word(type(y)) ) 
         {
 	  if( StringEqual(string(y), STR_SMALL_CAPS_ON) )
@@ -1875,7 +1875,7 @@ FULL_CHAR *FontFamilyAndFace(FONT_NUM fnum)
 
 void FontPrintAll(FILE *fp)
 { OBJECT family, face, first_size, ps_name, link, flink;
-  assert(font_root!=nilobj && type(font_root)==ACAT, "FontDebug: font_root!");
+  assert(font_root!=nilobj && objectOfType(font_root, ACAT), "FontDebug: font_root!");
   debug0(DFT, DD, "FontPrintAll(fp)");
   for( link = Down(font_root);  link != font_root;  link = NextDown(link) )
   { Child(family, link);
@@ -1917,8 +1917,8 @@ void FontPrintAll(FILE *fp)
 #pragma clang diagnostic ignored "-Wunused-parameter"
 void FontPrintPageSetup(FILE *fp)
 { OBJECT face, first_size, ps_name, link;
-  assert(font_root!=nilobj && type(font_root)==ACAT, "FontDebug: font_root!");
-  assert(font_used!=nilobj && type(font_used)==ACAT, "FontDebug: font_used!");
+  assert(font_root!=nilobj && objectOfType(font_root, ACAT), "FontDebug: font_root!");
+  assert(font_used!=nilobj && objectOfType(font_used, ACAT), "FontDebug: font_used!");
   debug0(DFT, DD, "FontPrintPageSetup(fp)");
   for( link = Down(font_used);  link != font_used;  link = NextDown(link) )
   {
@@ -1950,8 +1950,8 @@ void FontPrintPageSetup(FILE *fp)
 void FontPrintPageResources(FILE *fp)
 { OBJECT face, ps_name, link, pface, pname, plink;
   BOOLEAN first;
-  assert(font_root!=nilobj && type(font_root)==ACAT, "FontDebug: font_root!");
-  assert(font_used!=nilobj && type(font_used)==ACAT, "FontDebug: font_used!");
+  assert(font_root!=nilobj && objectOfType(font_root, ACAT), "FontDebug: font_root!");
+  assert(font_used!=nilobj && objectOfType(font_used, ACAT), "FontDebug: font_used!");
   debug0(DFT, DD, "FontPrintPageResources(fp)");
   first = TRUE;
   for( link = Down(font_used);  link != font_used;  link = NextDown(link) )

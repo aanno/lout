@@ -2123,7 +2123,26 @@ INLINE void setType(OBJECT x, OBJTYPE type) {
 
 #define	word_font(x)		(x)->os1.ou2.os22.oword_font
 #define spanner_count(x)	word_font(x)
-#define incg_type(x)		word_font(x)
+
+// TODO: only allowed values INCGRAPHIC_E and SINCGRAPHIC_E
+// #define incg_type(x)		word_font(x)
+
+INLINE void setIncg_type(OBJECT x, OBJTYPE type) {
+  word_font(x) = type.objtype;
+}
+
+INLINE OBJTYPE incg_type(OBJECT x) {
+  switch(word_font(x)) {
+    case INCGRAPHIC_E:
+      return INCGRAPHIC;
+    case SINCGRAPHIC_E:
+      return SINCGRAPHIC;
+    default:
+      Error(1, 1, "incg_type: only (S)INCGRAPHIC allowed", FATAL, no_fpos);
+  }
+  return DUMMY;
+}
+
 #define	word_colour(x)		(x)->os1.ou2.os22.oword_colour
 #define	word_underline_colour(x) (x)->os1.ou2.os22.oword_underline_colour
 #define	word_texture(x)		(x)->os1.ou2.os22.oword_texture

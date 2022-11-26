@@ -110,14 +110,14 @@ OBJECT FilterCreate(BOOLEAN use_begin, OBJECT act, FILE_POS *xfpos)
 
 void FilterSetFileNames(OBJECT x)
 { OBJECT y;
-  assert( type(x) == FILTERED, "FilterSetFileNames: type(x)!" );
+  assert( objectOfType(x, FILTERED), "FilterSetFileNames: type(x)!" );
   assert( Down(x) != x, "FilterSetFileNames: x has no children!" );
   debug2(DFH, D, "FilterSetFileNames(%p %s)", x, EchoObject(x));
   Child(y, Down(x));
-  assert( type(y) == WORD, "FilterSetFileNames: type(y)!" );
+  assert( objectOfType(y, WORD), "FilterSetFileNames: type(y)!" );
   sym_body(FilterInSym) = y;
   Child(y, NextDown(Down(x)));
-  assert( type(y) == WORD, "FilterSetFileNames: type(y) (2)!" );
+  assert( objectOfType(y, WORD), "FilterSetFileNames: type(y) (2)!" );
   sym_body(FilterOutSym) = y;
   debug0(DFH, D, "FilterSetFileNames returning.");
 } /* end FilterSetFileNames */
@@ -135,8 +135,8 @@ OBJECT FilterExecute(OBJECT x, FULL_CHAR *command, OBJECT env)
 { int status;  OBJECT t, res, scope_snapshot;  FULL_CHAR line[MAX_LINE];
   FILE *err_fp;  FILE_NUM filter_out_file;
 
-  assert( type(x) == FILTERED, "FilterExecute: type(x)!" );
-  assert( type(env) == ENV, "FilterExecute: type(env)!" );
+  assert( objectOfType(x, FILTERED), "FilterExecute: type(x)!" );
+  assert( objectOfType(env, ENV), "FilterExecute: type(env)!" );
   debug4(DFH, D, "FilterExecute(%p %s, \"%s\", %s)", x, EchoObject(x),
     command, EchoObject(env));
 
@@ -203,7 +203,7 @@ OBJECT FilterExecute(OBJECT x, FULL_CHAR *command, OBJECT env)
 
 void FilterWrite(OBJECT x, FILE *fp, int *linecount)
 { FILE *in_fp;  OBJECT y;  int ch;
-  assert( type(x) == FILTERED, "FilterWrite: type(x)!" );
+  assert( objectOfType(x, FILTERED), "FilterWrite: type(x)!" );
   debug2(DFH, D, "[ FilterWrite(%p %s, fp)", x, EchoObject(x));
   Child(y, Down(x));
   in_fp = StringFOpen(string(y), READ_FILE);

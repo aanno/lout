@@ -70,13 +70,13 @@ OBJECT ReadFromFile(FILE_NUM fnum, long pos, int lnum)
   debug3(DIO, D, "ReadFromFile(%s, %d, %d)", FileName(fnum), ipos, lnum);
   LexPush(fnum, (int) pos, DATABASE_FILE, lnum, FALSE);
   t = LexGetToken();
-  if( type(t) != LBR )
+  if( !objectOfType(t, LBR) )
   { debug1(DIO, D, "  following because type(t) = %s", Image(type(t)));
     Error(41, 1, "database index file seems to be out of date",
       FATAL, &fpos(t));
   }
   res = Parse(&t, StartSym, FALSE, FALSE);
-  if( t != nilobj || type(res) != CLOSURE )
+  if( t != nilobj || !objectOfType(res, CLOSURE) )
   { debug1(DIO, D, "  following because of %s", t!=nilobj ? "t" : "type(res)");
     Error(41, 2, "syntax error in database file", FATAL, &fpos(res));
   }
@@ -118,20 +118,20 @@ static void Optimize(OBJECT x, OBJECT env)
 
 static void OptimizeParameterList(OBJECT x, OBJECT env)
 { OBJECT y, z, link, t, tlink;
-  assert( type(x) == CLOSURE, "OptimizeParameterList: type(x) != CLOSURE!" );
+  assert( objectOfType(x, CLOSURE), "OptimizeParameterList: type(x) != CLOSURE!" );
   if( env == nilobj )  return;
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == PAR )
+    if( objectOfType(y, PAR) )
     { Child(z, Down(y));
-      if( type(z) == CLOSURE )
+      if( objectOfType(z, CLOSURE) )
       {
 	Optimize(z, env);
       }
-      else if( type(z) == ACAT )
+      else if( objectOfType(z, ACAT) )
       { for( tlink = Down(z);  tlink != z;  tlink = NextDown(tlink) )
         { Child(t, Down(tlink));
-          if( type(t) == CLOSURE )
+          if( objectOfType(t, CLOSURE) )
 	    Optimize(t, env);
         }
       }
@@ -156,7 +156,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 static BOOLEAN need_lvis(OBJECT sym)	/* true if @LVis needed before sym */
 { return !visible(sym) &&
 	 enclosing(sym) != StartSym &&
-	 type(enclosing(sym)) == LOCAL;
+	 objectOfType(enclosing(sym), LOCAL);
 } /* end need_lvis */
 
 static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
@@ -176,9 +176,9 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
     OptimizeParameterList(x, env);
     for( link = Down(x);  link != x;  link = NextDown(link) )
     { Child(y, link);
-      if( type(y) == PAR )  switch( type(actual(y)) )
+      if( objectOfType(y, PAR) )  switch( type(actual(y)).objtype )
       {
-        case LPAR:
+        case LPAR_E:
       
 	  assert( Down(y) != y, "WriteObject/CLOSURE: LPAR!" );
 	  Child(z, Down(y));
@@ -187,7 +187,7 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
 	  break;
 
 
-        case NPAR:
+        case NPAR_E:
       
 	  assert( Down(y) != y, "WriteObject/CLOSURE: NPAR!" );
 	  Child(z, Down(y));
@@ -219,7 +219,7 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
 	  break;
 
 
-        case RPAR:
+        case RPAR_E:
       
 	  assert( Down(y) != y, "WriteObject/CLOSURE: RPAR!" );
 	  Child(z, Down(y));
@@ -239,11 +239,11 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
 	  { StringFPuts(STR_SPACE, last_write_fp);
 	  }
 	  /* old version: if( filter(sym) != nilobj ) */
-	  if( filter(sym) != nilobj && type(z) == FILTERED ) /* ??? */
+	  if( filter(sym) != nilobj && objectOfType(z, FILTERED) ) /* ??? */
 	  {
 	    debug1(DIO, D, "  filter(sym) != nilobj, type(z) == %s",
 	      Image(type(z)));
-	    assert( type(z) == FILTERED, "WriteClosure:  filter!" );
+	    assert( objectOfType(z, FILTERED), "WriteClosure:  filter!" );
 	    WriteObject(z, NO_PREC, linecount, fnum);
 	  }
 	  else if( has_body(sym) )
@@ -295,10 +295,10 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
   int offset, lnum;
   int prec, i, last_prec;  BOOLEAN braces_needed;
   debug2(DIO, D, "[ WriteObject(%s %s)", Image(type(x)), EchoObject(x));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
 
-    case WORD:
+    case WORD_E:
 
       if( StringLength(string(x)) == 0 && outer_prec > ACAT_PREC )
       { StringFPuts(KW_LBR, last_write_fp);
@@ -308,24 +308,24 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       break;
 
     
-    case QWORD:
+    case QWORD_E:
 
       StringFPuts(StringQuotedWord(x), last_write_fp);
       break;
 
     
-    case VCAT:  prec = VCAT_PREC;  goto ETC;
-    case HCAT:  prec = HCAT_PREC;  goto ETC;
-    case ACAT:  prec = ACAT_PREC;  goto ETC;
+    case VCAT_E:  prec = VCAT_PREC;  goto ETC;
+    case HCAT_E:  prec = HCAT_PREC;  goto ETC;
+    case ACAT_E:  prec = ACAT_PREC;  goto ETC;
 
       ETC:
       if( prec < outer_prec )  StringFPuts(KW_LBR, last_write_fp);
       last_prec = prec;
       for( link = Down(x);  link != x;  link = NextDown(link) )
       {	Child(y, link);
-	if( type(y) == GAP_OBJ )
+	if( objectOfType(y, GAP_OBJ) )
 	{ if( Down(y) == y )
-	  { assert( type(x) == ACAT, "WriteObject: Down(y) == y!" );
+	  { assert( objectOfType(x, ACAT), "WriteObject: Down(y) == y!" );
 	    for( i = 1;  i <= vspace(y);  i++ )
 	      StringFPuts(STR_NEWLINE, last_write_fp);
 	    *linecount += vspace(y);
@@ -335,7 +335,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	  }
 	  else
 	  { Child(gap_obj, Down(y));
-	    if( type(x)==ACAT )
+	    if( objectOfType(x, ACAT) )
 	      StringFPuts(STR_SPACE, last_write_fp);
 	    else
 	    { StringFPuts(STR_NEWLINE, last_write_fp);
@@ -350,11 +350,11 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	  }
 	}
 	else
-	{ if( type(x) == ACAT )
+	{ if( objectOfType(x, ACAT) )
 	  { OBJECT next_gap;  int next_prec;
 	    if( NextDown(link) != x )
 	    { Child(next_gap, NextDown(link));
-	      assert( type(next_gap) == GAP_OBJ, "WriteObject: next_gap!" );
+	      assert( objectOfType(next_gap, GAP_OBJ), "WriteObject: next_gap!" );
 	      next_prec = (vspace(next_gap) + hspace(next_gap) == 0)
 				? JUXTA_PREC : ACAT_PREC;
 	    }
@@ -368,7 +368,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       break;
 
 
-    case ENV:
+    case ENV_E:
 
       if( Down(x) == x )
       {
@@ -395,7 +395,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
         {
 	  /* envt contains just one closure (with its environment) */
 	  Child(y, Down(x));
-	  assert( type(y) == CLOSURE, "WriteObject: ENV/CLOSURE!" );
+	  assert( objectOfType(y, CLOSURE), "WriteObject: ENV/CLOSURE!" );
 	  StringFPuts(KW_LBR, last_write_fp);
 	  StringFPuts(STR_SPACE, last_write_fp);
 	  StringFPuts(KW_ENVA, last_write_fp);
@@ -414,7 +414,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
         {
 	  /* envt contains a closure (with envt) plus an environment */
 	  Child(env, LastDown(x));
-	  assert( type(env) == ENV, "WriteObject: ENV/ENV!" );
+	  assert( objectOfType(env, ENV), "WriteObject: ENV/ENV!" );
 	  StringFPuts(KW_LBR, last_write_fp);
 	  StringFPuts(STR_SPACE, last_write_fp);
 	  StringFPuts(KW_ENVB, last_write_fp);
@@ -427,7 +427,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	  StringFPuts(STR_NEWLINE, last_write_fp);
 	  *linecount += 1;
 	  Child(y, Down(x));
-	  assert( type(y) == CLOSURE, "WriteObject: ENV/ENV+CLOSURE!" );
+	  assert( objectOfType(y, CLOSURE), "WriteObject: ENV/ENV+CLOSURE!" );
 	  StringFPuts(KW_LBR, last_write_fp);
 	  WriteObject(y, NO_PREC, linecount, fnum);
 	  StringFPuts(KW_RBR, last_write_fp);
@@ -440,12 +440,12 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       break;
 
 
-    case CLOSURE:
+    case CLOSURE_E:
 
       sym = actual(x);  env = nilobj;
       if( LastDown(x) != x )
       {	Child(y, LastDown(x));
-	if( type(y) == ENV )  env = y;
+	if( objectOfType(y, ENV) )  env = y;
       }
 
       braces_needed = env != nilobj ||
@@ -485,100 +485,100 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       break;
 
 
-    case CROSS:
-    case FORCE_CROSS:
+    case CROSS_E:
+    case FORCE_CROSS_E:
 
       Child(y, Down(x));
-      assert( type(y) == CLOSURE, "WriteObject/CROSS: type(y) != CLOSURE!" );
+      assert( objectOfType(y, CLOSURE), "WriteObject/CROSS: type(y) != CLOSURE!" );
       if( DEFAULT_PREC <= outer_prec )  StringFPuts(KW_LBR, last_write_fp);
       if( need_lvis(actual(y)) )
       { StringFPuts(KW_LVIS, last_write_fp);
         StringFPuts(STR_SPACE, last_write_fp);
       }
       StringFPuts(SymName(actual(y)), last_write_fp);
-      StringFPuts(type(x) == CROSS ? KW_CROSS : KW_FORCE_CROSS, last_write_fp);
+      StringFPuts(objectOfType(x, CROSS) ? KW_CROSS : KW_FORCE_CROSS, last_write_fp);
       Child(y, LastDown(x));
       WriteObject(y, FORCE_PREC, linecount, fnum);
       if( DEFAULT_PREC <= outer_prec )  StringFPuts(KW_RBR, last_write_fp);
       break;
 
 
-    case NULL_CLOS:	name = KW_NULL;		goto SETC;
-    case PAGE_LABEL:	name = KW_PAGE_LABEL;	goto SETC;
-    case BEGIN_HEADER:	name = KW_BEGIN_HEADER;	goto SETC;
-    case END_HEADER:	name = KW_END_HEADER;	goto SETC;
-    case SET_HEADER:	name = KW_SET_HEADER;	goto SETC;
-    case CLEAR_HEADER:	name = KW_CLEAR_HEADER;	goto SETC;
-    case ONE_COL:	name = KW_ONE_COL;	goto SETC;
-    case ONE_ROW:	name = KW_ONE_ROW;	goto SETC;
-    case WIDE:		name = KW_WIDE;		goto SETC;
-    case HIGH:		name = KW_HIGH;		goto SETC;
-    case HSHIFT:	name = KW_HSHIFT;	goto SETC;
-    case VSHIFT:	name = KW_VSHIFT;	goto SETC;
-    case HMIRROR:	name = KW_HMIRROR;	goto SETC;
-    case VMIRROR:	name = KW_VMIRROR;	goto SETC;
-    case HSCALE:	name = KW_HSCALE;	goto SETC;
-    case VSCALE:	name = KW_VSCALE;	goto SETC;
-    case HCOVER:	name = KW_HCOVER;	goto SETC;
-    case VCOVER:	name = KW_VCOVER;	goto SETC;
-    case SCALE:		name = KW_SCALE;	goto SETC;
-    case KERN_SHRINK:	name = KW_KERN_SHRINK;	goto SETC;
-    case HCONTRACT:	name = KW_HCONTRACT;	goto SETC;
-    case VCONTRACT:	name = KW_VCONTRACT;	goto SETC;
-    case HLIMITED:	name = KW_HLIMITED;	goto SETC;
-    case VLIMITED:	name = KW_VLIMITED;	goto SETC;
-    case HEXPAND:	name = KW_HEXPAND;	goto SETC;
-    case VEXPAND:	name = KW_VEXPAND;	goto SETC;
-    case START_HVSPAN:	name = KW_STARTHVSPAN;	goto SETC;
-    case START_HSPAN:	name = KW_STARTHSPAN;	goto SETC;
-    case START_VSPAN:	name = KW_STARTVSPAN;	goto SETC;
-    case HSPAN:		name = KW_HSPAN;	goto SETC;
-    case VSPAN:		name = KW_VSPAN;	goto SETC;
-    case PADJUST:	name = KW_PADJUST;	goto SETC;
-    case HADJUST:	name = KW_HADJUST;	goto SETC;
-    case VADJUST:	name = KW_VADJUST;	goto SETC;
-    case ROTATE:	name = KW_ROTATE;	goto SETC;
-    case BACKGROUND:	name = KW_BACKGROUND;	goto SETC;
-    case CASE:		name = KW_CASE;		goto SETC;
-    case YIELD:		name = KW_YIELD;	goto SETC;
-    case BACKEND:	name = KW_BACKEND;	goto SETC;
-    case XCHAR:		name = KW_XCHAR;	goto SETC;
-    case FONT:		name = KW_FONT;		goto SETC;
-    case SPACE:		name = KW_SPACE;	goto SETC;
-    case YUNIT:		name = KW_YUNIT;	goto SETC;
-    case ZUNIT:		name = KW_ZUNIT;	goto SETC;
-    case SET_CONTEXT:	name = KW_SET_CONTEXT;	goto SETC;
-    case GET_CONTEXT:	name = KW_GET_CONTEXT;	goto SETC;
-    case BREAK:		name = KW_BREAK;	goto SETC;
-    case UNDERLINE:	name = KW_UNDERLINE;	goto SETC;
-    case UNDERLINE_COLOUR: name=KW_UNDERLINE_COLOUR ;goto SETC;
-    case COLOUR:	name = KW_COLOUR;	goto SETC;
-    case TEXTURE:	name = KW_TEXTURE;	goto SETC;
-    case OUTLINE:	name = KW_OUTLINE;	goto SETC;
-    case LANGUAGE:	name = KW_LANGUAGE;	goto SETC;
-    case CURR_LANG:	name = KW_CURR_LANG;	goto SETC;
-    case CURR_FAMILY:	name = KW_CURR_FAMILY;	goto SETC;
-    case CURR_FACE:	name = KW_CURR_FACE;	goto SETC;
-    case CURR_YUNIT:	name = KW_CURR_YUNIT;	goto SETC;
-    case CURR_ZUNIT:	name = KW_CURR_ZUNIT;	goto SETC;
-    case COMMON:	name = KW_COMMON;	goto SETC;
-    case RUMP:		name = KW_RUMP;		goto SETC;
-    case MELD:		name = KW_MELD;		goto SETC;
-    case INSERT:	name = KW_INSERT;	goto SETC;
-    case ONE_OF:	name = KW_ONE_OF;	goto SETC;
-    case NEXT:		name = KW_NEXT;		goto SETC;
-    case PLUS:		name = KW_PLUS;		goto SETC;
-    case MINUS:		name = KW_MINUS;	goto SETC;
-    case OPEN:		name = KW_OPEN;		goto SETC;
-    case TAGGED:	name = KW_TAGGED;	goto SETC;
-    case INCGRAPHIC:	name = KW_INCGRAPHIC;	goto SETC;
-    case SINCGRAPHIC:	name = KW_SINCGRAPHIC;	goto SETC;
-    case PLAIN_GRAPHIC:	name = KW_PLAINGRAPHIC;	goto SETC;
-    case GRAPHIC:	name = KW_GRAPHIC;	goto SETC;
-    case LINK_SOURCE:	name = KW_LINK_SOURCE;	goto SETC;
-    case LINK_DEST:	name = KW_LINK_DEST;	goto SETC;
-    case LINK_DEST_NULL:name = KW_LINK_DEST;	goto SETC;
-    case LINK_URL:	name = KW_LINK_URL;	goto SETC;
+    case NULL_CLOS_E:	name = KW_NULL;		goto SETC;
+    case PAGE_LABEL_E:	name = KW_PAGE_LABEL;	goto SETC;
+    case BEGIN_HEADER_E:	name = KW_BEGIN_HEADER;	goto SETC;
+    case END_HEADER_E:	name = KW_END_HEADER;	goto SETC;
+    case SET_HEADER_E:	name = KW_SET_HEADER;	goto SETC;
+    case CLEAR_HEADER_E:	name = KW_CLEAR_HEADER;	goto SETC;
+    case ONE_COL_E:	name = KW_ONE_COL;	goto SETC;
+    case ONE_ROW_E:	name = KW_ONE_ROW;	goto SETC;
+    case WIDE_E:		name = KW_WIDE;		goto SETC;
+    case HIGH_E:		name = KW_HIGH;		goto SETC;
+    case HSHIFT_E:	name = KW_HSHIFT;	goto SETC;
+    case VSHIFT_E:	name = KW_VSHIFT;	goto SETC;
+    case HMIRROR_E:	name = KW_HMIRROR;	goto SETC;
+    case VMIRROR_E:	name = KW_VMIRROR;	goto SETC;
+    case HSCALE_E:	name = KW_HSCALE;	goto SETC;
+    case VSCALE_E:	name = KW_VSCALE;	goto SETC;
+    case HCOVER_E:	name = KW_HCOVER;	goto SETC;
+    case VCOVER_E:	name = KW_VCOVER;	goto SETC;
+    case SCALE_E:		name = KW_SCALE;	goto SETC;
+    case KERN_SHRINK_E:	name = KW_KERN_SHRINK;	goto SETC;
+    case HCONTRACT_E:	name = KW_HCONTRACT;	goto SETC;
+    case VCONTRACT_E:	name = KW_VCONTRACT;	goto SETC;
+    case HLIMITED_E:	name = KW_HLIMITED;	goto SETC;
+    case VLIMITED_E:	name = KW_VLIMITED;	goto SETC;
+    case HEXPAND_E:	name = KW_HEXPAND;	goto SETC;
+    case VEXPAND_E:	name = KW_VEXPAND;	goto SETC;
+    case START_HVSPAN_E:	name = KW_STARTHVSPAN;	goto SETC;
+    case START_HSPAN_E:	name = KW_STARTHSPAN;	goto SETC;
+    case START_VSPAN_E:	name = KW_STARTVSPAN;	goto SETC;
+    case HSPAN_E:		name = KW_HSPAN;	goto SETC;
+    case VSPAN_E:		name = KW_VSPAN;	goto SETC;
+    case PADJUST_E:	name = KW_PADJUST;	goto SETC;
+    case HADJUST_E:	name = KW_HADJUST;	goto SETC;
+    case VADJUST_E:	name = KW_VADJUST;	goto SETC;
+    case ROTATE_E:	name = KW_ROTATE;	goto SETC;
+    case BACKGROUND_E:	name = KW_BACKGROUND;	goto SETC;
+    case CASE_E:		name = KW_CASE;		goto SETC;
+    case YIELD_E:		name = KW_YIELD;	goto SETC;
+    case BACKEND_E:	name = KW_BACKEND;	goto SETC;
+    case XCHAR_E:		name = KW_XCHAR;	goto SETC;
+    case FONT_E:		name = KW_FONT;		goto SETC;
+    case SPACE_E:		name = KW_SPACE;	goto SETC;
+    case YUNIT_E:		name = KW_YUNIT;	goto SETC;
+    case ZUNIT_E:		name = KW_ZUNIT;	goto SETC;
+    case SET_CONTEXT_E:	name = KW_SET_CONTEXT;	goto SETC;
+    case GET_CONTEXT_E:	name = KW_GET_CONTEXT;	goto SETC;
+    case BREAK_E:		name = KW_BREAK;	goto SETC;
+    case UNDERLINE_E:	name = KW_UNDERLINE;	goto SETC;
+    case UNDERLINE_COLOUR_E: name=KW_UNDERLINE_COLOUR ;goto SETC;
+    case COLOUR_E:	name = KW_COLOUR;	goto SETC;
+    case TEXTURE_E:	name = KW_TEXTURE;	goto SETC;
+    case OUTLINE_E:	name = KW_OUTLINE;	goto SETC;
+    case LANGUAGE_E:	name = KW_LANGUAGE;	goto SETC;
+    case CURR_LANG_E:	name = KW_CURR_LANG;	goto SETC;
+    case CURR_FAMILY_E:	name = KW_CURR_FAMILY;	goto SETC;
+    case CURR_FACE_E:	name = KW_CURR_FACE;	goto SETC;
+    case CURR_YUNIT_E:	name = KW_CURR_YUNIT;	goto SETC;
+    case CURR_ZUNIT_E:	name = KW_CURR_ZUNIT;	goto SETC;
+    case COMMON_E:	name = KW_COMMON;	goto SETC;
+    case RUMP_E:		name = KW_RUMP;		goto SETC;
+    case MELD_E:		name = KW_MELD;		goto SETC;
+    case INSERT_E:	name = KW_INSERT;	goto SETC;
+    case ONE_OF_E:	name = KW_ONE_OF;	goto SETC;
+    case NEXT_E:		name = KW_NEXT;		goto SETC;
+    case PLUS_E:		name = KW_PLUS;		goto SETC;
+    case MINUS_E:		name = KW_MINUS;	goto SETC;
+    case OPEN_E:		name = KW_OPEN;		goto SETC;
+    case TAGGED_E:	name = KW_TAGGED;	goto SETC;
+    case INCGRAPHIC_E:	name = KW_INCGRAPHIC;	goto SETC;
+    case SINCGRAPHIC_E:	name = KW_SINCGRAPHIC;	goto SETC;
+    case PLAIN_GRAPHIC_E:	name = KW_PLAINGRAPHIC;	goto SETC;
+    case GRAPHIC_E:	name = KW_GRAPHIC;	goto SETC;
+    case LINK_SOURCE_E:	name = KW_LINK_SOURCE;	goto SETC;
+    case LINK_DEST_E:	name = KW_LINK_DEST;	goto SETC;
+    case LINK_DEST_NULL_E:name = KW_LINK_DEST;	goto SETC;
+    case LINK_URL_E:	name = KW_LINK_URL;	goto SETC;
 
       /* print left parameter, if present */
       SETC:
@@ -596,7 +596,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       if( LastDown(x) != x )
       {	Child(y, LastDown(x));
 	StringFPuts(STR_SPACE, last_write_fp);
-	if( type(x) == OPEN )
+	if( objectOfType(x, OPEN) )
 	{ StringFPuts(KW_LBR, last_write_fp);
 	  WriteObject(y, NO_PREC, linecount, fnum);
 	  StringFPuts(KW_RBR, last_write_fp);
@@ -607,26 +607,26 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       break;
 
 
-    case RAW_VERBATIM:
-    case VERBATIM:
+    case RAW_VERBATIM_E:
+    case VERBATIM_E:
 
-      StringFPuts(type(x) == VERBATIM ? KW_VERBATIM : KW_RAWVERBATIM, last_write_fp);
+      StringFPuts(objectOfType(x, VERBATIM) ? KW_VERBATIM : KW_RAWVERBATIM, last_write_fp);
       StringFPuts(STR_SPACE, last_write_fp);
       StringFPuts(KW_BEGIN, last_write_fp);
       StringFPuts(STR_NEWLINE, last_write_fp);
       Child(y, Down(x));
-      if( type(y) == WORD )
+      if( objectOfType(y, WORD) )
       {
 	StringFPuts(string(y), last_write_fp);
         StringFPuts(STR_SPACE, last_write_fp);
       }
       else
       {
-	assert( type(y) == VCAT, "WriteObject/VERBATIM!" );
+	assert( objectOfType(y, VCAT), "WriteObject/VERBATIM!" );
 	for( link = Down(y);  link != y;  link = NextDown(link) )
 	{ Child(z, link);
-	  if( type(z) == GAP_OBJ )  continue;
-	  assert( type(z) == WORD, "WriteObject/VERBATIM/WORD!");
+	  if( objectOfType(z, GAP_OBJ) )  continue;
+	  assert( objectOfType(z, WORD), "WriteObject/VERBATIM/WORD!");
 	  StringFPuts(string(z), last_write_fp);
 	  StringFPuts(STR_NEWLINE, last_write_fp);
 	  *linecount += 1;
@@ -634,11 +634,11 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       }
       StringFPuts(KW_END, last_write_fp);
       StringFPuts(STR_SPACE, last_write_fp);
-      StringFPuts(type(x) == VERBATIM ? KW_VERBATIM : KW_RAWVERBATIM, last_write_fp);
+      StringFPuts(objectOfType(x, VERBATIM) ? KW_VERBATIM : KW_RAWVERBATIM, last_write_fp);
       break;
 
 
-    case FILTERED:
+    case FILTERED_E:
 
       FilterWrite(x, last_write_fp, linecount);
       break;

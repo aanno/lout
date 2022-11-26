@@ -134,7 +134,7 @@ void ReadIncGRepeatedDef(OBJTYPE typ, OBJECT encl)
     return;
   }
   debug0(DFS, D, "  calling PS_IncGRepeated from ReadPrependDef");
-  incg_type(fname) = (typ.objtype == INCG_REPEATED_E ? INCGRAPHIC_E : SINCGRAPHIC_E);
+  setIncg_type(fname, (typ.objtype == INCG_REPEATED_E ? INCGRAPHIC : SINCGRAPHIC));
   PS_IncGRepeated(fname);
 } /* end ReadPrependDef */
 

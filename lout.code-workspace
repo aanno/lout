@@ -6,7 +6,8 @@
 	],
 	"settings": {
 		"files.associations": {
-			"go-externs.h": "c"
+			"go-externs.h": "c",
+			"lout.h": "c"
 		}
 	},
 	"extensions": {

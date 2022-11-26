@@ -146,7 +146,7 @@ static void ctab_debug(COLOUR_TABLE S, FILE *fp)
     fprintf(fp, "ctab_name(S, %d) =", i);
     if( x == nilobj )
       fprintf(fp, " <nilobj>");
-    else if( type(x) != ACAT )
+    else if( !objectOfType(x, ACAT) )
       fprintf(fp, " not ACAT!");
     else for( link = Down(x);  link != x;  link = NextDown(link) )
     { Child(y, link);

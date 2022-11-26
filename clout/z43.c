@@ -130,7 +130,7 @@ static void ltab_debug(LANGUAGE_TABLE S, FILE *fp)
     fprintf(fp, "ltab_item(S, %d) =", i);
     if( x == nilobj )
       fprintf(fp, " <nilobj>");
-    else if( type(x) != ACAT )
+    else if( !objectOfType(x, ACAT) )
       fprintf(fp, " not ACAT!");
     else for( link = Down(x);  link != x;  link = NextDown(link) )
     { Child(y, link);
@@ -202,7 +202,7 @@ void LanguageDefine(OBJECT names, OBJECT inside)
   BOOLEAN junk;
   FULL_CHAR ch;
   int len;
-  assert( names != nilobj && type(names) == ACAT, "LanguageDefine: names!");
+  assert( names != nilobj && objectOfType(names, ACAT), "LanguageDefine: names!");
   assert( Down(names) != names, "LanguageDefine: names is empty!");
   debug2(DLS, D, "LanguageDefine(%s, %s)",
     EchoObject(names), EchoObject(inside));
@@ -236,7 +236,7 @@ void LanguageDefine(OBJECT names, OBJECT inside)
   canonical_tab[lang_count] = y;
 
   /* make inside an ACAT if it isn't already */
-  if( type(inside) != ACAT )
+  if( !objectOfType(inside, ACAT) )
   { New(y, ACAT);
     FposCopy(fpos(y), fpos(inside));
     Link(y, inside);
@@ -260,7 +260,7 @@ void LanguageDefine(OBJECT names, OBJECT inside)
   lang_ends[lang_count] = inside;
   for( link = Down(inside);  link != inside;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == GAP_OBJ )
+    if( objectOfType(y, GAP_OBJ) )
     { link = PrevDown(link);
       DisposeChild(NextDown(link));
       continue;

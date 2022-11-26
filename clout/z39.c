@@ -249,7 +249,7 @@ static char *quoted_string[] = {
 FULL_CHAR *StringQuotedWord(OBJECT x)
 { FULL_CHAR *p, *q, *r;
   static FULL_CHAR buff[MAX_BUFF];
-  assert( type(x) == QWORD, "StringQuotedWord: type(x) != QWORD!" );
+  assert( objectOfType(x, QWORD), "StringQuotedWord: type(x) != QWORD!" );
   q = buff;
   *q++ = CH_QUOTE;
   for( p = string(x);  *p != '\0';  p++ )

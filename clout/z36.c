@@ -1072,7 +1072,7 @@ OBJECT Hyphenate(OBJECT x)
     *class, *key, *ss, *s, *p, *rem, *lig, *a, *b;
   int start, stop, i, curr_node, next_node, pos;
   BOOLEAN hyphenated, success;
-  assert( type(x) == ACAT, "Hyphenate: type(x) != ACAT!" );
+  assert( objectOfType(x, ACAT), "Hyphenate: type(x) != ACAT!" );
   debug1(DHY, D, "Hyphenate(%s)", EchoObject(x));
 
   /* for each word y of x, try to hyphenate it */
@@ -1084,13 +1084,13 @@ OBJECT Hyphenate(OBJECT x)
       if( NextDown(link) != x )
       {
 	Child(z, NextDown(link));
-	if( type(z) == GAP_OBJ && mode(&gap(z)) == HYPH_MODE )
+	if( objectOfType(z, GAP_OBJ) && mode(&gap(z)) == HYPH_MODE )
 	  word_hyph(y) = FALSE;
       }
     }
     if( !is_word(type(y)) || string(y)[0] == '\0' || !word_hyph(y) )
     {
-      if( type(y) == GAP_OBJ && mode(&gap(y)) == HYPH_MODE )
+      if( objectOfType(y, GAP_OBJ) && mode(&gap(y)) == HYPH_MODE )
       {
 	setNobreak(&gap(y), FALSE);
 

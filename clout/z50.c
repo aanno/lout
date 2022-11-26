@@ -657,27 +657,27 @@ static void PDF_PrintGraphicObject(OBJECT x)
 { OBJECT y, link;
   debug3(DPF, D, "PDF_PrintGraphicObject(%s %s %s)",
     EchoFilePos(&fpos(x)), Image(type(x)), EchoObject(x));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
 
       PDFPage_WriteGraphic(out_fp, string(x));
       break;
 	
 
-    case ACAT:
+    case ACAT_E:
     
       for( link = Down(x);  link != x;  link = NextDown(link) )
       {	Child(y, link);
-	if( type(y) == GAP_OBJ )
+	if( objectOfType(y, GAP_OBJ) )
 	{
 	  if( vspace(y) > 0 )  PDFPage_Write(out_fp, (char *) STR_NEWLINE);
 	  else if( hspace(y) > 0 ) PDFPage_Write(out_fp, " ");
 	}
-	else if( is_word(type(y)) || type(y) == ACAT )
+	else if( is_word(type(y)) || objectOfType(y, ACAT) )
 	  PDF_PrintGraphicObject(y);
-	else if( type(y) == WIDE || is_index(type(y)) )
+	else if( objectOfType(y, WIDE) || is_index(type(y)) )
 	{
 	  /* ignore: @Wide, indexes are sometimes inserted by Manifest */
 	}
@@ -712,7 +712,7 @@ static void PDF_PrintGraphicObject(OBJECT x)
 /*****************************************************************************/
 
 static void PDF_DefineGraphicNames(OBJECT x)
-{ assert( type(x) == GRAPHIC, "PrintGraphic: type(x) != GRAPHIC!" );
+{ assert( objectOfType(x, GRAPHIC), "PrintGraphic: type(x) != GRAPHIC!" );
   debug1(DPF, D, "DefineGraphicNames( %s )", EchoObject(x));
   debug1(DPF, DD, "  style = %s", EchoStyle(&save_style(x)));
 

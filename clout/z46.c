@@ -45,14 +45,14 @@ BOOLEAN FindOptimize(OBJECT x, OBJECT env)
 { OBJECT y, link, res;
   OBJECT bt[2], ft[2], ntarget, nenclose, crs;
   debug1(DOG, D, "FindOptimize( %s )", EchoObject(x));
-  assert( type(x) == CLOSURE, "FindOptimize: type(x) != CLOSURE!" );
+  assert( objectOfType(x, CLOSURE), "FindOptimize: type(x) != CLOSURE!" );
   assert( has_target(actual(x)), "FindOptimize: x has no target!" );
 
   /* search the parameter list of x for @Optimize */
   res = nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == PAR && is_optimize(actual(y)) )
+    if( objectOfType(y, PAR) && is_optimize(actual(y)) )
     { assert( Down(y) != y, "FindOptimize: Down(PAR)!" );
       Child(res, Down(y));
       res = CopyObject(res, &fpos(x));
@@ -127,19 +127,19 @@ void SetOptimize(OBJECT hd, STYLE *style)
     res = ReadFromFile(dfnum, dfpos, dlnum);
     UnSwitchScope(nilobj);
     assert( res != nilobj, "SetOptimize: res == nilobj!" );
-    assert( type(res) == CLOSURE, "SetOptimize: type(res) != CLOSURE!" );
+    assert( objectOfType(res, CLOSURE), "SetOptimize: type(res) != CLOSURE!" );
     assert( actual(res) == OptGallSym, "SetOptimize: actual(res) != Opt!" );
     assert( Down(res) != res, "SetOptimize: Down(res) == res!" );
     Child(y, Down(res));
-    assert( type(y) == PAR, "SetOptimize: type(y) != PAR!" );
+    assert( objectOfType(y, PAR), "SetOptimize: type(y) != PAR!" );
     Child(y, Down(y));
-    assert( type(y) == ACAT, "SetOptimize: type(y) != ACAT!" );
+    assert( objectOfType(y, ACAT), "SetOptimize: type(y) != ACAT!" );
     y = ReplaceWithTidy(y, ACAT_TIDY);
     opt_hyph(hd) = FALSE;
-    assert( type(y) == ACAT, "SetOptimize: type(y) != ACAT (2)!" );
+    assert( objectOfType(y, ACAT), "SetOptimize: type(y) != ACAT (2)!" );
     for( link = y;  NextDown(link) != y;  link = NextDown(link) )
     { Child(z, NextDown(link));
-      if( type(z) == GAP_OBJ )
+      if( objectOfType(z, GAP_OBJ) )
       { DisposeChild(NextDown(link));
 	link = PrevDown(link);
       }
@@ -206,7 +206,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
 
   debug2(DOG, D, "GazumpOptimize(%s, %s)", SymName(actual(hd)),
     EchoObject(dest));
-  assert( type(hd) == HEAD, "GazumpOptimize: type(hd) != HEAD!" );
+  assert( objectOfType(hd, HEAD), "GazumpOptimize: type(hd) != HEAD!" );
   assert( opt_components(hd) != nilobj, "GazumpOptimize: opt_c!" );
 
   /* record the size of this just-completed target area for hd */
@@ -226,7 +226,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
   /* optimizing galley is being gazumped; record this as &1rt {} &1c */
   if( LastDown(opt_components(hd)) != opt_components(hd) )
   { Child(g, LastDown(opt_components(hd)));
-    assert( type(g) == GAP_OBJ, "FlushGalley: type(g) != GAP_OBJ!" );
+    assert( objectOfType(g, GAP_OBJ), "FlushGalley: type(g) != GAP_OBJ!" );
 
     /* ***
     SetGap(gap(g), FALSE, FALSE, TRUE, FRAME_UNIT, EDGE_MODE, 2 * FR);
@@ -301,7 +301,7 @@ void CalculateOptimize(OBJECT hd)
   /* delete the concluding GAP_OBJ stuck in by Promote() */
   assert( LastDown(opt_components(hd)) != opt_components(hd), "CO!" );
   Child(last, LastDown(opt_components(hd)));
-  assert( type(last) == GAP_OBJ, "CalculateOptimize: type(last)!" );
+  assert( objectOfType(last, GAP_OBJ), "CalculateOptimize: type(last)!" );
   DisposeChild(Up(last));
   ifdebug(DOG, D, DebugOptimize(hd));
 
@@ -321,7 +321,7 @@ void CalculateOptimize(OBJECT hd)
   ifdebug(DOG, D, DebugOptimize(hd));
 
   /* quit if one line only */
-  if( type(opt_components(hd)) != VCAT ||
+  if( !objectOfType(opt_components(hd), VCAT) ||
       Down(opt_components(hd)) == LastDown(opt_components(hd)) )
   {
     debug0(DOG, D, "CalculateOptimize returning (one target only)");
@@ -349,13 +349,13 @@ void CalculateOptimize(OBJECT hd)
   for( link = Down(opt_components(hd));  link != opt_components(hd);
        link = NextDown(link) )
   { Child(y, link);
-    if( type(y) != ACAT )  continue;
+    if( !objectOfType(y, ACAT) )  continue;
 
     /* let wd be a word containing the number of components in this target */
     count = 0;
     for( ylink = Down(y);  ylink != y;  ylink = NextDown(ylink) )
     { Child(z, ylink);
-      if( type(z) != GAP_OBJ ) count++;
+      if( !objectOfType(z, GAP_OBJ) ) count++;
     }
     wd = MakeWord(WORD, StringInt(count), &fpos(y));
 
@@ -411,10 +411,10 @@ void CalculateOptimize(OBJECT hd)
 #pragma clang diagnostic ignored "-Wunused-function"
 static void DebugOptimizedAcat(OBJECT x)
 { OBJECT link, y;
-  assert( type(x) == ACAT, "DebugOptimizedAcat!" );
+  assert( objectOfType(x, ACAT), "DebugOptimizedAcat!" );
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == GAP_OBJ )
+    if( objectOfType(y, GAP_OBJ) )
     { debug1(DOG, D, "  GAP_OBJ %s", EchoGap(&gap(y)));
     }
     else if( is_word(type(y)) )
@@ -445,15 +445,15 @@ void DebugOptimize(OBJECT hd)
 
   /* print components */
   /* *** believe this now ***
-  if( type(opt_components(hd)) == ACAT )
+  if( objectOfType(opt_components(hd), ACAT) )
     DebugOptimizedAcat(opt_components(hd));
-  else if( type(opt_components(hd)) == VCAT )
+  else if( objectOfType(opt_components(hd), VCAT) )
   {
     for( link = Down(opt_components(hd));  link != opt_components(hd);
 	 link = NextDown(link) )
     {
       Child(y, link);
-      if( type(y) == ACAT )  DebugOptimizedAcat(y);
+      if( objectOfType(y, ACAT) )  DebugOptimizedAcat(y);
       debug0(DOG, D, "----------------");
     }
   }

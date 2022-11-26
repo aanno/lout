@@ -45,7 +45,7 @@
 #define FirstDefiniteCompressed(x, link, y)				\
 { BOOLEAN jn;								\
   FirstDefinite(x, link, y, jn);					\
-  while( link != x && type(y) == VCAT )					\
+  while( link != x && objectOfType(y, VCAT) )					\
   { TransferLinks(Down(y), y, link);					\
     DisposeChild(link);							\
     FirstDefinite(x, link, y, jn);					\
@@ -57,11 +57,11 @@
 { OBJECT start_link = PrevDown(link), ylink, yg, z;			\
   BOOLEAN jn;								\
   NextDefiniteWithGap(x, link, y, g, jn);				\
-  while( link != x && type(y) == VCAT )					\
+  while( link != x && objectOfType(y, VCAT) )					\
   { FirstDefinite(y, ylink, z, jn);					\
     if( ylink != y && PrevDown(ylink) != y )				\
     { Child(yg, PrevDown(ylink));					\
-      assert( type(yg)==GAP_OBJ && mode(&gap(yg)) != NO_MODE, "NDWGC!");	\
+      assert( objectOfType(yg, GAP_OBJ) && mode(&gap(yg)) != NO_MODE, "NDWGC!");	\
       MoveLink(PrevDown(ylink), Up(g), PARENT);				\
       MoveLink(Up(g), ylink, PARENT);					\
     }									\
@@ -87,47 +87,47 @@
 static OBJECT FindTarget(OBJECT index)
 { OBJECT res = nilobj;
   debug1(DVH, DD, "FindTarget(%s)", Image(type(index)));
-  switch( type(index) )
+  switch( type(index).objtype )
   {
-    case DEAD:
+    case DEAD_E:
 
       res = nilobj;
       break;
 
 
-    case UNATTACHED:
-    case GALL_PREC:
-    case GALL_FOLL:
-    case GALL_FOLL_OR_PREC:
+    case UNATTACHED_E:
+    case GALL_PREC_E:
+    case GALL_FOLL_E:
+    case GALL_FOLL_OR_PREC_E:
 
       res = pinpoint(index);
       break;
 
 
-    case RECEPTIVE:
-    case RECEIVING:
-    case RECURSIVE:
-    case SCALE_IND:
-    case COVER_IND:
-    case EXPAND_IND:
+    case RECEPTIVE_E:
+    case RECEIVING_E:
+    case RECURSIVE_E:
+    case SCALE_IND_E:
+    case COVER_IND_E:
+    case EXPAND_IND_E:
 
       res = actual(index);
       break;
 
 
-    case PRECEDES:
-    case FOLLOWS:
-    case CROSS_TARG:
-    case CROSS_PREC:
-    case CROSS_FOLL:
-    case CROSS_FOLL_OR_PREC:
-    case PAGE_LABEL_IND:
+    case PRECEDES_E:
+    case FOLLOWS_E:
+    case CROSS_TARG_E:
+    case CROSS_PREC_E:
+    case CROSS_FOLL_E:
+    case CROSS_FOLL_OR_PREC_E:
+    case PAGE_LABEL_IND_E:
 
       res = nilobj;  /* somewhat doubtful */
       break;
 
 
-    case GALL_TARG:
+    case GALL_TARG_E:
 
       res = nilobj;  /* somewhat doubtful */
       break;
@@ -157,7 +157,7 @@ static OBJECT WhichComponent(OBJECT target)
   debug1(DVH, DD, "WhichComponent(%s)", EchoObject(target));
   while( Up(target) != target )
   { Parent(prnt, Up(target));
-    if( type(prnt) == HEAD )
+    if( objectOfType(prnt, HEAD) )
     { debug1(DVH, DD, "WhichComponent returning %s", EchoObject(target));
       return target;
     }
@@ -195,7 +195,7 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
   thr_state(new_row_thread) = SIZED;
   for( link = Down(y);  link != y;  link = NextDown(link) )
   { Child(s1, link);
-    if( type(s1) == GAP_OBJ )
+    if( objectOfType(s1, GAP_OBJ) )
     { New(new_s1, GAP_OBJ);
       FposCopy(fpos(new_s1), fpos(s1));
       GapCopy(gap(new_s1), gap(s1));
@@ -204,13 +204,13 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
       Link(new_y, new_s1);
       continue;
     }
-    if( type(s1) == WIDE || type(s1) == ONE_COL )
+    if( objectOfType(s1, WIDE) || objectOfType(s1, ONE_COL) )
     { Child(s2, Down(s1));
     }
     else 
     { s2 = s1;
     }
-    assert( type(s2) == SPLIT, "EncloseInHcat: type(s2) != SPLIT!" );
+    assert( objectOfType(s2, SPLIT), "EncloseInHcat: type(s2) != SPLIT!" );
     Child(sh, DownDim(s2, COLM));
     New(new_s2, SPLIT);
     FposCopy(fpos(new_s2), fpos(s2));
@@ -278,10 +278,10 @@ BOOLEAN VerticalHyphenate(OBJECT y)
   /* find large_comp, the largest VCAT component, or else return FALSE */
   row_thread = large_comp = nilobj;
   rump_fwd = 0;
-  assert( type(y) == HCAT, "VerticalHyphenate: type(y) != HCAT!" );
+  assert( objectOfType(y, HCAT), "VerticalHyphenate: type(y) != HCAT!" );
   for( link = Down(y);  link != y;  link = NextDown(link) )
   { Child(s1, link);
-    if( type(s1) == GAP_OBJ )
+    if( objectOfType(s1, GAP_OBJ) )
     { if( !join(&gap(s1)) )
       { debug0(DVH, D, "] VerticalHyphenate returning FALSE (not joined)");
 	return FALSE;
@@ -290,19 +290,19 @@ BOOLEAN VerticalHyphenate(OBJECT y)
     }
 
     /* check that s2 is a SPLIT object whose children look right */
-    if( type(s1) == WIDE || type(s1) == ONE_COL )
+    if( objectOfType(s1, WIDE) || objectOfType(s1, ONE_COL) )
     { Child(s2, Down(s1));
     }
     else 
     { s2 = s1;
     }
-    if( type(s2) != SPLIT )
+    if( !objectOfType(s2, SPLIT) )
     { debug0(DVH, D, "] VerticalHyphenate returning FALSE (child not SPLIT)");
       return FALSE;
     }
     Child(sh, DownDim(s2, COLM));
     Child(sv, DownDim(s2, ROWM));
-    if( type(sv) != ROW_THR )
+    if( !objectOfType(sv, ROW_THR) )
     { debug0(DVH, D, "] VerticalHyphenate returning FALSE (no ROW_THR)");
       return FALSE;
     }
@@ -318,7 +318,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
     }
 
     /* Now sh is one of the HCAT components */
-    if( type(sh) != VCAT )
+    if( !objectOfType(sh, VCAT) )
     { rump_fwd = find_max(rump_fwd, fwd(sh, ROWM));
     }
     else if( large_comp != nilobj )
@@ -360,7 +360,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
   /* check that large_comp has no joins */
   for( link = Down(large_comp);  link != large_comp;  link = NextDown(link) )
   { Child(z, link);
-    if( type(z) == GAP_OBJ && mode(&gap(z)) != NO_MODE && join(&gap(z)) )
+    if( objectOfType(z, GAP_OBJ) && mode(&gap(z)) != NO_MODE && join(&gap(z)) )
     { debug0(DVH, D, "] VerticalHyphenate returning FALSE (VCAT: joined)");
       return FALSE;
     }
@@ -369,7 +369,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
   /* enclose all definite components after the first in HCATs */
   for( link = NextDown(Up(prev));  link != large_comp;  link = NextDown(link) )
   { Child(nxt, link);
-    if( type(nxt) == GAP_OBJ )  continue;
+    if( objectOfType(nxt, GAP_OBJ) )  continue;
     if( is_definite(type(nxt)) )
       nxt = EncloseInHcat(nxt, y, large_comp);
   }
@@ -382,7 +382,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
 	      = fwd(large_comp_split, ROWM) = fwd(prev, ROWM);
 
   /* set link to the link of the first thing before y which is not an index */
-  for( link = PrevDown(Up(y));  type(link) == LINK;  link = PrevDown(link) )
+  for( link = PrevDown(Up(y));  objectOfType(link, LINK);  link = PrevDown(link) )
   { Child(index, link);
     if( !is_index(type(index)) )  break;
   }
@@ -429,7 +429,7 @@ static OBJECT BuildMergeTree(int n, OBJECT x, OBJECT *lenv, OBJECT *lact)
   { New(res, ENV_OBJ);
     Child(y, Down(x));
     MoveLink(Down(x), res, PARENT);
-    assert(type(y)==CLOSURE && has_merge(actual(y)), "BuildMergeTree: has_m!");
+    assert(objectOfType(y, CLOSURE) && has_merge(actual(y)), "BuildMergeTree: has_m!");
     *lact = actual(y);
     *lenv = DetachEnv(y);
     AttachEnv(*lenv, res);
@@ -525,17 +525,17 @@ OBJECT BuildEnclose(OBJECT hd)
   parsym = nilobj;
   for( link = Down(sym);  link != sym;  link = NextDown(link) )
   { Child(y, link);
-    switch( type(y) )
+    switch( type(y).objtype )
     {
-	case LPAR:
-	case NPAR:
+	case LPAR_E:
+	case NPAR_E:
 
 	  Error(44, 1, "%s may not have a left or named parameter", FATAL,
 	    &fpos(y), KW_ENCLOSE);
 	  break;
 
 
-	case RPAR:
+	case RPAR_E:
 
 	  if( has_body(sym) )
 	    Error(44, 2, "%s may not have a body parameter", FATAL,
@@ -566,7 +566,7 @@ OBJECT BuildEnclose(OBJECT hd)
   /* set env to the appropriate environment for this symbol */
   /* strictly speaking y should not be included if sym is a parameter */
   Child(y, Down(hd));
-  assert(type(y) == CLOSURE, "BuildEnclose:  hd child!");
+  assert(objectOfType(y, CLOSURE), "BuildEnclose:  hd child!");
   y = CopyObject(y, &fpos(hd));
   env = SetEnv(y, nilobj);
 

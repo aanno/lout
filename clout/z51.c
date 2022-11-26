@@ -299,7 +299,7 @@ static void Plain_PrintPlainGraphic(OBJECT x, FULL_LENGTH xmk,
   debug2(DPT, D, "Plain_PrintPlainGraphic(x, xmk %s, ymk %s)",
     EchoLength(xmk), EchoLength(ymk));
 
-  if( type(x) != WORD && type(x) != QWORD )
+  if( !objectOfType(x, WORD) && !objectOfType(x, QWORD) )
   {
     Error(51, 2, "left parameter of %s must be a simple word",
       WARN, &fpos(x), KW_PLAINGRAPHIC);
