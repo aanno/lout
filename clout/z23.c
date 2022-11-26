@@ -114,7 +114,7 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size,int dim)
     mk = back(prev, dim);
     NextDefiniteWithGap(x, link, y, g, jn);
     while( link != x )
-    { if ( mode(&gap(g)) == TAB_MODE || units(&gap(g)) == AVAIL_UNIT
+    { if ( spaceMode(&gap(g), TAB_MODE) || units(&gap(g)) == AVAIL_UNIT
 				    || units(&gap(g)) == FRAME_UNIT )
       {	debug0(DGP, DD, "FindAdjustIncrement returning 0 (tab gap)");
 	return 0;
@@ -793,7 +793,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  /*******************************************************************/
 
 	  NextDefiniteWithGap(x, link, y, g, jn); /* not LDN since will redo */
-	  if( link != x && mode(&gap(g)) == TAB_MODE &&
+	  if( link != x && spaceMode(&gap(g), TAB_MODE) &&
 	      units(&gap(g)) == AVAIL_UNIT && width(&gap(g)) == 0 )
 	  {
 	    debug2(DGP, DD, "  FAPO-CAT converting 0rt (back(x, dim) %s, xb %s)",
@@ -839,7 +839,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  NextDefiniteWithGapLDN(x, link, y, g, jn, mk, dim, NO_SUPPRESS, pg);
 	  while( link != x )
 	  {
-	    if( mode(&gap(g)) == TAB_MODE && units(&gap(g)) == AVAIL_UNIT &&
+	    if( spaceMode(&gap(g), TAB_MODE) && units(&gap(g)) == AVAIL_UNIT &&
 		width(&gap(g))==FR )
 	    {
 	      /* object is followed by 1rt gap, give it full space to print */
@@ -1059,7 +1059,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  save_actual_gap(g) = ActualGap(fwd(prev, dim), back(y, dim),
 		fwd(y, dim), &gap(g), frame_size, mk - back_edge);
 	  mk += save_actual_gap(g);
-	  if( mode(&gap(g)) == TAB_MODE || units(&gap(g)) == AVAIL_UNIT
+	  if( spaceMode(&gap(g), TAB_MODE) || units(&gap(g)) == AVAIL_UNIT
 				       || units(&gap(g)) == FRAME_UNIT )
 	  { last_bad_gap = g;
 	    adjustable_gaps = 0;

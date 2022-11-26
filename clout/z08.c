@@ -1256,7 +1256,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	/* compress adjacent juxtaposed words of equal font, etc. */
 	if( is_word(type(y)) && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
 	    vspace(g)+hspace(g)==0 &&
-	    units(&gap(g)) == FIXED_UNIT && mode(&gap(g)) == EDGE_MODE &&
+	    units(&gap(g)) == FIXED_UNIT && spaceMode(&gap(g), EDGE_MODE) &&
 	    prev != nilobj && is_word(type(prev)) && !mark(&gap(g)) &&
 	    word_font(prev) == word_font(y) &&
 	    word_colour(prev) == word_colour(y) &&
@@ -1339,7 +1339,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &shift_gap(x), &res_inc);
       setShift_type(x, res_inc);
-      if( mode(&shift_gap(x)) != EDGE_MODE || 
+      if( !spaceMode(&shift_gap(x), EDGE_MODE) || 
 	  (units(&shift_gap(x))!=FIXED_UNIT && units(&shift_gap(x))!=NEXT_UNIT) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
@@ -1456,7 +1456,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &res_gap, &res_inc);
-      if( res_inc != GAP_ABS || mode(&res_gap) != EDGE_MODE ||
+      if( res_inc != GAP_ABS || !spaceMode(&res_gap, EDGE_MODE) ||
 		units(&res_gap) != DEG_UNIT )
       {	Error(8, 28, "replacing invalid left parameter of %s by 0d",
 	  WARN, &fpos(y), Image(type(x)) );

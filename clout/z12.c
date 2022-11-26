@@ -929,7 +929,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	  while( link != x )
 	  {
 	    /* check whether we need to break the paragraph here at g */
-	    if( mode(&gap(g)) != NO_MODE && line_breaker(g) )
+	    if( !spaceMode(&gap(g), NO_MODE) && line_breaker(g) )
 	    {
 	      /* if this is our first break, build res */
 	      if( res == nilobj )
@@ -1053,7 +1053,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		    objectOfType(x, ACAT) &&
 		    is_word(type(prev)) && vspace(g) + hspace(g) == 0 &&
 		    units(&gap(g)) == FIXED_UNIT &&
-		    mode(&gap(g)) == EDGE_MODE && !mark(&gap(g)) &&
+		    spaceMode(&gap(g), EDGE_MODE) && !mark(&gap(g)) &&
 		    word_font(prev) == word_font(y) &&
 		    word_colour(prev) == word_colour(y) &&
 		    word_underline_colour(prev) == word_underline_colour(y) &&
@@ -1129,8 +1129,8 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      else
 	      { FULL_LENGTH tmp;
 		tmp = MinGap(fwd(prev,dim), back(y,dim), fwd(y, dim), &gap(g));
-		assert(g!=nilobj && mode(&gap(g))!=NO_MODE, "MinSize: NO_MODE!");
-		if( units(&gap(g)) == FIXED_UNIT && mode(&gap(g)) == TAB_MODE )
+		assert(g!=nilobj && !spaceMode(&gap(g), NO_MODE), "MinSize: NO_MODE!");
+		if( units(&gap(g)) == FIXED_UNIT && spaceMode(&gap(g), TAB_MODE) )
 		{
 		  f = find_max(width(&gap(g)) + back(y, dim), f + tmp);
 		}

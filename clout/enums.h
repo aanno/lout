@@ -353,15 +353,26 @@ extern const OBJTYPE SCOPE_SNAPSHOT;
 extern const OBJTYPE DISPOSED;
 
 /* gap modes occupying mode(x) */
-typedef enum space_mode {
-    NO_MODE = 0,    /* for error detection: no mode      */
-    EDGE_MODE,      /* edge-to-edge spacing              */
-    HYPH_MODE,      /* edge-to-edge with hyphenation     */
-    MARK_MODE,      /* mark-to-mark spacing              */
-    OVER_MODE,      /* overstrike spacing                */
-    KERN_MODE,      /* kerning spacing                   */
-    TAB_MODE,       /* tabulation spacing                */
-    ADD_HYPH        /* 7  temp value used by FillObject     */
-} SPACE_MODE;
+typedef enum space_mode_t {
+    NO_MODE_E = 0,    /* for error detection: no mode      */
+    EDGE_MODE_E,      /* edge-to-edge spacing              */
+    HYPH_MODE_E,      /* edge-to-edge with hyphenation     */
+    MARK_MODE_E,      /* mark-to-mark spacing              */
+    OVER_MODE_E,      /* overstrike spacing                */
+    KERN_MODE_E,      /* kerning spacing                   */
+    TAB_MODE_E,       /* tabulation spacing                */
+    ADD_HYPH_E        /* 7  temp value used by FillObject     */
+} SPACE_MODE_T;
+
+typedef struct space_mode { SPACE_MODE_T spacemode; } SPACE_MODE;
+
+extern const SPACE_MODE NO_MODE;
+extern const SPACE_MODE EDGE_MODE;
+extern const SPACE_MODE HYPH_MODE;
+extern const SPACE_MODE MARK_MODE;
+extern const SPACE_MODE OVER_MODE;
+extern const SPACE_MODE KERN_MODE;
+extern const SPACE_MODE TAB_MODE;
+extern const SPACE_MODE ADD_HYPH;
 
 #endif

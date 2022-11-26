@@ -107,7 +107,7 @@ typedef struct {
   { OBJECT glink = NextDown(NextDown(I.llink));				\
     assert( objectOfType(glink, LINK), "SIB: glink!");			\
     Child(g, glink);							\
-    if( objectOfType(g, GAP_OBJ) && mode(&gap(g)) == TAB_MODE &&		\
+    if( objectOfType(g, GAP_OBJ) && spaceMode(&gap(g), TAB_MODE) &&		\
 	units(&gap(g)) == AVAIL_UNIT && width(&gap(g)) == 1*FR )		\
       I.badness += WIDOW_BAD_INCR;					\
   }									\
@@ -182,7 +182,7 @@ typedef struct {
     /* set save_space(newg) now so that it is OK to forget right */	\
     debug0(DOF, DDD, "  MoveRightToGap setting save_space(newg)");	\
     if( I.cwid != nilobj )  etc_width = bfc(constraint(I.cwid));	\
-    if( mode(&gap(newg)) == TAB_MODE )					\
+    if( spaceMode(&gap(newg), TAB_MODE) )					\
     { save_space(newg) = ActualGap(0, back(foll,COLM), fwd(foll,COLM),	\
 	  &gap(newg), etc_width, 0) - back(foll, COLM);			\
     }									\
@@ -208,7 +208,7 @@ typedef struct {
 									\
     /* sort out ending with hyphenation and/or being unbreakable */	\
     /* NB ADD_HYPH is possible after a restart                   */	\
-    if( mode(&gap(newg)) == HYPH_MODE || mode(&gap(newg)) == ADD_HYPH )	\
+    if( spaceMode(&gap(newg), HYPH_MODE) || spaceMode(&gap(newg), ADD_HYPH) )	\
     { if( hyph_allowed )						\
       {									\
 	/* hyphenation is allowed, so add hyph_word to nat_width */	\
@@ -261,7 +261,7 @@ typedef struct {
   else I.rlink = x;							\
   SetIntervalBadness(I, max_width, etc_width);				\
   if( unbreakable_at_right )  I.class = UNBREAKABLE_RIGHT;		\
-  else if( I.class == TIGHT && mode(&gap(newg)) == TAB_MODE )		\
+  else if( I.class == TIGHT && spaceMode(&gap(newg), TAB_MODE) )		\
     I.class = TOO_TIGHT, I.badness = TOO_TIGHT_BAD;			\
   debug0(DOF, DDD, "MoveRightToGap returning.");				\
 }
@@ -323,7 +323,7 @@ typedef struct {
 									\
     /* if hyphenation case, must take away width of hyph_word */	\
     /* and increase the badness to discourage breaks at this point */	\
-    if( mode(&gap(g)) == ADD_HYPH )					\
+    if( spaceMode(&gap(g), ADD_HYPH) )					\
     {									\
       if( !marginkerning(&save_style(x)) )				\
 	I.nat_width -= size(hyph_word,COLM);				\
@@ -336,7 +336,7 @@ typedef struct {
     assert( rlink != x, "IntervalShiftRightEnd: rlink == x!" );		\
 									\
     /* modify I to reflect the addition of g and right */		\
-    if( mode(&gap(g)) == TAB_MODE )					\
+    if( spaceMode(&gap(g), TAB_MODE) )					\
     { I.tab_count++;							\
       I.tab_pos = save_space(g);					\
       I.width_to_tab = I.nat_width;					\
@@ -377,7 +377,7 @@ typedef struct {
   assert( llink != x, "IntervalShiftLeftEnd: llink == x!" );		\
 									\
   /* calculate width and badness of interval minus left and lgap */	\
-  if( mode(&gap(lgap)) == TAB_MODE )					\
+  if( spaceMode(&gap(lgap), TAB_MODE) )					\
   { assert( I.tab_count > 0 || Up(lgap) == I.rlink,			\
 			"IntervalShiftLeftEnd: tab_count <= 0!" );	\
     I.tab_count--;							\
@@ -408,7 +408,7 @@ typedef struct {
     }									\
     SetIntervalBadness(I, max_width, etc_width);			\
     if( nobreak(&gap(lgap)) || ( !hyph_allowed &&			\
-	(mode(&gap(lgap))==HYPH_MODE || mode(&gap(lgap))==ADD_HYPH) ) )	\
+	(spaceMode(&gap(lgap), HYPH_MODE) || spaceMode(&gap(lgap), ADD_HYPH)) ) )	\
       I.class = UNBREAKABLE_LEFT;					\
   }									\
   debug1(DOF, DDD, "IShiftLeftEnd returning %s", IntervalPrint(I, x));	\
@@ -1058,7 +1058,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 
       /* add hyphen to end of previous line, if lgap is ADD_HYPH */
       Child(lgap, llink);
-      if( mode(&gap(lgap)) == ADD_HYPH )
+      if( spaceMode(&gap(lgap), ADD_HYPH) )
       { OBJECT z, tmp;
         FONT_NUM font;
         #pragma clang diagnostic ignored "-Wunused-but-set-variable"
@@ -1210,7 +1210,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       { for( ylink = Down(y);  ylink != y;  ylink = NextDown(ylink) )
         { Child(gp, ylink);
 	  if( objectOfType(gp, GAP_OBJ) && width(&gap(gp)) == 0 &&
-	      mode(&gap(gp)) == ADD_HYPH )
+	      spaceMode(&gap(gp), ADD_HYPH) )
 	  {
 	    /* possible candidate for joining, look into what's on each side */
 	    Child(prev, PrevDown(ylink));

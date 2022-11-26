@@ -1381,7 +1381,7 @@ void FontChange(STYLE *style, OBJECT x)
     flen = font_size(finfo[font(style)].font_table);
   else 
   { GetGap(requested_size, style, &gp, &inc);
-    if( mode(&gp) != EDGE_MODE || units(&gp) != FIXED_UNIT )
+    if( !spaceMode(&gp, EDGE_MODE) || units(&gp) != FIXED_UNIT )
     { Error(37, 47, "syntax error in font size %s; ignoring it",
 	WARN, &fpos(requested_size), string(requested_size));
       flen = font_size(finfo[font(style)].font_table);

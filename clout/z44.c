@@ -61,7 +61,7 @@
   { FirstDefinite(y, ylink, z, jn);					\
     if( ylink != y && PrevDown(ylink) != y )				\
     { Child(yg, PrevDown(ylink));					\
-      assert( objectOfType(yg, GAP_OBJ) && mode(&gap(yg)) != NO_MODE, "NDWGC!");	\
+      assert( objectOfType(yg, GAP_OBJ) && !spaceMode(&gap(yg), NO_MODE), "NDWGC!");	\
       MoveLink(PrevDown(ylink), Up(g), PARENT);				\
       MoveLink(Up(g), ylink, PARENT);					\
     }									\
@@ -71,7 +71,7 @@
     NextDefiniteWithGap(x, link, y, g, jn);				\
   }									\
   assert( link==x || is_definite(type(y)), "FirstDefiniteCompressed!");	\
-  assert( link==x || mode(&gap(g)) != NO_MODE,				\
+  assert( link==x || !spaceMode(&gap(g), NO_MODE),				\
     "FirstDefiniteWithGapCompressed: mode(gap(g))!" );			\
 }
 
@@ -360,7 +360,7 @@ BOOLEAN VerticalHyphenate(OBJECT y)
   /* check that large_comp has no joins */
   for( link = Down(large_comp);  link != large_comp;  link = NextDown(link) )
   { Child(z, link);
-    if( objectOfType(z, GAP_OBJ) && mode(&gap(z)) != NO_MODE && join(&gap(z)) )
+    if( objectOfType(z, GAP_OBJ) && !spaceMode(&gap(z), NO_MODE) && join(&gap(z)) )
     { debug0(DVH, D, "] VerticalHyphenate returning FALSE (VCAT: joined)");
       return FALSE;
     }

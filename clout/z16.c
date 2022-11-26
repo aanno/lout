@@ -178,12 +178,12 @@ OBJECT y, int dim)
   link = UpDim(x, dim);
   SetNeighbours(link, ratm, &pg, &prec_def, &sg, &sd, &side);
   { ifdebug(DSA, DD,
-    if( pg != nilobj && mode(&gap(pg)) == NO_MODE )
+    if( pg != nilobj && spaceMode(&gap(pg), NO_MODE) )
     { debug1(DSA, DD, "NO_MODE gap pg, is_indefinite(x) == %s, y =",
 	bool(is_indefinite(type(x))) );
       ifdebug(DSA, DD, DebugObject(y));
     }
-    if( sg != nilobj && mode(&gap(sg)) == NO_MODE )
+    if( sg != nilobj && spaceMode(&gap(sg), NO_MODE) )
     { debug1(DSA, DD, "NO_MODE gap sg, is_indefinite(x) == %s, y =",
 	bool(is_indefinite(type(x))) );
       ifdebug(DSA, DD, DebugObject(y));

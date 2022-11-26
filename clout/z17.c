@@ -292,7 +292,7 @@ void GetGap(OBJECT x, STYLE *style, GAP *res_gap, unsigned *res_inc)
   /* read the optional nobreak */
   if( *str == CH_NOBREAK )
   {
-    if( mode(res_gap) == HYPH_MODE )
+    if( spaceMode(res_gap, HYPH_MODE) )
       Error(17, 9, "replacing self-contradictory gap %s by breakable version",
 	WARN, &fpos(x), string(x));
     else setNobreak(res_gap, TRUE);
@@ -337,30 +337,30 @@ FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap)
     default:		assert(FALSE, "MinGap: units");
 			break;
   }
-  switch( mode(xgap) )
+  switch( mode(xgap).spacemode )
   {
-    case NO_MODE:	assert(FALSE, "MinGap: NO_MODE");
+    case NO_MODE_E:	assert(FALSE, "MinGap: NO_MODE");
 			res = 0;
 			break;
 
-    case ADD_HYPH:
-    case HYPH_MODE:
-    case EDGE_MODE:	res = find_min(MAX_FULL_LENGTH, a + w + b);
+    case ADD_HYPH_E:
+    case HYPH_MODE_E:
+    case EDGE_MODE_E:	res = find_min(MAX_FULL_LENGTH, a + w + b);
 			break;
 
-    case MARK_MODE:	if( BackEnd->fractional_spacing_avail )
+    case MARK_MODE_E:	if( BackEnd->fractional_spacing_avail )
 			  res = find_max(w, a + b + (FULL_LENGTH) (0.1 * w) );
 			else
 			  res = find_max(w, a + b);
 			break;
 
-    case OVER_MODE:	res = w;
+    case OVER_MODE_E:	res = w;
 			break;
 
-    case KERN_MODE:	res = find_max(find_max(a, b), w);
+    case KERN_MODE_E:	res = find_max(find_max(a, b), w);
 			break;
 
-    case TAB_MODE:	res = a + b;
+    case TAB_MODE_E:	res = a + b;
 			break;
 
     default:		assert(FALSE, "MinGap: mode");
@@ -389,31 +389,31 @@ FULL_LENGTH MinGap(FULL_LENGTH a, FULL_LENGTH b, FULL_LENGTH c, GAP *xgap)
 FULL_LENGTH ExtraGap(FULL_LENGTH a, FULL_LENGTH b, GAP *xgap, int dir)
 { FULL_LENGTH tmp, res;
   FULL_LENGTH w = units(xgap) == FIXED_UNIT ? width(xgap) : 0;
-  switch( mode(xgap) )
+  switch( mode(xgap).spacemode )
   {
-    case NO_MODE:	assert(FALSE, "ExtraGap: NO_MODE");
+    case NO_MODE_E:	assert(FALSE, "ExtraGap: NO_MODE");
 			res = 0;
 			break;
 
-    case ADD_HYPH:
-    case HYPH_MODE:
-    case EDGE_MODE:	res = 0;
+    case ADD_HYPH_E:
+    case HYPH_MODE_E:
+    case EDGE_MODE_E:	res = 0;
 			break;
 
-    case MARK_MODE:	if( BackEnd->fractional_spacing_avail )
+    case MARK_MODE_E:	if( BackEnd->fractional_spacing_avail )
 			  res = find_max(0, (FULL_LENGTH) (0.9 * w) - a - b);
 			else
 			  res = find_max(0, w - a - b);
 			break;
 
-    case OVER_MODE:	res = MAX_FULL_LENGTH;
+    case OVER_MODE_E:	res = MAX_FULL_LENGTH;
 			break;
 
-    case KERN_MODE:	tmp = find_max(a, find_max(b, w));
+    case KERN_MODE_E:	tmp = find_max(a, find_max(b, w));
 			res = dir == BACK ? tmp - b : tmp - a;
 			break;
 
-    case TAB_MODE:	res = 0;
+    case TAB_MODE_E:	res = 0;
 			break;
 
     default:		assert(FALSE, "ExtraGap: mode");
@@ -462,31 +462,31 @@ FULL_LENGTH ActualGap(FULL_LENGTH prevf, FULL_LENGTH b, FULL_LENGTH f,
     default:		assert(FALSE, "ActualGap: units");
 			break;
   }
-  switch( mode(xgap) )
+  switch( mode(xgap).spacemode )
   {
-    case NO_MODE:	Error(17, 10, "cannot continue after previous error(s)", FATAL, no_fpos);
+    case NO_MODE_E:	Error(17, 10, "cannot continue after previous error(s)", FATAL, no_fpos);
 			assert(FALSE, "ActualGap: NO_MODE");
 			w2 = 0;
 			break;
 
-    case ADD_HYPH:
-    case HYPH_MODE:
-    case EDGE_MODE:	w2 = prevf + w + b;
+    case ADD_HYPH_E:
+    case HYPH_MODE_E:
+    case EDGE_MODE_E:	w2 = prevf + w + b;
 			break;
 
-    case MARK_MODE:	if( BackEnd->fractional_spacing_avail )
+    case MARK_MODE_E:	if( BackEnd->fractional_spacing_avail )
 			  w2 = find_max(w, prevf + b + (FULL_LENGTH) (0.1 * w) );
 			else
 			  w2 = find_max(w, prevf + b);
 			break;
 
-    case OVER_MODE:	w2 = w;
+    case OVER_MODE_E:	w2 = w;
 			break;
 
-    case KERN_MODE:	w2 = find_max( find_max(prevf, b), w);
+    case KERN_MODE_E:	w2 = find_max( find_max(prevf, b), w);
 			break;
 
-    case TAB_MODE:	w2 = w + b - mk;
+    case TAB_MODE_E:	w2 = w + b - mk;
 			w2 = find_max(w2, prevf + b );
 			break;
 
@@ -516,8 +516,8 @@ FULL_CHAR *EchoGap(GAP *xgap)
   char *u;
   static int i = 0;
   static char buff[3][20];
-  c = mode(xgap) <= 7 ? letter[mode(xgap)] : '?';
-  c = letter[mode(xgap)];
+  c = mode(xgap).spacemode <= 7 ? letter[mode(xgap).spacemode] : '?';
+  c = letter[mode(xgap).spacemode];
   u = nobreak(xgap) ? "u" : "";
   int wi = width(xgap);
   float w = (float) wi;

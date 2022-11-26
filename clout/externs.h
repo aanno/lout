@@ -694,8 +694,36 @@ INLINE BOOLEAN join(GAP* x) {
 INLINE unsigned units(GAP* x) {
   return x->ounits;
 }
-INLINE unsigned mode(GAP* x) {
-  return x->omode;
+INLINE SPACE_MODE mode(GAP* x) {
+  // return x->omode;
+  unsigned mode = x->omode;
+  SPACE_MODE res;
+  switch(mode) {
+    case NO_MODE_E:
+      res = NO_MODE;
+      break;
+    case EDGE_MODE_E:
+      res = EDGE_MODE;
+      break;
+    case HYPH_MODE_E:
+      res = HYPH_MODE;
+      break;
+    case MARK_MODE_E:
+      res = MARK_MODE;
+    case OVER_MODE_E:
+      res = OVER_MODE;
+      break;
+    case KERN_MODE_E:
+      res = KERN_MODE;
+      break;
+    case TAB_MODE_E:
+      res = TAB_MODE;
+      break;
+    case ADD_HYPH_E:
+      res = ADD_HYPH;
+      break;
+  }
+  return res;
 }
 INLINE FULL_LENGTH width(GAP* x) {
   return x->owidth;
@@ -714,8 +742,8 @@ INLINE void setJoin(GAP* x, BOOLEAN xjoin) {
 INLINE void setUnits(GAP* x, unsigned xunits) {
   x->ounits = xunits;
 }
-INLINE void setMode(GAP* x, unsigned xmode) {
-  x->omode = xmode;
+INLINE void setMode(GAP* x, SPACE_MODE xmode) {
+  x->omode = xmode.spacemode;
 }
 INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
   x->owidth = xwidth;
@@ -723,7 +751,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
-INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, unsigned xmode, FULL_LENGTH xwidth) {
+INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
   setJoin(x, xjoin);
@@ -746,7 +774,8 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   mark_m(*x) = mark(y);
   join_m(*x) = join(y);
   units_m(*x) = units(y);
-  mode_m(*x) = mode(y);
+  // mode_m(*x) = mode(y);
+  setMode(x, mode(y));
   width_m(*x) = width(y);
   /* not working!
   setNobreak(x, nobreak(y));
@@ -760,7 +789,7 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
 
 INLINE BOOLEAN GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
-             && units(x) == units(y) && mode(x) == mode(y) && width(x) == width(y);
+             && units(x) == units(y) && mode(x).spacemode == mode(y).spacemode && width(x) == width(y);
 }
 
 /*****************************************************************************/
@@ -2322,6 +2351,10 @@ INLINE OBJTYPE incg_type(OBJECT x) {
 
 INLINE BOOLEAN objectOfType(OBJECT x, OBJTYPE typ) {
   return type(x).objtype == typ.objtype;
+}
+
+INLINE BOOLEAN spaceMode(GAP* x, SPACE_MODE m) {
+  return (mode(x).spacemode == m.spacemode);
 }
 
 /*@::FONT_INFO@***************************************************************/

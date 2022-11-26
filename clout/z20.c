@@ -609,7 +609,7 @@ void FlushGalley(OBJECT hd)
 
 	  if( !is_indefinite(type(y)) )
 	  {
-	    ifdebugcond(DGF, DD,  mode(&gap(prec_gap)) == NO_MODE,
+	    ifdebugcond(DGF, DD, spaceMode(&gap(prec_gap), NO_MODE),
 	      DebugGalley(hd, y, 4));
 
 	    /* calculate parallel effect of adding y to dest */
