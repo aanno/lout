@@ -49,10 +49,10 @@
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  jn = jn && join(&gap(y));			\
-    else if( type(y)==SPLIT ? SplitIsDefinite(y) : is_definite(type(y)))\
+    if( objectOfType(y, GAP_OBJ) )  jn = jn && join(&gap(y));			\
+    else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
-    else if( type(y) == LINK_DEST_NULL )				\
+    else if( objectOfType(y, LINK_DEST_NULL) )				\
       FixAndPrintObject(y, ymk, 0, 0, dim, sp, pg, 0, &aback, &afwd);	\
   }									\
 } /* end FirstDefiniteLDN */
@@ -61,15 +61,15 @@
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( type(y) == GAP_OBJ )  g = y, jn = jn && join(&gap(y));		\
-    else if( type(y)==SPLIT ? SplitIsDefinite(y):is_definite(type(y)) )	\
+    if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(&gap(y));		\
+    else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGapLDN at %s %s",		\
 	Image(type(y)), EchoObject(y));					\
       assert( g != nilobj, "NextDefiniteWithGap: g == nilobj!" );	\
       break;								\
     }									\
-    else if( type(y) == LINK_DEST_NULL )				\
+    else if( objectOfType(y, LINK_DEST_NULL) )				\
       FixAndPrintObject(y, ymk, 0, 0, dim, sp, pg, 0, &aback, &afwd);	\
   }									\
 } /* end NextDefiniteWithGapLDN */
@@ -181,7 +181,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
   int i; float scale_factor;  BOOLEAN jn;
   debug8(DGP, DD, "[ FixAndPrintObject(%s %s%s, %s, %s,%s, %s, %s, pg, count)",
     Image(type(x)),
-    ((type(x) == WORD || type(x) == QWORD) ? string(x) : STR_EMPTY),
+    ((objectOfType(x, WORD) || objectOfType(x, QWORD)) ? string(x) : STR_EMPTY),
     EchoFilePos(&fpos(x)),
     EchoLength(xmk), EchoLength(xb), EchoLength(xf),dimen(dim),
     (suppress == SUPPRESS ? "suppress" : "no_suppress"));
@@ -200,25 +200,25 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
   *** */
 
 
-  switch( type(x) )
+  switch( type(x).objtype )
   {
 
-    case CLOSURE:
-    case NULL_CLOS:
-    case PAGE_LABEL:
-    case CROSS:
-    case FORCE_CROSS:
+    case CLOSURE_E:
+    case NULL_CLOS_E:
+    case PAGE_LABEL_E:
+    case CROSS_E:
+    case FORCE_CROSS_E:
     
       *actual_back = xb;  *actual_fwd = xf;
       break;
 
 
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
 
       CountChild(y, DownDim(x, dim), count);
-      if( type(y) == HSPANNER || type(y) == VSPANNER )
+      if( objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER) )
       {
         Child(z, Down(y));
 	Parent(thr, UpDim(x, dim));
@@ -252,14 +252,14 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case HSPAN:
-    case VSPAN:
+    case HSPAN_E:
+    case VSPAN_E:
 
       /* do the fix on the last one */
-      if( (dim == COLM) == (type(x) == HSPAN) )
+      if( (dim == COLM) == (objectOfType(x, HSPAN)) )
       {
         CountChild(y, DownDim(x, dim), count);
-	assert(type(y) == HSPANNER || type(y) == VSPANNER, "FAPO HSPAN/VSPAN!");
+	assert(objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER), "FAPO HSPAN/VSPAN!");
 	debug2(DGP, DD, "  pre-inc spanner_fixed(y) = %d, spanner_count(y) = %d",
 	  spanner_fixed(y), spanner_count(y));
 	if( ++spanner_fixed(y) == spanner_count(y) )
@@ -280,8 +280,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
     
       if( dim == COLM )
       {
@@ -310,11 +310,11 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case WIDE:
-    case HIGH:
+    case WIDE_E:
+    case HIGH_E:
     
       CountChild(y, Down(x), count);
-      if( (dim == COLM) == (type(x) == WIDE) )
+      if( (dim == COLM) == (objectOfType(x, WIDE)) )
       { yf = bfc(constraint(x)) - back(y, dim);
         y = FixAndPrintObject(y, xmk, back(y,dim), yf, dim, NO_SUPPRESS, pg,
 	      count, &aback, &afwd);
@@ -327,11 +327,11 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case HSHIFT:
-    case VSHIFT:
+    case HSHIFT_E:
+    case VSHIFT_E:
 
       CountChild(y, Down(x), count);
-      if( (dim == COLM) == (type(x) == HSHIFT) )
+      if( (dim == COLM) == (objectOfType(x, HSHIFT)) )
       {
 	/* work out the size of the shift depending on the units */
 	f = FindShift(x, y, dim);
@@ -353,11 +353,11 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case HCONTRACT:
-    case VCONTRACT:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
     
       CountChild(y, Down(x), count);
-      if( (dim == COLM) == (type(x) == HCONTRACT) )
+      if( (dim == COLM) == (objectOfType(x, HCONTRACT)) )
       {	y = FixAndPrintObject(y, xmk, back(y,dim), fwd(y,dim), dim,
 	  NO_SUPPRESS, pg, count, &aback, &afwd);
         *actual_back = xb;  *actual_fwd = xf;
@@ -369,15 +369,15 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case ONE_COL:
-    case ONE_ROW:
-    case HLIMITED:
-    case VLIMITED:
-    case HEXPAND:
-    case VEXPAND:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case HLIMITED_E:
+    case VLIMITED_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
     
       CountChild(y, Down(x), count);
-      if( (dim == COLM) == (type(x) == ONE_COL || type(x) == HEXPAND) )
+      if( (dim == COLM) == (objectOfType(x, ONE_COL) || objectOfType(x, HEXPAND)) )
       { y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 	      &aback, &afwd);
         *actual_back = xb;  *actual_fwd = xf;
@@ -389,7 +389,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case HMIRROR:
+    case HMIRROR_E:
 
       if( BackEnd->mirror_avail )
       {
@@ -413,7 +413,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case VMIRROR:
+    case VMIRROR_E:
 
       debug0(DRS, DD, "FixAndPrintObject at VMIRROR");
       if( BackEnd->mirror_avail )
@@ -435,7 +435,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case VSCALE:
+    case VSCALE_E:
 
       debug0(DRS, DD, "FixAndPrintObject at VSCALE");
       CountChild(y, Down(x), count);
@@ -461,7 +461,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case HSCALE:
+    case HSCALE_E:
     
       debug0(DRS, DD, "FixAndPrintObject at HSCALE");
       CountChild(y, Down(x), count);
@@ -492,7 +492,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case SCALE:
+    case SCALE_E:
 
       CountChild(y, Down(x), count);
       if( BackEnd->scale_avail )
@@ -531,7 +531,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case KERN_SHRINK:
+    case KERN_SHRINK_E:
 
       CountChild(y, LastDown(x), count);
       if( dim == COLM )
@@ -546,7 +546,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case BACKGROUND:
+    case BACKGROUND_E:
  
       /* this object has the size of its second child; but its first */
       /* child gets printed too, in the same space                   */
@@ -560,7 +560,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case ROTATE:
+    case ROTATE_E:
     
       CountChild(y, Down(x), count);
       if( BackEnd->rotate_avail )
@@ -593,7 +593,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case PLAIN_GRAPHIC:
+    case PLAIN_GRAPHIC_E:
 
       CountChild(y, LastDown(x), count);
       if( BackEnd->plaingraphic_avail )
@@ -611,7 +611,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	else
 	{ OBJECT tmp, pre, post;
           Child(tmp, Down(x));
-          if( type(tmp) == VCAT )
+          if( objectOfType(tmp, VCAT) )
           { Child(pre, Down(tmp));
             Child(post, LastDown(tmp));
           }
@@ -633,7 +633,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case GRAPHIC:
+    case GRAPHIC_E:
     
       CountChild(y, LastDown(x), count);
       if( BackEnd->graphic_avail )
@@ -659,7 +659,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	else
 	{ OBJECT tmp, pre, post;
           Child(tmp, Down(x));
-          if( type(tmp) == VCAT )
+          if( objectOfType(tmp, VCAT) )
           { Child(pre, Down(tmp));
             Child(post, LastDown(tmp));
           }
@@ -685,17 +685,17 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
     
       ifdebug(DGP, D,
 	Child(z, Down(x));
 	debug7(DGP, D, "[ FixAndPrintObject(%s %s%s, %s, %s, %s, %s, -)",
 	Image(type(x)),
-	((type(x)==LINK_DEST || type(x)==LINK_DEST_NULL) ? string(z):STR_EMPTY),
-	type(x)==LINK_DEST_NULL ? " (indef)" : "",
+	((objectOfType(x, LINK_DEST) || objectOfType(x, LINK_DEST_NULL)) ? string(z):STR_EMPTY),
+	objectOfType(x, LINK_DEST_NULL) ? " (indef)" : "",
 	EchoLength(xmk), EchoLength(xb), EchoLength(xf), dimen(dim));
       );
       CountChild(y, LastDown(x), count);
@@ -703,26 +703,30 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	save_mark(x) = xmk;
       else
       {	Child(z, Down(x));
-	switch( type(x) )
+	switch( type(x).objtype )
 	{
-	  case LINK_SOURCE:
+	  case LINK_SOURCE_E:
 
 	    BackEnd->LinkSource(z, save_mark(x) - back(x, COLM),
 	      (pg - xmk) - xf, save_mark(x) + fwd(x, COLM), (pg - xmk) + xb);
 	    break;
 
-	  case LINK_DEST:
-	  case LINK_DEST_NULL:
+	  case LINK_DEST_E:
+	  case LINK_DEST_NULL_E:
 
 	    BackEnd->LinkDest(z, save_mark(x) - back(x, COLM),
 	      (pg - xmk) - xf, save_mark(x) + fwd(x, COLM), (pg - xmk) + xb);
 	    break;
 
-	  case LINK_URL:
+	  case LINK_URL_E:
 
 	    BackEnd->LinkURL(z, save_mark(x) - back(x, COLM),
 	      (pg - xmk) - xf, save_mark(x) + fwd(x, COLM), (pg - xmk) + xb);
 	    break;
+
+	  default:
+	    // do nothing
+		;
 	}
       }
       y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
@@ -732,15 +736,15 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
 
       CountChild(y, Down(x), count);
       if( BackEnd->incgraphic_avail )
       {
 	if( dim == COLM )
 	{ save_mark(x) = xmk;
-	  if( incgraphic_ok(x) )
+	  if( incgraphic_ok(x).objtype != DUMMY_E )
 	  { debug2(DGP, DD, "  %s (style %s)",
 	      EchoObject(x), EchoStyle(&save_style(x)));
 	    face = finfo[font(&save_style(x))].original_face;
@@ -751,14 +755,14 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    }
 	  }
 	}
-	else if( incgraphic_ok(x) )
+	else if( incgraphic_ok(x).objtype != DUMMY_E )
 	  BackEnd->PrintGraphicInclude(x, save_mark(x), pg - xmk);
       }
       *actual_back = xb;  *actual_fwd = xf;
       break;
 
 
-    case SPLIT:
+    case SPLIT_E:
     
       link = DownDim(x, dim);  CountChild(y, link, count);
       y = FixAndPrintObject(y, xmk, find_max(back(y, dim), xb),
@@ -767,10 +771,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case VCAT:
-    case HCAT:
+    case VCAT_E:
+    case HCAT_E:
 
-      if( (type(x) == VCAT) == (dim == ROWM) )
+      if( (objectOfType(x, VCAT)) == (dim == ROWM) )
       { 
 	debug6(DGP, DD, "[ FAPO-CAT %s (%s,%s): xmk %s, xb %s, xf %s",
 	    Image(type(x)), EchoLength(back(x, dim)), EchoLength(fwd(x, dim)),
@@ -887,7 +891,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  }
 	  *actual_back = find_max(back(x, dim), xb);
 	  *actual_fwd = mk + fwd(prev, dim) - back_edge - *actual_back;
-	  debugcond4(DGP, DD, type(x) == HCAT,
+	  debugcond4(DGP, DD, objectOfType(x, HCAT),
 	    "HCAT original (%s, %s) to actual (%s, %s)",
 	    EchoLength(back(x, dim)), EchoLength(fwd(x, dim)),
 	    EchoLength(*actual_back), EchoLength(*actual_fwd));
@@ -996,7 +1000,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case ACAT:
+    case ACAT_E:
 
       if( dim == COLM )
       { BOOLEAN will_adjust, adjusting;
@@ -1353,9 +1357,9 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	debug1(DGP, DD, "ACAT ROWM %s", EchoObject(x));
 	for( link = Down(x);  link != x;  link = NextDown(link) )
 	{ Child(y, link);
-	  if( !is_definite(type(y)) && type(y) != LINK_DEST_NULL )
+	  if( !is_definite(type(y)) && !objectOfType(y, LINK_DEST_NULL) )
 	  {
-	    if( type(y) == UNDER_REC )   /* generate an underline now */
+	    if( objectOfType(y, UNDER_REC) )   /* generate an underline now */
 	    { BackEnd->PrintUnderline(word_font(y),word_underline_colour(y),
 		word_texture(y), back(y, COLM), fwd(y, COLM), pg - xmk);
 	      link = PrevDown(link);     /* remove all trace of underlining */
@@ -1371,10 +1375,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       break;
 
 
-    case COL_THR:
-    case ROW_THR:
+    case COL_THR_E:
+    case ROW_THR_E:
 
-      assert( (type(x) == COL_THR) == (dim == COLM), "FixAndPrintObject: thr!" );
+      assert( (objectOfType(x, COL_THR)) == (dim == COLM), "FixAndPrintObject: thr!" );
       for( link = Down(x), uplink = Up(x), i = 1;
 	link != x && uplink != x && i < count;
 	link = NextDown(link), uplink = NextUp(uplink), i++ )
@@ -1392,9 +1396,9 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       MoveLink(uplink, link, CHILD);  DeleteLink(link);
        */
 
-      assert( type(y) != GAP_OBJ, "FAPO: THR!");
+      assert( !objectOfType(y, GAP_OBJ), "FAPO: THR!");
 
-      if( thr_state(x) != FINALSIZE )
+      if( thr_state(x).objtype != FINALSIZE.objtype )
       {	back(x, dim) = xb;  fwd(x, dim) = xf;
 	thr_state(x) = FINALSIZE;
       }
@@ -1436,7 +1440,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       i = 1;  res = nilobj;
       while( Down(x) != x && Up(x) != x )
       {
-	New(fixed_thr, type(x) == COL_THR ? FIXED_COL_THR : FIXED_ROW_THR);
+	New(fixed_thr, objectOfType(x, COL_THR) ? FIXED_COL_THR : FIXED_ROW_THR);
 	MoveLink(Up(x), fixed_thr, CHILD);
 	MoveLink(Down(x), fixed_thr, PARENT);
 	back(fixed_thr, dim) = xb;
@@ -1471,7 +1475,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case FIXED_COL_THR:
     case FIXED_ROW_THR:
 
-      assert( (type(x) == FIXED_COL_THR) == (dim == COLM),
+      assert( (objectOfType(x, FIXED_COL_THR)) == (dim == COLM),
 	"FixAndPrintObject: fixed_thr!" );
       CountChild(y, Down(x), count);
       y = FixAndPrintObject(y, xmk, back(x, dim), fwd(x, dim), dim,
@@ -1481,10 +1485,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       *** */
 
 
-    case BEGIN_HEADER:
-    case END_HEADER:
-    case SET_HEADER:
-    case CLEAR_HEADER:
+    case BEGIN_HEADER_E:
+    case END_HEADER_E:
+    case SET_HEADER_E:
+    case CLEAR_HEADER_E:
 
       if( dim == COLM )
         Error(23, 8, "%s symbol ignored (out of place)", WARN, &fpos(x),

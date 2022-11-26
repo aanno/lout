@@ -44,7 +44,7 @@
 void InsertUses(OBJECT x, OBJECT y)
 { OBJECT tmp;
   debug2(DSU, D, "InsertUses( %s, %s )", SymName(x), SymName(y));
-  if( type(x) == LOCAL && type(y) == LOCAL && !predefined(y) )
+  if( objectOfType(x, LOCAL) && objectOfType(y, LOCAL) && predefined(y).objtype == DUMMY_E )
   { tmp = GetMem(tmp, USES_SIZE, no_fpos);  item(tmp) = y;
     if( base_uses(x) == nilobj )  next(tmp) = tmp;
     else next(tmp) = next(base_uses(x)), next(base_uses(x)) = tmp;
@@ -101,7 +101,7 @@ static void GatherAllUses(OBJECT x)
 { OBJECT link, y;
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == LOCAL )  GatherUses(y, y);
+    if( objectOfType(y, LOCAL) )  GatherUses(y, y);
     GatherAllUses(y);
   }
 } /* end GatherAllUses */

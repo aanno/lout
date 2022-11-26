@@ -484,7 +484,7 @@ static OBJECT ReadMacro(OBJECT *token, OBJECT curr_encl, OBJECT encl)
     *token = t;
     return nilobj;
   }
-  res = InsertSym(string(t), MACRO, &fpos(t), 0, FALSE,TRUE,0,curr_encl,nilobj);
+  res = InsertSym(string(t), MACRO, &fpos(t), 0, FALSE,TRUE, DUMMY, curr_encl, nilobj);
   if( curr_encl != encl )  visible(res) = TRUE;
   UnSuppressScope();
 
@@ -690,7 +690,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 	return;
       }
       res = InsertSym(string(t), res_type, &fpos(t), DEFAULT_PREC,
-		FALSE, FALSE, 0, curr_encl, nilobj);
+		FALSE, FALSE, DUMMY, curr_encl, nilobj);
       if( curr_encl != encl )  visible(res) = TRUE;
       if( has_import_encl )
       {
@@ -800,7 +800,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 	  return;
 	}
 	InsertSym(string(t), LPAR, &fpos(t), DEFAULT_PREC, 
-	  FALSE, FALSE, 0, res, nilobj);
+	  FALSE, FALSE, DUMMY, res, nilobj);
 	Dispose(t);  t = LexGetToken();
       }
 
@@ -821,7 +821,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 	  return;
 	}
 	InsertSym(string(t), RPAR, &fpos(t), DEFAULT_PREC,
-	  FALSE, FALSE, 0, res, nilobj);
+	  FALSE, FALSE, DUMMY, res, nilobj);
 	UnSuppressScope();
 	Dispose(t);  t = LexGetToken();
       }
@@ -829,7 +829,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
       /* read local definitions and body */
       if( res_target != nilobj )
 	InsertSym(KW_TARGET, LOCAL, &fpos(res_target), DEFAULT_PREC,
-			FALSE, FALSE, 0, res, res_target);
+			FALSE, FALSE, DUMMY, res, res_target);
       if( objectOfType(t, WORD) && StringEqual(string(t), KW_LBR) )
       {	z = NewToken(LBR, &fpos(t), 0, 0, LBR_PREC, StartSym);
 	Dispose(t);

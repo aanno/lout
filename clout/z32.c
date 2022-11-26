@@ -43,10 +43,10 @@ OBJECT Next(OBJECT x, int inc, BOOLEAN *done)
 { OBJECT y, link;  int l, r, n, len;
   FULL_CHAR buff[MAX_BUFF];
   debug3(DCS, DD, "Next( %s, %d, %s )", EchoObject(x), inc, bool(*done));
-  switch( type(x) )
+  switch( type(x).objtype )
   {
-    case WORD:
-    case QWORD:
+    case WORD_E:
+    case QWORD_E:
     
       len = StringLength(string(x));
       for( r = len - 1;  r >= 0 && !decimaldigit(string(x)[r]);  r--);
@@ -75,68 +75,68 @@ OBJECT Next(OBJECT x, int inc, BOOLEAN *done)
       break;
 
 
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case GAP_OBJ:
-    case CLOSURE:
-    case NULL_CLOS:
-    case PAGE_LABEL:
-    case CROSS:
-    case FORCE_CROSS:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
-    case HSPAN:
-    case VSPAN:
-    case END_HEADER:
-    case CLEAR_HEADER:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case GAP_OBJ_E:
+    case CLOSURE_E:
+    case NULL_CLOS_E:
+    case PAGE_LABEL_E:
+    case CROSS_E:
+    case FORCE_CROSS_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case HSPAN_E:
+    case VSPAN_E:
+    case END_HEADER_E:
+    case CLEAR_HEADER_E:
     
       break;
 
 
-    case BEGIN_HEADER:
-    case SET_HEADER:
-    case ONE_COL:
-    case ONE_ROW:
-    case WIDE:
-    case HIGH:
-    case HSHIFT:
-    case VSHIFT:
-    case HCONTRACT:
-    case VCONTRACT:
-    case HLIMITED:
-    case VLIMITED:
-    case HEXPAND:
-    case VEXPAND:
-    case PADJUST:
-    case HADJUST:
-    case VADJUST:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case HCOVER:
-    case VCOVER:
-    case ROTATE:
-    case BACKGROUND:
-    case SCALE:
-    case KERN_SHRINK:
-    case SPLIT:
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
-    case SET_CONTEXT:
-    case GET_CONTEXT:
+    case BEGIN_HEADER_E:
+    case SET_HEADER_E:
+    case ONE_COL_E:
+    case ONE_ROW_E:
+    case WIDE_E:
+    case HIGH_E:
+    case HSHIFT_E:
+    case VSHIFT_E:
+    case HCONTRACT_E:
+    case VCONTRACT_E:
+    case HLIMITED_E:
+    case VLIMITED_E:
+    case HEXPAND_E:
+    case VEXPAND_E:
+    case PADJUST_E:
+    case HADJUST_E:
+    case VADJUST_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case ROTATE_E:
+    case BACKGROUND_E:
+    case SCALE_E:
+    case KERN_SHRINK_E:
+    case SPLIT_E:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
+    case SET_CONTEXT_E:
+    case GET_CONTEXT_E:
     
       Child(y, LastDown(x));
       y = Next(y, inc, done);
       break;
 
 
-    case ACAT:
+    case ACAT_E:
     
       /* *** seems identical!
       link = LastDown(x);
@@ -150,10 +150,10 @@ OBJECT Next(OBJECT x, int inc, BOOLEAN *done)
       *** */
 
 
-    case COL_THR:
-    case ROW_THR:
-    case HCAT:
-    case VCAT:
+    case COL_THR_E:
+    case ROW_THR_E:
+    case HCAT_E:
+    case VCAT_E:
     
       link = LastDown(x);
       while( link != x && !*done )

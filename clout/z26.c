@@ -310,6 +310,7 @@ const FULL_CHAR *Image(OBJTYPE c)
     case EXT_GALL_E:		return  AsciiToFull("ext_gall");
     case DISPOSED_E:		return  AsciiToFull("disposed");
 
+/*
     case BACK_E:			return  AsciiToFull("back");
     case ON_E:			return  AsciiToFull("on");
     case FWD_E:			return  AsciiToFull("fwd");
@@ -322,8 +323,9 @@ const FULL_CHAR *Image(OBJTYPE c)
     case GAP_ABS_E:		return  AsciiToFull("abs");
     case GAP_INC_E:		return  AsciiToFull("inc");
     case GAP_DEC_E:		return  AsciiToFull("dec");
+*/
 
-    default:			sprintf( (char *) b, "?? (%d)", c);
+    default:			sprintf( (char *) b, "?? (%d)", c.objtype);
 				return b;
   } /* end switch */
 } /* end Image */

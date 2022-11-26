@@ -97,16 +97,16 @@ void FlushInners(OBJECT inners, OBJECT hd)
     {
       Child(y, link);
       fprintf(stderr, " %s", Image(type(y)));
-      switch( type(y) )
+      switch( type(y).objtype )
       {
 
-        case DEAD:
+        case DEAD_E:
       
 	  break;
 
 
-        case RECEIVING:
-        case UNATTACHED:
+        case RECEIVING_E:
+        case UNATTACHED_E:
       
 	  if( Down(y) != y )	/* bug fix (was assert before) */
 	  { assert( Down(y) != y, "FlushInners: UNATTACHED!");
@@ -116,12 +116,12 @@ void FlushInners(OBJECT inners, OBJECT hd)
 	  break;
 
 
-        case PRECEDES:
+        case PRECEDES_E:
       
 	  break;
 
 
-        case GALL_PREC:
+        case GALL_PREC_E:
 
 	  break;
 
@@ -152,16 +152,16 @@ void FlushInners(OBJECT inners, OBJECT hd)
     DeleteLink(Down(inners));
     debug2(DGA, D, "FlushInners at %s (remainder %s)", Image(type(y)),
       DebugInnersNames(inners));
-    switch( type(y) )
+    switch( type(y).objtype )
     {
 
-      case DEAD:
+      case DEAD_E:
       
 	break;
 
 
-      case RECEIVING:
-      case UNATTACHED:
+      case RECEIVING_E:
+      case UNATTACHED_E:
       
 	if( Down(y) != y )	/* bug fix (was assert before) */
 	{ assert( Down(y) != y, "FlushInners: UNATTACHED!");
@@ -177,12 +177,12 @@ void FlushInners(OBJECT inners, OBJECT hd)
 	break;
 
 
-      case PRECEDES:
+      case PRECEDES_E:
       
 	Child(tmp, Down(y));
 	if( Up(tmp) != LastUp(tmp) )
 	{ Parent(tmp, LastUp(tmp));
-	  assert(type(tmp)==FOLLOWS, "FlushInners: FOLLOWS!");
+	  assert(objectOfType(tmp, FOLLOWS), "FlushInners: FOLLOWS!");
 	  if( blocked(tmp) )
 	  { blocked(tmp) = FALSE;
 	    Parent(z, Up(tmp));
@@ -194,7 +194,7 @@ void FlushInners(OBJECT inners, OBJECT hd)
 	break;
 
 
-      case GALL_PREC:
+      case GALL_PREC_E:
 
 	/* someone else is looking after this now */
 	break;
@@ -229,7 +229,7 @@ void ExpandRecursives(OBJECT recs)
   assert(recs != nilobj, "ExpandRecursives: recs == nilobj!");
   while( Down(recs) != recs )
   { Child(target_index, Down(recs));  DeleteLink( Down(recs) );
-    assert( type(target_index) == RECURSIVE, "ExpandRecursives: index!" );
+    assert( objectOfType(target_index, RECURSIVE), "ExpandRecursives: index!" );
     target = actual(target_index);
     debug2(DCR, DDD, "  expanding %s %s", Image(type(target_index)),
       EchoObject(target));
@@ -327,67 +327,67 @@ static OBJECT FindSplitInGalley(OBJECT hd)
     ifdebug(DGF, D, DebugObject(hd));
     Error(22, 1, "FindSplit: missing galley component", INTERN, &fpos(hd));
   }
-  while( type(y) != SPLIT )  switch( type(y) )
+  while( !objectOfType(y, SPLIT) )  switch( type(y).objtype )
   {
-    case VCAT:
-    case ONE_ROW:
-    case WIDE:
-    case HIGH:
-    case HSHIFT:
-    case VSHIFT:
-    case VCONTRACT:
-    case VLIMITED:
-    case VEXPAND:
+    case VCAT_E:
+    case ONE_ROW_E:
+    case WIDE_E:
+    case HIGH_E:
+    case HSHIFT_E:
+    case VSHIFT_E:
+    case VCONTRACT_E:
+    case VLIMITED_E:
+    case VEXPAND_E:
 
       Child(y, Down(y));
       break;
 
 
-    case BEGIN_HEADER:
-    case SET_HEADER:
+    case BEGIN_HEADER_E:
+    case SET_HEADER_E:
 
       Child(y, LastDown(y));
       break;
 
 
-    case CLOSURE:
-    case NULL_CLOS:
-    case END_HEADER:
-    case CLEAR_HEADER:
-    case PAGE_LABEL:
-    case HCAT:
-    case WORD:
-    case QWORD:
-    case ACAT:
-    case ROW_THR:
-    case COL_THR:
-    case ONE_COL:
-    case SCALE:
-    case KERN_SHRINK:
-    case HMIRROR:
-    case VMIRROR:
-    case HSCALE:
-    case VSCALE:
-    case HCOVER:
-    case VCOVER:
-    case HCONTRACT:
-    case HLIMITED:
-    case HEXPAND:
-    case START_HVSPAN:
-    case START_HSPAN:
-    case START_VSPAN:
-    case HSPAN:
-    case VSPAN:
-    case ROTATE:
-    case BACKGROUND:
-    case INCGRAPHIC:
-    case SINCGRAPHIC:
-    case PLAIN_GRAPHIC:
-    case GRAPHIC:
-    case LINK_SOURCE:
-    case LINK_DEST:
-    case LINK_DEST_NULL:
-    case LINK_URL:
+    case CLOSURE_E:
+    case NULL_CLOS_E:
+    case END_HEADER_E:
+    case CLEAR_HEADER_E:
+    case PAGE_LABEL_E:
+    case HCAT_E:
+    case WORD_E:
+    case QWORD_E:
+    case ACAT_E:
+    case ROW_THR_E:
+    case COL_THR_E:
+    case ONE_COL_E:
+    case SCALE_E:
+    case KERN_SHRINK_E:
+    case HMIRROR_E:
+    case VMIRROR_E:
+    case HSCALE_E:
+    case VSCALE_E:
+    case HCOVER_E:
+    case VCOVER_E:
+    case HCONTRACT_E:
+    case HLIMITED_E:
+    case HEXPAND_E:
+    case START_HVSPAN_E:
+    case START_HSPAN_E:
+    case START_VSPAN_E:
+    case HSPAN_E:
+    case VSPAN_E:
+    case ROTATE_E:
+    case BACKGROUND_E:
+    case INCGRAPHIC_E:
+    case SINCGRAPHIC_E:
+    case PLAIN_GRAPHIC_E:
+    case GRAPHIC_E:
+    case LINK_SOURCE_E:
+    case LINK_DEST_E:
+    case LINK_DEST_NULL_E:
+    case LINK_URL_E:
 
       debug0(DGF, D, "FindSplitInGalley(hd) failing, hd =");
       ifdebug(DGF, D, DebugObject(hd));
@@ -435,7 +435,7 @@ static void DisposeHeaders(OBJECT hd)
   for( i = 0;  i < MAX_HCOPIES;  i++ )
   {
     if( headers(hd, i) != nilobj )
-    { assert(type(headers(hd, i)) == ACAT || type(headers(hd, i)) == VCAT,
+    { assert(objectOfType(headers(hd, i), ACAT) || objectOfType(headers(hd, i), VCAT),
         "DisposeHeaders: type(headers(hd))!");
       while( Down(headers(hd, i)) != headers(hd, i) )
       { DisposeChild(Down(headers(hd, i)));
@@ -474,24 +474,24 @@ void HandleHeader(OBJECT hd, OBJECT header)
   assert(is_header(type(header)), "HandleHeader: type(header)!");
   assert(Up(header) == LastUp(header) && Up(header) != header,
     "HandleHeader: header parents!");
-  switch( type(header) )
+  switch( type(header).objtype )
   {
 
-    case CLEAR_HEADER:
+    case CLEAR_HEADER_E:
 
       /* clear out old headers, if any */
       DisposeHeaders(hd);
       break;
 
 
-    case SET_HEADER:
+    case SET_HEADER_E:
 
       /* clear out old headers (not safe to dispose them yet), if any */
       DisposeHeaders(hd);
       /* NB NO BREAK! */
 
 
-    case BEGIN_HEADER:
+    case BEGIN_HEADER_E:
 
       Child(gap_obj, Down(header));
       for( i = 0;  i < MAX_HCOPIES;  i++ )
@@ -517,7 +517,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
       break;
 
 
-    case END_HEADER:
+    case END_HEADER_E:
 
       for( i = 0;  i < MAX_HCOPIES;  i++ )
       {
@@ -529,7 +529,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
 	  /* dispose last gap */
 	  assert(LastDown(headers(hd, i))!=headers(hd, i), "Promote/END_HEADER!");
 	  Child(g, LastDown(headers(hd, i)));
-	  assert(type(g) == GAP_OBJ, "HandleHeader: END_HEADER/gap!");
+	  assert(objectOfType(g, GAP_OBJ), "HandleHeader: END_HEADER/gap!");
 	  DisposeChild(LastDown(headers(hd, i)));
 
 	  /* dispose last header object */
@@ -542,13 +542,17 @@ void HandleHeader(OBJECT hd, OBJECT header)
         }
       }
       break;
+
+    default:
+      // do nothing
+      ;
 	
-  }
+  } /* end switch */
 
   /* dispose header object (must take care to disentangle safely) */
   gaplink = NextDown(Up(header));
-  assert(type(gaplink) == LINK, "HandleHeader: type(gaplink)!");
-  if( type(header) == CLEAR_HEADER || type(header) == END_HEADER )
+  assert(objectOfType(gaplink, LINK), "HandleHeader: type(gaplink)!");
+  if( objectOfType(header, CLEAR_HEADER) || objectOfType(header, END_HEADER) )
   {
     /* first disentangle child properly */
     assert(Down(header) != header && Down(header) == LastDown(header), "HH!");
@@ -592,8 +596,8 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
     SymName(actual(hd)), EchoLength(size(hd, COLM)));
   ifdebug(DGS, DD, DebugGalley(hd, stop_link, 2));
 
-  assert( type(hd) == HEAD, "Promote: hd!" );
-  assert( type(stop_link) == LINK || stop_link == hd, "Promote: stop_link!" );
+  assert( objectOfType(hd, HEAD), "Promote: hd!" );
+  assert( objectOfType(stop_link, LINK) || stop_link == hd, "Promote: stop_link!" );
   assert( stop_link != Down(hd), "Promote: stop_link == Down(hd)!" );
   setType(dest_index, RECEIVING);
   dest = actual(dest_index);
@@ -601,10 +605,10 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
   /* insert final gap if galley is ending */
   if( stop_link != hd )
   { Child(y, stop_link);
-    if( type(y) != GAP_OBJ )
+    if( !objectOfType(y, GAP_OBJ) )
     { ifdebug(DGS, DD, DebugGalley(hd, stop_link, 2));
     }
-    assert( type(y) == GAP_OBJ, "Promote: missing GAP_OBJ!" );
+    assert( objectOfType(y, GAP_OBJ), "Promote: missing GAP_OBJ!" );
     stop_link = NextDown(stop_link);
   }
   else
@@ -631,14 +635,14 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
     else last = nilobj;
     for( link = Down(hd);  link != stop_link;  link = NextDown(link) )
     { Child(y, link);
-      if( type(y) == GAP_OBJ )
+      if( objectOfType(y, GAP_OBJ) )
       {
 	if( last == nilobj )
 	{
 	  /* do nothing, gap cannot separate definite objects */
 	  debug1(DOG, DD, "  skipping initial GAP_OBJ %s", EchoGap(&gap(y)));
 	}
-	else if( type(last) == GAP_OBJ )
+	else if( objectOfType(last, GAP_OBJ) )
 	{
 	  /* previous gap must have preceded an indefinite, so overwrite it */
 	  FposCopy(fpos(last), fpos(y));
@@ -717,7 +721,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 
     /* add nojoin gap at start */
     Parent(prnt, Up(dest));  /* can't be threaded */
-    assert( type(prnt) == VCAT, "Promote: nojoin case, can't find VCAT" );
+    assert( objectOfType(prnt, VCAT), "Promote: nojoin case, can't find VCAT" );
     New(extra_null, NULL_CLOS);
     back(extra_null, COLM) = fwd(extra_null, COLM) = 0;
     back(extra_null, ROWM) = fwd(extra_null, ROWM) = 0;
@@ -739,31 +743,31 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
     { Child(y, NextDown(link));
       debug2(DGS, DD, "root promote %s %s", Image(type(y)),
 	is_definite(type(y)) ? STR_EMPTY : EchoObject(y));
-      if( type(y) == SPLIT )  Child(y, DownDim(y, ROWM));
-      switch( type(y) )
+      if( objectOfType(y, SPLIT) )  Child(y, DownDim(y, ROWM));
+      switch( type(y).objtype )
       {
 
-	case SCALE_IND:
-	case COVER_IND:
-	case PRECEDES:
+	case SCALE_IND_E:
+	case COVER_IND_E:
+	case PRECEDES_E:
       
 	  DisposeChild(NextDown(link));
 	  break;
 	
 
-	case UNATTACHED:
+	case UNATTACHED_E:
       
 	  assert( Down(y) != y, "FlushRootGalley: UNATTACHED!" );
 	  Child(z, Down(y));
-	  assert( type(z) == HEAD, "FlushRootGalley: unattached HEAD!" );
+	  assert( objectOfType(z, HEAD), "FlushRootGalley: unattached HEAD!" );
 	  if( sized(z) )
 	  {
 	    /* galley is part flushed, leave it here */
 	    link = NextDown(link);
 	  }
 	  /* ??? else if( foll_or_prec(z) == GALL_PREC ) */
-	  else if( foll_or_prec(z) == GALL_PREC ||
-		   foll_or_prec(z) == GALL_FOLL_OR_PREC )
+	  else if( foll_or_prec(z).objtype == GALL_PREC_E ||
+		   foll_or_prec(z).objtype == GALL_FOLL_OR_PREC_E )
 	  {
 	    /* galley is preceding or foll_or_prec, send to CrossSequence */
 	    OBJECT t;
@@ -792,10 +796,10 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  break;
 
 
-	case EXPAND_IND:
+	case EXPAND_IND_E:
       
 	  /* expand @HExpand or @VExpand to occupy everything possible */
-	  dim = type(actual(y)) == HEXPAND ? COLM : ROWM;
+	  dim = objectOfType(actual(y), HEXPAND) ? COLM : ROWM;
 	  Constrained(actual(y), &c, dim, &why);
 	  if( constrained(c) )
 	  { FULL_LENGTH b = back(actual(y), dim);
@@ -808,14 +812,14 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  break;
 
 
-	case PAGE_LABEL_IND:
+	case PAGE_LABEL_IND_E:
 
 	  if( page_label != nilobj )
 	  { DisposeObject(page_label);
 	    page_label = nilobj;
 	  }
 	  Child(z, Down(y));
-	  assert( type(z) == PAGE_LABEL, "Promote: type(z) != PAGE_LABEL!" );
+	  assert( objectOfType(z, PAGE_LABEL), "Promote: type(z) != PAGE_LABEL!" );
 	  assert( Down(z) != z, "Promote: PAGE_LABEL Down(z) == z!" );
 	  Child(page_label, Down(z));
 	  DeleteLink(Up(page_label));
@@ -823,29 +827,29 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  break;
 
 
-	case CROSS_PREC:
-	case CROSS_FOLL:
-	case CROSS_FOLL_OR_PREC:
-	case CROSS_TARG:
+	case CROSS_PREC_E:
+	case CROSS_FOLL_E:
+	case CROSS_FOLL_OR_PREC_E:
+	case CROSS_TARG_E:
 	      
 	  debug2(DGS, DD, "root promote %s %s", Image(type(y)), EchoObject(y));
 	  /* NB NO BREAK */
 
 
-	case GALL_PREC:
-	case GALL_FOLL:
-	case GALL_FOLL_OR_PREC:
-	case GALL_TARG:
+	case GALL_PREC_E:
+	case GALL_FOLL_E:
+	case GALL_FOLL_OR_PREC_E:
+	case GALL_TARG_E:
 
 	  CrossSequence(actual(y));
 	  DisposeChild(NextDown(link));
 	  break;
 
 
-	case BEGIN_HEADER:
-	case END_HEADER:
-	case SET_HEADER:
-	case CLEAR_HEADER:
+	case BEGIN_HEADER_E:
+	case END_HEADER_E:
+	case SET_HEADER_E:
+	case CLEAR_HEADER_E:
 
 	  Error(22, 10, "%s symbol ignored (out of place)", WARN, &fpos(y),
 	    Image(type(y)));
@@ -853,52 +857,52 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  break;
 
 
-	case WORD:
-	case QWORD:
-	case ONE_COL:
-	case ONE_ROW:
-	case WIDE:
-	case HIGH:
-	case HSHIFT:
-	case VSHIFT:
-	case HMIRROR:
-	case VMIRROR:
-	case HSCALE:
-	case VSCALE:
-	case HCOVER:
-	case VCOVER:
-	case HCONTRACT:
-	case VCONTRACT:
-	case HLIMITED:
-	case VLIMITED:
-	case HEXPAND:
-	case VEXPAND:
-	case START_HVSPAN:
-	case START_HSPAN:
-	case START_VSPAN:
-	case HSPAN:
-	case VSPAN:
-	case ROTATE:
-	case BACKGROUND:
-	case SCALE:
-	case KERN_SHRINK:
-	case INCGRAPHIC:
-	case SINCGRAPHIC:
-	case PLAIN_GRAPHIC:
-	case GRAPHIC:
-	case LINK_SOURCE:
-	case LINK_DEST:
-	case LINK_URL:
-	case ACAT:
-	case HCAT:
-	case ROW_THR:
+	case WORD_E:
+	case QWORD_E:
+	case ONE_COL_E:
+	case ONE_ROW_E:
+	case WIDE_E:
+	case HIGH_E:
+	case HSHIFT_E:
+	case VSHIFT_E:
+	case HMIRROR_E:
+	case VMIRROR_E:
+	case HSCALE_E:
+	case VSCALE_E:
+	case HCOVER_E:
+	case VCOVER_E:
+	case HCONTRACT_E:
+	case VCONTRACT_E:
+	case HLIMITED_E:
+	case VLIMITED_E:
+	case HEXPAND_E:
+	case VEXPAND_E:
+	case START_HVSPAN_E:
+	case START_HSPAN_E:
+	case START_VSPAN_E:
+	case HSPAN_E:
+	case VSPAN_E:
+	case ROTATE_E:
+	case BACKGROUND_E:
+	case SCALE_E:
+	case KERN_SHRINK_E:
+	case INCGRAPHIC_E:
+	case SINCGRAPHIC_E:
+	case PLAIN_GRAPHIC_E:
+	case GRAPHIC_E:
+	case LINK_SOURCE_E:
+	case LINK_DEST_E:
+	case LINK_URL_E:
+	case ACAT_E:
+	case HCAT_E:
+	case ROW_THR_E:
 
-	case CLOSURE:
-	case NULL_CLOS:
-	case LINK_DEST_NULL:
-	case PAGE_LABEL:
-	case CROSS:
-	case FORCE_CROSS:
+	case CLOSURE_E:
+	case NULL_CLOS_E:
+	case LINK_DEST_NULL_E:
+	case PAGE_LABEL_E:
+	case CROSS_E:
+	case FORCE_CROSS_E:
 
 	  /* print this component */
 	  debug0(DGS, DD, "root promote definite or indefinite");
@@ -958,7 +962,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
 	  break;
 
 
-	case GAP_OBJ:
+	case GAP_OBJ_E:
 
 	  DisposeChild(NextDown(link));
 	  break;
@@ -979,11 +983,11 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
   if( external_ver(dest) && gall_dir(hd) == ROWM )
   { if( threaded(dest) )
     { Parent(tmp1, UpDim(dest, COLM));
-      assert( type(tmp1) == COL_THR, "Promote: tmp1 not COL_THR!" );
+      assert( objectOfType(tmp1, COL_THR), "Promote: tmp1 not COL_THR!" );
       y = FindSplitInGalley(hd);
-      assert( type(y) == SPLIT, "Promote: FindSplitInGalley!" );
+      assert( objectOfType(y, SPLIT), "Promote: FindSplitInGalley!" );
       Child(tmp2, DownDim(y, COLM));
-      assert( type(tmp2) == COL_THR, "Promote: tmp2 not COL_THR!" );
+      assert( objectOfType(tmp2, COL_THR), "Promote: tmp2 not COL_THR!" );
       if( tmp1 != tmp2 )
       { FULL_LENGTH b = find_max(back(tmp1, COLM), back(tmp2, COLM));
 	FULL_LENGTH f = find_max(fwd(tmp1, COLM),  fwd(tmp2, COLM));
@@ -1006,7 +1010,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
     { Child(y, NextDown(link));
       debug1(DGS, DD, "ordinary promote examining %s", EchoObject(y));
       top_y = y;
-      if( type(y) == SPLIT )
+      if( objectOfType(y, SPLIT) )
 	Child(y, DownDim(y, dim));
       if( is_header(type(y)) )
       {
@@ -1071,9 +1075,9 @@ void KillGalley(OBJECT hd, BOOLEAN optimize)
 { OBJECT prnt, link, y, z;
   debug2(DGF, D, "[ KillGalley(Galley %s into %s)",
 	SymName(actual(hd)), SymName(whereto(hd)));
-  assert( type(hd) == HEAD && Up(hd) != hd, "KillGalley: precondition!" );
+  assert( objectOfType(hd, HEAD) && Up(hd) != hd, "KillGalley: precondition!" );
   Parent(prnt, Up(hd));
-  assert( type(prnt) == UNATTACHED, "KillGalley: UNATTACHED precondition!" );
+  assert( objectOfType(prnt, UNATTACHED), "KillGalley: UNATTACHED precondition!" );
   assert( Up(prnt) != prnt, "KillGalley: prnt!" );
 
   /* delete any ready_galls that might be hanging about */
@@ -1085,24 +1089,24 @@ void KillGalley(OBJECT hd, BOOLEAN optimize)
   /* delete every remaining component */
   for( link = hd; NextDown(link) != hd; )
   { Child(y, NextDown(link));
-    switch( type(y) )
+    switch( type(y).objtype )
     {
-      case RECEIVING:	while( Down(y) != y )
+      case RECEIVING_E:	while( Down(y) != y )
 			{ Child(z, Down(y));
 			  DetachGalley(z);
 			}
 			DeleteNode(y);
 			break;
 		
-      case RECEPTIVE:	assert( Down(y) == y, "KillGalley: RECEPTIVE!" );
+      case RECEPTIVE_E:	assert( Down(y) == y, "KillGalley: RECEPTIVE!" );
 			DeleteNode(y);
 			break;
 
-      case UNATTACHED:	assert( Down(y) != y, "KillGalley: UNATTACHED!" );
+      case UNATTACHED_E:	assert( Down(y) != y, "KillGalley: UNATTACHED!" );
 			Child(z, Down(y));  KillGalley(z, FALSE);
 			break;
 
-      case HEAD:	assert(FALSE, "KillGalley: head");
+      case HEAD_E:	assert(FALSE, "KillGalley: head");
 			break;
 
       default:		DisposeChild(NextDown(link));
@@ -1141,9 +1145,9 @@ void KillGalley(OBJECT hd, BOOLEAN optimize)
 void FreeGalley(OBJECT hd, OBJECT stop_link, OBJECT *inners,
 OBJECT relocate_link, OBJECT sym)
 { OBJECT link, y, z, zlink, srch, index;
-  assert( type(hd) == HEAD && sized(hd), "FreeGalley: pre!");
+  assert( objectOfType(hd, HEAD) && sized(hd), "FreeGalley: pre!");
   assert( Up(hd) != hd, "FreeGalley: Up(hd)!" );
-  assert( *inners == nilobj || type(*inners) == ACAT, "FreeGalley: ACAT!" );
+  assert( *inners == nilobj || objectOfType(*inners, ACAT), "FreeGalley: ACAT!" );
   debug3(DGA, D, "[ FreeGalley(Galley %s into %s); rl %s nilobj",
     SymName(actual(hd)), SymName(whereto(hd)),
     relocate_link == nilobj ? "==" : "!=");
@@ -1151,15 +1155,15 @@ OBJECT relocate_link, OBJECT sym)
   /* close targets and move or flush any inner galleys */
   for( link = Down(hd);  link != stop_link;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == RECEIVING && actual(actual(y)) == InputSym )
+    if( objectOfType(y, RECEIVING) && actual(actual(y)) == InputSym )
       Error(22, 5, "forcing galley after input point", WARN, &fpos(actual(y)));
-    else if( type(y) == RECEIVING )
+    else if( objectOfType(y, RECEIVING) )
     {
       /* either relocate or free each galley */
       for( zlink = Down(y);  zlink != y; )
       {	Child(z, zlink);
 	zlink = NextDown(zlink);
-	assert( type(z) == HEAD, "FreeGalley/RECEIVING: type(z) != HEAD!" );
+	assert( objectOfType(z, HEAD), "FreeGalley/RECEIVING: type(z) != HEAD!" );
 	debug1(DGA, D, "FreeGalley examining galley %s", SymName(actual(z)));
 	if( relocate_link != nilobj && whereto(z) != sym &&
 	    (srch = SearchGalley(relocate_link, whereto(z), TRUE,
@@ -1181,7 +1185,7 @@ OBJECT relocate_link, OBJECT sym)
       }
       non_blocking(y) = TRUE;
     }
-    else if( type(y) == RECEPTIVE )
+    else if( objectOfType(y, RECEPTIVE) )
     { non_blocking(y) = TRUE;
     }
   }
@@ -1205,16 +1209,16 @@ void SetTarget(OBJECT hd)
 { OBJECT x, y, link, cr, lpar, rpar, env;
   BOOLEAN copied;
   debug1(DGS, DD, "SetTarget(%s)", SymName(actual(hd)));
-  assert( type(hd) == HEAD, "SetTarget: type(hd) != HEAD!" );
+  assert( objectOfType(hd, HEAD), "SetTarget: type(hd) != HEAD!" );
   Child(x, Down(hd));
-  assert( type(x) == CLOSURE, "SetTarget: type(x) != CLOSURE!" );
+  assert( objectOfType(x, CLOSURE), "SetTarget: type(x) != CLOSURE!" );
   assert( has_target(actual(x)), "SetTarget: x has no target!" );
 
   /* search the parameters of x for @Target */
   cr = nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == PAR && is_target(actual(y)) )
+    if( objectOfType(y, PAR) && is_target(actual(y)) )
     { assert( Down(y) != y, "SetTarget: Down(PAR)!" );
       Child(cr, Down(y));
       break;
@@ -1247,14 +1251,14 @@ void SetTarget(OBJECT hd)
 
   /* check that cr is now a cross-reference object */
   debug1(DGS, DD, "SetTarget examining %s", EchoObject(cr));
-  debug1(DGS, DD, "  type(cr) = %s", Image( (int) type(cr)) );
+  debug1(DGS, DD, "  type(cr) = %s", Image( type(cr) ));
   if( !is_cross(type(cr)) )
     Error(22, 6, "target of %s is not a cross reference",
       FATAL, &fpos(cr), SymName(actual(x)));
 
   /* determine which symbol is the target of this galley */
   Child(lpar, Down(cr));
-  if( type(lpar) != CLOSURE )
+  if( !objectOfType(lpar, CLOSURE) )
     Error(22, 7, "left parameter of %s is not a symbol",
       FATAL, &fpos(lpar), KW_CROSS);
   whereto(hd) = actual(lpar);
@@ -1283,7 +1287,7 @@ void SetTarget(OBJECT hd)
   }
 
   /* determine whether this is a forcing galley */
-  force_gall(hd) = force_target(actual(hd)) || type(cr) == FORCE_CROSS;
+  force_gall(hd) = force_target(actual(hd)) || objectOfType(cr, FORCE_CROSS);
 
   if( copied )  DisposeObject(cr);
 } /* end SetTarget */
@@ -1328,6 +1332,6 @@ int CheckComponentOrder(OBJECT preceder, OBJECT follower)
       }
     }
   }
-  debug1(DGS, DD, "CheckComponentOrder returning %s", Image(res));
+  debug1(DGS, DD, "CheckComponentOrder returning %s", Image4Constraints(res));
   return res;
 } /* end CheckComponentOrder */

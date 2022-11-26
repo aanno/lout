@@ -300,11 +300,11 @@ OBJECT GetScopeSnapshot(void)
 
 void LoadScopeSnapshot(OBJECT ss)
 { OBJECT link, x, sym;  BOOLEAN tmp;
-  assert( type(ss) == ACAT, "LoadScopeSnapshot: type(ss)!" );
+  assert( objectOfType(ss, ACAT), "LoadScopeSnapshot: type(ss)!" );
   PushScope(StartSym, FALSE, FALSE);
   for( link = LastDown(ss);  link != ss;  link = PrevDown(link) )
   { Child(x, link);
-    assert( type(x) == SCOPE_SNAPSHOT, "LoadScopeSnapshot: type(x)!" );
+    assert( objectOfType(x, SCOPE_SNAPSHOT), "LoadScopeSnapshot: type(x)!" );
     Child(sym, Down(x));
     PushScope(sym, ss_npars_only(x), ss_vis_only(x));
     body_ok[scope_top-1] = ss_body_ok(x);
@@ -341,7 +341,7 @@ void ClearScopeSnapshot(OBJECT ss)
 
 OBJECT InsertSym(const FULL_CHAR *str, OBJTYPE xtype, FILE_POS *xfpos,
 unsigned char xprecedence, BOOLEAN xindefinite, BOOLEAN xrecursive,
-unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
+OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
 { register int sum, rlen;
   register const FULL_CHAR *x;
   OBJECT p, q, s, tmp, link, entry, plink;  int len;
@@ -379,21 +379,21 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
 
   uses_count(s)  = 0;
   dirty(s)       = FALSE;
-  if( enclosing(s) != nilobj && type(enclosing(s)) == NPAR )
+  if( enclosing(s) != nilobj && objectOfType(enclosing(s), NPAR) )
     dirty(s) = dirty(enclosing(s)) = TRUE;
 
   has_par(s)     = FALSE;
   has_lpar(s)    = FALSE;
   has_rpar(s)    = FALSE;
   if( is_par(type(s)) )  has_par(enclosing(s))  = TRUE;
-  if( type(s) == LPAR )  has_lpar(enclosing(s)) = TRUE;
-  if( type(s) == RPAR )  has_rpar(enclosing(s)) = TRUE;
+  if( objectOfType(s, LPAR) )  has_lpar(enclosing(s)) = TRUE;
+  if( objectOfType(s, RPAR) )  has_rpar(enclosing(s)) = TRUE;
 
   /* assign a code letter between a and z to any NPAR symbol */
-  if( type(s) == NPAR )
+  if( objectOfType(s, NPAR) )
   { if( LastDown(enclosing(s)) != enclosing(s) )
     { Child(tmp, LastDown(enclosing(s)));
-      if( type(tmp) == NPAR )
+      if( objectOfType(tmp, NPAR) )
       { if( npar_code(tmp) == 'z' || npar_code(tmp) == ' ' )
 	  npar_code(s) = ' ';
 	else
@@ -416,7 +416,7 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
     { if( LastDown(xbody) != Down(xbody) )
       { OBJECT sym;
 	Child(sym, Down(xbody));
-	if( type(sym) == CLOSURE )
+	if( objectOfType(sym, CLOSURE) )
 	{ is_extern_target(actual(sym)) = TRUE;
 	  uses_extern_target(actual(sym)) = TRUE;
 	}
@@ -429,7 +429,7 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
   has_optimize(s) = is_optimize(s) = FALSE;
   has_merge(s) = is_merge(s) = FALSE;
   has_enclose(s) = is_enclose(s) = FALSE;
-  if( enclosing(s) != nilobj && type(enclosing(s)) == LOCAL )
+  if( enclosing(s) != nilobj && objectOfType(enclosing(s), LOCAL) )
   {
     if( StringEqual(str, KW_TAG) )
       is_tag(s) = has_tag(enclosing(s)) = dirty(enclosing(s)) = TRUE;
@@ -446,7 +446,7 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
 	if( is_target(p) && sym_body(p)!=nilobj && is_cross(type(sym_body(p))) )
 	{ OBJECT sym;
 	  Child(sym, Down(sym_body(p)));
-	  if( type(sym) == CLOSURE )
+	  if( objectOfType(sym, CLOSURE) )
 	  { is_extern_target(actual(sym)) = TRUE;
 	    uses_extern_target(actual(sym)) = TRUE;
 	  }
@@ -462,7 +462,7 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
   }
 
   if( StringEqual(str, KW_FILTER) )
-  { if( type(s) != LOCAL || enclosing(s) == StartSym )
+  { if( !objectOfType(s, LOCAL) || enclosing(s) == StartSym )
       Error(29, 4, "%s must be a local definition", WARN, &fpos(s), str);
     else if( !has_rpar(enclosing(s)) )
       Error(29, 14, "%s must lie within a symbol with a right parameter",
@@ -473,11 +473,11 @@ unsigned xpredefined, OBJECT xenclosing, OBJECT xbody)
     }
   }
 
-  if( type(s) == RPAR && has_body(enclosing(s)) &&
+  if( objectOfType(s, RPAR) && has_body(enclosing(s)) &&
     (is_tag(s) || is_key(s) || is_optimize(s)) )
     Error(29, 5, "a body parameter may not be named %s", WARN, &fpos(s), str);
 
-  if( type(s) == RPAR && has_target(enclosing(s)) &&
+  if( objectOfType(s, RPAR) && has_target(enclosing(s)) &&
     (is_tag(s) || is_key(s) || is_optimize(s)) )
     Error(29, 6, "the right parameter of a galley may not be called %s",
       WARN, &fpos(s), str);
@@ -610,9 +610,9 @@ OBJECT SearchSym(FULL_CHAR *str, int len)
 	       bool(!suppress_scope));
 	    }
 	    if( enclosing(q) == scope[s]
-	      && (!npars_only[s] || type(q) == NPAR)
+	      && (!npars_only[s] || objectOfType(q, NPAR))
 	      && (!vis_only[s] || visible(q) || suppress_visible )
-	      && (body_ok[s] || type(q)!=RPAR || !has_body(enclosing(q))
+	      && (body_ok[s] || !objectOfType(q, RPAR) || !has_body(enclosing(q))
 		  || suppress_visible )
 	      && (!suppress_scope || StringEqual(string(p), KW_INCLUDE) ||
 				     StringEqual(string(p), KW_SYSINCLUDE))
@@ -694,7 +694,7 @@ OBJECT ChildSym(OBJECT s, OBJTYPE typ)
 { OBJECT link, y;
   for( link = Down(s);  link != s;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == typ && enclosing(y) == s )  return y;
+    if( objectOfType(y, typ) && enclosing(y) == s )  return y;
   }
   Error(29, 10, "symbol %s has missing %s", FATAL, &fpos(s),
     SymName(s), Image(typ));
@@ -714,7 +714,7 @@ OBJECT ChildSymWithCode(OBJECT s, unsigned char code)
 { OBJECT link, y;
   for( link = Down(actual(s));  link != actual(s);  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == NPAR && enclosing(y) == actual(s) && npar_code(y) == code )
+    if( objectOfType(y, NPAR) && enclosing(y) == actual(s) && npar_code(y) == code )
       return y;
   }
   Error(29, 11, "symbol %s has erroneous code %c (database out of date?)",
@@ -776,19 +776,19 @@ static void DeleteSymBody(OBJECT s)
 #else
   OBJECT t;
   debug1(DST, DDD, "DeleteSymBody( %s )", SymName(s));
-  switch( type(s) )
+  switch( type(s).objtype )
   {
-    case MACRO:	while( sym_body(s) != nilobj )
+    case MACRO_E:	while( sym_body(s) != nilobj )
 		{ t = sym_body(s);
 		  sym_body(s) = Delete(sym_body(s), PARENT);
 		  Dispose(t);
 		}
 		break;
 	
-    case LPAR:
-    case NPAR:
-    case RPAR:
-    case LOCAL:	if( sym_body(s) != nilobj ) DisposeObject(sym_body(s));
+    case LPAR_E:
+    case NPAR_E:
+    case RPAR_E:
+    case LOCAL_E:	if( sym_body(s) != nilobj ) DisposeObject(sym_body(s));
 		break;
 
     default:	assert1(FALSE, "DeleteSymBody:", Image(type(s)));

@@ -66,7 +66,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   OBJECT extras, tmp1, tmp2, bt[2], ft[2], hold_env;
   BOOLEAN after_target;
   
-  assert( type(hd) == HEAD && Down(hd) != hd, "SizeGalley: precondition!" );
+  assert( objectOfType(hd, HEAD) && Down(hd) != hd, "SizeGalley: precondition!" );
   assert( !sized(hd), "SizeGalley: already sized!" );
   debug6(DGM, D, "SizeGalley(%s, -, %s, %s, %s, %s, -, %s, -, -, -), hd =",
 	SymName(actual(hd)), bool(rows), bool(joined), bool(nonblock),
@@ -81,7 +81,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   crs = nilobj;
   bt[COLM] = ft[COLM] = bt[ROWM] = ft[ROWM] = nilobj;
   New(hold_env, ACAT);  Link(hold_env, env);
-  if( AllowCrossDb && type(y) == CLOSURE && has_optimize(actual(y))
+  if( AllowCrossDb && objectOfType(y, CLOSURE) && has_optimize(actual(y))
       && FindOptimize(y, env) )
   {
     SetOptimize(hd, style);
@@ -148,7 +148,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   }
 
   /* hyphenate hd if horizontal optimal galley says so */
-  else if( opt_components(hd) != nilobj && opt_hyph(hd) && type(y) == ACAT )
+  else if( opt_components(hd) != nilobj && opt_hyph(hd) && objectOfType(y, ACAT) )
   { debug0(DOG, D, "SizeGalley calling Hyphenate()");
     y = Hyphenate(y);
   }
@@ -160,9 +160,9 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
     debug0(DGM, DD, "SizeGalley cleaning up rows of hd:");
     for( link = hd;  NextDown(link) != hd;  link = NextDown(link) )
     { Child(y, NextDown(link));
-      switch( type(y) )
+      switch( type(y).objtype )
       {
-	case GAP_OBJ:
+	case GAP_OBJ_E:
 
           debug2(DGM, DD, "  cleaning %s: %s", Image(type(y)), EchoObject(y));
 	  /* prev_gap = y; */
@@ -170,7 +170,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  break;
 
 
-	case VCAT:
+	case VCAT_E:
 	  
           debug1(DGM, DD, "  cleaning %s:", Image(type(y)));
           ifdebug(DGM, DD, DebugObject(y));
@@ -182,7 +182,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  break;
 
 
-	case ACAT:
+	case ACAT_E:
 	  
           debug2(DGM, DD, "  cleaning %s: %s", Image(type(y)), EchoObject(y));
 	  if( gall_dir(hd) == COLM )
@@ -193,7 +193,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  break;
 
 
-	case SPLIT:
+	case SPLIT_E:
 	  
           debug1(DGM, DD, "  cleaning %s:", Image(type(y)));
           ifdebug(DGM, DD, DebugObject(y));
@@ -205,17 +205,17 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      EchoObject(z));
 	    external_ver(z) = TRUE;
 	  }
-	  else if( type(z) == VCAT )
+	  else if( objectOfType(z, VCAT) )
 	  { OBJECT hor, thor, clink, dlink;
 	    Child(hor, DownDim(y, COLM));
-	    assert( type(hor) == COL_THR, "SizeGalley: missing COL_THR!" );
+	    assert( objectOfType(hor, COL_THR), "SizeGalley: missing COL_THR!" );
 	    Parent(thor, UpDim(z, COLM));
 	    assert( hor == thor, "SizeGalley/SPLIT: hor != thor!" );
 	    clink = DownDim(y, COLM);
 	    dlink = UpDim(z, COLM);
 	    for( tlink = LastDown(z);  tlink != z;  tlink = PrevDown(tlink) )
 	    { Child(t, tlink);
-	      if( type(t) == GAP_OBJ )
+	      if( objectOfType(t, GAP_OBJ) )
 	      { Link(NextDown(link), t);
 	      }
 	      else
@@ -236,8 +236,8 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  break;
 
 
-	case CLOSURE:
-	case HEAD:
+	case CLOSURE_E:
+	case HEAD_E:
 	  
           debug2(DGM, DD, "  cleaning %s: %s", Image(type(y)), EchoObject(y));
 	  if( gall_dir(hd) == COLM )
@@ -263,12 +263,12 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   /* NB AdjustSize cannot be done correctly until after seen_nojoin is set */
   for( link = Down(extras);  link != extras;  link = NextDown(link) )
   { Child(y, link);
-    if( type(y) == SCALE_IND )
+    if( objectOfType(y, SCALE_IND) )
     {
       /* check that all is in order */
       CONSTRAINT zc;  OBJECT t;  FULL_LENGTH b, f;
       z = actual(y);
-      assert( type(z) == SCALE, "SizeObject: type(z) != SCALE!" );
+      assert( objectOfType(z, SCALE), "SizeObject: type(z) != SCALE!" );
       assert( bc(constraint(z)) == 0, "SizeObject: bc(constraint(z)) != 0" );
       assert( Down(z) != z, "SizeObject SCALE: Down(z) == z!" );
       Child(t, Down(z));
@@ -361,7 +361,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   for( link = Down(hd);  link != hd;  link = NextDown(link) )
   { Child(y, link);
 
-    if( type(y) == GAP_OBJ || is_index(type(y)) )  continue;
+    if( objectOfType(y, GAP_OBJ) || is_index(type(y)) )  continue;
     debug0(DGM, DDD, "  ROWM sizing:");
     ifdebug(DGM, DDD, DebugObject(y));
     New(extras, ACAT);
@@ -378,9 +378,9 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
       /* debug1(DCR, DD, "  extra: %s", EchoObject(z)); */
       debug2(DGM, DD, "  extra%s: %s",
 	after_target ? " after_target" : "", EchoObject(z));
-      switch( type(z) )
+      switch( type(z).objtype )
       {
-	case RECEPTIVE:
+	case RECEPTIVE_E:
 
 	  /* debug2(DCR, DD, "  ... uses_ext  = %s, trig = %s",
 	    bool(uses_extern_target(actual(actual(z)))), bool(trig)); */
@@ -394,14 +394,14 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  break;
 
 
-	case RECURSIVE:
+	case RECURSIVE_E:
 
 	  if( *recs == nilobj )  New(*recs, ACAT);
 	  Link(*recs, z);
 	  break;
 
 
-	case UNATTACHED:
+	case UNATTACHED_E:
 
 	  if( !after_target )	/* *** new semantics *** */
 	  { if( *inners == nilobj )  New(*inners, ACAT);
@@ -413,29 +413,31 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  break;
 
 		
-	case SCALE_IND:
-	case EXPAND_IND:
-	case GALL_PREC:
-	case GALL_FOLL:
-	case GALL_FOLL_OR_PREC:
-	case GALL_TARG:
-	case CROSS_PREC:
-	case CROSS_FOLL:
-	case CROSS_FOLL_OR_PREC:
-	case CROSS_TARG:
-	case PAGE_LABEL_IND:
+	case SCALE_IND_E:
+	case EXPAND_IND_E:
+	case GALL_PREC_E:
+	case GALL_FOLL_E:
+	case GALL_FOLL_OR_PREC_E:
+	case GALL_TARG_E:
+	case CROSS_PREC_E:
+	case CROSS_FOLL_E:
+	case CROSS_FOLL_OR_PREC_E:
+	case CROSS_TARG_E:
+	case PAGE_LABEL_IND_E:
 
 	  debug1(DCR, DD, "  SizeGalley: %s", EchoObject(z));
 	  break;
 
 
-	case COVER_IND:
+	case COVER_IND_E:
 
 	  /* adjust size of the COVER object, change it to @Scale etc. */
-	  { OBJECT cover, prnt, chld;  int dirn, thr_type, ok1, ok2, sf,subst, esubst;
+	  { OBJECT cover, prnt, chld;
+	    OBJTYPE ok1, ok2, thr_type, subst, esubst;
+	    int dirn, sf;
 	    float sf1, sf2;  CONSTRAINT c;  FULL_LENGTH b, f;
 	    cover = actual(z);
-	    if( type(cover) == HCOVER )
+	    if( objectOfType(cover, HCOVER) )
 	    { dirn = COLM;
 	      thr_type = COL_THR;
 	      ok1 = VCAT;
@@ -452,10 +454,10 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      esubst = ONE_ROW;
 	    }
 	    Parent(prnt, UpDim(cover, dirn));
-	    while( type(prnt) == SPLIT || type(prnt) == thr_type )
+	    while( objectOfType(prnt, SPLIT) || objectOfType(prnt, thr_type) )
 	      Parent(prnt, UpDim(prnt, dirn));
 	    Child(chld, Down(cover));
-	    if( type(prnt) != ok1 && type(prnt) != ok2 )
+	    if( !objectOfType(prnt, ok1) && !objectOfType(prnt, ok2) )
 	    {
 	      Error(21, 8, "%s replaced by %s (mark not shared)",
 		WARN, &fpos(cover), Image(type(cover)), Image(subst));

@@ -3648,6 +3648,10 @@ extern	OBJECT	  NewToken(OBJTYPE xtype, FILE_POS *xfpos,
 		    unsigned char xvspace, unsigned char xhspace,
 		    unsigned char xprec, OBJECT xactual);
 extern	OBJECT	  CopyTokenList(OBJECT x, FILE_POS *pos);
+
+// deprecated
+extern	const FULL_CHAR *EchoCatOpUnsafe(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin);
+
 extern	const FULL_CHAR *EchoCatOp(OBJTYPE xtype, BOOLEAN xmark, BOOLEAN xjoin);
 extern	const FULL_CHAR *EchoToken(OBJECT x);
 
@@ -3857,7 +3861,7 @@ extern	void	  ClearScopeSnapshot(OBJECT ss);
 extern	OBJECT	  InsertSym(const FULL_CHAR *str, OBJTYPE xtype,
 		    FILE_POS *xfpos, unsigned char xprecedence,
 		    BOOLEAN xindefinite, BOOLEAN xrecursive,
-		    unsigned xpredefined, OBJECT xenclosing, OBJECT xbody);
+		    OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody);
 extern	void	  InsertAlternativeName(FULL_CHAR *str, OBJECT s,
 		    FILE_POS *xfpos);
 extern	OBJECT	  SearchSym(FULL_CHAR *str, int len);

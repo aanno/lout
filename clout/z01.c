@@ -114,12 +114,12 @@ int TotalWordCount;
 static OBJECT load(const FULL_CHAR *xstr, OBJTYPE xpre,
 BOOLEAN xleft, BOOLEAN xright, BOOLEAN xindef, unsigned char xprec)
 { OBJECT s;
-  s = InsertSym(xstr, LOCAL, no_fpos, xprec, xindef, FALSE, xpre.objtype,
+  s = InsertSym(xstr, LOCAL, no_fpos, xprec, xindef, FALSE, xpre,
 	StartSym, nilobj);
   if( xleft )  InsertSym( AsciiToFull("pa"), LPAR, no_fpos, DEFAULT_PREC,
-    FALSE, FALSE, 0, s, nilobj);
+    FALSE, FALSE, DUMMY, s, nilobj);
   if( xright )  InsertSym( AsciiToFull("pb"), RPAR, no_fpos, DEFAULT_PREC,
-    FALSE, FALSE, 0, s, nilobj);
+    FALSE, FALSE, DUMMY, s, nilobj);
   if( xleft && xright && xpre.objtype != PLUS_E && xpre.objtype != MINUS_E )
     right_assoc(s) = TRUE;
   return s;

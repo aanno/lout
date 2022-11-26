@@ -87,7 +87,7 @@ static DBCHECK_TABLE dtab_rehash(DBCHECK_TABLE S, int newsize)
   for( i = 0;  i < dtab_size(S);  i++ )
   { if( dtab_item(S, i) != nilobj )
     { OBJECT ent = dtab_item(S, i);
-      assert( type(ent) == ACAT, "dtab_rehash: ACAT!" );
+      assert( objectOfType(ent, ACAT), "dtab_rehash: ACAT!" );
       for( link = Down(ent);  link != ent;  link = NextDown(link) )
       { Child(z, link);
 	dtab_insert(z, &NewS);
@@ -141,7 +141,7 @@ static void dtab_debug(DBCHECK_TABLE S, FILE *fp)
     fprintf(fp, "dtab_item(S, %d) =", i);
     if( x == nilobj )
       fprintf(fp, " <nilobj>");
-    else if( type(x) != ACAT )
+    else if( !objectOfType(x, ACAT) )
       fprintf(fp, " not ACAT!");
     else for( link = Down(x);  link != x;  link = NextDown(link) )
     { Child(y, link);
@@ -202,8 +202,8 @@ void DbInit(void)
   count = 0;								\
   for( link = Down(db);  link != db;  link = NextDown(link) )		\
   { Child(yy, link);							\
-    assert(type(yy)==CROSS_SYM || type(yy)==ACAT, "SymToNum: yy!");	\
-    if( type(yy) != CROSS_SYM )  continue;				\
+    assert(objectOfType(yy, CROSS_SYM) || objectOfType(yy, ACAT), "SymToNum: yy!");	\
+    if( !objectOfType(yy, CROSS_SYM) )  continue;				\
     if( symb(yy) == sym )  break;					\
     if( number(link) > count )  count = number(link);			\
   }									\
@@ -232,10 +232,10 @@ void DbInit(void)
 { OBJECT link, y = nilobj;						\
   for( link = Down(db);  link != db;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( type(y) == CROSS_SYM && number(link) == num )  break;		\
+    if( objectOfType(y, CROSS_SYM) && number(link) == num )  break;		\
   }									\
   assert( link != db, "NumToSym: no sym");				\
-  assert( type(y) == CROSS_SYM, "NumToSym: y!" );			\
+  assert( objectOfType(y, CROSS_SYM), "NumToSym: y!" );			\
   sym = symb(y);							\
 } /* end NumToSym */
 
@@ -381,8 +381,8 @@ void DbConvert(OBJECT db, BOOLEAN full_name)
       (char *) STR_NEWLINE);
     for( link = Down(db);  link != db;  link = NextDown(link) )
     { Child(y, link);
-      assert( type(y) == CROSS_SYM || type(y) == ACAT, "DbConvert: y!" );
-      if( type(y) != CROSS_SYM )  continue;
+      assert( objectOfType(y, CROSS_SYM) || objectOfType(y, ACAT), "DbConvert: y!" );
+      if( !objectOfType(y, CROSS_SYM) )  continue;
       fprintf(db_filep(db), "%s %d %s%s",
 	db_targ(link) ? "00target" : "00symbol", number(link),
 	full_name ? FullSymName(symb(y), AsciiToFull(" ")) : SymName(symb(y)),
@@ -466,16 +466,16 @@ OBJECT DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
     dfpos = 0L;  LexPush(dfnum, 0, DATABASE_FILE, 1, FALSE);
     t = LexGetToken();
     dlnum = line_num(fpos(t));
-    while( type(t) == LBR )
+    while( objectOfType(t, LBR) )
     { res = Parse(&t, StartSym, FALSE, FALSE);
-      if( t != nilobj || type(res) != CLOSURE )
+      if( t != nilobj || !objectOfType(res, CLOSURE) )
 	Error(33, 6, "syntax error in database file %s",
 	  FATAL, &fpos(res), FileName(dfnum));
       assert( symbs != nilobj, "DbLoad: create && symbs == nilobj!" );
       if( symbs != nilobj )
       {	for( link = Down(symbs);  link != symbs;  link = NextDown(link) )
 	{ Child(y, link);
-	  if( type(y) == CLOSURE && actual(y) == actual(res) )  break;
+	  if( objectOfType(y, CLOSURE) && actual(y) == actual(res) )  break;
 	}
 	if( link == symbs )
 	  Error(33, 7, "%s found in database but not declared in %s line",
@@ -483,7 +483,7 @@ OBJECT DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
       }
       for( tag = nilobj, link = Down(res); link != res; link = NextDown(link) )
       {	Child(par, link);
-	if( type(par) == PAR && is_tag(actual(par)) && Down(par) != par )
+	if( objectOfType(par, PAR) && is_tag(actual(par)) && Down(par) != par )
 	{ Child(tag, Down(par));
 	  break;
 	}
@@ -509,7 +509,7 @@ OBJECT DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
       DisposeObject(res);  dfpos = LexNextTokenPos();  t = LexGetToken();
       dlnum = line_num(fpos(t));
     }
-    if( type(t) != END )
+    if( !objectOfType(t, END) )
       Error(33, 11, "%s or end of file expected here", FATAL, &fpos(t), KW_LBR);
     LexPop();
     if( db == nilobj )
@@ -536,7 +536,7 @@ OBJECT DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
   reading(db) = TRUE;
   in_memory(db) = in_mem;
   if( symbs != nilobj )
-  { assert( type(symbs) == ACAT, "DbLoad: type(symbs)!" );
+  { assert( objectOfType(symbs, ACAT), "DbLoad: type(symbs)!" );
     Link(db, symbs);
   }
   if( fp == null )
@@ -577,7 +577,7 @@ OBJECT DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
       sscanf( (char *) &line[i+1], "%s", sym_name);
       for( link = Down(symbs);  link != symbs;  link = NextDown(link) )
       {	Child(y, link);
-	assert( type(y) == CLOSURE, "DbLoad: type(y) != CLOSURE!" );
+	assert( objectOfType(y, CLOSURE), "DbLoad: type(y) != CLOSURE!" );
 	if( StringEqual(sym_name, SymName(actual(y))) )
 	{ sym = actual(y);
 	  break;
