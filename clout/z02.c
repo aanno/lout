@@ -309,6 +309,7 @@ void LexPop(void)
   FposCopy(fpos(res), file_pos);					\
   for( ch = 0;  ch < len;  ch++ ) string(res)[ch] = str[ch];		\
   string(res)[ch] = '\0';						\
+  assert(objectOfType(res, typ), "setword: created object has unexpected token type"); \
 }
 
 

@@ -72,7 +72,7 @@ typedef unsigned short	FILE_NUM;
 /*****************************************************************************/
 
 typedef	struct
-{ unsigned char	 otype;			/* space for object type field	     */
+{ OBJTYPE	 otype;			/* space for object type field	     */
   unsigned char	 orec_size;		/* space for object record size      */
   FILE_NUM	 ofile_num;		/* no. of file this record is from   */
   unsigned       oline_num  : 20;	/* the line number of this record    */
@@ -2015,7 +2015,7 @@ typedef union rec
 
   struct link_type	/* LINK */
   {  LIST		olist[2];
-     unsigned char	otype;
+     OBJTYPE	otype;
      unsigned char	onumber;
      unsigned char	odb_targ;
   } os4;
@@ -2060,7 +2060,7 @@ typedef union rec
 
   struct cr_type
   {  LIST		olist[2];
-     unsigned char	otype;
+     OBJTYPE	otype;
      unsigned char	otarget_state;
      FILE_NUM		otarget_file;
      union rec		*otarget_val;
@@ -2075,7 +2075,7 @@ typedef union rec
 
   struct ext_gall_type
   {  LIST		olist[2];
-     unsigned char	otype;
+     OBJTYPE	otype;
      FILE_NUM		oeg_fnum;
      int		oeg_lnum;
      long		oeg_fpos;
@@ -3043,6 +3043,7 @@ INLINE OBJECT NewWord(OBJECT x, OBJTYPE typ, size_t len, FILE_POS* pos) {
   mallocheadercheck(zz_hold,zz_size);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  assert(objectOfType(x, typ), "NewWord: created object has unexpected token type");
   return x;
 }
 

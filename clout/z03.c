@@ -198,7 +198,7 @@ static	char		*file_mode[MAX_TYPES] =
 /*                                                                           */
 /*****************************************************************************/
 
-static FILE_POS no_file_pos = {0, 0, 0, 0, 0};
+static FILE_POS no_file_pos = {{DUMMY_E}/*DUMMY*/, 0, 0, 0, 0};
 FILE_POS *no_fpos = &no_file_pos;
 
 
