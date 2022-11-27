@@ -2395,20 +2395,6 @@ typedef struct font_rec {
 } FONT_INFO;
 
 
-/*@::MAP_VEC@*****************************************************************/
-/*                                                                           */
-/*  typedef MAP_VEC - information about character mappings.  Really private  */
-/*  to z38.c but (for efficiency) shared with z37.c and z24.c                */
-/*                                                                           */
-/*****************************************************************************/
-
-#define MAX_CHASH       353             /* size of hash table                */
-#define MAP_UPPERCASE     0             /* the map to upper case             */
-#define MAP_LOWERCASE     1             /* the map to lower case             */
-#define MAP_UNACCENTED    2             /* the map to unaccented             */
-#define MAP_ACCENT        3             /* the map to the accent character   */
-#define MAPS              4             /* the number of maps in each file   */
- 
 typedef struct mapvec {
   OBJECT        file_name;              /* name of file containing the vec   */
   FILE_NUM      fnum;                   /* the file number of this file      */

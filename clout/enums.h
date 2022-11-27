@@ -594,5 +594,26 @@ typedef enum mem_t {
     MEM_USAGE_MAX
 } MEM_T;
 
+/*@::MAP_VEC@*****************************************************************/
+/*                                                                           */
+/*  typedef MAP_VEC - information about character mappings.  Really private  */
+/*  to z38.c but (for efficiency) shared with z37.c and z24.c                */
+/*                                                                           */
+/*****************************************************************************/
+
+#define MAX_CHASH       353             /* size of hash table                */
+// #define MAP_UPPERCASE     0             /* the map to upper case             */
+// #define MAP_LOWERCASE     1             /* the map to lower case             */
+// #define MAP_UNACCENTED    2             /* the map to unaccented             */
+// #define MAP_ACCENT        3             /* the map to the accent character   */
+
+typedef enum map_t {
+    MAP_UPPERCASE = 0,
+    MAP_LOWERCASE,
+    MAP_UNACCENTED,
+    MAP_ACCENT,
+} MAP_T;
+
+#define MAPS              (MAP_ACCENT + 1)             /* the number of maps in each file   */
 
 #endif
