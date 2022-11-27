@@ -381,10 +381,16 @@ extern const SPACE_MODE ADD_HYPH;
 // #define	HYPH_ON		     2		/* hyphenation on                    */
 
 typedef enum hyph_style_t {
-    HYPH_UNDEF = 0,
-    HYPH_OFF,
-    HYPH_ON
+    HYPH_UNDEF_E = 0,
+    HYPH_OFF_E,
+    HYPH_ON_E
 } HYPH_STYLE_T;
+
+typedef struct hyph_style { HYPH_STYLE_T hyphstyle; } HYPH_STYLE;
+
+extern const HYPH_STYLE HYPH_UNDEF;
+extern const HYPH_STYLE HYPH_OFF;
+extern const HYPH_STYLE HYPH_ON;
 
 /* fill_style(style) options                                                 */
 // #define	FILL_UNDEF	     0		/* fill option undefined             */
@@ -392,21 +398,33 @@ typedef enum hyph_style_t {
 // #define	FILL_ON		     2		/* fill lines with text              */
 
 typedef enum fill_style_t {
-    FILL_UNDEF = 0,
-    FILL_OFF,
-    FILL_ON,
+    FILL_UNDEF_E = 0,
+    FILL_OFF_E,
+    FILL_ON_E,
 } FILL_STYLE_T;
+
+typedef struct fill_style { FILL_STYLE_T fillstyle; } FILL_STYLE;
+
+extern const FILL_STYLE FILL_UNDEF;
+extern const FILL_STYLE FILL_OFF;
+extern const FILL_STYLE FILL_ON;
 
 /* underline(obj) options                                                    */
 // #define	UNDER_UNDEF	     0		/* underline undefined               */
 // #define	UNDER_OFF	     1		/* no underlining	             */
 // #define	UNDER_ON	     2		/* underline this                    */
 
-typedef enum underline_t {
-    UNDER_UNDEF = 0,
-    UNDER_OFF,
-    UNDER_ON
-} UNDERLINE_T;
+typedef enum under_t {
+    UNDER_UNDEF_E = 0,
+    UNDER_OFF_E,
+    UNDER_ON_E
+} UNDER_T;
+
+typedef struct under { UNDER_T underline; } UNDER;
+
+extern const UNDER UNDER_UNDEF;
+extern const UNDER UNDER_OFF;
+extern const UNDER UNDER_ON;
 
 /* space_style(style) options                                                */
 // #define	SPACE_LOUT	     0		/* interpret white space Lout's way  */
@@ -416,12 +434,20 @@ typedef enum underline_t {
 // #define	SPACE_TEX	     4		/* interpret white space TeX's way   */
 
 typedef enum space_style_t {
-    SPACE_LOUT = 0,
-    SPACE_COMPRESS,
-    SPACE_SEPARATE,
-    SPACE_TROFF,
-    SPACE_TEX
+    SPACE_LOUT_E = 0,
+    SPACE_COMPRESS_E,
+    SPACE_SEPARATE_E,
+    SPACE_TROFF_E,
+    SPACE_TEX_E
 } SPACE_STYLE_T;
+
+typedef struct space_style { SPACE_STYLE_T spacestyle; } SPACE_STYLE;
+
+extern const SPACE_STYLE SPACE_LOUT;
+extern const SPACE_STYLE SPACE_COMPRESS;
+extern const SPACE_STYLE SPACE_SEPARATE;
+extern const SPACE_STYLE SPACE_TROFF;
+extern const SPACE_STYLE SPACE_TEX;
 
 /* display_style(style) options                                              */
 // #define	DISPLAY_UNDEF	     0		/* display option undefined          */
@@ -434,24 +460,39 @@ typedef enum space_style_t {
 // #define	DO_ADJUST	     7		/* placed in ACATs when adjust need  */
 
 typedef enum display_style_t {
-    DISPLAY_UNDEF = 0,
-    DISPLAY_ADJUST,
-    DISPLAY_OUTDENT,
-    DISPLAY_ORAGGED,
-    DISPLAY_LEFT,
-    DISPLAY_CENTRE,
-    DISPLAY_RIGHT,
+    DISPLAY_UNDEF_E = 0,
+    DISPLAY_ADJUST_E,
+    DISPLAY_OUTDENT_E,
+    DISPLAY_ORAGGED_E,
+    DISPLAY_LEFT_E,
+    DISPLAY_CENTRE_E,
+    DISPLAY_RIGHT_E,
     DO_ADJUST
 } DISPLAY_STYLE_T;
+
+typedef struct display_style { DISPLAY_STYLE_T displaystyle; } DISPLAY_STYLE;
+
+extern const DISPLAY_STYLE DISPLAY_UNDEF;
+extern const DISPLAY_STYLE DISPLAY_ADJUST;
+extern const DISPLAY_STYLE DISPLAY_OUTDENT;
+extern const DISPLAY_STYLE DISPLAY_ORAGGED;
+extern const DISPLAY_STYLE DISPLAY_LEFT;
+extern const DISPLAY_STYLE DISPLAY_CENTRE;
+extern const DISPLAY_STYLE DISPLAY_RIGHT;
 
 /* small_caps(style) options                                                 */
 // #define	SMALL_CAPS_OFF	     0		/* don't want small capitals         */
 // #define	SMALL_CAPS_ON	     1		/* small capitals                    */
 
 typedef enum smallcaps_t {
-    SMALL_CAPS_OFF = 0,
-    SMALL_CAPS_ON
+    SMALL_CAPS_OFF_E = 0,
+    SMALL_CAPS_ON_E
 } SMALLCAPS_T;
+
+typedef struct smallcaps { SMALLCAPS_T smallcaps; } SMALLCAPS;
+
+extern const SMALLCAPS SMALL_CAPS_OFF;
+extern const SMALLCAPS SMALL_CAPS_ON;
 
 /* file types */
 // #define	SOURCE_FILE	     0		/* input file from command line      */
@@ -466,19 +507,32 @@ typedef enum smallcaps_t {
 // #define	FILTER_FILE	     9		/* filter output file                */
 
 typedef enum file_type_t {
-    SOURCE_FILE = 0,
-    INCLUDE_FILE,
-    DATABASE_FILE,
-    INDEX_FILE,
-    FONT_FILE,
-    PREPEND_FILE,
-    HYPH_FILE,
-    HYPH_PACKED_FILE,
-    MAPPING_FILE,
-    FILTER_FILE
+    SOURCE_FILE_E = 0,
+    INCLUDE_FILE_E,
+    DATABASE_FILE_E,
+    INDEX_FILE_E,
+    FONT_FILE_E,
+    PREPEND_FILE_E,
+    HYPH_FILE_E,
+    HYPH_PACKED_FILE_E,
+    MAPPING_FILE_E,
+    FILTER_FILE_E
 } FILE_TYPE_T;
 
 #define	MAX_TYPES	    (FILTER_FILE + 1)		/* number of file types              */
+
+typedef struct file_type { FILE_TYPE_T filetype; } FILE_TYPE;
+
+extern const FILE_TYPE SOURCE_FILE;
+extern const FILE_TYPE INCLUDE_FILE;
+extern const FILE_TYPE DATABASE_FILE;
+extern const FILE_TYPE INDEX_FILE;
+extern const FILE_TYPE FONT_FILE;
+extern const FILE_TYPE PREPEND_FILE;
+extern const FILE_TYPE HYPH_FILE;
+extern const FILE_TYPE HYPH_PACKED_FILE;
+extern const FILE_TYPE MAPPING_FILE;
+extern const FILE_TYPE FILTER_FILE;
 
 /* path types (i.e. sequences of directories for file searching) */
 // #define	SOURCE_PATH	     0		/* path to search for source files   */
@@ -491,17 +545,28 @@ typedef enum file_type_t {
 // #define	MAPPING_PATH	     7		/* path for mapping (LCM) files      */
 
 typedef enum path_type_t {
-    SOURCE_PATH = 0,
-    INCLUDE_PATH,
-    SYSINCLUDE_PATH,
-    DATABASE_PATH,
-    SYSDATABASE_PATH,
-    FONT_PATH,
-    HYPH_PATH,
-    MAPPING_PATH
+    SOURCE_PATH_E = 0,
+    INCLUDE_PATH_E,
+    SYSINCLUDE_PATH_E,
+    DATABASE_PATH_E,
+    SYSDATABASE_PATH_E,
+    FONT_PATH_E,
+    HYPH_PATH_E,
+    MAPPING_PATH_E
 } PATH_TYPE_T;
 
 #define	MAX_PATHS	     (MAPPING_PATH + 1)		/* number of mapping paths           */
+
+typedef struct path_type { PATH_TYPE_T pathtype; } PATH_TYPE;
+
+extern const PATH_TYPE SOURCE_PATH;
+extern const PATH_TYPE INCLUDE_PATH;
+extern const PATH_TYPE SYSINCLUDE_PATH;
+extern const PATH_TYPE DATABASE_PATH;
+extern const PATH_TYPE SYSDATABASE_PATH;
+extern const PATH_TYPE FONT_PATH;
+extern const PATH_TYPE HYPH_PATH;
+extern const PATH_TYPE MAPPING_PATH;
 
 /* units of measurement */
 // #define	NO_UNIT		     0		/* no unit - for error detection     */
@@ -512,13 +577,22 @@ typedef enum path_type_t {
 // #define	NEXT_UNIT	     5		/* w unit (inners)                   */
 
 typedef enum unit_t {
-    NO_UNIT = 0,
-    FIXED_UNIT,
-    FRAME_UNIT,
-    AVAIL_UNIT,
-    DEG_UNIT,
-    NEXT_UNIT
+    NO_UNIT_E = 0,
+    FIXED_UNIT_E,
+    FRAME_UNIT_E,
+    AVAIL_UNIT_E,
+    DEG_UNIT_E,
+    NEXT_UNIT_E
 } UNIT_T;
+
+typedef struct unit { UNIT_T unit; } UNIT;
+
+extern const UNIT NO_UNIT;
+extern const UNIT FIXED_UNIT;
+extern const UNIT FRAME_UNIT;
+extern const UNIT AVAIL_UNIT;
+extern const UNIT DEG_UNIT;
+extern const UNIT NEXT_UNIT;
 
 /* back ends */
 // #define POSTSCRIPT           0		/* PostScript back end               */
@@ -526,10 +600,16 @@ typedef enum unit_t {
 // #define	PLAINTEXT	     2		/* plain text back end               */
 
 typedef enum backend_t {
-    POSTSCRIPT = 0,
-    PDF,
-    PLAINTEXT
+    POSTSCRIPT_E = 0,
+    PDF_E,
+    PLAINTEXT_E
 } BACKEND_T;
+
+typedef struct backend_te { BACKEND_T backend; } BACKEND_TE;
+
+extern const BACKEND_TE POSTSCRIPT;
+extern const BACKEND_TE PDF;
+extern const BACKEND_TE PLAINTEXT;
 
 /* status values returned by AttachGalley() */
 // #define	ATTACH_KILLED	     0
@@ -540,13 +620,22 @@ typedef enum backend_t {
 // #define	ATTACH_ACCEPT	     5
 
 typedef enum attach_t {
-    ATTACH_KILLED = 0,
-    ATTACH_INPUT,
-    ATTACH_NOTARGET,
-    ATTACH_SUSPEND,
-    ATTACH_NULL,
-    ATTACH_ACCEPT
+    ATTACH_KILLED_E = 0,
+    ATTACH_INPUT_E,
+    ATTACH_NOTARGET_E,
+    ATTACH_SUSPEND_E,
+    ATTACH_NULL_E,
+    ATTACH_ACCEPT_E
 } ATTACH_T;
+
+typedef struct attach { ATTACH_T attach; } ATTACH;
+
+extern const ATTACH ATTACH_KILLED;
+extern const ATTACH ATTACH_INPUT;
+extern const ATTACH ATTACH_NOTARGET;
+extern const ATTACH ATTACH_SUSPEND;
+extern const ATTACH ATTACH_NULL;
+extern const ATTACH ATTACH_ACCEPT;
 
 /* kinds of tidying up accepted by ReplaceWithTidy */
 // #define	ACAT_TIDY	     0
@@ -554,10 +643,16 @@ typedef enum attach_t {
 // #define	PARA_TIDY	     2
 
 typedef enum tidy_t {
-    ACAT_TIDY = 0,
-    WORD_TIDY,
-    PARA_TIDY
+    ACAT_TIDY_E = 0,
+    WORD_TIDY_E,
+    PARA_TIDY_E
 } TIDY_T;
+
+typedef struct tidy_te { TIDY_T tidy; } TIDY_TE;
+
+extern const TIDY_TE ACAT_TIDY;
+extern const TIDY_TE WORD_TIDY;
+extern const TIDY_TE PARA_TIDY;
 
 /* types of memory usage, used to debug memory consumption */
 // #define	MEM_BINARY	     0		/* the executable binary	     */
@@ -577,22 +672,40 @@ typedef enum tidy_t {
 // #define	MEM_USAGE_MAX	    14		/* number of memory usage types      */
 
 typedef enum mem_t {
-    MEM_BINARY = 0,
-    MEM_OBJECTS,
-    MEM_FONTS,
-    MEM_LEX,
-    MEM_FILES,
-    MEM_CROSSREF,
-    MEM_PAGES,
-    MEM_DBCHECK,
-    MEM_DB,
-    MEM_HYPH_PATS,
-    MEM_CMAPS,
-    MEM_COLOUR_TAB,
-    MEM_TEXTURE_TAB,
-    MEM_LANG_TAB,
-    MEM_USAGE_MAX
+    MEM_BINARY_E = 0,
+    MEM_OBJECTS_E,
+    MEM_FONTS_E,
+    MEM_LEX_E,
+    MEM_FILES_E,
+    MEM_CROSSREF_E,
+    MEM_PAGES_E,
+    MEM_DBCHECK_E,
+    MEM_DB_E,
+    MEM_HYPH_PATS_E,
+    MEM_CMAPS_E,
+    MEM_COLOUR_TAB_E,
+    MEM_TEXTURE_TAB_E,
+    MEM_LANG_TAB_E
 } MEM_T;
+
+#define MEM_USAGE_MAX (MEM_LANG_TAB_E + 1)
+
+typedef struct mem_te { MEM_T mem; } MEM_TE;
+
+const MEM_TE MEM_BINARY;
+const MEM_TE MEM_OBJECTS;
+const MEM_TE MEM_FONTS;
+const MEM_TE MEM_LEX;
+const MEM_TE MEM_FILES;
+const MEM_TE MEM_CROSSREF;
+const MEM_TE MEM_PAGES;
+const MEM_TE MEM_DBCHECK;
+const MEM_TE MEM_DB;
+const MEM_TE MEM_HYPH_PATS;
+const MEM_TE MEM_CMAPS;
+const MEM_TE MEM_COLOUR_TAB;
+const MEM_TE MEM_TEXTURE_TAB;
+const MEM_TE MEM_LANG_TAB;
 
 /*@::MAP_VEC@*****************************************************************/
 /*                                                                           */
@@ -608,12 +721,19 @@ typedef enum mem_t {
 // #define MAP_ACCENT        3             /* the map to the accent character   */
 
 typedef enum map_t {
-    MAP_UPPERCASE = 0,
-    MAP_LOWERCASE,
-    MAP_UNACCENTED,
-    MAP_ACCENT,
+    MAP_UPPERCASE_E = 0,
+    MAP_LOWERCASE_E,
+    MAP_UNACCENTED_E,
+    MAP_ACCENT_E,
 } MAP_T;
 
-#define MAPS              (MAP_ACCENT + 1)             /* the number of maps in each file   */
+#define MAPS              (MAP_ACCENT_E + 1)             /* the number of maps in each file   */
+
+typedef struct map_te { MAP_T map; } MAP_TE;
+
+extern const MAP_TE MAP_UPPERCASE;
+extern const MAP_TE MAP_LOWERCASE;
+extern const MAP_TE MAP_UNACCENTED;
+extern const MAP_TE MAP_ACCENT;
 
 #endif
