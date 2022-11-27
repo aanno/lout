@@ -375,4 +375,224 @@ extern const SPACE_MODE KERN_MODE;
 extern const SPACE_MODE TAB_MODE;
 extern const SPACE_MODE ADD_HYPH;
 
+/* hyph_style(style) options                                                 */
+// #define	HYPH_UNDEF	     0		/* hyphenation option undefined      */
+// #define	HYPH_OFF	     1		/* hyphenation off                   */
+// #define	HYPH_ON		     2		/* hyphenation on                    */
+
+typedef enum hyph_style_t {
+    HYPH_UNDEF = 0,
+    HYPH_OFF,
+    HYPH_ON
+} HYPH_STYLE_T;
+
+/* fill_style(style) options                                                 */
+// #define	FILL_UNDEF	     0		/* fill option undefined             */
+// #define	FILL_OFF	     1		/* no filling of lines               */
+// #define	FILL_ON		     2		/* fill lines with text              */
+
+typedef enum fill_style_t {
+    FILL_UNDEF = 0,
+    FILL_OFF,
+    FILL_ON,
+} FILL_STYLE_T;
+
+/* underline(obj) options                                                    */
+// #define	UNDER_UNDEF	     0		/* underline undefined               */
+// #define	UNDER_OFF	     1		/* no underlining	             */
+// #define	UNDER_ON	     2		/* underline this                    */
+
+typedef enum underline_t {
+    UNDER_UNDEF = 0,
+    UNDER_OFF,
+    UNDER_ON
+} UNDERLINE_T;
+
+/* space_style(style) options                                                */
+// #define	SPACE_LOUT	     0		/* interpret white space Lout's way  */
+// #define	SPACE_COMPRESS	     1		/* compress multiple white spaces    */
+// #define	SPACE_SEPARATE	     2		/* compress an separate              */
+// #define	SPACE_TROFF	     3		/* interpret white space troff's way */
+// #define	SPACE_TEX	     4		/* interpret white space TeX's way   */
+
+typedef enum space_style_t {
+    SPACE_LOUT = 0,
+    SPACE_COMPRESS,
+    SPACE_SEPARATE,
+    SPACE_TROFF,
+    SPACE_TEX
+} SPACE_STYLE_T;
+
+/* display_style(style) options                                              */
+// #define	DISPLAY_UNDEF	     0		/* display option undefined          */
+// #define	DISPLAY_ADJUST	     1		/* adjust lines (except last)        */
+// #define	DISPLAY_OUTDENT	     2		/* outdent lines (except first)      */
+// #define	DISPLAY_ORAGGED	     3		/* outdent but don't adjust          */
+// #define	DISPLAY_LEFT	     4		/* left-justify lines, no adjust     */
+// #define	DISPLAY_CENTRE	     5		/* centre lines, no adjust           */
+// #define	DISPLAY_RIGHT	     6		/* right-justify lines, no adjust    */
+// #define	DO_ADJUST	     7		/* placed in ACATs when adjust need  */
+
+typedef enum display_style_t {
+    DISPLAY_UNDEF = 0,
+    DISPLAY_ADJUST,
+    DISPLAY_OUTDENT,
+    DISPLAY_ORAGGED,
+    DISPLAY_LEFT,
+    DISPLAY_CENTRE,
+    DISPLAY_RIGHT,
+    DO_ADJUST
+} DISPLAY_STYLE_T;
+
+/* small_caps(style) options                                                 */
+// #define	SMALL_CAPS_OFF	     0		/* don't want small capitals         */
+// #define	SMALL_CAPS_ON	     1		/* small capitals                    */
+
+typedef enum smallcaps_t {
+    SMALL_CAPS_OFF = 0,
+    SMALL_CAPS_ON
+} SMALLCAPS_T;
+
+/* file types */
+// #define	SOURCE_FILE	     0		/* input file from command line      */
+// #define	INCLUDE_FILE	     1		/* @Include file                     */
+// #define	DATABASE_FILE	     2		/* database file                     */
+// #define	INDEX_FILE	     3		/* database index file               */
+// #define	FONT_FILE	     4		/* font file                         */
+// #define	PREPEND_FILE	     5		/* PostScript prologue file          */
+// #define	HYPH_FILE	     6		/* hyphenation file                  */
+// #define	HYPH_PACKED_FILE     7		/* packed hyphenation file           */
+// #define	MAPPING_FILE	     8		/* character mapping file            */
+// #define	FILTER_FILE	     9		/* filter output file                */
+
+typedef enum file_type_t {
+    SOURCE_FILE = 0,
+    INCLUDE_FILE,
+    DATABASE_FILE,
+    INDEX_FILE,
+    FONT_FILE,
+    PREPEND_FILE,
+    HYPH_FILE,
+    HYPH_PACKED_FILE,
+    MAPPING_FILE,
+    FILTER_FILE
+} FILE_TYPE_T;
+
+#define	MAX_TYPES	    (FILTER_FILE + 1)		/* number of file types              */
+
+/* path types (i.e. sequences of directories for file searching) */
+// #define	SOURCE_PATH	     0		/* path to search for source files   */
+// #define	INCLUDE_PATH	     1		/* path for @Include files           */
+// #define	SYSINCLUDE_PATH	     2		/* path for @SysInclude files        */
+// #define	DATABASE_PATH	     3		/* path for @Database files          */
+// #define	SYSDATABASE_PATH     4		/* path for @SysDatabase files       */
+// #define	FONT_PATH	     5		/* path for font metrics (AFM) files */
+// #define	HYPH_PATH	     6		/* path for hyphenation files        */
+// #define	MAPPING_PATH	     7		/* path for mapping (LCM) files      */
+
+typedef enum path_type_t {
+    SOURCE_PATH = 0,
+    INCLUDE_PATH,
+    SYSINCLUDE_PATH,
+    DATABASE_PATH,
+    SYSDATABASE_PATH,
+    FONT_PATH,
+    HYPH_PATH,
+    MAPPING_PATH
+} PATH_TYPE_T;
+
+#define	MAX_PATHS	     (MAPPING_PATH + 1)		/* number of mapping paths           */
+
+/* units of measurement */
+// #define	NO_UNIT		     0		/* no unit - for error detection     */
+// #define	FIXED_UNIT	     1		/* inches, cm, points, ems, y, z     */
+// #define	FRAME_UNIT	     2		/* b unit (frame widths)             */
+// #define	AVAIL_UNIT	     3		/* r unit (available spaces)         */
+// #define	DEG_UNIT	     4		/* d unit (degrees)                  */
+// #define	NEXT_UNIT	     5		/* w unit (inners)                   */
+
+typedef enum unit_t {
+    NO_UNIT = 0,
+    FIXED_UNIT,
+    FRAME_UNIT,
+    AVAIL_UNIT,
+    DEG_UNIT,
+    NEXT_UNIT
+} UNIT_T;
+
+/* back ends */
+// #define POSTSCRIPT           0		/* PostScript back end               */
+// #define	PDF		     1		/* PDF back end			     */
+// #define	PLAINTEXT	     2		/* plain text back end               */
+
+typedef enum backend_t {
+    POSTSCRIPT = 0,
+    PDF,
+    PLAINTEXT
+} BACKEND_T;
+
+/* status values returned by AttachGalley() */
+// #define	ATTACH_KILLED	     0
+// #define	ATTACH_INPUT	     1
+// #define	ATTACH_NOTARGET	     2
+// #define	ATTACH_SUSPEND	     3
+// #define	ATTACH_NULL	     4
+// #define	ATTACH_ACCEPT	     5
+
+typedef enum attach_t {
+    ATTACH_KILLED = 0,
+    ATTACH_INPUT,
+    ATTACH_NOTARGET,
+    ATTACH_SUSPEND,
+    ATTACH_NULL,
+    ATTACH_ACCEPT
+} ATTACH_T;
+
+/* kinds of tidying up accepted by ReplaceWithTidy */
+// #define	ACAT_TIDY	     0
+// #define	WORD_TIDY	     1
+// #define	PARA_TIDY	     2
+
+typedef enum tidy_t {
+    ACAT_TIDY = 0,
+    WORD_TIDY,
+    PARA_TIDY
+} TIDY_T;
+
+/* types of memory usage, used to debug memory consumption */
+// #define	MEM_BINARY	     0		/* the executable binary	     */
+// #define	MEM_OBJECTS	     1		/* objects currently in free list    */
+// #define	MEM_FONTS	     2		/* fonts                             */
+// #define	MEM_LEX		     3		/* lexical analyser file buffers     */
+// #define	MEM_FILES	     4		/* table of file names               */
+// #define	MEM_CROSSREF	     5		/* table of file names               */
+// #define	MEM_PAGES	     6		/* page grids (-p only)              */
+// #define	MEM_DBCHECK	     7		/* database checks                   */
+// #define	MEM_DB	             8		/* in_memory database                */
+// #define	MEM_HYPH_PATS	     9		/* hyphenation patterns              */
+// #define	MEM_CMAPS	    10		/* character maps                    */
+// #define	MEM_COLOUR_TAB	    11		/* colour table                      */
+// #define	MEM_TEXTURE_TAB	    12		/* texture table                     */
+// #define	MEM_LANG_TAB	    13		/* language table                    */
+// #define	MEM_USAGE_MAX	    14		/* number of memory usage types      */
+
+typedef enum mem_t {
+    MEM_BINARY = 0,
+    MEM_OBJECTS,
+    MEM_FONTS,
+    MEM_LEX,
+    MEM_FILES,
+    MEM_CROSSREF,
+    MEM_PAGES,
+    MEM_DBCHECK,
+    MEM_DB,
+    MEM_HYPH_PATS,
+    MEM_CMAPS,
+    MEM_COLOUR_TAB,
+    MEM_TEXTURE_TAB,
+    MEM_LANG_TAB,
+    MEM_USAGE_MAX
+} MEM_T;
+
+
 #endif

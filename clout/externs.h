@@ -2524,79 +2524,12 @@ INLINE BOOLEAN is_cat_op(OBJTYPE x) {
 #define	GAP_INC	           168		/* increment, e.g. +3p               */
 #define	GAP_DEC	           169		/* decrement, e.g. -3p               */
 
-/* hyph_style(style) options                                                 */
-#define	HYPH_UNDEF	     0		/* hyphenation option undefined      */
-#define	HYPH_OFF	     1		/* hyphenation off                   */
-#define	HYPH_ON		     2		/* hyphenation on                    */
-
-/* fill_style(style) options                                                 */
-#define	FILL_UNDEF	     0		/* fill option undefined             */
-#define	FILL_OFF	     1		/* no filling of lines               */
-#define	FILL_ON		     2		/* fill lines with text              */
-
-/* underline(obj) options                                                    */
-#define	UNDER_UNDEF	     0		/* underline undefined               */
-#define	UNDER_OFF	     1		/* no underlining	             */
-#define	UNDER_ON	     2		/* underline this                    */
-
-/* space_style(style) options                                                */
-#define	SPACE_LOUT	     0		/* interpret white space Lout's way  */
-#define	SPACE_COMPRESS	     1		/* compress multiple white spaces    */
-#define	SPACE_SEPARATE	     2		/* compress an separate              */
-#define	SPACE_TROFF	     3		/* interpret white space troff's way */
-#define	SPACE_TEX	     4		/* interpret white space TeX's way   */
-
-/* display_style(style) options                                              */
-#define	DISPLAY_UNDEF	     0		/* display option undefined          */
-#define	DISPLAY_ADJUST	     1		/* adjust lines (except last)        */
-#define	DISPLAY_OUTDENT	     2		/* outdent lines (except first)      */
-#define	DISPLAY_ORAGGED	     3		/* outdent but don't adjust          */
-#define	DISPLAY_LEFT	     4		/* left-justify lines, no adjust     */
-#define	DISPLAY_CENTRE	     5		/* centre lines, no adjust           */
-#define	DISPLAY_RIGHT	     6		/* right-justify lines, no adjust    */
-#define	DO_ADJUST	     7		/* placed in ACATs when adjust need  */
-
-/* small_caps(style) options                                                 */
-#define	SMALL_CAPS_OFF	     0		/* don't want small capitals         */
-#define	SMALL_CAPS_ON	     1		/* small capitals                    */
-
 /* statuses of thread objects */
 // TODO
 #define	NOTSIZED	     DUMMY		/* this thread object is not sized   */
 #define	SIZED		     DUMMY1		/* thread is sized but not printed   */
 #define	FINALSIZE	     DUMMY2		/* thread object size is now final   */
 
-/* file types */
-#define	SOURCE_FILE	     0		/* input file from command line      */
-#define	INCLUDE_FILE	     1		/* @Include file                     */
-#define	DATABASE_FILE	     2		/* database file                     */
-#define	INDEX_FILE	     3		/* database index file               */
-#define	FONT_FILE	     4		/* font file                         */
-#define	PREPEND_FILE	     5		/* PostScript prologue file          */
-#define	HYPH_FILE	     6		/* hyphenation file                  */
-#define	HYPH_PACKED_FILE     7		/* packed hyphenation file           */
-#define	MAPPING_FILE	     8		/* character mapping file            */
-#define	FILTER_FILE	     9		/* filter output file                */
-#define	MAX_TYPES	    10		/* number of file types              */
-
-/* path types (i.e. sequences of directories for file searching) */
-#define	SOURCE_PATH	     0		/* path to search for source files   */
-#define	INCLUDE_PATH	     1		/* path for @Include files           */
-#define	SYSINCLUDE_PATH	     2		/* path for @SysInclude files        */
-#define	DATABASE_PATH	     3		/* path for @Database files          */
-#define	SYSDATABASE_PATH     4		/* path for @SysDatabase files       */
-#define	FONT_PATH	     5		/* path for font metrics (AFM) files */
-#define	HYPH_PATH	     6		/* path for hyphenation files        */
-#define	MAPPING_PATH	     7		/* path for mapping (LCM) files      */
-#define	MAX_PATHS	     8		/* number of mapping paths           */
-
-/* units of measurement */
-#define	NO_UNIT		     0		/* no unit - for error detection     */
-#define	FIXED_UNIT	     1		/* inches, cm, points, ems, y, z     */
-#define	FRAME_UNIT	     2		/* b unit (frame widths)             */
-#define	AVAIL_UNIT	     3		/* r unit (available spaces)         */
-#define	DEG_UNIT	     4		/* d unit (degrees)                  */
-#define	NEXT_UNIT	     5		/* w unit (inners)                   */
  
 /* units of distance as multiples of the basic unit */
 // #define UNIT_TYPE float
@@ -2634,41 +2567,6 @@ INLINE BOOLEAN is_cat_op(OBJTYPE x) {
 #define JUXTA_PREC         103		/* precedence of juxtaposition &     */
 #define	FILTER_PREC        104		/* precedence of filter symbol ops   */
 #define	FORCE_PREC         105		/* higher than any precedence        */
-
-/* back ends */
-#define POSTSCRIPT           0		/* PostScript back end               */
-#define	PDF		     1		/* PDF back end			     */
-#define	PLAINTEXT	     2		/* plain text back end               */
-
-/* status values returned by AttachGalley() */
-#define	ATTACH_KILLED	     0
-#define	ATTACH_INPUT	     1
-#define	ATTACH_NOTARGET	     2
-#define	ATTACH_SUSPEND	     3
-#define	ATTACH_NULL	     4
-#define	ATTACH_ACCEPT	     5
-
-/* kinds of tidying up accepted by ReplaceWithTidy */
-#define	ACAT_TIDY	     0
-#define	WORD_TIDY	     1
-#define	PARA_TIDY	     2
-
-/* types of memory usage, used to debug memory consumption */
-#define	MEM_BINARY	     0		/* the executable binary	     */
-#define	MEM_OBJECTS	     1		/* objects currently in free list    */
-#define	MEM_FONTS	     2		/* fonts                             */
-#define	MEM_LEX		     3		/* lexical analyser file buffers     */
-#define	MEM_FILES	     4		/* table of file names               */
-#define	MEM_CROSSREF	     5		/* table of file names               */
-#define	MEM_PAGES	     6		/* page grids (-p only)              */
-#define	MEM_DBCHECK	     7		/* database checks                   */
-#define	MEM_DB	             8		/* in_memory database                */
-#define	MEM_HYPH_PATS	     9		/* hyphenation patterns              */
-#define	MEM_CMAPS	    10		/* character maps                    */
-#define	MEM_COLOUR_TAB	    11		/* colour table                      */
-#define	MEM_TEXTURE_TAB	    12		/* texture table                     */
-#define	MEM_LANG_TAB	    13		/* language table                    */
-#define	MEM_USAGE_MAX	    14		/* number of memory usage types      */
 
 /*@::Keywords@****************************************************************/
 /*                                                                           */
