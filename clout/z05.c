@@ -101,7 +101,7 @@ void ReadPrependDef(OBJTYPE typ, OBJECT encl)
   }
   debug0(DFS, D, "  calling DefineFile from ReadPrependDef");
   fnum = FileNum(string(fname), STR_EMPTY);
-  if( fnum == NO_FILE || FileType(fnum) != PREPEND_FILE )
+  if( fnum == NO_FILE || !sameFiletype(FileType(fnum), PREPEND_FILE) )
     DefineFile(string(fname), STR_EMPTY, &fpos(fname), PREPEND_FILE,
 	   typ.objtype == PREPEND_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
 

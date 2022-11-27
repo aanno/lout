@@ -71,7 +71,7 @@ static	char	*usage_strings[] = {
 /*                                                                           */
 /*****************************************************************************/
 
-void DebugRegisterUsage(int typ, int delta_num, int delta_size)
+void DebugRegisterUsage(MEM_TE typ, int delta_num, int delta_size)
 { int i;
   assert(0 <= typ && typ < MEM_USAGE_MAX, "DebugRegisterUsage!");
   usage_nums[typ] += delta_num;

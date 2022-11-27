@@ -181,8 +181,8 @@ static	char	*file_types[]		/* the type names for debug  */
 
 static	OBJECT		empty_path;		/* file path with just "" in */
 static	FILE_TABLE	file_tab;		/* the file table            */
-static	OBJECT		file_type[MAX_TYPES];	/* files of each type        */
-static	OBJECT		file_path[MAX_PATHS];	/* the search paths          */
+static	OBJECT		file_type[MAX_TYPES_E];	/* files of each type        */
+static	OBJECT		file_path[MAX_PATHS_E];	/* the search paths          */
 /* ***don't need these any more
 static	char		*file_mode[MAX_TYPES] =
 { READ_TEXT, READ_TEXT, READ_TEXT, READ_BINARY, READ_TEXT,
@@ -212,8 +212,8 @@ FILE_POS *no_fpos = &no_file_pos;
 
 void InitFiles(void)
 { int i;  OBJECT tmp;
-  for( i = 0;  i < MAX_TYPES; i++ )  New(file_type[i], ACAT);
-  for( i = 0;  i < MAX_PATHS; i++ )  New(file_path[i], ACAT);
+  for( i = 0;  i < MAX_TYPES_E; i++ )  New(file_type[i], ACAT);
+  for( i = 0;  i < MAX_PATHS_E; i++ )  New(file_path[i], ACAT);
   file_tab = ftab_new(INIT_TAB);
   New(empty_path, ACAT);
   tmp = MakeWord(WORD, STR_EMPTY, no_fpos);
@@ -229,8 +229,8 @@ void InitFiles(void)
 /*                                                                           */
 /*****************************************************************************/
 
-void AddToPath(int fpath, OBJECT dirname)
-{ Link(file_path[fpath], dirname);
+void AddToPath(PATH_TYPE fpath, OBJECT dirname)
+{ Link(file_path[fpath.pathtype], dirname);
 } /* end AddToPath */
 
 
@@ -247,13 +247,13 @@ void AddToPath(int fpath, OBJECT dirname)
 /*****************************************************************************/
 
 FILE_NUM DefineFile(const FULL_CHAR *str, const FULL_CHAR *suffix,
-FILE_POS *xfpos, int ftype, int fpath)
+FILE_POS *xfpos, FILE_TYPE ftype, PATH_TYPE fpath)
 { register int i;
   OBJECT fname;
-  assert( ftype < MAX_TYPES, "DefineFile: ftype!" );
+  assert( ftype.filetype < MAX_TYPES_E, "DefineFile: ftype!" );
   debug5(DFS, DD, "DefineFile(%s, %s,%s, %s, %d)",
-    str, suffix, EchoFilePos(xfpos), file_types[ftype], fpath);
-  if( ftype == SOURCE_FILE && (i = StringLength(str)) >= 3 )
+    str, suffix, EchoFilePos(xfpos), file_types[ftype.filetype], fpath);
+  if( sameFiletype(ftype, SOURCE_FILE) && (i = StringLength(str)) >= 3 )
   {
     /* check that file name does not end in ".li" or ".ld" */
     if( StringEqual(&str[i-StringLength(DATA_SUFFIX)], DATA_SUFFIX) )
@@ -266,7 +266,7 @@ FILE_POS *xfpos, int ftype, int fpath)
   if( StringLength(str) + StringLength(suffix) >= MAX_WORD )
     Error(3, 5, "file name %s%s is too long", FATAL, no_fpos, str, suffix);
   fname = MakeWordTwo(WORD, str, suffix, xfpos);
-  Link(file_type[ftype], fname);
+  Link(file_type[ftype.filetype], fname);
   path(fname) = fpath;
   updated(fname) = FALSE;
   line_count(fname) = 0;
@@ -287,11 +287,11 @@ FILE_POS *xfpos, int ftype, int fpath)
 /*                                                                           */
 /*****************************************************************************/
 
-FILE_NUM FirstFile(int ftype)
+FILE_NUM FirstFile(FILE_TYPE ftype)
 { FILE_NUM i;
   OBJECT link, y;
-  debug1(DFS, DD, "FirstFile( %s )", file_types[ftype]);
-  link = Down(file_type[ftype]);
+  debug1(DFS, DD, "FirstFile( %s )", file_types[ftype.filetype]);
+  link = Down(file_type[ftype.filetype]);
   if( objectOfType(link, ACAT) )  i = NO_FILE;
   else
   { Child(y, link);
@@ -363,10 +363,10 @@ FILE_NUM DatabaseFileNum(FILE_POS *xfpos)
   debug2(DFS, D, "DatabaseFileNum(%s %s)", EchoFilePos(xfpos),
     EchoFileSource(file_num(*xfpos)));
   x = ftab_num(file_tab, file_num(*xfpos));
-  switch( type_of_file(x) )
+  switch( type_of_file(x).filetype )
   {
-    case SOURCE_FILE:
-    case INCLUDE_FILE:
+    case SOURCE_FILE_E:
+    case INCLUDE_FILE_E:
 
       /* return the corresponding database file (may need to be defined) */
       str = FileName(file_num(*xfpos));
@@ -378,7 +378,7 @@ FILE_NUM DatabaseFileNum(FILE_POS *xfpos)
       break;
 
 
-    case DATABASE_FILE:
+    case DATABASE_FILE_E:
 
       /* return the enclosing source file (recursively if necessary) */
       if( file_num(fpos(x)) == NO_FILE )
@@ -398,7 +398,7 @@ FILE_NUM DatabaseFileNum(FILE_POS *xfpos)
       break;
 
 
-    case FILTER_FILE:
+    case FILTER_FILE_E:
 
       /* return the enclosing source file (recursively if necessary) */
       if( file_num(fpos(x)) == NO_FILE )
@@ -474,7 +474,7 @@ FULL_CHAR *FullFileName(FILE_NUM fnum)
 /*                                                                           */
 /*****************************************************************************/
 
-int FileType(FILE_NUM fnum)
+FILE_TYPE FileType(FILE_NUM fnum)
 { OBJECT x;
   x = ftab_num(file_tab, fnum);
   assert( x != nilobj, "FileType: x == nilobj!" );
@@ -562,7 +562,7 @@ FULL_CHAR *EchoFileSource(FILE_NUM fnum)
   { StringCat(buff[bp], STR_SPACE);
     x = ftab_num(file_tab, fnum);
     assert( x != nilobj, "EchoFileSource: x == nilobj!" );
-    if( type_of_file(x) == FILTER_FILE )
+    if( sameFiletype(type_of_file(x), FILTER_FILE) )
     { StringCat(buff[bp], AsciiToFull(condcatgets(MsgCat, 3, 11, "filter")));
       /* for estrip's benefit: Error(3, 11, "filter"); */
       StringCat(buff[bp], STR_SPACE);
@@ -816,7 +816,7 @@ FILE *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt)
 	   check_lt, &full_name, &fpos(fname), file_mode[type_of_file(fname)],
 	   &used_source_suffix);
     *** */
-    fp = SearchPath(string(fname), file_path[path(fname)], check_ld, check_lt,
+    fp = SearchPath(string(fname), file_path[path(fname).pathtype], check_ld, check_lt,
 	   &full_name, &fpos(fname), READ_FILE, &used_source_suffix);
     if( full_name != nilobj )  Link(fname, full_name);
     used_suffix(fname) = used_source_suffix;
@@ -844,7 +844,7 @@ static char *compress_suffixes[MAX_COMPRESSED]
 
 FILE *OpenIncGraphicFile(const FULL_CHAR *str, OBJTYPE typ,
 OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed)
-{ FILE *fp = NULL;  int p, i;  BOOLEAN used_source_suffix;
+{ FILE *fp = NULL;  PATH_TYPE p; int i;  BOOLEAN used_source_suffix;
   FULL_CHAR sort_name[128];  int sort_start = 0, sort_end = 0;
   static FULL_CHAR last_sort_name[128];  static FILE *last_ceps_fp = NULL;
   debug2(DFS, DD, "OpenIncGraphicFile(%s, %s, -)", str, Image(typ));
@@ -902,7 +902,7 @@ OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed)
   }
   if ( fp == NULL )
   {
-    fp = SearchPath(str, file_path[p], FALSE, FALSE, full_name, xfpos,
+    fp = SearchPath(str, file_path[p.pathtype], FALSE, FALSE, full_name, xfpos,
 	   READ_FILE, &used_source_suffix);
   }
   if( *full_name == nilobj )  *full_name = MakeWord(WORD, str, xfpos);

@@ -432,7 +432,7 @@ void DbClose(OBJECT db)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
+OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
   BOOLEAN in_mem)
 { FILE *fp;  OBJECT db, t, res, tag, par, sym, link, y;
   int i, lnum, dlnum, num, count, leftp;

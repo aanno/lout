@@ -100,6 +100,7 @@ extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS 
 #define assert1(c, m, p1)
 #endif
 
+
 /*****************************************************************************/
 /*                                                                           */
 /*  Include, font and database directories, and the DEBUG_ON and ASSERT_ON   */
@@ -658,6 +659,21 @@ extern const FULL_CHAR* const STR_GAP_ZERO_HYPH;
 
 extern const FULL_CHAR* const STR_SCALE_DOWN;
 
+// typesafe enum inline functions
+
+INLINE BOOLEAN sameFiletype(FILE_TYPE x, FILE_TYPE y) {
+  return x.filetype == y.filetype;
+}
+
+INLINE BOOLEAN sameTidy(TIDY_TE x, TIDY_TE y) {
+  return x.tidy == y.tidy;
+}
+
+INLINE BOOLEAN sameUnit(UNIT x, UNIT y) {
+  return x.unit == y.unit;
+}
+
+
 
 /*@::GAP, STYLE@**************************************************************/
 /*                                                                           */
@@ -691,8 +707,34 @@ INLINE BOOLEAN mark(GAP* x) {
 INLINE BOOLEAN join(GAP* x) {
   return x->ojoin;
 }
-INLINE unsigned units(GAP* x) {
-  return x->ounits;
+INLINE UNIT units(GAP* x) {
+  // return x->ounits;
+  unsigned units = x->ounits;
+  UNIT res;
+  switch(units) {
+    case NO_UNIT_E:
+      res = NO_UNIT;
+      break;
+    case FIXED_UNIT_E:
+      res = FIXED_UNIT;
+      break;
+    case FRAME_UNIT_E:
+      res = FRAME_UNIT;
+      break;
+    case AVAIL_UNIT_E:
+      res = AVAIL_UNIT;
+      break;
+    case DEG_UNIT_E:
+      res = DEG_UNIT;
+      break;
+    case NEXT_UNIT_E:
+      res = NEXT_UNIT;
+      break;
+  }
+  return res;
+}
+INLINE BOOLEAN gapHasUnit(GAP* x, UNIT u) {
+  return x->ounits == u.unit;
 }
 INLINE SPACE_MODE mode(GAP* x) {
   // return x->omode;
@@ -739,8 +781,8 @@ INLINE void setMark(GAP* x, BOOLEAN xmark) {
 INLINE void setJoin(GAP* x, BOOLEAN xjoin) {
   x->ojoin = xjoin;
 }
-INLINE void setUnits(GAP* x, unsigned xunits) {
-  x->ounits = xunits;
+INLINE void setUnits(GAP* x, UNIT xunits) {
+  x->ounits = xunits.unit;
 }
 INLINE void setMode(GAP* x, SPACE_MODE xmode) {
   x->omode = xmode.spacemode;
@@ -751,7 +793,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
-INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, unsigned xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
+INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, UNIT xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
   setJoin(x, xjoin);
@@ -773,7 +815,8 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   nobreak_m(*x) = nobreak(y);
   mark_m(*x) = mark(y);
   join_m(*x) = join(y);
-  units_m(*x) = units(y);
+  // units_m(*x) = units(y);
+  setUnits(x, units(y));
   // mode_m(*x) = mode(y);
   setMode(x, mode(y));
   width_m(*x) = width(y);
@@ -789,7 +832,8 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
 
 INLINE BOOLEAN GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
-             && units(x) == units(y) && mode(x).spacemode == mode(y).spacemode && width(x) == width(y);
+             && units(x).unit == units(y).unit 
+             && mode(x).spacemode == mode(y).spacemode && width(x) == width(y);
 }
 
 /*****************************************************************************/
@@ -926,11 +970,51 @@ INLINE BOOLEAN padjust(STYLE* x) {
 INLINE unsigned small_caps(STYLE* x) {
   return (x)->osmall_caps;
 }
-INLINE unsigned space_style(STYLE* x) {
-  return (x)->ospace_style;
+INLINE SPACE_STYLE space_style(STYLE* x) {
+  // return (x)->ospace_style;
+  unsigned spacestyle = (x)->ospace_style;
+  SPACE_STYLE res;
+  switch(spacestyle) {
+    case SPACE_LOUT_E:
+      res = SPACE_LOUT;
+      break;
+    case SPACE_COMPRESS_E:
+      res = SPACE_COMPRESS;
+      break;
+    case SPACE_SEPARATE_E:
+      res = SPACE_SEPARATE;
+      break;
+    case SPACE_TROFF_E:
+      res = SPACE_TROFF;
+      break;
+    case SPACE_TEX_E:
+      res = SPACE_TEX;
+      break;
+  }
+  return res;
 }
-INLINE unsigned hyph_style(STYLE* x) {
-  return (x)->ohyph_style;
+INLINE BOOLEAN styleHasSpaceStyle(STYLE* x, SPACE_STYLE y) {
+  return x->ospace_style == y.spacestyle;
+}
+INLINE HYPH_STYLE hyph_style(STYLE* x) {
+  // return (x)->ohyph_style;
+  unsigned hyphstyle = (x)->ohyph_style;
+  HYPH_STYLE res;
+  switch(hyphstyle) {
+    case HYPH_UNDEF_E:
+      res = HYPH_UNDEF;
+      break;
+    case HYPH_OFF_E:
+      res = HYPH_OFF;
+      break;
+    case HYPH_ON_E:
+      res = HYPH_ON;
+      break;
+  }
+  return res;
+}
+INLINE BOOLEAN styleHasHyphStyle(STYLE* x, HYPH_STYLE y) {
+  return x->ohyph_style == y.hyphstyle;
 }
 INLINE unsigned fill_style(STYLE* x) {
   return (x)->ofill_style;
@@ -1011,11 +1095,11 @@ INLINE void setPadjust(STYLE* x, BOOLEAN padjust) {
 INLINE void setSmall_caps(STYLE* x, unsigned small_caps) {
   (x)->osmall_caps = small_caps;
 }
-INLINE void setSpace_style(STYLE* x, unsigned space_style) {
-  (x)->ospace_style = space_style;
+INLINE void setSpace_style(STYLE* x, SPACE_STYLE space_style) {
+  (x)->ospace_style = space_style.spacestyle;
 }
-INLINE void setHyph_style(STYLE* x, unsigned hyph_style) {
-  (x)->ohyph_style = hyph_style;
+INLINE void setHyph_style(STYLE* x, HYPH_STYLE hyph_style) {
+  (x)->ohyph_style = hyph_style.hyphstyle;
 }
 INLINE void setFill_style(STYLE* x, unsigned fill_style) {
   (x)->ofill_style = fill_style;
@@ -1350,10 +1434,10 @@ typedef union
   {
 	unsigned int	oline_count;
 	unsigned short	ofile_number;
-	unsigned char	otype_of_file;
+	FILE_TYPE	otype_of_file;
 	unsigned char	oused_suffix;
 	unsigned char	oupdated;
-	unsigned char	opath;
+	PATH_TYPE	opath;
   } os34;
 
   union rec *ofilter_actual;
@@ -2183,7 +2267,32 @@ INLINE OBJTYPE incg_type(OBJECT x) {
 #define	word_ligatures(x)	(x)->os1.ou2.os22.oword_ligatures
 #define	spanner_fixed(x)	word_language(x)
 #define	spanner_broken(x)	word_outline(x)
-#define	underline(x)		(x)->os1.ou2.os22.ounderline
+
+// #define	underline(x)		(x)->os1.ou2.os22.ounderline
+INLINE UNDER underline(OBJECT x) {
+  // return (x)->os1.ou2.os22.ounderline;
+  unsigned under = (x)->os1.ou2.os22.ounderline;
+  UNDER res;
+  switch(under) {
+    case UNDER_UNDEF_E:
+      res = UNDER_UNDEF;
+      break;
+    case UNDER_OFF_E:
+      res = UNDER_OFF;
+      break;
+    case UNDER_ON_E:
+      res = UNDER_ON;
+      break;
+  }
+  return res;
+}
+INLINE void setUnderline(OBJECT x, UNDER under) {
+  (x)->os1.ou2.os22.ounderline = under.underline;
+}
+INLINE BOOLEAN objectHasUnderline(OBJECT x, UNDER under) {
+  return (x)->os1.ou2.os22.ounderline == under.underline;
+}
+
 #define	word_hyph(x)		(x)->os1.ou2.os22.oword_hyph
 #define	filter_use_begin(x)	(x)->os1.ou2.os22.oword_colour
 
@@ -2756,7 +2865,7 @@ extern const FULL_CHAR* const KW_GET_CONTEXT;
 /*****************************************************************************/
 
 /*****  z31.c     Memory Allocator      **************************************/
-extern  void      DebugRegisterUsage(int typ, int delta_num, int delta_size);
+extern  void      DebugRegisterUsage(MEM_TE typ, int delta_num, int delta_size);
 extern  void      DebugMemory(void);
 extern  void      MemInit(void);
 extern  OBJECT    GetMemory(int siz, FILE_POS *pos);
@@ -3549,7 +3658,7 @@ extern	nl_catd	  MsgCat;
 /*****  z02.c	  Lexical Analyser	**************************************/
 extern	BOOLEAN	  LexLegalName(const FULL_CHAR *str);
 extern	void	  LexInit(void);
-extern	void	  LexPush(FILE_NUM x, int offs, int ftyp, int lnum, BOOLEAN same);
+extern	void	  LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN same);
 extern	void	  LexPop(void);
 extern	long	  LexNextTokenPos(void);
 extern	OBJECT	  LexGetToken(void);
@@ -3559,16 +3668,16 @@ extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos,
 /*****  z03.c	  File Service	        **************************************/
 // extern	FILE_POS  *no_fpos;
 extern	void	  InitFiles(void);
-extern	void	  AddToPath(int fpath, OBJECT dirname);
+extern	void	  AddToPath(PATH_TYPE fpath, OBJECT dirname);
 extern	FILE_NUM  DefineFile(const FULL_CHAR *str, const FULL_CHAR *suffix,
-		    FILE_POS *xfpos, int ftype, int fpath);
-extern	FILE_NUM  FirstFile(int ftype);
+		    FILE_POS *xfpos, FILE_TYPE ftype, PATH_TYPE fpath);
+extern	FILE_NUM  FirstFile(FILE_TYPE ftype);
 extern	FILE_NUM  NextFile(FILE_NUM i);
 extern	FILE_NUM  FileNum(FULL_CHAR *str, const FULL_CHAR *suffix);
 extern	FILE_NUM  DatabaseFileNum(FILE_POS *xfpos);
 extern	FULL_CHAR *FileName(FILE_NUM fnum);
 extern	FULL_CHAR *FullFileName(FILE_NUM fnum);
-extern	int	  FileType(FILE_NUM fnum);
+extern	FILE_TYPE	FileType(FILE_NUM fnum);
 extern	FULL_CHAR *EchoFilePos(FILE_POS *pos);
 extern	FULL_CHAR *EchoAltFilePos(FILE_POS *pos);
 extern	FULL_CHAR *EchoFileSource(FILE_NUM fnum);
@@ -3619,7 +3728,7 @@ extern	OBJECT	  Meld(OBJECT x, OBJECT y);
 extern	BOOLEAN	  EqualManifested(OBJECT x, OBJECT y);
 
 /*****  z08.c	  Object Manifest	**************************************/
-extern	OBJECT	  ReplaceWithTidy(OBJECT x, int one_word);
+extern	OBJECT	  ReplaceWithTidy(OBJECT x, TIDY_TE one_word);
 extern	float	  GetScaleFactor(OBJECT x);
 extern	OBJECT	  Manifest(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
 		    OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok,
@@ -3831,7 +3940,7 @@ extern	void	  DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, const FULL_CHAR *tag
 		    long dfpos, int dlnum, BOOLEAN check);
 extern	void	  DbConvert(OBJECT db, BOOLEAN full_name);
 extern	void	  DbClose(OBJECT db);
-extern	OBJECT	  DbLoad(OBJECT stem, int fpath, BOOLEAN create, OBJECT symbs,
+extern	OBJECT	  DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
 		    BOOLEAN in_memory);
 extern	BOOLEAN	  DbRetrieve(OBJECT db, BOOLEAN gall, OBJECT sym,
 		    FULL_CHAR *tag, FULL_CHAR *seq, FILE_NUM *dfnum,

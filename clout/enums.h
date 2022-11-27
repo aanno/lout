@@ -519,7 +519,7 @@ typedef enum file_type_t {
     FILTER_FILE_E
 } FILE_TYPE_T;
 
-#define	MAX_TYPES	    (FILTER_FILE + 1)		/* number of file types              */
+#define	MAX_TYPES_E	    (FILTER_FILE_E + 1)		/* number of file types              */
 
 typedef struct file_type { FILE_TYPE_T filetype; } FILE_TYPE;
 
@@ -555,7 +555,7 @@ typedef enum path_type_t {
     MAPPING_PATH_E
 } PATH_TYPE_T;
 
-#define	MAX_PATHS	     (MAPPING_PATH + 1)		/* number of mapping paths           */
+#define	MAX_PATHS_E	     (MAPPING_PATH_E + 1)		/* number of mapping paths           */
 
 typedef struct path_type { PATH_TYPE_T pathtype; } PATH_TYPE;
 

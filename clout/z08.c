@@ -30,7 +30,7 @@
 // #include "externs.h"
 #include "lout.h"
 #define line_breaker(g)							\
-  (vspace(g) > 0 || (units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR))
+  (vspace(g) > 0 || (gapHasUnit(&gap(g), FRAME_UNIT) && width(&gap(g)) > FR))
 
 
 /*****************************************************************************/
@@ -52,7 +52,7 @@ static void SetUnderline(OBJECT x)
   }
   debug3(DOM, DDD, "  SetUnderline underline() := %s for %s %s",
     "UNDER_ON", Image(type(x)), EchoObject(x));
-  underline(x) = UNDER_ON;
+  setUnderline(x, UNDER_ON);
 } /* end SetUnderline */
 
 
@@ -117,7 +117,7 @@ static OBJECT insert_split(OBJECT x, OBJECT bthr[2], OBJECT fthr[2])
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT ReplaceWithTidy(OBJECT x, int spacing)
+OBJECT ReplaceWithTidy(OBJECT x, TIDY_TE spacing)
 { static FULL_CHAR	buff[MAX_WORD];		/* the growing current word */
   static int		buff_len;		/* length of current word   */
   static FILE_POS	buff_pos;		/* filepos of current word  */
@@ -125,8 +125,8 @@ OBJECT ReplaceWithTidy(OBJECT x, int spacing)
   OBJECT                link, y, tmp, res;	/* temporaries              */
   int i;
   debug2(DOM, DD, "ReplaceWithTidy(%s, %s)", EchoObject(x),
-    spacing == ACAT_TIDY ? "ACAT_TIDY" :
-    spacing == WORD_TIDY ? "WORD_TIDY" : "PARA_TIDY");
+    sameTidy(spacing, ACAT_TIDY) ? "ACAT_TIDY" :
+    sameTidy(spacing, WORD_TIDY) ? "WORD_TIDY" : "PARA_TIDY");
   switch( type(x).objtype )
   {
     case ACAT_E:
@@ -156,9 +156,9 @@ OBJECT ReplaceWithTidy(OBJECT x, int spacing)
 	else if( objectOfType(y, GAP_OBJ) )
 	{ if( Down(y) != y || hspace(y) + vspace(y) > 0 )
 	  {
-	    switch( spacing )
+	    switch( spacing.tidy )
 	    {
-	      case WORD_TIDY:
+	      case WORD_TIDY_E:
 		      
 	        if( buff_len + hspace(y) + vspace(y) >= MAX_WORD )
 		  Error(8, 2, "word is too long (%d characters)", WARN, &fpos(y),
@@ -173,7 +173,7 @@ OBJECT ReplaceWithTidy(OBJECT x, int spacing)
 		break;
 
 
-	      case ACAT_TIDY:
+	      case ACAT_TIDY_E:
 
 	        tmp = MakeWord(buff_typ, buff, &buff_pos);
 	        buff_len = 0;  buff_typ = WORD;
@@ -185,7 +185,7 @@ OBJECT ReplaceWithTidy(OBJECT x, int spacing)
 	        break;
 
 
-	      case PARA_TIDY:
+	      case PARA_TIDY_E:
 
 	        if( buff_len + hspace(y) + vspace(y) >= MAX_WORD )
 		  Error(8, 2, "word is too long (%d characters)", WARN, &fpos(y),
@@ -1050,11 +1050,11 @@ OBJECT *enclose, BOOLEAN fcr)
 	word_baselinemark(x) = baselinemark(style);
 	word_strut(x) = strut(style);
 	word_ligatures(x) = ligatures(style);
-	word_hyph(x) = hyph_style(style) == HYPH_ON;
+	word_hyph(x) = hyph_style(style).hyphstyle == HYPH_ON_E;
 	debug3(DOM, DDD, "  manfifest/WORD underline() := %s for %s %s",
 	  "UNDER_OFF", Image(type(x)), EchoObject(x));
 	if( small_caps(style) && ok )  x = MapSmallCaps(x, style);  /* unreachable */
-	underline(x) = UNDER_OFF;
+	setUnderline(x, UNDER_OFF);
 	ReplaceWithSplit(x, bthr, fthr);
 	break;
       }
@@ -1087,13 +1087,13 @@ OBJECT *enclose, BOOLEAN fcr)
 	word_baselinemark(y) = baselinemark(style);
 	word_strut(y) = strut(style);
 	word_ligatures(y) = ligatures(style);
-	word_hyph(y) = hyph_style(style) == HYPH_ON;
+	word_hyph(y) = hyph_style(style).hyphstyle == HYPH_ON_E;
 	if( small_caps(style) && ok )  y = MapSmallCaps(y, style);
       }
       else y = Manifest(y, env, &new_style, nbt, nft, target, crs, ok, FALSE, enclose, fcr);
       debug3(DOM, DDD, "  manfifest/ACAT1 underline() := %s for %s %s",
 	"UNDER_OFF", Image(type(y)), EchoObject(y));
-      underline(y) = UNDER_OFF;
+      setUnderline(y, UNDER_OFF);
       /* ??? if( is_word(type(y)) ) */
       if( ok && *crs != nilobj )
       {	
@@ -1111,7 +1111,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	assert( objectOfType(g, GAP_OBJ), "Manifest ACAT: no GAP_OBJ!" );
         debug3(DOM, DDD, "  manfifest/ACAT2 underline() := %s for %s %s",
 	  "UNDER_OFF", Image(type(g)), EchoObject(g));
-        underline(g) = UNDER_OFF;
+        setUnderline(g, UNDER_OFF);
 	link = NextDown(gaplink);
 	assert( link != x, "Manifest ACAT: GAP_OBJ is last!" );
 	Child(y, link);
@@ -1129,13 +1129,13 @@ OBJECT *enclose, BOOLEAN fcr)
 	  word_baselinemark(y) = baselinemark(style);
 	  word_strut(y) = strut(style);
 	  word_ligatures(y) = ligatures(style);
-	  word_hyph(y) = hyph_style(style) == HYPH_ON;
+	  word_hyph(y) = hyph_style(style).hyphstyle == HYPH_ON_E;
 	  if( small_caps(style) && ok )  y = MapSmallCaps(y, style);
 	}
 	else y = Manifest(y, env, &new_style, nbt, nft, target, crs, ok, FALSE, enclose, fcr);
         debug3(DOM, DDD, "  manifest/ACAT3 underline() := %s for %s %s",
 	  "UNDER_OFF", Image(type(y)), EchoObject(y));
-        underline(y) = UNDER_OFF;
+        setUnderline(y, UNDER_OFF);
 
 	/* manifest the gap object */
 	if( Down(g) != g )
@@ -1151,16 +1151,16 @@ OBJECT *enclose, BOOLEAN fcr)
 	{
 	  /* implicit & operator */
 	  GapCopy(gap(g), space_gap_m(style));
-	  switch( space_style(style) )
+	  switch( space_style(style).spacestyle )
 	  {
-	    case SPACE_LOUT:
+	    case SPACE_LOUT_E:
 
 	      /* usual Lout spacing, the number of white space characters */
 	      setWidth(&gap(g), width(&gap(g)) * (vspace(g) + hspace(g)));
 	      break;
 
 
-	    case SPACE_COMPRESS:
+	    case SPACE_COMPRESS_E:
 
 	      /* either zero or one space */
 	      if( vspace(g) + hspace(g) == 0 )
@@ -1172,13 +1172,13 @@ OBJECT *enclose, BOOLEAN fcr)
 	      break;
 
 
-	    case SPACE_SEPARATE:
+	    case SPACE_SEPARATE_E:
 
 	      /* exactly one space always, so do nothing further */
 	      break;
 
 
-	    case SPACE_TROFF:
+	    case SPACE_TROFF_E:
 
 	      /* Lout spacing plus one extra space for sentence end at eoln */
 	      setWidth(&gap(g), width(&gap(g)) * (vspace(g) + hspace(g)));
@@ -1210,7 +1210,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	      break;
 
 
-	    case SPACE_TEX:
+	    case SPACE_TEX_E:
 
 	      if( vspace(g) + hspace(g) == 0 )
 	      {
@@ -1256,7 +1256,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	/* compress adjacent juxtaposed words of equal font, etc. */
 	if( is_word(type(y)) && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
 	    vspace(g)+hspace(g)==0 &&
-	    units(&gap(g)) == FIXED_UNIT && spaceMode(&gap(g), EDGE_MODE) &&
+	    gapHasUnit(&gap(g), FIXED_UNIT) && spaceMode(&gap(g), EDGE_MODE) &&
 	    prev != nilobj && is_word(type(prev)) && !mark(&gap(g)) &&
 	    word_font(prev) == word_font(y) &&
 	    word_colour(prev) == word_colour(y) &&
@@ -1269,8 +1269,8 @@ OBJECT *enclose, BOOLEAN fcr)
 	    word_ligatures(prev) == word_ligatures(y) )
 	    /* no need to compare underline() since both are false */
 	{ OBJTYPE typ;
-	  assert( underline(prev) == UNDER_OFF, "Manifest/ACAT: underline(prev)!" );
-	  assert( underline(y) == UNDER_OFF, "Manifest/ACAT: underline(y)!" );
+	  assert( objectHasUnderline(prev, UNDER_OFF), "Manifest/ACAT: underline(prev)!" );
+	  assert( objectHasUnderline(y, UNDER_OFF), "Manifest/ACAT: underline(y)!" );
 	  if( StringLength(string(prev))+StringLength(string(y)) >= MAX_WORD )
 	    Error(8, 24, "word %s%s is too long",
 	      FATAL, &fpos(prev), string(prev), string(y));
@@ -1287,7 +1287,7 @@ OBJECT *enclose, BOOLEAN fcr)
 	  word_strut(y) = word_strut(prev);
 	  word_ligatures(y) = word_ligatures(prev);
 	  word_hyph(y) = word_hyph(prev);
-	  underline(y) = UNDER_OFF;
+	  setUnderline(y, UNDER_OFF);
           debug3(DOM, DDD, "  manifest/ACAT4 underline() := %s for %s %s",
 	    "UNDER_OFF", Image(type(y)), EchoObject(y));
 	  MoveLink(link, y, CHILD);
@@ -1340,7 +1340,7 @@ OBJECT *enclose, BOOLEAN fcr)
       GetGap(y, style, &shift_gap(x), &res_inc);
       setShift_type(x, res_inc);
       if( !spaceMode(&shift_gap(x), EDGE_MODE) || 
-	  (units(&shift_gap(x))!=FIXED_UNIT && units(&shift_gap(x))!=NEXT_UNIT) )
+	  (!gapHasUnit(&shift_gap(x), FIXED_UNIT) && !gapHasUnit(&shift_gap(x), NEXT_UNIT)) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
 	setShift_type(x, GAP_INC);
@@ -1457,7 +1457,7 @@ OBJECT *enclose, BOOLEAN fcr)
       y = ReplaceWithTidy(y, ACAT_TIDY);
       GetGap(y, style, &res_gap, &res_inc);
       if( res_inc != GAP_ABS || !spaceMode(&res_gap, EDGE_MODE) ||
-		units(&res_gap) != DEG_UNIT )
+		!gapHasUnit(&res_gap, DEG_UNIT) )
       {	Error(8, 28, "replacing invalid left parameter of %s by 0d",
 	  WARN, &fpos(y), Image(type(x)) );
 	setUnits(&res_gap, DEG_UNIT);

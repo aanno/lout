@@ -62,7 +62,7 @@ static	FULL_CHAR	*startline;	/* position in buff of last newline  */
 static	FILE_NUM	this_file;	/* number of currently open file     */
 static	FILE		*fp;		/* current input file                */
 static	FILE_POS	file_pos;	/* current file position             */
-static	short		ftype;		/* the type of the current file      */
+static	FILE_TYPE	ftype;		/* the type of the current file      */
 static	OBJECT		next_token;	/* next token if already read	     */
 static	int		offset;		/* where to start reading in file    */
 static	int		first_line_num;	/* number of first line (if offset)  */
@@ -81,7 +81,7 @@ static struct {
   FILE_NUM	this_file;	/* number of currently open file     */
   FILE		*fp;		/* current input file                */
   FILE_POS	file_pos;	/* current file position             */
-  short		ftype;		/* the type of the current file      */
+  FILE_TYPE	ftype;		/* the type of the current file      */
   OBJECT	next_token;	/* next token if already read	     */
   int		offset;		/* where to start reading in file    */
   int		first_line_num;	/* number of first line (if offset)  */
@@ -198,13 +198,13 @@ void LexInit(void)
 /*                                                                           */
 /*****************************************************************************/
 
-void LexPush(FILE_NUM x, int offs, int ftyp, int lnum, BOOLEAN same)
+void LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN same)
 { int i;
   debug5(DLA, DD, "LexPush(%s, %d, %s, %d, %s)", FileName(x), offs,
-    ftyp==SOURCE_FILE ? "source" : ftyp==INCLUDE_FILE ? "include":"database",
+    sameFiletype(ftyp, SOURCE_FILE) ? "source" : sameFiletype(ftyp, INCLUDE_FILE) ? "include":"database",
     lnum, bool(same));
   if( stack_free >= MAX_LEX_STACK - 1 )
-  { if( ftyp == INCLUDE_FILE )
+  { if( sameFiletype(ftyp, INCLUDE_FILE) )
       Error(2, 1, "too many open files when opening include file %s; open files are:",
         WARN, PosOfFile(x), FullFileName(x));
     else
@@ -403,7 +403,7 @@ static void srcnext(void)
       last_char = *(buf+blksize-1) = CH_LF;
 
       /* this adjustment breaks LexNextTokenPos, so fatal error if database */
-      if( ftype == DATABASE_FILE )
+      if( sameFiletype(ftype, DATABASE_FILE) )
       {
 	line_num(file_pos) = col_num(file_pos) = 0;
 	Error(2, 25, "a database file must end with a newline; this one doesn't",
@@ -457,7 +457,7 @@ OBJECT LexGetToken(void)
   {
       case ESCAPE:
       
-	if( ftype==DATABASE_FILE && *p>='a' && *p<='z' && *(p+1) == '{' )
+	if( sameFiletype(ftype, DATABASE_FILE) && *p>='a' && *p<='z' && *(p+1) == '{' )
 	{ res = NewToken(LBR, &file_pos, 0, 0, (unsigned) *p, StartSym);
 	  p += 2;
 	}
@@ -546,7 +546,7 @@ OBJECT LexGetToken(void)
 	  /* close current file, if any */
 	  if( fp != null )
 	  { fclose(fp);  fp = null;
-	    this_file = ftype == SOURCE_FILE ? NextFile(this_file) : NO_FILE;
+	    this_file = sameFiletype(ftype, SOURCE_FILE) ? NextFile(this_file) : NO_FILE;
 	  }
 
 	  /* open next file */
@@ -558,7 +558,7 @@ OBJECT LexGetToken(void)
 	    if( fp != null )  break;
 	    Error(2, 7, "cannot open file %s",
 	      WARN, &file_pos, FullFileName(this_file));
-	    this_file = ftype == SOURCE_FILE ? NextFile(this_file) : NO_FILE;
+	    this_file = sameFiletype(ftype, SOURCE_FILE) ? NextFile(this_file) : NO_FILE;
 	  }
 	}
 
@@ -577,11 +577,11 @@ OBJECT LexGetToken(void)
 	}
 
 	/* no next file, so take continuation */
-	else switch( ftype )
+	else switch( ftype.filetype )
 	{
 
-	  case SOURCE_FILE:
-	  case DATABASE_FILE:
+	  case SOURCE_FILE_E:
+	  case DATABASE_FILE_E:
 	  
 	    /* input ends with "@End \Input" then UNEXPECTED_EOF */
 	    res = NewToken(END, &file_pos, 0, 0, END_PREC, StartSym);
@@ -590,7 +590,7 @@ OBJECT LexGetToken(void)
 	    break;
 
 
-	  case FILTER_FILE:
+	  case FILTER_FILE_E:
 	  
 	    /* input ends with "@End @FilterOut" */
 	    res = NewToken(END, &file_pos, 0, 0, END_PREC, FilterOutSym);
@@ -598,7 +598,7 @@ OBJECT LexGetToken(void)
 	    break;
 
 
-	  case INCLUDE_FILE:
+	  case INCLUDE_FILE_E:
 
 	    LexPop();
 	    p = chpt;

@@ -492,10 +492,10 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
       New(g, GAP_OBJ);
       SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
       hspace(g) = vspace(g) = 0;
-      underline(g) = UNDER_OFF;
+      setUnderline(g, UNDER_OFF);
       Link(Down(x), g);
       Link(Down(x), *ins);
-      underline(*ins) = UNDER_OFF;
+      setUnderline(*ins, UNDER_OFF);
       *ins = nilobj;
       res = x;
       break;
