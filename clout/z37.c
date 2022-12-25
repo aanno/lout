@@ -1121,9 +1121,9 @@ void FontChange(STYLE *style, OBJECT x)
     case QWORD_E:
 
       if( StringEqual(string(x), STR_SMALL_CAPS_ON) )
-        setSmall_caps(style, SMALL_CAPS_ON);
+        setSmall_caps(style, SMALL_CAPS_ON_E);
       else if( StringEqual(string(x), STR_SMALL_CAPS_OFF) )
-        setSmall_caps(style, SMALL_CAPS_OFF);
+        setSmall_caps(style, SMALL_CAPS_OFF_E);
       else if( StringEqual(string(x), STR_BASELINE_MARK) )
         setBaselinemark(style, TRUE);
       else if( StringEqual(string(x), STR_XHEIGHT2_MARK) )
@@ -1153,9 +1153,9 @@ void FontChange(STYLE *style, OBJECT x)
         if( is_word(type(y)) ) 
         {
 	  if( StringEqual(string(y), STR_SMALL_CAPS_ON) )
-	    setSmall_caps(style, SMALL_CAPS_ON);
+	    setSmall_caps(style, SMALL_CAPS_ON_E);
 	  else if( StringEqual(string(y), STR_SMALL_CAPS_OFF) )
-	    setSmall_caps(style, SMALL_CAPS_OFF);
+	    setSmall_caps(style, SMALL_CAPS_OFF_E);
 	  else if( StringEqual(string(y), STR_BASELINE_MARK) )
 	    setBaselinemark(style, TRUE);
 	  else if( StringEqual(string(y), STR_XHEIGHT2_MARK) )
@@ -1381,7 +1381,7 @@ void FontChange(STYLE *style, OBJECT x)
     flen = font_size(finfo[font(style)].font_table);
   else 
   { GetGap(requested_size, style, &gp, &inc);
-    if( !spaceMode(&gp, EDGE_MODE) || units(&gp) != FIXED_UNIT )
+    if( !spaceMode(&gp, EDGE_MODE) || !gapHasUnit(&gp, FIXED_UNIT) )
     { Error(37, 47, "syntax error in font size %s; ignoring it",
 	WARN, &fpos(requested_size), string(requested_size));
       flen = font_size(finfo[font(style)].font_table);
@@ -1637,8 +1637,8 @@ void FontWordSize(OBJECT x)
     fnt = finfo[word_font(x)].size_table;
     lig = finfo[word_font(x)].lig_table;
     m = font_mapping(finfo[word_font(x)].font_table);
-    unacc = MapTable[m]->map[MAP_UNACCENTED];
-    acc   = MapTable[m]->map[MAP_ACCENT];
+    unacc = MapTable[m]->map[MAP_UNACCENTED_E];
+    acc   = MapTable[m]->map[MAP_ACCENT_E];
     d = u = r = 0;
     do
     { 

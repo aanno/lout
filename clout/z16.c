@@ -168,7 +168,7 @@ OBJECT y, int dim)
   ifdebug(DSA, DD, DebugObject(y));
 
   /* DO_ADJUST ACAT is a special case because adjustment affects its size */
-  if( dim==COLM && objectOfType(y, ACAT) && display_style(&save_style(y)) == DO_ADJUST )
+  if( dim==COLM && objectOfType(y, ACAT) && display_style(&save_style(y)) == DO_ADJUST_E )
   { back(x, dim) = *b;  fwd(x, dim) = *f;
     *b = back(y, dim);  *f = fwd(y, dim);
     debug2(DSA, DD, "CatAdjustSize ACAT %s,%s", EchoLength(*b), EchoLength(*f));

@@ -467,7 +467,7 @@ typedef enum display_style_t {
     DISPLAY_LEFT_E,
     DISPLAY_CENTRE_E,
     DISPLAY_RIGHT_E,
-    DO_ADJUST
+    DO_ADJUST_E
 } DISPLAY_STYLE_T;
 
 typedef struct display_style { DISPLAY_STYLE_T displaystyle; } DISPLAY_STYLE;
@@ -479,6 +479,7 @@ extern const DISPLAY_STYLE DISPLAY_ORAGGED;
 extern const DISPLAY_STYLE DISPLAY_LEFT;
 extern const DISPLAY_STYLE DISPLAY_CENTRE;
 extern const DISPLAY_STYLE DISPLAY_RIGHT;
+extern const DISPLAY_STYLE DO_ADJUST;
 
 /* small_caps(style) options                                                 */
 // #define	SMALL_CAPS_OFF	     0		/* don't want small capitals         */
@@ -688,24 +689,24 @@ typedef enum mem_t {
     MEM_LANG_TAB_E
 } MEM_T;
 
-#define MEM_USAGE_MAX (MEM_LANG_TAB_E + 1)
+#define MEM_USAGE_MAX_E (MEM_LANG_TAB_E + 1)
 
 typedef struct mem_te { MEM_T mem; } MEM_TE;
 
-const MEM_TE MEM_BINARY;
-const MEM_TE MEM_OBJECTS;
-const MEM_TE MEM_FONTS;
-const MEM_TE MEM_LEX;
-const MEM_TE MEM_FILES;
-const MEM_TE MEM_CROSSREF;
-const MEM_TE MEM_PAGES;
-const MEM_TE MEM_DBCHECK;
-const MEM_TE MEM_DB;
-const MEM_TE MEM_HYPH_PATS;
-const MEM_TE MEM_CMAPS;
-const MEM_TE MEM_COLOUR_TAB;
-const MEM_TE MEM_TEXTURE_TAB;
-const MEM_TE MEM_LANG_TAB;
+extern const MEM_TE MEM_BINARY;
+extern const MEM_TE MEM_OBJECTS;
+extern const MEM_TE MEM_FONTS;
+extern const MEM_TE MEM_LEX;
+extern const MEM_TE MEM_FILES;
+extern const MEM_TE MEM_CROSSREF;
+extern const MEM_TE MEM_PAGES;
+extern const MEM_TE MEM_DBCHECK;
+extern const MEM_TE MEM_DB;
+extern const MEM_TE MEM_HYPH_PATS;
+extern const MEM_TE MEM_CMAPS;
+extern const MEM_TE MEM_COLOUR_TAB;
+extern const MEM_TE MEM_TEXTURE_TAB;
+extern const MEM_TE MEM_LANG_TAB;
 
 /*@::MAP_VEC@*****************************************************************/
 /*                                                                           */

@@ -225,7 +225,7 @@ BOOLEAN subgalleys, BOOLEAN closures, BOOLEAN input)
 /*                                                                           */
 /*****************************************************************************/
 
-int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
+ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 { OBJECT hd_index;		/* the index of hd in the enclosing galley   */
   OBJECT hd_inners;		/* inner galleys of hd, if unsized           */
   OBJECT dest;			/* the target @Galley hd empties into        */
@@ -376,7 +376,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     debug1(DGA, D, "  AttachGalley tg_inners: %s", DebugInnersNames(tg_inners));
     if( recs != nilobj )  ExpandRecursives(recs);
     dest = actual(dest_index);
-    if( underline(dest) == UNDER_UNDEF )  underline(dest) = UNDER_OFF;
+    if( underline(dest).underline == UNDER_UNDEF_E )  setUnderline(dest, UNDER_OFF);
 
     /* verify that hd satisfies any horizontal constraint on dest */
     if( dim == ROWM )
@@ -516,7 +516,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 
 	case GAP_OBJ_E:
 
-	  underline(y) = underline(dest);
+	  setUnderline(y, underline(dest));
 	  if( !join(&gap(y)) )  seen_nojoin(hd) = TRUE;
 	  break;
 
@@ -527,7 +527,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	case CLEAR_HEADER_E:
 
 	  /* do nothing until actually promoted out of here */
-	  underline(y) = underline(dest);
+	  setUnderline(y, underline(dest));
 	  break;
 
 
@@ -537,7 +537,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	case NULL_CLOS_E:
 	case PAGE_LABEL_E:
 
-	  underline(y) = underline(dest);
+	  setUnderline(y, underline(dest));
 	  break;
 
 
@@ -585,7 +585,7 @@ int AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	case COL_THR_E:
 	    
 
-	  underline(y) = underline(dest);
+	  setUnderline(y, underline(dest));
 	  if( dim == ROWM )
 	  {
 	    /* make sure y is not joined to a target below (vertical only) */

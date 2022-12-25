@@ -72,7 +72,7 @@ void Interpose(OBJECT z, OBJTYPE typ, OBJECT x, OBJECT y)
   fwd(encl, COLM) = fwd(x, COLM);
   back(encl, ROWM) = back(y, ROWM);
   fwd(encl, ROWM) = fwd(y, ROWM);
-  underline(encl) = underline(z);
+  setUnderline(encl, underline(z));
 } /* end Interpose */
 
 
@@ -502,7 +502,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
 
         /* construct a gap object from the left parameter */
         New(g, GAP_OBJ);
-        underline(g) = FALSE;
+        setUnderline(g, UNDER_UNDEF /* FALSE */);
 	Link(g, CopyObject(gap_obj, &fpos(gap_obj)));
         GapCopy(gap(g), line_gap_ms(save_style(header)));
         setMark(&gap(g), FALSE);

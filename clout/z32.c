@@ -69,7 +69,7 @@ OBJECT Next(OBJECT x, int inc, BOOLEAN *done)
       word_baselinemark(y) = word_baselinemark(x);
       word_ligatures(y) = word_ligatures(x);
       word_hyph(y) = word_hyph(x);
-      underline(y) = underline(x);
+      setUnderline(y, underline(x));
       MergeNode(y, x);  x = y;
       *done = TRUE;
       break;

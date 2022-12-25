@@ -436,7 +436,7 @@ static void PDF_PrintWord(OBJECT x, int hpos, int vpos)
   PDFPage_Write(out_fp, EightBitToPrintForm[*p]);
 
   m = font_mapping(finfo[word_font(x)].font_table);
-  unacc = MapTable[m]->map[MAP_UNACCENTED];
+  unacc = MapTable[m]->map[MAP_UNACCENTED_E];
   /* acc   = MapTable[m]->map[MAP_ACCENT]; */
   for( p++;  *p;  p++ )
   {
@@ -885,7 +885,7 @@ static void PDF_LinkCheck(void)
 /*****************************************************************************/
 
 static struct back_end_rec pdf_back = {
-  PDF,					/* the code number of the back end   */
+  PDF_E,					/* the code number of the back end   */
   STR_PDF_MACRO,				/* string name of the back end       */
   TRUE,					/* TRUE if @Scale is available       */
   TRUE,					/* TRUE if @Rotate is available      */

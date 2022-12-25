@@ -187,7 +187,7 @@ MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
 
   /* unaccented map is defined to be self as default */
   for( i = 0;  i < MAX_CHARS;  i++ )
-    map->map[MAP_UNACCENTED][i] = i;
+    map->map[MAP_UNACCENTED_E][i] = i;
 
   for( i = 0;  i < MAX_CHARS; i++ )  map->vector[i] = notdef_word;
   for( i = 0;  i < MAX_CHASH; i++ )  map->hash_table[i] = 0;
@@ -257,13 +257,13 @@ MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
       debug3(DCM, DD, "  line %d: %s %s", curr_line_num, mapname, mapval);
       line_pos += i;
       if( StringEqual(mapname, AsciiToFull("UC")) )
-	m = MAP_UPPERCASE;
+	m = MAP_UPPERCASE_E;
       else if( StringEqual(mapname, AsciiToFull("LC")) )
-	m = MAP_LOWERCASE;
+	m = MAP_LOWERCASE_E;
       else if( StringEqual(mapname, AsciiToFull("UA")) )
-	m = MAP_UNACCENTED;
+	m = MAP_UNACCENTED_E;
       else if( StringEqual(mapname, AsciiToFull("AC")) )
-	m = MAP_ACCENT;
+	m = MAP_ACCENT_E;
       else
 	Error(38, 10, "unknown mapping name %s in mapping file %s (line %d)",
 	  FATAL, &fpos(file_name), mapname, FileName(map->fnum), curr_line_num);
@@ -391,7 +391,7 @@ static OBJECT DoWord(FULL_CHAR *buff, FULL_CHAR *q, OBJECT x, FONT_NUM fnum)
   word_strut(res) = word_strut(x);
   word_ligatures(res) = word_ligatures(x);
   word_hyph(res) = word_hyph(x);
-  underline(res) = UNDER_OFF;
+  setUnderline(res, UNDER_OFF);
   return res;
 } /* end DoWord */
 
@@ -412,7 +412,7 @@ static OBJECT DoVShift(OBJECT x, FULL_LENGTH vshift, OBJECT chld)
   setUnits(&shift_gap(res), FIXED_UNIT);
   setMode(&shift_gap(res), EDGE_MODE);
   setWidth(&shift_gap(res), vshift);
-  underline(res) = UNDER_OFF;
+  setUnderline(res, UNDER_OFF);
   Link(res, chld);
   return res;
 }
@@ -431,7 +431,7 @@ static void DoAddGap(OBJECT new_acat)
   FposCopy(fpos(new_g), fpos(new_acat));
   hspace(new_g) = vspace(new_g) = 0;
   SetGap(gap(new_g), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0*IN);
-  underline(new_g) = UNDER_OFF;
+  setUnderline(new_g, UNDER_OFF);
   Link(new_acat, new_g);
 }
 
@@ -467,7 +467,7 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
     return x;
   }
   assert( 1 <= m && m < maptop, "MapSmallCaps: mapping out of range!" );
-  uc = MapTable[m]->map[MAP_UPPERCASE];
+  uc = MapTable[m]->map[MAP_UPPERCASE_E];
 
   /* if plain text, apply the mapping and exit */
   if( !(BackEnd->scale_avail) )
@@ -687,7 +687,7 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
 BOOLEAN MapIsLowerCase(FULL_CHAR ch, MAPPING m)
 { BOOLEAN res;
   debug2(DCM, D, "MapIsLowerCase(%c, %d)", ch, m);
-  res = (MapTable[m]->map[MAP_UPPERCASE][ch] != '\0');
+  res = (MapTable[m]->map[MAP_UPPERCASE_E][ch] != '\0');
   debug1(DCM, D, "MapIsLowerCase returning %s", bool(res));
   return res;
 } /* end MapIsLowerCase */

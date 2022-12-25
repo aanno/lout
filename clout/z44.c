@@ -243,7 +243,7 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
       tmp = MakeWord(WORD, STR_EMPTY, &fpos(sh));
       back(tmp, COLM) = fwd(tmp, COLM) = 0;
       back(tmp, ROWM) = fwd(tmp, ROWM) = 0;
-      underline(tmp) = UNDER_OFF;
+      setUnderline(tmp, UNDER_OFF);
       Link(new_sh, tmp);
     }
     Link(new_s2, new_sh);

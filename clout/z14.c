@@ -1005,7 +1005,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       if( Down(res) != res &&
 		(display_style(&save_style(y)) == DISPLAY_ADJUST_E ||
 		 display_style(&save_style(y)) == DISPLAY_OUTDENT_E) )
-	 setDisplay_style(&save_style(y), DO_ADJUST);
+	 setDisplay_style(&save_style(y), DO_ADJUST_E);
       back(y, COLM) = 0;
       fwd(y, COLM) = max_width;
 
@@ -1150,7 +1150,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     fwd(x, COLM) = max_width;
     if( display_style(&save_style(x)) == DISPLAY_ADJUST_E ||
 	display_style(&save_style(x)) == DISPLAY_OUTDENT_E )
-	  setDisplay_style(&save_style(x), DO_ADJUST);
+	  setDisplay_style(&save_style(x), DO_ADJUST_E);
 
     /* if last line contains only the {} from final &1rt {}, delete the line */
     /* and the preceding gap                                                 */
@@ -1199,7 +1199,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     fwd(y, COLM) = find_min(MAX_FULL_LENGTH, f + fwd(prev, COLM));
 
     /* make last line DO_ADJUST if it is oversize */
-    if( size(y, COLM) > max_width )  setDisplay_style(&save_style(y), DO_ADJUST);
+    if( size(y, COLM) > max_width )  setDisplay_style(&save_style(y), DO_ADJUST_E);
   }
 
   /* rejoin unused hyphenated gaps so that kerning will work across them */

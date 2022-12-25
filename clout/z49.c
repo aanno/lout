@@ -1419,7 +1419,7 @@ static void PS_PrintWord(OBJECT x, int hpos, int vpos)
   }
   else fputs(EightBitToPrintForm[*p], out_fp);
   m = font_mapping(finfo[word_font(x)].font_table);
-  unacc = MapTable[m]->map[MAP_UNACCENTED];
+  unacc = MapTable[m]->map[MAP_UNACCENTED_E];
   /* acc   = MapTable[m]->map[MAP_ACCENT]; */
   for( p++;  *p;  p++ )
   { ksize = FontKernLength(word_font(x), unacc, *(p-1), *p);
@@ -2092,7 +2092,7 @@ static void PS_LinkCheck(void)
 /*****************************************************************************/
 
 static struct back_end_rec ps_back = {
-  POSTSCRIPT,				/* the code number of the back end   */
+  POSTSCRIPT_E,				/* the code number of the back end   */
   STR_POSTSCRIPT_MACRO,			/* string name of the back end       */
   TRUE,					/* TRUE if @Scale is available       */
   TRUE,					/* TRUE if @Rotate is available      */
@@ -2253,7 +2253,7 @@ static void PS_NullLinkCheck(void)
 {}
 
 static struct back_end_rec ps_null_back = {
-  POSTSCRIPT,				/* the code number of the back end   */
+  POSTSCRIPT_E,				/* the code number of the back end   */
   STR_POSTSCRIPT_MACRO,			/* string name of the back end       */
   TRUE,					/* TRUE if @Scale is available       */
   TRUE,					/* TRUE if @Rotate is available      */

@@ -3822,7 +3822,7 @@ extern	void	  TransferClose(void);
 extern	void	  DetachGalley(OBJECT hd);
 extern	OBJECT	  SearchGalley(OBJECT start, OBJECT sym, BOOLEAN forwards,
 		    BOOLEAN subgalleys, BOOLEAN closures, BOOLEAN input);
-extern	int	  AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt);
+extern	ATTACH	  AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt);
 
 /*****  z20.c	  Galley Flushing	**************************************/
 extern	FULL_CHAR *DebugInnersNames(OBJECT inners);

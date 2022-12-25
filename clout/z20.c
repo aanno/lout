@@ -134,7 +134,7 @@ void FlushGalley(OBJECT hd)
   BOOLEAN prnt_flush;		/* TRUE when the parent of hd needs a flush  */
   BOOLEAN target_is_internal;   /* TRUE if flushing into an internal target  */
   BOOLEAN headers_seen;		/* TRUE if a header is seen at all           */
-  OBJECT zlink, z, tmp, prnt;  int attach_status;  BOOLEAN remove_target;
+  OBJECT zlink, z, tmp, prnt;  ATTACH attach_status;  BOOLEAN remove_target;
   OBJECT why;
   FULL_LENGTH perp_back = 0, perp_fwd = 0; /* current perp size of dest_encl */
 
@@ -179,10 +179,10 @@ void FlushGalley(OBJECT hd)
       attach_status = AttachGalley(hd, &inners, &y);
       debug1(DGF, DD, "  ex-AttachGalley inners: %s", DebugInnersNames(inners));
       Parent(dest_index, Up(hd));
-      switch( attach_status )
+      switch( attach_status.attach )
       {
 
-	case ATTACH_KILLED:
+	case ATTACH_KILLED_E:
 
 	  assert(inners==nilobj, "FlushGalley/ATTACH_KILLED: inners!=nilobj!");
 	  debug1(DGF, D, "] FlushGalley %s returning (ATTACH_KILLED)",
@@ -191,7 +191,7 @@ void FlushGalley(OBJECT hd)
 	  return;
 
 
-	case ATTACH_INPUT:
+	case ATTACH_INPUT_E:
 
 	  ParentFlush(prnt_flush, dest_index, FALSE);
 	  assert(inners==nilobj, "FlushGalley/ATTACH_INPUT: inners!=nilobj!");
@@ -200,7 +200,7 @@ void FlushGalley(OBJECT hd)
 	  return;
 
 
-	case ATTACH_NOTARGET:
+	case ATTACH_NOTARGET_E:
 
 	  ParentFlush(prnt_flush, dest_index, FALSE);
 	  assert(inners==nilobj, "FlushGalley/ATTACH_NOTARG: inners!=nilobj!");
@@ -209,7 +209,7 @@ void FlushGalley(OBJECT hd)
 	  return;
 
 
-	case ATTACH_SUSPEND:
+	case ATTACH_SUSPEND_E:
 
 	  /* AttachGalley only returns inners here if they really need to */
 	  /* be flushed; in particular the galley must be unsized before  */
@@ -223,7 +223,7 @@ void FlushGalley(OBJECT hd)
 	  goto SUSPEND;	/* nb y will be set by AttachGalley in this case */
 
 
-	case ATTACH_NULL:
+	case ATTACH_NULL_E:
 
 	  /* hd will have been linked to the unexpanded target in this case */
 	  remove_target = (actual(actual(dest_index)) == whereto(hd));
@@ -263,7 +263,7 @@ void FlushGalley(OBJECT hd)
 	  return;
 
 
-	case ATTACH_ACCEPT:
+	case ATTACH_ACCEPT_E:
 
           /* if hd is a forcing galley, or actual(dest_index) is   */
 	  /* @ForceGalley, then close all predecessors             */
@@ -316,7 +316,7 @@ void FlushGalley(OBJECT hd)
       break;
   }
   dest = actual(dest_index);
-  if( underline(dest) == UNDER_UNDEF )  underline(dest) = UNDER_OFF;
+  if( underline(dest).underline == UNDER_UNDEF_E )  setUnderline(dest, UNDER_OFF);
   target_is_internal =
     (dim==ROWM && !external_ver(dest)) || (dim==COLM && !external_hor(dest));
   headers_seen = FALSE;
@@ -407,7 +407,7 @@ void FlushGalley(OBJECT hd)
 
       case GAP_OBJ_E:
 
-	underline(y) = underline(dest);
+	setUnderline(y, underline(dest));
 	prec_gap = y;
 	if( target_is_internal )
 	{
@@ -441,7 +441,7 @@ void FlushGalley(OBJECT hd)
       case CROSS_TARG_E:
       case PAGE_LABEL_IND_E:
 
-	underline(y) = underline(dest);
+	setUnderline(y, underline(dest));
 	break;
 
 
@@ -549,7 +549,7 @@ void FlushGalley(OBJECT hd)
       case CROSS_E:
       case FORCE_CROSS_E:
 
-	underline(y) = underline(dest);
+	setUnderline(y, underline(dest));
 	if( dim == ROWM )
 	{
 	  /* make sure y is not joined to a target below (vertical case only) */
@@ -629,7 +629,7 @@ void FlushGalley(OBJECT hd)
 			EchoConstraint(&dest_par_constr));
 
 	    /* check new size against parallel constraint */
-	    if( (units(&gap(prec_gap))==FRAME_UNIT && width(&gap(prec_gap)) > FR)
+	    if( (gapHasUnit(&gap(prec_gap), FRAME_UNIT) && width(&gap(prec_gap)) > FR)
 	        || !FitsConstraint(dest_back, f, dest_par_constr)
 		|| (opt_components(hd) != nilobj && opt_comps_permitted(hd)<=0)
 	      )
@@ -644,7 +644,7 @@ void FlushGalley(OBJECT hd)
 		ifdebug(DOG, D,
 		  debug2(DOG, D, "FlushGalley(%s) adding constraint %s",
 		    SymName(actual(hd)), EchoConstraint(&constraint(z)));
-		  if( units(&gap(prec_gap))==FRAME_UNIT &&
+		  if( gapHasUnit(&gap(prec_gap), FRAME_UNIT) &&
 		      width(&gap(prec_gap)) > FR ) 
 		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(&gap(prec_gap)));
 		  }

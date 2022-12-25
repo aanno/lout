@@ -41,9 +41,9 @@ static  int     bytes_created   = 0;	/* number of bytes in created recs   */
 	int	zz_disposecount	= 0;	/* number of calls to Dispose()      */
 	int	zz_listcount	= 0;	/* number of elements in zz_free[]   */
 
-static	int	usage_nums[MEM_USAGE_MAX] = { 0 };
-static	int	usage_bytes[MEM_USAGE_MAX] = { 0 };
-static	int	max_usage_bytes[MEM_USAGE_MAX] = { 0 };
+static	int	usage_nums[MEM_USAGE_MAX_E] = { 0 };
+static	int	usage_bytes[MEM_USAGE_MAX_E] = { 0 };
+static	int	max_usage_bytes[MEM_USAGE_MAX_E] = { 0 };
 static	int	curr_total_bytes, max_total_bytes = 0;
 static	char	*usage_strings[] = {
 			"lout binary",
@@ -73,13 +73,14 @@ static	char	*usage_strings[] = {
 
 void DebugRegisterUsage(MEM_TE typ, int delta_num, int delta_size)
 { int i;
-  assert(0 <= typ && typ < MEM_USAGE_MAX, "DebugRegisterUsage!");
-  usage_nums[typ] += delta_num;
-  usage_bytes[typ] += delta_size;
+  MEM_T t = typ.mem;
+  assert(0 <= t && t < MEM_USAGE_MAX_E, "DebugRegisterUsage!");
+  usage_nums[t] += delta_num;
+  usage_bytes[t] += delta_size;
   curr_total_bytes += delta_size;
   if( curr_total_bytes > max_total_bytes )
   { max_total_bytes = curr_total_bytes;
-    for( i = 0; i < MEM_USAGE_MAX;  i++ )
+    for( i = 0; i < MEM_USAGE_MAX_E;  i++ )
       max_usage_bytes[i] = usage_bytes[i];
   }
 } /* end DebugRegisterUsage */
@@ -114,7 +115,7 @@ void DebugMemory(void)
   debug4(DMA, D, "%-35s %8s %8s %8s",
     "Summary of malloc() memory usage", "Quantity", "Bytes", "At max.");
 
-  for( i = 1;  i < MEM_USAGE_MAX;  i++ )
+  for( i = 1;  i < MEM_USAGE_MAX_E;  i++ )
   {
     debug4(DMA, D, "%-35s %8d %8d %8d", usage_strings[i], usage_nums[i],
       usage_bytes[i], max_usage_bytes[i]);

@@ -114,8 +114,8 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size,int dim)
     mk = back(prev, dim);
     NextDefiniteWithGap(x, link, y, g, jn);
     while( link != x )
-    { if ( spaceMode(&gap(g), TAB_MODE) || units(&gap(g)) == AVAIL_UNIT
-				    || units(&gap(g)) == FRAME_UNIT )
+    { if ( spaceMode(&gap(g), TAB_MODE) || gapHasUnit(&gap(g), AVAIL_UNIT)
+				    || gapHasUnit(&gap(g), FRAME_UNIT) )
       {	debug0(DGP, DD, "FindAdjustIncrement returning 0 (tab gap)");
 	return 0;
       }
@@ -794,7 +794,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
 	  NextDefiniteWithGap(x, link, y, g, jn); /* not LDN since will redo */
 	  if( link != x && spaceMode(&gap(g), TAB_MODE) &&
-	      units(&gap(g)) == AVAIL_UNIT && width(&gap(g)) == 0 )
+	      gapHasUnit(&gap(g), AVAIL_UNIT) && width(&gap(g)) == 0 )
 	  {
 	    debug2(DGP, DD, "  FAPO-CAT converting 0rt (back(x, dim) %s, xb %s)",
 	      EchoLength(back(x, dim)), EchoLength(xb));
@@ -839,7 +839,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  NextDefiniteWithGapLDN(x, link, y, g, jn, mk, dim, NO_SUPPRESS, pg);
 	  while( link != x )
 	  {
-	    if( spaceMode(&gap(g), TAB_MODE) && units(&gap(g)) == AVAIL_UNIT &&
+	    if( spaceMode(&gap(g), TAB_MODE) && gapHasUnit(&gap(g), AVAIL_UNIT) &&
 		width(&gap(g))==FR )
 	    {
 	      /* object is followed by 1rt gap, give it full space to print */
@@ -1059,8 +1059,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  save_actual_gap(g) = ActualGap(fwd(prev, dim), back(y, dim),
 		fwd(y, dim), &gap(g), frame_size, mk - back_edge);
 	  mk += save_actual_gap(g);
-	  if( spaceMode(&gap(g), TAB_MODE) || units(&gap(g)) == AVAIL_UNIT
-				       || units(&gap(g)) == FRAME_UNIT )
+	  if( spaceMode(&gap(g), TAB_MODE) || gapHasUnit(&gap(g), AVAIL_UNIT)
+				       || gapHasUnit(&gap(g), FRAME_UNIT) )
 	  { last_bad_gap = g;
 	    adjustable_gaps = 0;
 	  }
@@ -1179,17 +1179,17 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  }
 	  else switch( display_style(&save_style(x)) )
 	  {
-	    case DO_ADJUST:	adjust_cat(x) = TRUE;
+	    case DO_ADJUST_E:	adjust_cat(x) = TRUE;
 				adjust_indent = 0;
 				debug1(DSF, D,  "adjust %s", EchoObject(x));
 				break;
 	
-	    case DISPLAY_CENTRE: adjust_cat(x) = FALSE;
+	    case DISPLAY_CENTRE_E: adjust_cat(x) = FALSE;
 				adjust_indent = (frame_size - actual_size)/2;
 				debug1(DGP, DD, "cdisp %s", EchoObject(x));
 				break;
 
-	    case DISPLAY_RIGHT:	adjust_cat(x) = FALSE;
+	    case DISPLAY_RIGHT_E:	adjust_cat(x) = FALSE;
 				adjust_indent = frame_size - actual_size;
 				debug1(DGP, DD, "rdisp %s", EchoObject(x));
 				debug1(DSF, D,  "rdisp %s", EchoObject(x));
@@ -1233,7 +1233,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  while( link != x )
 	  {
 	    /* check for underlining */
-	    if( underline(prev) == UNDER_ON )
+	    if( underline(prev).underline == UNDER_ON_E )
 	    {
 	      debug3(DGP, DD, "  FAPO/ACAT1 underline() := %s for %s %s",
 	        bool(FALSE), Image(type(prev)), EchoObject(prev));
@@ -1257,7 +1257,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 		}
 	        underline_xstart = mk - back(prev, dim);
 	      }
-	      if( underline(g) == UNDER_OFF )
+	      if( underline(g).underline == UNDER_OFF_E )
 	      {
 	        /* underlining ends here */
 	        debug2(DGP, DD, "underlining ends at %s %s",
@@ -1301,13 +1301,13 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  }
 
 	  /* check for underlining */
-	  debugcond3(DGP, DD, underline(prev) == UNDER_UNDEF,
+	  debugcond3(DGP, DD, underline(prev).underline == UNDER_UNDEF_E,
 	    "  underlining is UNDER_UNDEF in %s: %s %s in para:",
 	    EchoFilePos(&fpos(prev)), Image(type(prev)), EchoObject(prev));
-	  debugcond1(DGP, DD, underline(prev)==UNDER_UNDEF, "%s",EchoObject(x));
-	  assert( underline(prev) == UNDER_OFF || underline(prev) == UNDER_ON,
+	  debugcond1(DGP, DD, underline(prev).underline == UNDER_UNDEF_E, "%s",EchoObject(x));
+	  assert( underline(prev).underline == UNDER_OFF_E || underline(prev).underline == UNDER_ON_E,
 	    "FixAndPrint: underline(prev)!" );
-	  if( underline(prev) == UNDER_ON )
+	  if( underline(prev).underline == UNDER_ON_E )
 	  {
 	    debug3(DGP, DD, "  FAPO/ACAT1 underline() := %s for %s %s",
 	      bool(FALSE), Image(type(prev)), EchoObject(prev));
