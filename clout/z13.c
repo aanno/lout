@@ -541,8 +541,8 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	SetGap(space_gap_ms(save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
 	  EDGE_MODE, 0);
 	setHyph_style(&save_style(y), HYPH_ON);
-	setFill_style(&save_style(y), FILL_ON);
-	setDisplay_style(&save_style(y), DISPLAY_LEFT);
+	setFill_style(&save_style(y), FILL_ON_E);
+	setDisplay_style(&save_style(y), DISPLAY_LEFT_E);
 	setSmall_caps(&save_style(y), FALSE);
 	setFont(&save_style(y), word_font(x));
 	setColour(&save_style(y), word_colour(x));

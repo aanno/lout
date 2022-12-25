@@ -47,12 +47,12 @@ FULL_LENGTH FindShift(OBJECT x, OBJECT y, int dim)
     Image(type(y)), EchoObject(y), dimen(dim));
 
   /* first determine the magnitude of the shift */
-  switch( units(&shift_gap(x)) )
+  switch( units(&shift_gap(x)).unit )
   {
-    case FIXED_UNIT:	len = width(&shift_gap(x));
+    case FIXED_UNIT_E:	len = width(&shift_gap(x));
 			break;
 
-    case NEXT_UNIT:	len = (size(y, dim) * width(&shift_gap(x))) / FR;
+    case NEXT_UNIT_E:	len = (size(y, dim) * width(&shift_gap(x))) / FR;
 			break;
 
     default:		assert(FALSE, "FindShift: units");

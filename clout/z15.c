@@ -257,7 +257,7 @@ BOOLEAN InsertScale(OBJECT x, CONSTRAINT *c)
   if( scale_factor >= 0.2 * SF )
   {
     New(prnt, SCALE);
-    underline(prnt) = underline(x);
+    setUnderline(prnt, underline(x));
     FposCopy(fpos(prnt), fpos(x));
 
     /* set horizontal size and scale factor */

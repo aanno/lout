@@ -108,7 +108,7 @@ typedef struct {
     assert( objectOfType(glink, LINK), "SIB: glink!");			\
     Child(g, glink);							\
     if( objectOfType(g, GAP_OBJ) && spaceMode(&gap(g), TAB_MODE) &&		\
-	units(&gap(g)) == AVAIL_UNIT && width(&gap(g)) == 1*FR )		\
+	gapHasUnit(&gap(g), AVAIL_UNIT) && width(&gap(g)) == 1*FR )		\
       I.badness += WIDOW_BAD_INCR;					\
   }									\
 									\
@@ -230,7 +230,7 @@ typedef struct {
 	      word_baselinemark(hyph_word) = baselinemark(&save_style(x));\
 	      word_strut(hyph_word) = strut(&save_style(x));		\
 	      word_ligatures(hyph_word) = ligatures(&save_style(x));	\
-	      word_hyph(hyph_word) = hyph_style(&save_style(x))==HYPH_ON;\
+	      word_hyph(hyph_word) = (hyph_style(&save_style(x)).hyphstyle==HYPH_ON_E);\
 	    }								\
 	    if( word_font(hyph_word) != word_font(right) )		\
 	    { word_font(hyph_word) = word_font(right);			\
@@ -591,7 +591,7 @@ static void KernWordLeftMargin(OBJECT first_on_line, OBJECT parent)
     {
       MAPPING m;
       m = font_mapping(finfo[font].font_table);
-      unacc = MapTable[m]->map[MAP_UNACCENTED];
+      unacc = MapTable[m]->map[MAP_UNACCENTED_E];
     }
 
     /* Add the first characters.  */
@@ -605,8 +605,8 @@ static void KernWordLeftMargin(OBJECT first_on_line, OBJECT parent)
     word_baselinemark(z) = word_baselinemark(first_on_line);
     word_strut(z) = word_strut(first_on_line);
     word_ligatures(z) = word_ligatures(first_on_line);
-    word_hyph(z) = hyph_style(&save_style(z)) == HYPH_ON;
-    underline(z) = underline(first_on_line);
+    word_hyph(z) = (hyph_style(&save_style(z)).hyphstyle == HYPH_ON_E);
+    setUnderline(z, underline(first_on_line));
     FontWordSize(z);
 
     /* Make it zero-width.
@@ -627,7 +627,7 @@ static void KernWordLeftMargin(OBJECT first_on_line, OBJECT parent)
                                 word_content[kerned_glyph_count]);
     else
       hspace(z) = 0;
-    underline(z) = underline(first_on_line);
+    setUnderline(z, underline(first_on_line));
     SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
     Link(parent, z);
 
@@ -702,7 +702,7 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
     {
       MAPPING m;
       m = font_mapping(finfo[font].font_table);
-      unacc = MapTable[m]->map[MAP_UNACCENTED];
+      unacc = MapTable[m]->map[MAP_UNACCENTED_E];
     }
 
     debug2(DOF, DD, "   margin-kerning %u glyph from "
@@ -718,7 +718,7 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
                                 word_content[word_len - kerned_glyph_count]);
     else
       hspace(z) = 0;
-    underline(z) = underline(last_on_line);
+    setUnderline(z, underline(last_on_line));
     SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
     Link(parent, z);
 
@@ -734,8 +734,8 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
     word_baselinemark(z) = word_baselinemark(last_on_line);
     word_strut(z) = word_strut(last_on_line);
     word_ligatures(z) = word_ligatures(last_on_line);
-    word_hyph(z) = hyph_style(&save_style(last_on_line)) == HYPH_ON;
-    underline(z) = underline(last_on_line);
+    word_hyph(z) = (hyph_style(&save_style(last_on_line)).hyphstyle == HYPH_ON_E);
+    setUnderline(z, underline(last_on_line));
 
     FontWordSize(z);
 
@@ -795,8 +795,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   {
     /* set max_width (width of 1st line), etc_width (width of later lines) */
     max_width = find_min(fc(*c), bfc(*c));
-    if( display_style(&save_style(x)) == DISPLAY_OUTDENT ||
-        display_style(&save_style(x)) == DISPLAY_ORAGGED )
+    if( display_style(&save_style(x)) == DISPLAY_OUTDENT_E ||
+        display_style(&save_style(x)) == DISPLAY_ORAGGED_E )
     {
       /* outdent_margin = 2 * FontSize(font(save_style(x)), x); */
       outdent_margin = outdent_len(&save_style(x));
@@ -820,7 +820,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       word_baselinemark(res) = baselinemark(&save_style(x));
       word_strut(res) = strut(&save_style(x));
       word_ligatures(res) = ligatures(&save_style(x));
-      word_hyph(res) = hyph_style(&save_style(x)) == HYPH_ON;
+      word_hyph(res) = (hyph_style(&save_style(x)).hyphstyle == HYPH_ON_E);
       back(res, COLM) = fwd(res, COLM) = 0;
       ReplaceNode(res, x);
       DisposeObject(x);
@@ -846,7 +846,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   word_strut(tmp) = FALSE;
   word_ligatures(tmp) = TRUE;
   word_hyph(tmp) = 0;
-  underline(tmp) = UNDER_OFF;
+  setUnderline(tmp, UNDER_OFF);
   Link(x, tmp);
 
   /* if extend_unbreakable, run through x and set every gap in the     */
@@ -863,7 +863,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       f += MinGap(fwd(prev, COLM), back(y, COLM), fwd(y, COLM), &gap(g))
 	     - fwd(prev, COLM) + back(y, COLM);
       if( f < max_f )
-      { if( units(&gap(g)) == FIXED_UNIT )
+      { if( gapHasUnit(&gap(g), FIXED_UNIT) )
 	  setNobreak(&gap(g), TRUE);
       }
       else
@@ -877,7 +877,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   }
 
   /* initially we can hyphenate if hyphenation is on, but not first pass */
-  if( hyph_style(&save_style(x)) == HYPH_UNDEF )
+  if( hyph_style(&save_style(x)).hyphstyle == HYPH_UNDEF_E )
     Error(14, 7, "hyphen or nohyphen option missing", FATAL, &fpos(x));
   hyph_allowed = FALSE;
 
@@ -1003,8 +1003,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       FposCopy(fpos(y), fpos(x));
       StyleCopy(&save_style(y), &save_style(x));
       if( Down(res) != res &&
-		(display_style(&save_style(y)) == DISPLAY_ADJUST ||
-		 display_style(&save_style(y)) == DISPLAY_OUTDENT) )
+		(display_style(&save_style(y)) == DISPLAY_ADJUST_E ||
+		 display_style(&save_style(y)) == DISPLAY_OUTDENT_E) )
 	 setDisplay_style(&save_style(y), DO_ADJUST);
       back(y, COLM) = 0;
       fwd(y, COLM) = max_width;
@@ -1023,8 +1023,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
       }
 
       /* if outdented paragraphs, add 2.0f @Wide & to front of new line */
-      if( display_style(&save_style(x)) == DISPLAY_OUTDENT ||
-          display_style(&save_style(x)) == DISPLAY_ORAGGED )
+      if( display_style(&save_style(x)) == DISPLAY_OUTDENT_E ||
+          display_style(&save_style(x)) == DISPLAY_ORAGGED_E )
       {
 	OBJECT t1, t2, z;
 	t1 = MakeWord(WORD, STR_EMPTY, &fpos(x));
@@ -1039,12 +1039,12 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	word_strut(t1) = FALSE;
 	word_ligatures(t1) = TRUE;
 	word_hyph(t1) = 0;
-	underline(t1) = UNDER_OFF;
+	setUnderline(t1, UNDER_OFF);
 	New(t2, WIDE);
 	SetConstraint(constraint(t2), MAX_FULL_LENGTH, outdent_margin,
 	  MAX_FULL_LENGTH);
 	back(t2, COLM) = 0;  fwd(t2, COLM) = outdent_margin;
-	underline(t2) = UNDER_OFF;
+	setUnderline(t2, UNDER_OFF);
 	Link(t2, t1);
 	Link(y, t2);
 	New(z, GAP_OBJ);
@@ -1079,7 +1079,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	{
 	  MAPPING m;
 	  m = font_mapping(finfo[font].font_table);
-	  unacc = MapTable[m]->map[MAP_UNACCENTED];
+	  unacc = MapTable[m]->map[MAP_UNACCENTED_E];
 	}
 
 	/* add zero-width gap object */
@@ -1095,7 +1095,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
         else
           hspace(z) = 0;
 	*** */
-	underline(z) = underline(tmp);
+	setUnderline(z, underline(tmp));
 	SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, ADD_HYPH, 0);
 	Link(x, z);
 
@@ -1110,8 +1110,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	word_baselinemark(z) = word_baselinemark(tmp);
 	word_strut(z) = word_strut(tmp);
 	word_ligatures(z) = word_ligatures(tmp);
-	word_hyph(z) = hyph_style(&save_style(x)) == HYPH_ON;
-	underline(z) = underline(tmp);
+	word_hyph(z) = (hyph_style(&save_style(x)).hyphstyle == HYPH_ON_E);
+	setUnderline(z, underline(tmp));
 	FontWordSize(z);
 	if( marginkerning(&save_style(x)) )
         {
@@ -1148,8 +1148,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
     Link(NextDown(res), x);
     back(x, COLM) = 0;
     fwd(x, COLM) = max_width;
-    if( display_style(&save_style(x)) == DISPLAY_ADJUST ||
-	display_style(&save_style(x)) == DISPLAY_OUTDENT )
+    if( display_style(&save_style(x)) == DISPLAY_ADJUST_E ||
+	display_style(&save_style(x)) == DISPLAY_OUTDENT_E )
 	  setDisplay_style(&save_style(x), DO_ADJUST);
 
     /* if last line contains only the {} from final &1rt {}, delete the line */
@@ -1225,7 +1225,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	        word_baselinemark(prev) == word_baselinemark(next) &&
 	        word_strut(prev) == word_strut(next) &&
 	        word_ligatures(prev) == word_ligatures(next) &&
-	        underline(prev) == underline(next) )
+	        underline(prev).underline == underline(next).underline )
 	    { 
 	      debug2(DOF, DD, "joining %s with %s", EchoObject(prev),
 		EchoObject(next));
@@ -1242,7 +1242,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
 	      word_ligatures(tmp) = word_ligatures(prev);
 	      word_hyph(tmp) = word_hyph(prev);
 	      FontWordSize(tmp);
-	      underline(tmp) = underline(prev);
+	      setUnderline(tmp, underline(prev));
 	      MoveLink(ylink, tmp, CHILD);
 	      DisposeChild(Up(prev));
 	      DisposeChild(Up(next));

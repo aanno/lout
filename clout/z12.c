@@ -30,7 +30,7 @@
 // #include "externs.h"
 #include "lout.h"
 #define line_breaker(g)							\
-  (vspace(g) > 0 || (units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR))
+  (vspace(g) > 0 || (gapHasUnit(&gap(g), FRAME_UNIT) && width(&gap(g)) > FR))
 #define IG_LOOKING	0
 #define IG_NOFILE	1
 #define IG_BADFILE	2
@@ -819,7 +819,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	if( ch_left != (FULL_CHAR) '\0' && ch_right != (FULL_CHAR) '\0' )
 	{
 	  MAPPING m = font_mapping(finfo[word_font(y)].font_table);
-  	  FULL_CHAR *unacc = MapTable[m]->map[MAP_UNACCENTED];
+  	  FULL_CHAR *unacc = MapTable[m]->map[MAP_UNACCENTED_E];
 	  ksize = FontKernLength(word_font(y), unacc, ch_left, ch_right);
 	  debug4(DSF, DD, "  FontKernLength(%s, %c, %c) = %s",
 	    FontName(word_font(y)), (char) ch_left, (char) ch_right,
@@ -905,7 +905,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
     case ACAT_E:
 
-      if( fill_style(&save_style(x)) == FILL_OFF )
+      if( fill_style(&save_style(x)) == FILL_OFF_E )
       { OBJECT new_line, g, z, res;  BOOLEAN jn;
 
 	/* convert ACAT to VCAT of lines if more than one line */
@@ -949,7 +949,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		bool(adjust_cat(new_line)), EchoObject(new_line));
 
 	      /* may need to insert space at start of remainder */
-	      if( hspace(g)>0 || display_style(&save_style(x))==DISPLAY_ORAGGED )
+	      if( hspace(g)>0 || display_style(&save_style(x))==DISPLAY_ORAGGED_E )
 	      {
 		/* make an empty word to occupy the first spot */
 		z = MakeWord(WORD, STR_EMPTY, &fpos(g));
@@ -962,8 +962,8 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		word_baselinemark(z) = baselinemark(&save_style(x));
 		word_strut(z) = strut(&save_style(x));
 		word_ligatures(z) = ligatures(&save_style(x));
-		word_hyph(z) = hyph_style(&save_style(x)) == HYPH_ON;
-		underline(z) = UNDER_OFF;
+		word_hyph(z) = (hyph_style(&save_style(x)).hyphstyle == HYPH_ON_E);
+		setUnderline(z, UNDER_OFF);
 		back(z, COLM) = fwd(z, COLM) = 0;
 		Link(Down(x), z);
 
@@ -971,9 +971,9 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		New(z, GAP_OBJ);
 		hspace(z) = hspace(g);
 		vspace(z) = 0;
-		underline(z) = UNDER_OFF;
+		setUnderline(z, UNDER_OFF);
 		GapCopy(gap(z), space_gap_ms(save_style(x)));
-		if( display_style(&save_style(x)) == DISPLAY_ORAGGED )
+		if( display_style(&save_style(x)) == DISPLAY_ORAGGED_E )
 		  setWidth(&gap(z), outdent_len(&save_style(x)));
 		else
 		  setWidth(&gap(z), width(&gap(z)) * hspace(z));
@@ -1052,7 +1052,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		if( prev != nilobj && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
 		    objectOfType(x, ACAT) &&
 		    is_word(type(prev)) && vspace(g) + hspace(g) == 0 &&
-		    units(&gap(g)) == FIXED_UNIT &&
+		    gapHasUnit(&gap(g), FIXED_UNIT) &&
 		    spaceMode(&gap(g), EDGE_MODE) && !mark(&gap(g)) &&
 		    word_font(prev) == word_font(y) &&
 		    word_colour(prev) == word_colour(y) &&
@@ -1063,7 +1063,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		    word_baselinemark(prev) == word_baselinemark(y) &&
 		    word_strut(prev) == word_strut(y) &&
 		    word_ligatures(prev) == word_ligatures(y) &&
-		    underline(prev) == underline(y) &&
+		    underline(prev).underline == underline(y).underline &&
 		    NextDown(NextDown(Up(prev))) == link
 		    )
 		{
@@ -1086,7 +1086,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		  word_strut(y) = word_strut(prev);
 		  word_ligatures(y) = word_ligatures(prev);
 		  word_hyph(y) = word_hyph(prev);
-		  underline(y) = underline(prev);
+		  setUnderline(y, underline(prev));
 		  FontWordSize(y);
 		  Link(Up(prev), y);
 		  DisposeChild(Up(prev));
@@ -1115,7 +1115,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      }
 
 	      /* error if next unit is used in preceding gap */
-	      if( g != nilobj && units(&gap(g)) == NEXT_UNIT )
+	      if( g != nilobj && gapHasUnit(&gap(g), NEXT_UNIT) )
 	      {	Error(12, 4, "gap replaced by 0i (%c unit not allowed here)",
 		  WARN, &fpos(y), CH_UNIT_WD);
 		setUnits(&gap(g), FIXED_UNIT);
@@ -1130,7 +1130,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      { FULL_LENGTH tmp;
 		tmp = MinGap(fwd(prev,dim), back(y,dim), fwd(y, dim), &gap(g));
 		assert(g!=nilobj && !spaceMode(&gap(g), NO_MODE), "MinSize: NO_MODE!");
-		if( units(&gap(g)) == FIXED_UNIT && spaceMode(&gap(g), TAB_MODE) )
+		if( gapHasUnit(&gap(g), FIXED_UNIT) && spaceMode(&gap(g), TAB_MODE) )
 		{
 		  f = find_max(width(&gap(g)) + back(y, dim), f + tmp);
 		}
@@ -1138,9 +1138,9 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		{
 		  f = f + tmp;
 		}
-		if( units(&gap(g)) == FRAME_UNIT && width(&gap(g)) > FR )
+		if( gapHasUnit(&gap(g), FRAME_UNIT) && width(&gap(g)) > FR )
 		    will_expand = TRUE;
-		if( units(&gap(g)) == AVAIL_UNIT && mark(&gap(g)) && width(&gap(g)) > 0 )
+		if( gapHasUnit(&gap(g), AVAIL_UNIT) && mark(&gap(g)) && width(&gap(g)) > 0 )
 		  Error(12, 9, "mark alignment incompatible with centring or right justification",
 		    WARN, &fpos(g));
 		/* ***

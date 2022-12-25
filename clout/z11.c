@@ -62,12 +62,12 @@ FULL_CHAR *EchoStyle(STYLE *style)
     StringCat(res, EchoLength(FontSize(font(style), nilobj)));
   }
   StringCat(res, AsciiToFull(" ("));
-  StringCat(res, AsciiToFull(spacewords[space_style(style)]));
+  StringCat(res, AsciiToFull(spacewords[space_style(style).spacestyle]));
   StringCat(res, AsciiToFull(" "));
   StringCat(res, EchoGap(&space_gap_m(style)));
   StringCat(res, AsciiToFull("), "));
-  StringCat(res, AsciiToFull(hyph_style(style) < 3 ?
-		    hyphwords[hyph_style(style)] : "?"));
+  StringCat(res, AsciiToFull(hyph_style(style).hyphstyle < 3 ?
+		    hyphwords[hyph_style(style).hyphstyle] : "?"));
   StringCat(res, AsciiToFull(":"));
   StringCat(res, AsciiToFull(fill_style(style) < 3 ?
 		    fillwords[fill_style(style)] : "?"));
@@ -126,7 +126,7 @@ static void changespace(STYLE *style, OBJECT x)
   }
   else /* should be a new space gap */
   { GetGap(x, style, &res_gap, &gap_inc);
-    if( gap_inc != GAP_ABS && units(&res_gap) != units(&space_gap_m(style)) )
+    if( gap_inc != GAP_ABS && units(&res_gap).unit != units(&space_gap_m(style)).unit )
     { Error(11, 2, "spacing %s is not compatible with current spacing",
 	WARN, &fpos(x), string(x));
     }
@@ -195,25 +195,25 @@ static void changebreak(STYLE *style, OBJECT x)
     else if( StringEqual(string(x), STR_BREAK_NOHYPHEN) )
 	setHyph_style(style, HYPH_OFF);
     else if( StringEqual(string(x), STR_BREAK_ADJUST) )
-	setFill_style(style, FILL_ON), setDisplay_style(style, DISPLAY_ADJUST);
+	setFill_style(style, FILL_ON_E), setDisplay_style(style, DISPLAY_ADJUST_E);
     else if( StringEqual(string(x), STR_BREAK_OUTDENT) )
-	setFill_style(style, FILL_ON), setDisplay_style(style, DISPLAY_OUTDENT);
+	setFill_style(style, FILL_ON_E), setDisplay_style(style, DISPLAY_OUTDENT_E);
     else if( StringEqual(string(x), STR_BREAK_RAGGED) )
-	setFill_style(style, FILL_ON), setDisplay_style(style, DISPLAY_LEFT);
+	setFill_style(style, FILL_ON_E), setDisplay_style(style, DISPLAY_LEFT_E);
     else if( StringEqual(string(x), STR_BREAK_CRAGGED) )
-	setFill_style(style, FILL_ON), setDisplay_style(style, DISPLAY_CENTRE);
+	setFill_style(style, FILL_ON_E), setDisplay_style(style, DISPLAY_CENTRE_E);
     else if( StringEqual(string(x), STR_BREAK_RRAGGED) )
-	setFill_style(style, FILL_ON), setDisplay_style(style, DISPLAY_RIGHT);
+	setFill_style(style, FILL_ON_E), setDisplay_style(style, DISPLAY_RIGHT_E);
     else if( StringEqual(string(x), STR_BREAK_ORAGGED) )
-	setFill_style(style, FILL_ON), setDisplay_style(style, DISPLAY_ORAGGED);
+	setFill_style(style, FILL_ON_E), setDisplay_style(style, DISPLAY_ORAGGED_E);
     else if( StringEqual(string(x), STR_BREAK_LINES) )
-	setFill_style(style, FILL_OFF), setDisplay_style(style, DISPLAY_LEFT);
+	setFill_style(style, FILL_OFF_E), setDisplay_style(style, DISPLAY_LEFT_E);
     else if( StringEqual(string(x), STR_BREAK_CLINES) )
-	setFill_style(style, FILL_OFF), setDisplay_style(style, DISPLAY_CENTRE);
+	setFill_style(style, FILL_OFF_E), setDisplay_style(style, DISPLAY_CENTRE_E);
     else if( StringEqual(string(x), STR_BREAK_RLINES) )
-	setFill_style(style, FILL_OFF), setDisplay_style(style, DISPLAY_RIGHT);
+	setFill_style(style, FILL_OFF_E), setDisplay_style(style, DISPLAY_RIGHT_E);
     else if( StringEqual(string(x), STR_BREAK_OLINES) )
-	setFill_style(style, FILL_OFF), setDisplay_style(style, DISPLAY_ORAGGED);
+	setFill_style(style, FILL_OFF_E), setDisplay_style(style, DISPLAY_ORAGGED_E);
     else if( StringEqual(string(x), STR_BREAK_NOFIRST) )
 	setNobreakfirst(style, TRUE);
     else if( StringEqual(string(x), STR_BREAK_FIRST) )
@@ -231,7 +231,7 @@ static void changebreak(STYLE *style, OBJECT x)
   }
   else /* should be a new inter-line gap */
   { GetGap(x, style, &res_gap, &gap_inc);
-    if( gap_inc != GAP_ABS && units(&res_gap) != units(&line_gap_m(style)) )
+    if( gap_inc != GAP_ABS && units(&res_gap).unit != units(&line_gap_m(style)).unit )
       Error(11, 6, "line spacing %s is not compatible with current spacing",
         WARN, &fpos(x), string(x));
     else
@@ -348,7 +348,7 @@ void BreakChange(STYLE *style, OBJECT x)
 void YUnitChange(STYLE *style, OBJECT x)
 { GAP res_gap; unsigned gap_inc;
   GetGap(x, style, &res_gap, &gap_inc);
-  if( units(&res_gap) != FIXED_UNIT )
+  if( !gapHasUnit(&res_gap, FIXED_UNIT) )
     Error(11, 9, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_YUNIT);
   else
@@ -370,7 +370,7 @@ void YUnitChange(STYLE *style, OBJECT x)
 void ZUnitChange(STYLE *style, OBJECT x)
 { GAP res_gap; unsigned gap_inc;
   GetGap(x, style, &res_gap, &gap_inc);
-  if( units(&res_gap) != FIXED_UNIT )
+  if( !gapHasUnit(&res_gap, FIXED_UNIT) )
     Error(11, 10, "this unit not allowed with %s symbol",
       WARN, &fpos(x), KW_ZUNIT);
   else

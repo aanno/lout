@@ -78,9 +78,9 @@ void TransferInit(OBJECT InitEnv)
   setSpace_style(&InitialStyle, SPACE_LOUT);
   SetGap(space_gap_m(&InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
   setHyph_style(&InitialStyle, HYPH_UNDEF);
-  setFill_style(&InitialStyle, FILL_UNDEF);
-  setDisplay_style(&InitialStyle, DISPLAY_UNDEF);
-  setSmall_caps(&InitialStyle, SMALL_CAPS_OFF);
+  setFill_style(&InitialStyle, FILL_UNDEF_E);
+  setDisplay_style(&InitialStyle, DISPLAY_UNDEF_E);
+  setSmall_caps(&InitialStyle, SMALL_CAPS_OFF_E);
   setFont(&InitialStyle, 0);			/* i.e. undefined    */
   setColour(&InitialStyle, 0);			/* i.e. undefined    */
   setUnderline_colour(&InitialStyle, 0);			/* i.e. undefined    */
