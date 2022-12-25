@@ -824,7 +824,7 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   setNobreak(x, nobreak(y));
   setMark(x, mark(y));
   setJoin(x, join(y));
-  setUnits(x, nobreak(y));
+  setUnits(x, units(y));
   setMode(x, mode(y));
   setWidth(x, width(y));
   */
