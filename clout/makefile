@@ -317,9 +317,13 @@ MKDIR	= mkdir -p
 WARN	= -Wpointer-arith -Wempty-body -Wmissing-field-initializers \
   -Wtype-limits -Wuninitialized -Winit-self -Wmissing-prototypes \
   -Wmissing-declarations -Wnested-externs -Wbad-function-cast \
-  -Wenum-conversion
+  -Wenum-conversion \
+  -Werror=implicit-int -Werror=implicit-function-declaration \
+  -Werror=int-conversion -Werror=strict-prototypes -Werror=old-style-definition
 # unknown:
 # -Wclobbered -Wmissing-parameter-type -Wold-style-declaration -Wlogical-op 
+# https://lwn.net/Articles/912698/
+# -Werror=implicit-int -Werror=implicit-function-declaration -Werror=int-conversion -Werror=strict-prototypes -Werror=old-style-definition
 
 # https://clang.llvm.org/docs/UsersManual.html
 SANITIZE= -fsanitize=memory -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer
