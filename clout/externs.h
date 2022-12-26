@@ -84,6 +84,7 @@ typedef	struct
 #define	FATAL		     1		/* fatal error, abort now            */
 #define	FATAL_WITH_USAGE     2		/* fatal error, abort now + usage    */
 #define	WARN		     3		/* warning, non-fatal                */
+#define UNEXPECTED_DEFAULT WARN /* switch which uses default branch: this is unexpected and points to uninitialized memory */
 
 // from z03 header below - but used here
 extern	FILE_POS  *no_fpos;
@@ -710,7 +711,7 @@ INLINE BOOLEAN join(GAP* x) {
 INLINE UNIT units(GAP* x) {
   // return x->ounits;
   unsigned units = x->ounits;
-  UNIT res;
+  UNIT res = NO_UNIT;
   switch(units) {
     case NO_UNIT_E:
       res = NO_UNIT;
@@ -730,6 +731,9 @@ INLINE UNIT units(GAP* x) {
     case NEXT_UNIT_E:
       res = NEXT_UNIT;
       break;
+    default:
+      // TODO
+      Error(2, 201, "units %u unknown in GAP* %p", UNEXPECTED_DEFAULT, no_fpos, units, x);
   }
   return res;
 }
@@ -739,7 +743,7 @@ INLINE BOOLEAN gapHasUnit(GAP* x, UNIT u) {
 INLINE SPACE_MODE mode(GAP* x) {
   // return x->omode;
   unsigned mode = x->omode;
-  SPACE_MODE res;
+  SPACE_MODE res = NO_MODE;
   switch(mode) {
     case NO_MODE_E:
       res = NO_MODE;
@@ -764,6 +768,9 @@ INLINE SPACE_MODE mode(GAP* x) {
     case ADD_HYPH_E:
       res = ADD_HYPH;
       break;
+    default:
+      // TODO
+      Error(2, 202, "space mode %u unknown in GAP* %p", UNEXPECTED_DEFAULT, no_fpos, mode, x);
   }
   return res;
 }
@@ -973,7 +980,7 @@ INLINE unsigned small_caps(STYLE* x) {
 INLINE SPACE_STYLE space_style(STYLE* x) {
   // return (x)->ospace_style;
   unsigned spacestyle = (x)->ospace_style;
-  SPACE_STYLE res;
+  SPACE_STYLE res = SPACE_LOUT;
   switch(spacestyle) {
     case SPACE_LOUT_E:
       res = SPACE_LOUT;
@@ -990,6 +997,9 @@ INLINE SPACE_STYLE space_style(STYLE* x) {
     case SPACE_TEX_E:
       res = SPACE_TEX;
       break;
+    default:
+      // TODO
+      Error(2, 203, "spacestyle %u unknown in STYLE* %p", UNEXPECTED_DEFAULT, no_fpos, spacestyle, x);
   }
   return res;
 }
@@ -999,7 +1009,7 @@ INLINE BOOLEAN styleHasSpaceStyle(STYLE* x, SPACE_STYLE y) {
 INLINE HYPH_STYLE hyph_style(STYLE* x) {
   // return (x)->ohyph_style;
   unsigned hyphstyle = (x)->ohyph_style;
-  HYPH_STYLE res;
+  HYPH_STYLE res = HYPH_UNDEF;
   switch(hyphstyle) {
     case HYPH_UNDEF_E:
       res = HYPH_UNDEF;
@@ -1010,6 +1020,9 @@ INLINE HYPH_STYLE hyph_style(STYLE* x) {
     case HYPH_ON_E:
       res = HYPH_ON;
       break;
+    default:
+      // TODO
+      Error(2, 204, "hyphstyle %u unknown in STYLE* %p", UNEXPECTED_DEFAULT, no_fpos, hyphstyle, x);
   }
   return res;
 }
@@ -2272,7 +2285,7 @@ INLINE OBJTYPE incg_type(OBJECT x) {
 INLINE UNDER underline(OBJECT x) {
   // return (x)->os1.ou2.os22.ounderline;
   unsigned under = (x)->os1.ou2.os22.ounderline;
-  UNDER res;
+  UNDER res = UNDER_UNDEF;
   switch(under) {
     case UNDER_UNDEF_E:
       res = UNDER_UNDEF;
@@ -2283,6 +2296,9 @@ INLINE UNDER underline(OBJECT x) {
     case UNDER_ON_E:
       res = UNDER_ON;
       break;
+    default:
+      // TODO
+      Error(2, 205, "underline %u unknown in OBJECT %p", UNEXPECTED_DEFAULT, no_fpos, under, x);
   }
   return res;
 }
