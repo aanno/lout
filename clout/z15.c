@@ -243,7 +243,7 @@ CONSTRAINT *hc, CONSTRAINT *vc, int dim)
 
 /*@::InsertScale()@***********************************************************/
 /*                                                                           */
-/*  BOOLEAN InsertScale(x, c)                                                */
+/*  BOOLEAN2 InsertScale(x, c)                                                */
 /*                                                                           */
 /*  Insert a @Scale object above x so that x is scaled horizontally to fit   */
 /*  constraint c.  If this is not possible, owing to the necessary scale     */
@@ -251,7 +251,7 @@ CONSTRAINT *hc, CONSTRAINT *vc, int dim)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN InsertScale(OBJECT x, CONSTRAINT *c)
+BOOLEAN2 InsertScale(OBJECT x, CONSTRAINT *c)
 { int scale_factor; OBJECT prnt;
   scale_factor = ScaleToConstraint(back(x, COLM), fwd(x, COLM), c);
   if( scale_factor >= 0.2 * SF )

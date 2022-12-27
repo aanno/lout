@@ -101,7 +101,7 @@ FULL_LENGTH FindShift(OBJECT x, OBJECT y, int dim)
 /*                                                                           */
 /*****************************************************************************/
 
-void SetNeighbours(OBJECT link, BOOLEAN ratm, OBJECT *pg, OBJECT *pdef,
+void SetNeighbours(OBJECT link, BOOLEAN2 ratm, OBJECT *pg, OBJECT *pdef,
 OBJECT *sg, OBJECT *sdef, int *side)
 { OBJECT plink, slink;
 

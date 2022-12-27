@@ -443,7 +443,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
 /*****************************************************************************/
 
 OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
-{ OBJECT link, y;  CONSTRAINT yc;  FULL_LENGTH f;  BOOLEAN junk;
+{ OBJECT link, y;  CONSTRAINT yc;  FULL_LENGTH f;  BOOLEAN2 junk;
   debugcond4(DOB, D, debug_depth++ < debug_depth_max,
     "%*s[ BreakObject(%s %p)", (debug_depth-1)*2, " ", Image(type(x)), x);
   debug4(DOB, DD,  "[ BreakObject(%s (%s,%s),  %s), x =",

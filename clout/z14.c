@@ -774,14 +774,14 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
-  BOOLEAN allow_shrink, BOOLEAN extend_unbreakable, BOOLEAN *hyph_used)
+OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
+  BOOLEAN2 allow_shrink, BOOLEAN2 extend_unbreakable, BOOLEAN2 *hyph_used)
 { INTERVAL I, BestI;
   OBJECT res, gp, tmp, z = nilobj, y = nilobj, link, ylink, prev, next;
   int max_width, etc_width, outdent_margin = 0, f;  BOOLEAN jn;
   OBJTYPE typ;
   static OBJECT hyph_word = nilobj;
-  BOOLEAN hyph_allowed;	    /* TRUE when hyphenation of words is permitted  */
+  BOOLEAN2 hyph_allowed;	    /* TRUE when hyphenation of words is permitted  */
   assert( objectOfType(x, ACAT), "FillObject: type(x) != ACAT!" );
 
   debug4(DOF, D, "FillObject(x, %s, can_hyph = %s, %s); %s",

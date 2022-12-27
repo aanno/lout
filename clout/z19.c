@@ -125,8 +125,8 @@ void DetachGalley(OBJECT hd)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT SearchGalley(OBJECT start, OBJECT sym, BOOLEAN forwards,
-BOOLEAN subgalleys, BOOLEAN closures, BOOLEAN input)
+OBJECT SearchGalley(OBJECT start, OBJECT sym, BOOLEAN2 forwards,
+BOOLEAN2 subgalleys, BOOLEAN2 closures, BOOLEAN2 input)
 { OBJECT y, res, z, zlink, link;
   ifdebug(DGA, D, Parent(y, start));
   debug6(DGA, D, "[ SearchGalley(%s, %s, %s, %s, %s, %s)",

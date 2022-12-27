@@ -3945,8 +3945,8 @@ extern	OBJECT	  BreakObject(OBJECT x, CONSTRAINT *c);
 
 /*****  z14.c	  Object Filling        **************************************/
 extern	OBJECT	  FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi,
-		     BOOLEAN can_hyphenate, BOOLEAN allow_shrink,
-		     BOOLEAN extend_unbreakable, BOOLEAN *hyph_used);
+		     BOOLEAN2 can_hyphenate, BOOLEAN2 allow_shrink,
+		     BOOLEAN2 extend_unbreakable, BOOLEAN2 *hyph_used);
 
 /*****  z15.c	  Size Constraints	**************************************/
 extern	void	  MinConstraint(CONSTRAINT *xc, CONSTRAINT *yc);
@@ -3960,14 +3960,14 @@ extern	void	  InvScaleConstraint(CONSTRAINT *yc, FULL_LENGTH sf,
 		    CONSTRAINT*xc);
 extern	void	  RotateConstraint(CONSTRAINT *c, OBJECT y, FULL_LENGTH angle,
 		    CONSTRAINT *hc, CONSTRAINT *vc, int dim);
-extern	BOOLEAN	  InsertScale(OBJECT x, CONSTRAINT *c);
+extern	BOOLEAN2	  InsertScale(OBJECT x, CONSTRAINT *c);
 extern	void	  Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why);
 extern	FULL_CHAR *EchoConstraint(CONSTRAINT *c);
 extern	void	  DebugConstrained(OBJECT x);
 
 /*****  z16.c	  Size Adjustments	**************************************/
 extern	FULL_LENGTH	  FindShift(OBJECT x, OBJECT y, int dim);
-extern	void	  SetNeighbours(OBJECT link, BOOLEAN ratm, OBJECT *pg,
+extern	void	  SetNeighbours(OBJECT link, BOOLEAN2 ratm, OBJECT *pg,
 		    OBJECT *pdef, OBJECT *sg, OBJECT *sdef, int *side);
 extern	void	  AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim);
 
@@ -3993,8 +3993,8 @@ extern	void	  TransferClose(void);
 
 /*****  z19.c	  Galley Attaching	**************************************/
 extern	void	  DetachGalley(OBJECT hd);
-extern	OBJECT	  SearchGalley(OBJECT start, OBJECT sym, BOOLEAN forwards,
-		    BOOLEAN subgalleys, BOOLEAN closures, BOOLEAN input);
+extern	OBJECT	  SearchGalley(OBJECT start, OBJECT sym, BOOLEAN2 forwards,
+		    BOOLEAN2 subgalleys, BOOLEAN2 closures, BOOLEAN2 input);
 extern	ATTACH	  AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt);
 
 /*****  z20.c	  Galley Flushing	**************************************/

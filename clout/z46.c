@@ -295,7 +295,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
 void CalculateOptimize(OBJECT hd)
 { OBJECT z, y, ylink, og, og_par, para, link, wd, g, last;
   int count, compcount;  FULL_CHAR buff[MAX_BUFF];
-  FILE_NUM fnum;  int write_pos, write_lnum;  BOOLEAN hyph_used;
+  FILE_NUM fnum;  int write_pos, write_lnum;  BOOLEAN2 hyph_used;
   debug1(DOG, D, "CalculateOptimize(%s)", SymName(actual(hd)));
 
   /* delete the concluding GAP_OBJ stuck in by Promote() */
