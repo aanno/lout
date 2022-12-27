@@ -664,7 +664,7 @@ BOOLEAN *used_source_suffix)
 { FULL_CHAR buff[MAX_BUFF], buff2[MAX_BUFF];
   OBJECT link, y = nilobj, cpath;  FILE *fp, *fp2;
   debug4(DFS, DD, "[ SearchPath(%s, %s, %s, %s, -)", str, EchoObject(fpath),
-	bool(check_ld), bool(check_lt));
+	bool2s(check_ld), bool2s(check_lt));
 
   *used_source_suffix = FALSE;
 
@@ -801,7 +801,7 @@ BOOLEAN *used_source_suffix)
 FILE *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt)
 { FILE *fp;  OBJECT fname, full_name, y;  BOOLEAN used_source_suffix;
   ifdebug(DPP, D, ProfileOn("OpenFile"));
-  debug2(DFS, DD, "[ OpenFile(%s, %s)", FileName(fnum), bool(check_ld));
+  debug2(DFS, DD, "[ OpenFile(%s, %s)", FileName(fnum), bool2s(check_ld));
   fname = ftab_num(file_tab, fnum);
   if( Down(fname) != fname )
   { Child(y, Down(fname));

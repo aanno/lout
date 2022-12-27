@@ -1323,7 +1323,7 @@ static void PS_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v, FULL_CHAR *label)
 /*****************************************************************************/
 
 static void PrintComposite(COMPOSITE *cp, BOOLEAN outline, FILE *fp)
-{ debug1(DPO, DD, "PrintComposite(cp, %s, fp)", bool(outline));
+{ debug1(DPO, DD, "PrintComposite(cp, %s, fp)", bool2s(outline));
   while( cp->char_code != '\0' )
   {
     debug4(DPO, DD, "  cp = %p printing code %d (%d, %d)", cp,

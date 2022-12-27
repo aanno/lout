@@ -32,6 +32,7 @@
 #include "enums.h"
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -49,10 +50,12 @@ extern nl_catd MsgCat;
 
 typedef unsigned char FULL_CHAR;
 
+// TODO: making this BOOLEAN will break crossrefs
+// #define	BOOLEAN		bool
 #define	BOOLEAN		unsigned
-#define	FALSE		0
-#define	TRUE		1
-#define	bool(x)		(x ? AsciiToFull("TRUE") : AsciiToFull("FALSE") )
+#define	FALSE		false
+#define	TRUE		true
+#define	bool2s(x)		(x ? AsciiToFull("TRUE") : AsciiToFull("FALSE") )
 
 /*@::assert(), debug(), debug flags@******************************************/
 /*                                                                           */
@@ -1038,7 +1041,8 @@ typedef struct style_type
   unsigned	ohyph_style	: 2;	/* hyphenation off or on             */
   unsigned	ofill_style	: 2;	/* fill lines with text off/on       */
   unsigned	odisplay_style	: 3;	/* display lines adjusted, ragged... */
-  BOOLEAN	ooutline	: 2;	/* TRUE if outlining words           */
+  // TODO: making this BOOLEAN will break crossrefs
+  unsigned	ooutline	: 2;	/* TRUE if outlining words           */
   BOOLEAN	onobreakfirst	: 1;	/* no break after first line of para */
   BOOLEAN	onobreaklast	: 1;	/* no break after last line of para  */
   BOOLEAN	obaselinemark	: 1;	/* baseline char metrics             */

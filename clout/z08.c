@@ -731,7 +731,7 @@ OBJECT *enclose, BOOLEAN fcr)
     }
   }
   debugcond2(DOM, DD, indefinite(sym),"  s_f = %s, x = %s",
-    bool(symbol_free), EchoObject(x));
+    bool2s(symbol_free), EchoObject(x));
 
   /* if all parameters are free of symbols, optimize environment */
   if( symbol_free && imports(sym) == nilobj && enclosing(sym) != StartSym )
@@ -761,7 +761,7 @@ OBJECT *enclose, BOOLEAN fcr)
   else hold_env2 = nilobj;
 
   debug3(DOM, DD, " expansion: has_target %s, indefinite %s, recursive %s",
-    bool(has_target(sym)), bool(indefinite(sym)), bool(recursive(sym)));
+    bool2s(has_target(sym)), bool2s(indefinite(sym)), bool2s(recursive(sym)));
   if( has_target(sym) && !need_expand )
   {
     /* convert symbols with targets to unsized galleys */
@@ -1200,8 +1200,8 @@ OBJECT *enclose, BOOLEAN fcr)
 		  for( p = string(z);  *p != '\0';  p++ )
       ;
 		  debug4(DLS, DD, "  prev = %s, last = %c, LSE = %s, LWES = %s",
-		    EchoObject(z), *(p-1), bool(LanguageSentenceEnds[*(p-1)]),
-		    bool(LanguageWordEndsSentence(z, FALSE)));
+		    EchoObject(z), *(p-1), bool2s(LanguageSentenceEnds[*(p-1)]),
+		    bool2s(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
 		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
@@ -1233,8 +1233,8 @@ OBJECT *enclose, BOOLEAN fcr)
 		  for( p = string(z);  *p != '\0';  p++ )
       ;
 		  debug4(DLS, DD, "  prev = %s, last = %c, LSE = %s, LWES = %s",
-		      EchoObject(z), *(p-1), bool(LanguageSentenceEnds[*(p-1)]),
-		      bool(LanguageWordEndsSentence(z, TRUE)));
+		      EchoObject(z), *(p-1), bool2s(LanguageSentenceEnds[*(p-1)]),
+		      bool2s(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
 		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
@@ -2078,7 +2078,7 @@ OBJECT *enclose, BOOLEAN fcr)
       done = FALSE;
       y = Next(y, 1, &done);
       debug2(DCS, DD, "  Next(done = %s) returning %s",
-			bool(done), EchoObject(y));
+			bool2s(done), EchoObject(y));
       DeleteLink(Down(x));
       MergeNode(y, x);  x = y;
       break;

@@ -295,7 +295,7 @@ BOOLEAN check)
   assert( seq[0] != '\0', "DbInsert: null seq!" );
   ifdebug(DPP, D, ProfileOn("DbInsert"));
   debug6(DBS, DD, "DbInsert(%s, %s, %s, %s, %s, %s, dlnum, dfpos)",
-	string(db), bool(gall), SymName(sym), tag, seq,
+	string(db), bool2s(gall), SymName(sym), tag, seq,
 	dfnum == NO_FILE ? AsciiToFull(".") : FileName(dfnum));
   assert(!reading(db), "DbInsert: insert into reading database");
 
@@ -439,7 +439,7 @@ OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
   FILE_NUM index_fnum, dfnum;  long dfpos;
   BOOLEAN gall;  FULL_CHAR line[MAX_BUFF], sym_name[MAX_BUFF]; int status;
   ifdebug(DPP, D, ProfileOn("DbLoad"));
-  debug3(DBS, DD, "[ DbLoad(%s, %d, %s, -)", string(stem), fpath, bool(create));
+  debug3(DBS, DD, "[ DbLoad(%s, %d, %s, -)", string(stem), fpath, bool2s(create));
 
   /* open or else create index file fp */
   debug0(DFS, D, "  calling DefineFile from DbLoad (1)");
@@ -707,7 +707,7 @@ FULL_CHAR *str, FULL_CHAR *line)
     res = StringEqual(str, buff);
   }
   else res = FALSE;
-  debug1(DBS, D, "SearchFile returning %s", bool(res));
+  debug1(DBS, D, "SearchFile returning %s", bool2s(res));
   ifdebug(DPP, D, ProfileOff("SearchFile"));
   return res;
 } /* end SearchFile */

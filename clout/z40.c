@@ -71,7 +71,7 @@ OBJECT FilterCreate(BOOLEAN use_begin, OBJECT act, FILE_POS *xfpos)
   FILE *fp;
   #pragma clang diagnostic ignored "-Wunused-but-set-variable"
   OBJECT x, res, junk;
-  debug3(DFH, D, "FilterCreate(%s, %s, %s)", bool(use_begin),
+  debug3(DFH, D, "FilterCreate(%s, %s, %s)", bool2s(use_begin),
     SymName(act), EchoFilePos(xfpos));
   New(res, FILTERED);
   FposCopy(fpos(res), *xfpos);
@@ -261,7 +261,7 @@ void FilterWrite(OBJECT x, FILE *fp, int *linecount)
 void FilterScavenge(BOOLEAN all)
 { OBJECT y, link, nextlink;
   ifdebug(DFH, D, return);
-  debug1(DFH, D, "FilterScavenge(%s)", bool(all));
+  debug1(DFH, D, "FilterScavenge(%s)", bool2s(all));
   for( link = Down(filter_active);  link != filter_active;  link = nextlink )
   { Child(y, link);
     nextlink = NextDown(link);

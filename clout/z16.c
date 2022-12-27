@@ -138,7 +138,7 @@ OBJECT *sg, OBJECT *sdef, int *side)
   *side = ratm ? BACK : *pg == nilobj || mark(&gap(*pg)) ? ON : FWD;
   debug4(DSA, DD,
     "SetNeighbours: ratm == %s, pg %s nilobj, sg %s nilobj, side == %s",
-    bool(ratm), *pg == nilobj ? "==" : "!=", *sg == nilobj ? "==" : "!=", 
+    bool2s(ratm), *pg == nilobj ? "==" : "!=", *sg == nilobj ? "==" : "!=", 
     *side == BACK ? "BACK" : *side == ON ? "ON" : "FWD");
 } /* end SetNeighbours */
 
@@ -161,7 +161,7 @@ OBJECT y, int dim)
   int bb = 0, ff = 0;  /* initial values unused */
 
   debug6(DSA, DD, "CatAdjustSize(%s x, %s, %s, %s, %s y, %s)", Image(type(x)),
-    EchoLength(*b), EchoLength(*f), bool(ratm), Image(type(y)), dimen(dim));
+    EchoLength(*b), EchoLength(*f), bool2s(ratm), Image(type(y)), dimen(dim));
   debug2(DSA,DD, "x(%s,%s) =", EchoLength(back(x,dim)), EchoLength(fwd(x,dim)));
   ifdebug(DSA, DD, DebugObject(x));
   debug2(DSA,DD, "y(%s,%s) =", EchoLength(back(y,dim)), EchoLength(fwd(y,dim)));
@@ -180,12 +180,12 @@ OBJECT y, int dim)
   { ifdebug(DSA, DD,
     if( pg != nilobj && spaceMode(&gap(pg), NO_MODE) )
     { debug1(DSA, DD, "NO_MODE gap pg, is_indefinite(x) == %s, y =",
-	bool(is_indefinite(type(x))) );
+	bool2s(is_indefinite(type(x))) );
       ifdebug(DSA, DD, DebugObject(y));
     }
     if( sg != nilobj && spaceMode(&gap(sg), NO_MODE) )
     { debug1(DSA, DD, "NO_MODE gap sg, is_indefinite(x) == %s, y =",
-	bool(is_indefinite(type(x))) );
+	bool2s(is_indefinite(type(x))) );
       ifdebug(DSA, DD, DebugObject(y));
     }
   ); }

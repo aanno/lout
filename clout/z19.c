@@ -365,8 +365,8 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     Link(target_galley, tmp);
     env = DetachEnv(tmp);
     debug4(DGM, D, "  external_ver(%s) = %s, external_hor(%s) = %s",
-      SymName(actual(target)), bool(external_ver(target)),
-      SymName(actual(target)), bool(external_hor(target)));
+      SymName(actual(target)), bool2s(external_ver(target)),
+      SymName(actual(target)), bool2s(external_hor(target)));
     SizeGalley(target_galley, env,
 	external_ver(target) || external_hor(target),
 	threaded(target), non_blocking(target_index),

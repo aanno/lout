@@ -91,7 +91,7 @@ static void check_yield(OBJECT y, OBJECT *res_yield, BOOLEAN *all_literals)
     *res_yield = nilobj;
   }
   debug2(DOP, DD, "  checkyield returning (%s, %s)", EchoObject(*res_yield),
-    bool(*all_literals));
+    bool2s(*all_literals));
 }
 
 static OBJECT OptimizeCase(OBJECT x)
@@ -812,7 +812,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
   int obj_prev, scope_count, compulsory_count;  BOOLEAN revealed;
 
   debugcond4(DOP, DD, debug_now, "[ Parse(%s, %s, %s, %s)", EchoToken(*token),
-      SymName(encl), bool(defs_allowed), bool(transfer_allowed));
+      SymName(encl), bool2s(defs_allowed), bool2s(transfer_allowed));
   assert( objectOfType(*token, LBR) || objectOfType(*token, BEGIN), "Parse: *token!" );
 
   obj_prev = PREV_OP;
@@ -911,8 +911,8 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
       InDefinitions = FALSE;
       debug0(DOP, D, "Parse() setting InDefinitions to FALSE");
       debugcond4(DOP, DD, debug_now, "[ Parse (first) (%s, %s, %s, %s)",
-	EchoToken(*token), SymName(encl), bool(defs_allowed),
-	bool(transfer_allowed));
+	EchoToken(*token), SymName(encl), bool2s(defs_allowed),
+	bool2s(transfer_allowed));
 
       /* load cross-references from previous run, open new cross refs */
       if( AllowCrossDb )

@@ -1053,7 +1053,7 @@ BOOLEAN ReadHyphTable(LANGUAGE_NUM lnum)
   assert(HyphTables[lnum]==(TRIE) NULL && !TriedFile[lnum], "ReadHyphTable!");
   HyphTables[lnum] = TrieRead(lnum, &res);
   TriedFile[lnum] = TRUE;
-  debug2(DHY, DD, "ReadHyphTable(%d) returning %s", lnum, bool(res));
+  debug2(DHY, DD, "ReadHyphTable(%d) returning %s", lnum, bool2s(res));
   return res;
 } /* end ReadHyphTable */
 

@@ -42,7 +42,7 @@
 OBJECT Next(OBJECT x, int inc, BOOLEAN *done)
 { OBJECT y, link;  int l, r, n, len;
   FULL_CHAR buff[MAX_BUFF];
-  debug3(DCS, DD, "Next( %s, %d, %s )", EchoObject(x), inc, bool(*done));
+  debug3(DCS, DD, "Next( %s, %d, %s )", EchoObject(x), inc, bool2s(*done));
   switch( type(x).objtype )
   {
     case WORD_E:

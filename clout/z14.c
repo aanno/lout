@@ -785,7 +785,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN can_hyphenate,
   assert( objectOfType(x, ACAT), "FillObject: type(x) != ACAT!" );
 
   debug4(DOF, D, "FillObject(x, %s, can_hyph = %s, %s); %s",
-    EchoConstraint(c), bool(can_hyphenate),
+    EchoConstraint(c), bool2s(can_hyphenate),
     multi == nilobj ? "nomulti" : "multi", EchoStyle(&save_style(x)));
   ifdebug(DOF, DD, DebugObject(x));
 

@@ -156,7 +156,7 @@ OBJECT ClosureExpand(OBJECT x, OBJECT env, BOOLEAN crs_wanted,
 OBJECT *crs, OBJECT *res_env)
 { OBJECT link, y, res, prnt_env, par, prnt;
   debug3(DCE, D, "[ ClosureExpand( %s, %s, %s, crs, res_env )",
-    EchoObject(x), EchoObject(env), bool(crs_wanted));
+    EchoObject(x), EchoObject(env), bool2s(crs_wanted));
   assert( objectOfType(x, CLOSURE), "ClosureExpand given non-CLOSURE!");
   // TODO
   assert( predefined(actual(x)).objtype == FALSE, "ClosureExpand given predefined!" );
@@ -220,7 +220,7 @@ OBJECT *crs, OBJECT *res_env)
       if( sym_body(actual(x)) == nilobj )
       {
         debug3(DCE, D, "failing ClosureExpand( %s, crs, %s, %s, res_env )",
-	  EchoObject(x), bool(crs_wanted), EchoObject(env));
+	  EchoObject(x), bool2s(crs_wanted), EchoObject(env));
         Error(9, 2, "no value for parameter %s of symbol %s:", WARN, &fpos(x),
 	  SymName(actual(x)), SymName(enclosing(actual(x))));
         Error(9, 1, "symbol with import list misused", FATAL, &fpos(x));

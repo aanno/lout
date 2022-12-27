@@ -134,7 +134,7 @@ MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
   int status;
   FULL_CHAR buff[MAX_BUFF], cn[MAX_BUFF], ch, mapname[MAX_BUFF],
   mapval[MAX_BUFF];
-  debug2(DCM,D, "MapLoad(%s, %s)", EchoObject(file_name), bool(recoded));
+  debug2(DCM,D, "MapLoad(%s, %s)", EchoObject(file_name), bool2s(recoded));
 
   /* if the file name is "-", it means no mapping file is supplied */
   if( StringEqual(string(file_name), AsciiToFull("-")) )
@@ -688,6 +688,6 @@ BOOLEAN MapIsLowerCase(FULL_CHAR ch, MAPPING m)
 { BOOLEAN res;
   debug2(DCM, D, "MapIsLowerCase(%c, %d)", ch, m);
   res = (MapTable[m]->map[MAP_UPPERCASE_E][ch] != '\0');
-  debug1(DCM, D, "MapIsLowerCase returning %s", bool(res));
+  debug1(DCM, D, "MapIsLowerCase returning %s", bool2s(res));
   return res;
 } /* end MapIsLowerCase */

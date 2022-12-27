@@ -84,7 +84,7 @@ FULL_CHAR *DebugInnersNames(OBJECT inners)
 static void ParentFlush(BOOLEAN prnt_flush, OBJECT dest_index, BOOLEAN kill)
 { OBJECT prnt;
   debug3(DGF, DD, "ParentFlush(%s, %s, %s)",
-    bool(prnt_flush), EchoIndex(dest_index), bool(kill));
+    bool2s(prnt_flush), EchoIndex(dest_index), bool2s(kill));
   if( prnt_flush )
   { Parent(prnt, Up(dest_index));
     if( kill )  DeleteNode(dest_index);
@@ -187,7 +187,7 @@ void FlushGalley(OBJECT hd)
 	  assert(inners==nilobj, "FlushGalley/ATTACH_KILLED: inners!=nilobj!");
 	  debug1(DGF, D, "] FlushGalley %s returning (ATTACH_KILLED)",
 	    SymName(actual(hd)));
-	  debug1(DGF, D, "    prnt_flush = %s", bool(prnt_flush));
+	  debug1(DGF, D, "    prnt_flush = %s", bool2s(prnt_flush));
 	  return;
 
 
@@ -282,7 +282,7 @@ void FlushGalley(OBJECT hd)
 	    /* ifdebug(DGA, DD, DebugObject(prnt)); */
           }
           else prnt_flush = prnt_flush || blocked(dest_index);
-          debug1(DGF, DD, "    force: prnt_flush = %s", bool(prnt_flush));
+          debug1(DGF, DD, "    force: prnt_flush = %s", bool2s(prnt_flush));
           if( inners != nilobj )
 	  {
 	    debug0(DGF, DD, "  calling FlushInners() from FlushGalley (c)");
@@ -726,7 +726,7 @@ void FlushGalley(OBJECT hd)
 	debug3(DGF, DD, "  t-accept %s %s %s", Image(type(y)), EchoObject(y),
 	  EchoFilePos(&fpos(y)));
 	prnt_flush = prnt_flush || blocked(dest_index);
-	debug1(DGF, DDD, "    prnt_flush = %s", bool(prnt_flush));
+	debug1(DGF, DDD, "    prnt_flush = %s", bool2s(prnt_flush));
 	debug1(DGF, DDD, "    inners = %s", DebugInnersNames(inners));
 	if( inners != nilobj )
 	{ BOOLEAN promotable;  OBJECT tgp;
@@ -939,7 +939,7 @@ void FlushGalley(OBJECT hd)
       {	found = DbRetrieveNext(OldCrossDb, &gall, &newsym, newtag, newseq,
 		&eg_fnum(eg), &eg_fpos(eg), &eg_lnum(eg), &eg_cont(eg));
 	debug2(DGF, DD, "  ext gall  found:   %15s  gall:    %15s",
-			bool(gall), bool(found));
+			bool2s(gall), bool2s(found));
 	debug2(DGF, DD, "  ext gall  new sym: %15s  old sym: %15s",
 			SymName(newsym), SymName(eg_symbol(eg)));
 	debug2(DGF, DD, "  ext gall  new tag: %15s  old tag: %15s",

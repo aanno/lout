@@ -69,8 +69,8 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   assert( objectOfType(hd, HEAD) && Down(hd) != hd, "SizeGalley: precondition!" );
   assert( !sized(hd), "SizeGalley: already sized!" );
   debug6(DGM, D, "SizeGalley(%s, -, %s, %s, %s, %s, -, %s, -, -, -), hd =",
-	SymName(actual(hd)), bool(rows), bool(joined), bool(nonblock),
-	bool(trig), EchoConstraint(c));
+	SymName(actual(hd)), bool2s(rows), bool2s(joined), bool2s(nonblock),
+	bool2s(trig), EchoConstraint(c));
   debug1(DGM, DD, "  env = %s", EchoObject(env));
   ifdebug(DGM, D, DebugObject(hd));
 

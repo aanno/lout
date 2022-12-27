@@ -946,7 +946,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	      adjust_cat(new_line) = padjust(&save_style(x));
 	      Link(res, new_line);
 	      debug2(DSF, D, "  new_line(adjust_cat %s) = %s",
-		bool(adjust_cat(new_line)), EchoObject(new_line));
+		bool2s(adjust_cat(new_line)), EchoObject(new_line));
 
 	      /* may need to insert space at start of remainder */
 	      if( hspace(g)>0 || display_style(&save_style(x))==DISPLAY_ORAGGED_E )

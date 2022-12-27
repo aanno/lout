@@ -121,7 +121,7 @@ void InitSym(void)
 /*****************************************************************************/
 
 void PushScope(OBJECT x, BOOLEAN npars, BOOLEAN vis)
-{ debug3(DST, DD, "[ PushScope(%s, %s, %s)", SymName(x), bool(npars), bool(vis));
+{ debug3(DST, DD, "[ PushScope(%s, %s, %s)", SymName(x), bool2s(npars), bool2s(vis));
   assert( suppress_scope == FALSE, "PushScope: suppress_scope!" );
   if( scope_top >= MAX_STACK )
   {
@@ -606,8 +606,8 @@ OBJECT SearchSym(FULL_CHAR *str, int len)
 	  { Child(q, link);
 	    { debugcond4(DST, DDD, enclosing(q) == scope[s],
 	       "  !npars_only[s] = %s, !vis_only[s] = %s, body_ok[s] = %s, !ss = %s",
-	       bool(!npars_only[s]), bool(!vis_only[s]), bool(body_ok[s]),
-	       bool(!suppress_scope));
+	       bool2s(!npars_only[s]), bool2s(!vis_only[s]), bool2s(body_ok[s]),
+	       bool2s(!suppress_scope));
 	    }
 	    if( enclosing(q) == scope[s]
 	      && (!npars_only[s] || objectOfType(q, NPAR))

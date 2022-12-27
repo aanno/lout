@@ -131,7 +131,7 @@ BOOLEAN LexLegalName(const FULL_CHAR *str)
       break;
 
   }
-  debug1(DLA, DDD, "LexLegalName returning %s", bool(res));
+  debug1(DLA, DDD, "LexLegalName returning %s", bool2s(res));
   return res;
 } /* end LexLegalName */
 
@@ -202,7 +202,7 @@ void LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN same)
 { int i;
   debug5(DLA, DD, "LexPush(%s, %d, %s, %d, %s)", FileName(x), offs,
     sameFiletype(ftyp, SOURCE_FILE) ? "source" : sameFiletype(ftyp, INCLUDE_FILE) ? "include":"database",
-    lnum, bool(same));
+    lnum, bool2s(same));
   if( stack_free >= MAX_LEX_STACK - 1 )
   { if( sameFiletype(ftyp, INCLUDE_FILE) )
       Error(2, 1, "too many open files when opening include file %s; open files are:",
@@ -696,7 +696,7 @@ OBJECT LexGetToken(void)
 	  {
 	    /* need to define and read this include file */
 	    debug4(DFS, D, "  calling DefineFile %s from LexGetToken (%s, %d, %d)",
-	      string(fname), bool(InDefinitions),
+	      string(fname), bool2s(InDefinitions),
 	        FileNum(string(fname), STR_EMPTY),
 		FileNum(string(fname), SOURCE_SUFFIX));
 	    fnum = DefineFile(string(fname), STR_EMPTY, &fpos(fname),
@@ -951,7 +951,7 @@ OBJECT LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos, BOOLEAN le
   OBJECT res = nilobj;			/* result object if not to file      */
 
   debug3(DLA, D, "LexScanVerbatim(fp, %s, %s, %s)",
-    bool(end_stop), EchoFilePos(err_pos), bool(lessskip));
+    bool2s(end_stop), EchoFilePos(err_pos), bool2s(lessskip));
   if( next_token != nilobj )
   { Error(2, 16, "filter parameter in macro", FATAL, err_pos);
   }

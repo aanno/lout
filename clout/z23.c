@@ -1236,7 +1236,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    if( underline(prev).underline == UNDER_ON_E )
 	    {
 	      debug3(DGP, DD, "  FAPO/ACAT1 underline() := %s for %s %s",
-	        bool(FALSE), Image(type(prev)), EchoObject(prev));
+	        bool2s(FALSE), Image(type(prev)), EchoObject(prev));
 	      if( !underlining )
 	      {
 	        /* underlining begins here */
@@ -1310,7 +1310,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  if( underline(prev).underline == UNDER_ON_E )
 	  {
 	    debug3(DGP, DD, "  FAPO/ACAT1 underline() := %s for %s %s",
-	      bool(FALSE), Image(type(prev)), EchoObject(prev));
+	      bool2s(FALSE), Image(type(prev)), EchoObject(prev));
 	    if( !underlining )
 	    {
 	      /* underlining begins here */

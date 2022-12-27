@@ -170,7 +170,7 @@ void FlushInners(OBJECT inners, OBJECT hd)
 	    SymName(actual(z)));
 	  if( whereto(z) != nilobj )
 	    debug2(DGA,D,"    (whereto(z) = %s, uses_extern_target = %s)",
-	      SymName(whereto(z)), bool(uses_extern_target(whereto(z))));
+	      SymName(whereto(z)), bool2s(uses_extern_target(whereto(z))));
 	  if( whereto(z)==nilobj || !uses_extern_target(whereto(z)) ) /* &&& */
 	    FlushGalley(z);
 	}
