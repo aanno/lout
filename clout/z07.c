@@ -35,13 +35,13 @@
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN SplitIsDefinite(x)                                               */
+/*  BOOLEAN2 SplitIsDefinite(x)                                               */
 /*                                                                           */
 /*  Return TRUE if x is a definite SPLIT object (both children definite)     */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN SplitIsDefinite(OBJECT x)
+BOOLEAN2 SplitIsDefinite(OBJECT x)
 { OBJECT y1, y2;
   assert( objectOfType(x, SPLIT), "SplitIsDefinite: x not a SPLIT!" );
   Child(y1, DownDim(x, COLM));
@@ -532,8 +532,8 @@ OBJECT Meld(OBJECT x, OBJECT y)
   char table[MAX_MELD][MAX_MELD], dir[MAX_MELD][MAX_MELD];
   OBJECT xcomp[MAX_MELD], ycomp[MAX_MELD];
   OBJECT xgaps[MAX_MELD], ygaps[MAX_MELD];
-  BOOLEAN is_equal;
-  OBJECT link, z = nilobj, g;  BOOLEAN jn;
+  BOOLEAN2 is_equal;
+  OBJECT link, z = nilobj, g;  BOOLEAN2 jn;
   int xlen, ylen, xi, yi;
   debug2(DOS, D, "Meld(%s, %s)", EchoObject(x), EchoObject(y));
   assert(objectOfType(x, ACAT), "Meld: type(x) != ACAT");
@@ -737,13 +737,13 @@ OBJECT Meld(OBJECT x, OBJECT y)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  static BOOLEAN EqualChildren(x, y)                                       */
+/*  static BOOLEAN2 EqualChildren(x, y)                                       */
 /*                                                                           */
 /*  Return TRUE if manifested objects x and y have equal children.           */
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN EqualChildren(OBJECT x, OBJECT y)
+static BOOLEAN2 EqualChildren(OBJECT x, OBJECT y)
 { OBJECT xl, yl, xc, yc;
   xl = Down(x), yl = Down(y);
   for( ; xl != x && yl != y;  xl = NextDown(xl), yl = NextDown(yl) )
@@ -759,13 +759,13 @@ static BOOLEAN EqualChildren(OBJECT x, OBJECT y)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN EqualManifested(x, y)                                            */
+/*  BOOLEAN2 EqualManifested(x, y)                                            */
 /*                                                                           */
 /*  Return TRUE if manifested objects x and y are equal.                     */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN EqualManifested(OBJECT x, OBJECT y)
+BOOLEAN2 EqualManifested(OBJECT x, OBJECT y)
 { OBJECT xc, yc;
 
   if( is_word(type(x)) && is_word(type(y)) )

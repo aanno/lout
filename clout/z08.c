@@ -291,11 +291,11 @@ static OBJECT nenclose = nilobj;		/* constant nilobj enclose  */
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 static OBJECT ManifestCat(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
-OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
-OBJECT *enclose, BOOLEAN fcr)
+OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN2 ok, BOOLEAN2 need_expand,
+OBJECT *enclose, BOOLEAN2 fcr)
 { OBJECT bt[2], ft[2], y, link, gaplink, g, first_bt, last_ft, z;
   int par, perp;
-  unsigned res_inc;  BOOLEAN still_backing;
+  unsigned res_inc;  BOOLEAN2 still_backing;
   STYLE new_style, gap_style;
   debug1(DOM, DD, "[ ManifestCat(%s)", EchoObject(x));
     
@@ -387,7 +387,7 @@ OBJECT *enclose, BOOLEAN fcr)
 
     if( bt[par] )	/* then thread lists last_ft and bt[par] must merge */
     { OBJECT llink, rlink, lthread, rthread;
-      BOOLEAN goes_through;
+      BOOLEAN2 goes_through;
       assert( Down(bt[par]) != bt[par], "Manifest: bt[par] no children!" );
       assert( last_ft!=nilobj && Down(last_ft)!=last_ft, "Manifest:last_ft!" );
 
@@ -451,8 +451,8 @@ OBJECT *enclose, BOOLEAN fcr)
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 static OBJECT ManifestCase(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
-OBJECT fthr[2], OBJECT *target,  OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
-OBJECT *enclose, BOOLEAN fcr)
+OBJECT fthr[2], OBJECT *target,  OBJECT *crs, BOOLEAN2 ok, BOOLEAN2 need_expand,
+OBJECT *enclose, BOOLEAN2 fcr)
 { OBJECT y, tag, ylink, yield, ytag, zlink;
   OBJECT res, z, firsttag, firstres = nilobj;
 
@@ -566,8 +566,8 @@ OBJECT *enclose, BOOLEAN fcr)
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 static OBJECT ManifestTg(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
-OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
-OBJECT *enclose, BOOLEAN fcr)
+OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN2 ok, BOOLEAN2 need_expand,
+OBJECT *enclose, BOOLEAN2 fcr)
 { OBJECT y, tag, z;
 
   /* make sure first argument is a cross-reference */
@@ -659,10 +659,10 @@ OBJECT *enclose, BOOLEAN fcr)
 /*****************************************************************************/
 
 static OBJECT ManifestCl(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
-OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
-OBJECT *enclose, BOOLEAN fcr)
+OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN2 ok, BOOLEAN2 need_expand,
+OBJECT *enclose, BOOLEAN2 fcr)
 { OBJECT y, link, sym, res_env, hold_env, hold_env2, z, newz, command;
-  BOOLEAN symbol_free;
+  BOOLEAN2 symbol_free;
 
   sym = actual(x);
   StyleCopy(&save_style(x), style);
@@ -907,8 +907,8 @@ OBJECT *enclose, BOOLEAN fcr)
 #define MAX_DEPTH 2000
 
 OBJECT Manifest(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
-OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok, BOOLEAN need_expand,
-OBJECT *enclose, BOOLEAN fcr)
+OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN2 ok, BOOLEAN2 need_expand,
+OBJECT *enclose, BOOLEAN2 fcr)
 { OBJECT bt[2], ft[2], y, link, nextlink, gaplink, g, gword;
   register FULL_CHAR *p;
   OBJECT res = nilobj, res_env, res_env2, hold_env, hold_env2, z, prev;
@@ -923,7 +923,7 @@ OBJECT *enclose, BOOLEAN fcr)
   static OBJTYPE debug_type[MAX_DEPTH];
   static OBJECT	      debug_actual[MAX_DEPTH];
   static int	      debug_lnum[MAX_DEPTH];
-  BOOLEAN eee = (*enclose != nilobj);
+  BOOLEAN2 eee = (*enclose != nilobj);
   debug_type[depth] = type(x);
   debug_lnum[depth] = line_num(fpos(x));
   if( objectOfType(x, CLOSURE) ) debug_actual[depth] = actual(x);

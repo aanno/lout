@@ -3521,7 +3521,7 @@ for( y = pred(link, CHILD);   objectOfType(y, LINK);  y = pred(y, CHILD) ) \
 /*****************************************************************************/
 
 // from c07 headers below - but used here
-extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
+extern	BOOLEAN2	  SplitIsDefinite(OBJECT x);
 extern	int	  DisposeObject(OBJECT x);
 
 INLINE OBJECT Link(OBJECT x, OBJECT y) {
@@ -3898,14 +3898,14 @@ extern	OBJECT	  MakeWordThree(const FULL_CHAR *s1, const FULL_CHAR *s2, const FU
 extern	OBJECT	  CopyObject(OBJECT x, FILE_POS *pos);
 extern	OBJECT	  InsertObject(OBJECT x, OBJECT *ins, STYLE *style);
 extern	OBJECT	  Meld(OBJECT x, OBJECT y);
-extern	BOOLEAN	  EqualManifested(OBJECT x, OBJECT y);
+extern	BOOLEAN2	  EqualManifested(OBJECT x, OBJECT y);
 
 /*****  z08.c	  Object Manifest	**************************************/
 extern	OBJECT	  ReplaceWithTidy(OBJECT x, TIDY_TE one_word);
 extern	float	  GetScaleFactor(OBJECT x);
 extern	OBJECT	  Manifest(OBJECT x, OBJECT env, STYLE *style, OBJECT bthr[2],
-		    OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN ok,
-		    BOOLEAN need_expand, OBJECT *enclose, BOOLEAN fcr);
+		    OBJECT fthr[2], OBJECT *target, OBJECT *crs, BOOLEAN2 ok,
+		    BOOLEAN2 need_expand, OBJECT *enclose, BOOLEAN2 fcr);
 
 /*****  z09.c	  Closure Expansion	**************************************/
 extern	OBJECT	  SearchEnv(OBJECT env, OBJECT sym);
@@ -3913,7 +3913,7 @@ extern	OBJECT	  SetEnv(OBJECT x, OBJECT y);
 extern	void	  AttachEnv(OBJECT env, OBJECT x);
 extern	OBJECT	  GetEnv(OBJECT x);
 extern	OBJECT	  DetachEnv(OBJECT x);
-extern	OBJECT	  ClosureExpand(OBJECT x, OBJECT env, BOOLEAN crs_wanted,
+extern	OBJECT	  ClosureExpand(OBJECT x, OBJECT env, BOOLEAN2 crs_wanted,
 		    OBJECT *crs, OBJECT *res_env);
 extern	OBJECT	  ParameterCheck(OBJECT x, OBJECT env);
 

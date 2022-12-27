@@ -152,7 +152,7 @@ OBJECT DetachEnv(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT ClosureExpand(OBJECT x, OBJECT env, BOOLEAN crs_wanted,
+OBJECT ClosureExpand(OBJECT x, OBJECT env, BOOLEAN2 crs_wanted,
 OBJECT *crs, OBJECT *res_env)
 { OBJECT link, y, res, prnt_env, par, prnt;
   debug3(DCE, D, "[ ClosureExpand( %s, %s, %s, crs, res_env )",
