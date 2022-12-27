@@ -84,14 +84,14 @@ void EnvInit(void)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset, *lnum)  */
+/*  BOOLEAN2 EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset, *lnum)  */
 /*                                                                           */
 /*  Return the offset in file fnum where environment env has been written,   */
 /*  or FALSE if env has not been written to this file.                       */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset, int *lnum)
+BOOLEAN2 EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset, int *lnum)
 { unsigned int pos;  OBJECT link, y, z;
   debug2(DET, DD, "EnvWriteRetrieve(env %p, %s)", env, FileName(fnum));
   debug1(DET, DDD, "  %s", EchoObject(env));
@@ -160,14 +160,14 @@ void EnvWriteInsert(OBJECT env, FILE_NUM fnum, int offset, int lnum)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env)          */
+/*  BOOLEAN2 EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env)          */
 /*                                                                           */
 /*  Return the environment that appears in file fnum at the given offset,    */
 /*  or FALSE if this is not currently known.                                 */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env)
+BOOLEAN2 EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env)
 { int pos;  OBJECT link, y, z;
   debug2(DET, DD, "EnvReadRetrieve(%s, %d)", FileName(fnum), offset);
   stat_reads++;

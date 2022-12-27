@@ -522,7 +522,7 @@ static unsigned char	g_compressed_output[kCompressedOutputBufferSize];
 static PDF_FILE_OFFSET g_max_page_length = 0;
 #endif
 
-BOOLEAN PDFHasValidTextMatrix(void)	/* this is called from z24.c */
+BOOLEAN2 PDFHasValidTextMatrix(void)	/* this is called from z24.c */
 {
   return g_valid_text_matrix;
 }

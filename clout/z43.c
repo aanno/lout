@@ -159,7 +159,7 @@ static	OBJECT		lang_ends[MAX_LANGUAGE];/* sentence endings        */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN LanguageSentenceEnds[MAX_CHARS];
+BOOLEAN2 LanguageSentenceEnds[MAX_CHARS];
 
 
 /*@::LanguageInit(), LanguageDefine()@****************************************/
@@ -289,7 +289,7 @@ void LanguageDefine(OBJECT names, OBJECT inside)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN LanguageWordEndsSentence(OBJECT wd, BOOLEAN lc_prec)             */
+/*  BOOLEAN2 LanguageWordEndsSentence(OBJECT wd, BOOLEAN2 lc_prec)             */
 /*                                                                           */
 /*  Returns TRUE if word ends a sentence in the current language.  This is   */
 /*  so if it ends with a string in the list associated with the current      */
@@ -298,7 +298,7 @@ void LanguageDefine(OBJECT names, OBJECT inside)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN LanguageWordEndsSentence(OBJECT wd, BOOLEAN lc_prec)
+BOOLEAN2 LanguageWordEndsSentence(OBJECT wd, BOOLEAN2 lc_prec)
 { OBJECT x, y, link;  int pos;
   assert( is_word(type(wd)), "LanguageWordEndsSentence: wd!" );
   debug2(DLS, D, "LanguageWordEndsSentence(%d %s)",

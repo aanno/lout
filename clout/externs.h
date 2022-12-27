@@ -4191,11 +4191,11 @@ extern	FULL_CHAR *StringQuotedWord(OBJECT x);
 
 /*****  z40.c	  Filter Handler        **************************************/
 extern	void	  FilterInit(void);
-extern	OBJECT	  FilterCreate(BOOLEAN use_begin, OBJECT act, FILE_POS *xfpos);
+extern	OBJECT	  FilterCreate(BOOLEAN2 use_begin, OBJECT act, FILE_POS *xfpos);
 extern	void	  FilterSetFileNames(OBJECT x);
 extern	OBJECT	  FilterExecute(OBJECT x, FULL_CHAR *command, OBJECT env);
 extern	void	  FilterWrite(OBJECT x, FILE *fp, int *linecount);
-extern	void	  FilterScavenge(BOOLEAN all);
+extern	void	  FilterScavenge(BOOLEAN2 all);
 
 /*****  z41.c	  Object Input-Output   **************************************/
 extern	void	  ReadFromFileInit(void);
@@ -4211,15 +4211,15 @@ extern	FULL_CHAR *ColourCommand(COLOUR_NUM cnum);
 
 /*****  z43.c	  Language Service      **************************************/
 extern	void	  LanguageInit(void);
-extern	BOOLEAN	  LanguageWordEndsSentence(OBJECT wd, BOOLEAN lc_prec);
+extern	BOOLEAN2	  LanguageWordEndsSentence(OBJECT wd, BOOLEAN2 lc_prec);
 extern	void	  LanguageDefine(OBJECT names, OBJECT hyph_file);
 extern	void	  LanguageChange(STYLE *style, OBJECT x);
 extern	FULL_CHAR *LanguageString(LANGUAGE_NUM lnum);
 extern	OBJECT	  LanguageHyph(LANGUAGE_NUM lnum);
-extern	BOOLEAN	  LanguageSentenceEnds[];
+extern	BOOLEAN2	  LanguageSentenceEnds[];
 
 /*****  z44.c	  Vertical Hyphenation  **************************************/
-extern	BOOLEAN	  VerticalHyphenate(OBJECT y);
+extern	BOOLEAN2	  VerticalHyphenate(OBJECT y);
 extern	OBJECT	  ConvertGalleyList(OBJECT x);
 extern	OBJECT	  BuildEnclose(OBJECT hd);
 
@@ -4233,7 +4233,7 @@ extern	void	  SortLines(LINE *lines, int lines_len);
 extern	void	  SortFile(FULL_CHAR *infile, FULL_CHAR *outfile);
 
 /*****  z46.c	  Optimal Galleys       **************************************/
-extern	BOOLEAN	  FindOptimize(OBJECT x, OBJECT env);
+extern	BOOLEAN2	  FindOptimize(OBJECT x, OBJECT env);
 extern	void	  SetOptimize(OBJECT hd, STYLE *style);
 extern	void	  GazumpOptimize(OBJECT hd, OBJECT dest);
 extern	void	  CalculateOptimize(OBJECT hd);
@@ -4241,10 +4241,10 @@ extern	void	  DebugOptimize(OBJECT hd);
 
 /*****  z47.c	  Environment Table     **************************************/
 extern	void	  EnvInit(void);
-extern	BOOLEAN	  EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset,
+extern	BOOLEAN2	  EnvWriteRetrieve(OBJECT env, FILE_NUM fnum, int *offset,
 		    int *lnum);
 extern	void	  EnvWriteInsert(OBJECT env, FILE_NUM fnum, int offset,int lnum);
-extern	BOOLEAN	  EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env);
+extern	BOOLEAN2	  EnvReadRetrieve(FILE_NUM fnum, int offset, OBJECT *env);
 extern	void	  EnvReadInsert(FILE_NUM fnum, int offset, OBJECT env);
 extern	void	  EnvDebug(void);
 
@@ -4284,7 +4284,7 @@ extern	void    PDFText_OpenX(FILE* in_fp, int hpos);
 extern	void    PDFText_Open(FILE* in_fp);
 extern	void    PDFText_Kern(FILE* in_fp, int in_kern);
 extern	void    PDFText_Close(FILE* in_fp);
-extern	BOOLEAN PDFHasValidTextMatrix(void);
+extern	BOOLEAN2 PDFHasValidTextMatrix(void);
 
 /*****  z49.c	  PostScript back end   **************************************/
 extern	BACK_END  PS_BackEnd;
@@ -4292,7 +4292,7 @@ extern	BACK_END  PS_NullBackEnd;
 extern	void	  PS_IncGRepeated(OBJECT x);
 /* extern	int	  PS_FindIncGRepeated(OBJECT x, int typ); */
 /* extern	void	  PS_PrintEPSFile(FILE *fp, FILE_POS *pos); */
-extern	BOOLEAN	  PS_FindBoundingBox(FILE *fp, FILE_POS *pos, FULL_LENGTH *llx,
+extern	BOOLEAN2	  PS_FindBoundingBox(FILE *fp, FILE_POS *pos, FULL_LENGTH *llx,
 		    FULL_LENGTH *lly, FULL_LENGTH *urx, FULL_LENGTH *ury);
 
 /*****  z50.c	  PDF back end (new)    **************************************/

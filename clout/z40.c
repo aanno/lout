@@ -66,7 +66,7 @@ void FilterInit(void)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT FilterCreate(BOOLEAN use_begin, OBJECT act, FILE_POS *xfpos)
+OBJECT FilterCreate(BOOLEAN2 use_begin, OBJECT act, FILE_POS *xfpos)
 { FULL_CHAR buff[MAX_LINE];
   FILE *fp;
   #pragma clang diagnostic ignored "-Wunused-but-set-variable"
@@ -258,7 +258,7 @@ void FilterWrite(OBJECT x, FILE *fp, int *linecount)
 /*                                                                           */
 /*****************************************************************************/
 
-void FilterScavenge(BOOLEAN all)
+void FilterScavenge(BOOLEAN2 all)
 { OBJECT y, link, nextlink;
   ifdebug(DFH, D, return);
   debug1(DFH, D, "FilterScavenge(%s)", bool2s(all));

@@ -34,14 +34,14 @@
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN FindOptimize(x, env)                                             */
+/*  BOOLEAN2 FindOptimize(x, env)                                             */
 /*                                                                           */
 /*  Object x is a CLOSURE which represents an at present unsized galley.     */
 /*  Return TRUE if x has an @Optimize parameter which is Yes.                */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN FindOptimize(OBJECT x, OBJECT env)
+BOOLEAN2 FindOptimize(OBJECT x, OBJECT env)
 { OBJECT y, link, res;
   OBJECT bt[2], ft[2], ntarget, nenclose, crs;
   debug1(DOG, D, "FindOptimize( %s )", EchoObject(x));

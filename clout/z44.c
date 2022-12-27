@@ -260,13 +260,13 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
 
 /*@::VerticalHyphenate()@*****************************************************/
 /*                                                                           */
-/*  BOOLEAN VerticalHyphenate(OBJECT y)                                      */
+/*  BOOLEAN2 VerticalHyphenate(OBJECT y)                                      */
 /*                                                                           */
 /*  Attempt to vertically hyphenate galley component y, of type HCAT.        */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN VerticalHyphenate(OBJECT y)
+BOOLEAN2 VerticalHyphenate(OBJECT y)
 { OBJECT large_comp, index, z, link, g, large_comp_split = nilobj;
   OBJECT row_thread, s1, s2, sh, sv, shp, prev = nilobj, nxt = nilobj;
   FULL_LENGTH rump_fwd;

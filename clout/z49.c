@@ -1791,7 +1791,7 @@ static void PS_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN PS_FindBoundingBox(FILE *fp, FILE_POS *pos, FULL_LENGTH *llx,
+BOOLEAN2 PS_FindBoundingBox(FILE *fp, FILE_POS *pos, FULL_LENGTH *llx,
   FULL_LENGTH *lly, FULL_LENGTH *urx, FULL_LENGTH *ury)
 { FULL_CHAR buff[MAX_LINE];
   long len;
