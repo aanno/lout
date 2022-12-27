@@ -50,10 +50,10 @@
 #define MAX_GS		50		/* maximum depth of graphics states  */
 #define	STRING_SIZE	16000		/* used by forms code                */
 
-BOOLEAN			encapsulated;	/* TRUE if EPS file is wanted	     */
+BOOLEAN2			encapsulated;	/* TRUE if EPS file is wanted	     */
 static int		wordcount;	/* atoms printed since last newline  */
 static int		pagecount;	/* total number of pages printed     */
-static BOOLEAN		prologue_done;	/* TRUE after prologue is printed    */
+static BOOLEAN2		prologue_done;	/* TRUE after prologue is printed    */
 static OBJECT		needs;		/* Resource needs of included EPSFs  */
 static OBJECT		supplied;	/* Resources supplied by this file   */
 static OBJECT		incg_files;	 /* IncludeGraphicRepeated files */
@@ -69,10 +69,10 @@ static FILE		*out_fp;	/* file to print PostScript on       */
 typedef struct
 {
   FONT_NUM	gs_font;		/* font number of this state         */
-  BOOLEAN	gs_baselinemark;	/* baseline mark in use              */
+  BOOLEAN2	gs_baselinemark;	/* baseline mark in use              */
   COLOUR_NUM	gs_colour;		/* colour number of this state       */
   TEXTURE_NUM	gs_texture;		/* texture number of this state      */
-  BOOLEAN	gs_cpexists;		/* TRUE if a current point exists    */
+  BOOLEAN2	gs_cpexists;		/* TRUE if a current point exists    */
   FULL_LENGTH	gs_currenty;		/* if cpexists, its y coordinate     */
   short		gs_xheight2;		/* of font exists, half xheight      */
 } GRAPHICS_STATE;
@@ -81,17 +81,17 @@ static GRAPHICS_STATE	gs_stack[MAX_GS];/* graphics state stack             */
 static int		gs_stack_top;	/* top of graphics state stack       */
 
 static FONT_NUM		currentfont;	/* font of most recent atom          */
-static BOOLEAN		currentbaselinemark;	/* current baselinemark      */
+static BOOLEAN2		currentbaselinemark;	/* current baselinemark      */
 static COLOUR_NUM	currentcolour;	/* colour of most recent atom        */
 static TEXTURE_NUM	currenttexture;	/* texture of most recent atom       */
 static short		currentxheight2;/* half xheight in current font      */
-static BOOLEAN		cpexists;	/* true if a current point exists    */
+static BOOLEAN2		cpexists;	/* true if a current point exists    */
 static FULL_LENGTH	currenty;	/* if cpexists, its y coordinate     */
 
 
 /*****************************************************************************/
 /*                                                                           */
-/*  SetBaseLineMarkAndFont(BOOLEAN blm, FONT_NUM f)                          */
+/*  SetBaseLineMarkAndFont(BOOLEAN2 blm, FONT_NUM f)                          */
 /*                                                                           */
 /*  Ensure these are the current baselinemark and font, both in              */
 /*  currentbaselinemark and currentfont, and in the PostScript output.       */
@@ -102,7 +102,7 @@ static FULL_LENGTH	currenty;	/* if cpexists, its y coordinate     */
 /*                                                                           */
 /*****************************************************************************/
 
-static void SetBaseLineMarkAndFont(BOOLEAN blm, FONT_NUM f)
+static void SetBaseLineMarkAndFont(BOOLEAN2 blm, FONT_NUM f)
 {
   /* if baselinemark has changed then record change */
   if( blm != currentbaselinemark )
@@ -455,7 +455,7 @@ static void PS_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 
 /*****************************************************************************/
 /*                                                                           */
-/*  void PS_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)    */
+/*  void PS_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN2 first)    */
 /*                                                                           */
 /*  Print page resource info on file fp for font font_name; first is true    */
 /*  if this is the first resource on this page.                              */
@@ -577,7 +577,7 @@ static void PS_FindEPSSegment(FILE *fp, long *len)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  void PS_PrintEPSFile(FILE *fp, FILE_POS *pos, BOOLEAN strip_all)         */
+/*  void PS_PrintEPSFile(FILE *fp, FILE_POS *pos, BOOLEAN2 strip_all)         */
 /*                                                                           */
 /*  Original by Jeff Kingston, modified Jul 2008 by William Bader mainly     */
 /*  to allow EPS files to contain null characters.                           */
@@ -592,7 +592,7 @@ static void PS_FindEPSSegment(FILE *fp, long *len)
 #define	READING_DNR	1
 #define FINISHED	2
 
-static BOOLEAN strip_out(FULL_CHAR *buff, BOOLEAN strip_all)
+static BOOLEAN2 strip_out(FULL_CHAR *buff, BOOLEAN2 strip_all)
 {
   if( strip_all && StringBeginsWith(buff, AsciiToFull("%%")) ) return TRUE;
   if( StringBeginsWith(buff, AsciiToFull("%%EOF"))     )  return TRUE;
@@ -600,7 +600,7 @@ static BOOLEAN strip_out(FULL_CHAR *buff, BOOLEAN strip_all)
   return FALSE;
 } /* end strip_out */
 
-static void PS_PrintEPSFile(FILE *fp, FILE_POS *pos, BOOLEAN strip_all)
+static void PS_PrintEPSFile(FILE *fp, FILE_POS *pos, BOOLEAN2 strip_all)
 { int state, x, count;  OBJECT y;  long len;
   FULL_CHAR buff[MAX_LINE];
   debug0(DPO, DD, "[ PS_PrintEPSFile");
@@ -1124,7 +1124,7 @@ static void PS_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
   { int fnum;
     FILE *fp;
     #pragma clang diagnostic ignored "-Wunused-but-set-variable"
-    BOOLEAN junk, cp;
+    BOOLEAN2 junk; BOOLEAN cp;
     OBJECT link, x, full_name;
     p0("<< /MaxFormItem currentsystemparams /MaxFormCache get >> setuserparams");
     pnl;
@@ -1233,7 +1233,7 @@ static void PS_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
 /*****************************************************************************/
 
 static void PS_PrintAfterLastPage(void)
-{ OBJECT x, link;  BOOLEAN first_need;
+{ OBJECT x, link;  BOOLEAN2 first_need;
   if( prologue_done )
   { 
     pnl;
@@ -1314,7 +1314,7 @@ static void PS_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v, FULL_CHAR *label)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  static void PrintComposite(COMPOSITE *cp, BOOLEAN outline, FILE *fp)     */
+/*  static void PrintComposite(COMPOSITE *cp, BOOLEAN2 outline, FILE *fp)     */
 /*                                                                           */
 /*  Print composite character cp, assuming that the current point is         */
 /*  set to the correct origin.  If outline is true, we want to print the     */
@@ -1322,7 +1322,7 @@ static void PS_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v, FULL_CHAR *label)
 /*                                                                           */
 /*****************************************************************************/
 
-static void PrintComposite(COMPOSITE *cp, BOOLEAN outline, FILE *fp)
+static void PrintComposite(COMPOSITE *cp, BOOLEAN2 outline, FILE *fp)
 { debug1(DPO, DD, "PrintComposite(cp, %s, fp)", bool2s(outline));
   while( cp->char_code != '\0' )
   {

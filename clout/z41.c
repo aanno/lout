@@ -153,7 +153,7 @@ static void OptimizeParameterList(OBJECT x, OBJECT env)
 /*****************************************************************************/
 static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum);
 
-static BOOLEAN need_lvis(OBJECT sym)	/* true if @LVis needed before sym */
+static BOOLEAN2 need_lvis(OBJECT sym)	/* true if @LVis needed before sym */
 { return !visible(sym) &&
 	 enclosing(sym) != StartSym &&
 	 objectOfType(enclosing(sym), LOCAL);
@@ -161,7 +161,7 @@ static BOOLEAN need_lvis(OBJECT sym)	/* true if @LVis needed before sym */
 
 static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
 { OBJECT y, link, z, sym;
-  BOOLEAN npar_written, name_printed;
+  BOOLEAN2 npar_written, name_printed;
   debug2(DIO, D, "[ WriteClosure(%s %s)", Image(type(x)), EchoObject(x));
 
   sym = actual(x);
@@ -293,7 +293,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 { OBJECT link, y, z, gap_obj, sym, env;
   const FULL_CHAR *name;
   int offset, lnum;
-  int prec, i, last_prec;  BOOLEAN braces_needed;
+  int prec, i, last_prec;  BOOLEAN2 braces_needed;
   debug2(DIO, D, "[ WriteObject(%s %s)", Image(type(x)), EchoObject(x));
   switch( type(x).objtype )
   {

@@ -53,7 +53,7 @@
 #include "zlib.h"
 #endif
 
-static void Assert(BOOLEAN condition, FILE_POS *inFilePos)
+static void Assert(BOOLEAN2 condition, FILE_POS *inFilePos)
 {
   if (!condition)		/* allows me to set a breakpoint here */
   assert(condition, inFilePos);
@@ -174,9 +174,9 @@ struct t_font_list_entry {
   FULL_CHAR *m_actual_font_name;
   PDF_OBJECT_NUM m_font_encoding_obj;	/* valid for entire PDF file */
   PDF_OBJECT_NUM m_pdf_object_number;	/* valid for entire PDF file */
-  BOOLEAN m_font_resource_in_pdf;	/* TRUE when PDF file has       */
+  BOOLEAN2 m_font_resource_in_pdf;	/* TRUE when PDF file has       */
 					/* /Type /Font resource         */
-  BOOLEAN m_in_use;			/* used on a per-page basis */
+  BOOLEAN2 m_in_use;			/* used on a per-page basis */
 };
 
 typedef struct t_font_list_entry t_font_list_entry, *t_font_list_entry_ptr;
@@ -248,7 +248,7 @@ struct t_target_annot_entry {
   int m_ur_x;
   int m_ur_y;
 
-  BOOLEAN m_for_export;
+  BOOLEAN2 m_for_export;
 };
 
 typedef struct t_target_annot_entry t_target_annot_entry, *t_target_annot_entry_ptr;
@@ -284,7 +284,7 @@ struct t_source_annot_entry {
   PDF_LINK_DEST_OPTION m_dest_option;
   PDF_LINK_KEYWORD m_link_type;
 
-  BOOLEAN m_written_to_PDF_file;
+  BOOLEAN2 m_written_to_PDF_file;
 };
 
 typedef struct t_source_annot_entry t_source_annot_entry, *t_source_annot_entry_ptr;
@@ -304,7 +304,7 @@ typedef struct t_matrix_entry t_matrix_entry, *t_matrix_entry_ptr;
 /* statics */
 
 /* general */
-static BOOLEAN g_PDF_debug;
+static BOOLEAN2 g_PDF_debug;
 
 /* objects */
 static PDF_OBJECT_NUM		g_next_objnum;
@@ -336,13 +336,13 @@ static FULL_CHAR* g_doc_keywords;
 
 /* link annotations */
 static t_target_annot_entry_ptr g_target_annot_list;
-static BOOLEAN g_has_exported_targets;
+static BOOLEAN2 g_has_exported_targets;
 
 /* globals for each page */
 /* these indicate what kind of content the page has */
-static BOOLEAN g_page_uses_fonts;
-static BOOLEAN g_page_has_text;
-static BOOLEAN g_page_has_graphics;
+static BOOLEAN2 g_page_uses_fonts;
+static BOOLEAN2 g_page_has_text;
+static BOOLEAN2 g_page_has_graphics;
 
 /* these are only defined when the page has some content */
 static PDF_OBJECT_NUM g_page_contents_obj_num;
@@ -355,7 +355,7 @@ static t_qsave_entry_ptr g_qsave_stack;
 static t_qsave_marking_entry_ptr g_qsave_marking_stack;	/* implemented as a   */
 							/* linked list; pts   */
 							/* to top of stack    */
-static BOOLEAN g_in_buffering_mode;
+static BOOLEAN2 g_in_buffering_mode;
 static char g_buffer[kBufferSize];			/* this buffer is used*/
 							/* for removing redundant operations */
 static unsigned int g_buffer_pos;
@@ -472,9 +472,9 @@ static int g_units[kNumberOfUnitKeywords];
 static int g_graphics_vars[kNumberOfGraphicsKeywords];
 
 /* text state */
-static BOOLEAN g_TJ_pending;
-static BOOLEAN g_ET_pending;
-static BOOLEAN g_valid_text_matrix;	/* true when BT...ET block open */
+static BOOLEAN2 g_TJ_pending;
+static BOOLEAN2 g_ET_pending;
+static BOOLEAN2 g_valid_text_matrix;	/* true when BT...ET block open */
 
 
 /* expressions */
@@ -508,7 +508,7 @@ static char *g_standard_base_14_fonts[kBase14FontCount] = {
 
 
 #if PDF_COMPRESSION
-static BOOLEAN		g_apply_compression;
+static BOOLEAN2		g_apply_compression;
 static z_stream		g_comp_stream;           /* zlib compression stream */
 static unsigned char*	g_raw_buffer_ptr;
 
@@ -897,13 +897,13 @@ static void PDFFont_WriteObject(FILE* in_fp, t_font_list_entry_ptr in_font_entry
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN PDFFont_IsOneOfTheBase14Fonts(const FULL_CHAR* in_real_font_name)*/
+/*  BOOLEAN2 PDFFont_IsOneOfTheBase14Fonts(const FULL_CHAR* in_real_font_name)*/
 /*                                                                           */
 /*  Returns true if given font is one of the base 14 fonts.                  */
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN PDFFont_IsOneOfTheBase14Fonts(const FULL_CHAR* in_real_font_name)
+static BOOLEAN2 PDFFont_IsOneOfTheBase14Fonts(const FULL_CHAR* in_real_font_name)
 {
   int i;
   for (i = 0; i < kBase14FontCount; i++)
@@ -1186,7 +1186,7 @@ static void PDFPage_WriteStream(FILE* in_fp, char* in_str)
     while (total != 0)
     {
       unsigned int len = total;
-      BOOLEAN needToFlush =
+      BOOLEAN2 needToFlush =
 	((g_raw_buffer_ptr + len) > (g_raw_output + sizeof(g_raw_output)));
       if (needToFlush)
 	len = g_raw_output + sizeof(g_raw_output) - g_raw_buffer_ptr;
@@ -1525,7 +1525,7 @@ void PDFFont_Set(FILE* in_fp, FULL_LENGTH in_font_size,
   }
 
   {
-    BOOLEAN cur_ET_pending = g_ET_pending;
+    BOOLEAN2 cur_ET_pending = g_ET_pending;
 
     g_ET_pending = FALSE;		/* clear it */
     PDFPage_Write(in_fp, str);
@@ -1935,7 +1935,7 @@ void PDFPage_Translate(FILE* in_fp, float in_delta_h, float in_delta_v)
 
 static void PDFTargetAnnot_New(FULL_CHAR* in_annot_name,
   unsigned int in_annot_name_length, int in_ll_x, int in_ll_y, int in_ur_x,
-  int in_ur_y, BOOLEAN in_for_export)
+  int in_ur_y, BOOLEAN2 in_for_export)
 {
   t_target_annot_entry_ptr entry =
     (t_target_annot_entry_ptr) malloc(sizeof(t_target_annot_entry));
@@ -2771,7 +2771,7 @@ static char *PDFPage_EvalExpr(char* inExpr, float* outValue)
 /*                                                                           */
 /*****************************************************************************/
 
-static FULL_CHAR *PDFPage_CollectExpr(FULL_CHAR* charPtr, BOOLEAN* outHasResult,
+static FULL_CHAR *PDFPage_CollectExpr(FULL_CHAR* charPtr, BOOLEAN2* outHasResult,
   float* outResult)
 {
   *outHasResult = FALSE;
@@ -2813,7 +2813,7 @@ static FULL_CHAR *PDFPage_CollectExpr(FULL_CHAR* charPtr, BOOLEAN* outHasResult,
 /*****************************************************************************/
 
 static FULL_CHAR *PDFPage_CollectLink(FULL_CHAR* charPtr
-  /*, BOOLEAN* outHasResult, float* outResult*/)
+  /*, BOOLEAN2* outHasResult, float* outResult*/)
 {
   debug1(DPD, D, "PDFPage_CollectLink(\"%s\")", charPtr);
   while (*charPtr != 0)
@@ -2875,7 +2875,7 @@ void PDFPage_WriteGraphic(FILE* in_fp, FULL_CHAR* in_str)
   /* if in collecting an expression mode then collect until terminating ')' */
   if (g_expr_depth != 0)
   {
-    BOOLEAN hasResult;
+    BOOLEAN2 hasResult;
     float value;
 
     charPtr = PDFPage_CollectExpr(charPtr, &hasResult, &value);
@@ -2977,7 +2977,7 @@ void PDFPage_WriteGraphic(FILE* in_fp, FULL_CHAR* in_str)
 		g_expr_index = strlen(g_expr);
 		g_expr_depth++;
 		{
-		  BOOLEAN hasResult;
+		  BOOLEAN2 hasResult;
 
 		  charPtr = PDFPage_CollectExpr(++charPtr, &hasResult, &value);
 		  if (hasResult)
@@ -3138,7 +3138,7 @@ void  PDFPage_Init(FILE* in_fp, float in_scale_factor, int in_line_width)
 
 void PDFPage_Cleanup(FILE* in_fp)
 {
-  BOOLEAN hasAnnot = FALSE;
+  BOOLEAN2 hasAnnot = FALSE;
 
   Assert(g_qsave_stack == NULL, no_fpos);
 

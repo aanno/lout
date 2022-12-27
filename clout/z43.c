@@ -152,7 +152,7 @@ static	OBJECT		lang_ends[MAX_LANGUAGE];/* sentence endings        */
 
 /*@@**************************************************************************/
 /*                                                                           */
-/*  BOOLEAN LanguageSentenceEnds[]                                           */
+/*  BOOLEAN2 LanguageSentenceEnds[]                                           */
 /*                                                                           */
 /*  LanguageSentenceEnds[ch] is TRUE if there exists a language in which     */
 /*  character ch could occur at the end of a sentence.                       */
@@ -199,7 +199,7 @@ void LanguageInit(void)
 void LanguageDefine(OBJECT names, OBJECT inside)
 { OBJECT link, y, hyph_file;
   #pragma clang diagnostic ignored "-Wunused-but-set-variable"
-  BOOLEAN junk;
+  BOOLEAN2 junk;
   FULL_CHAR ch;
   int len;
   assert( names != nilobj && objectOfType(names, ACAT), "LanguageDefine: names!");

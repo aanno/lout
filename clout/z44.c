@@ -43,7 +43,7 @@
 /*****************************************************************************/
 
 #define FirstDefiniteCompressed(x, link, y)				\
-{ BOOLEAN jn;								\
+{ BOOLEAN2 jn;								\
   FirstDefinite(x, link, y, jn);					\
   while( link != x && objectOfType(y, VCAT) )					\
   { TransferLinks(Down(y), y, link);					\
@@ -55,7 +55,7 @@
 
 #define NextDefiniteWithGapCompressed(x, link, y, g)			\
 { OBJECT start_link = PrevDown(link), ylink, yg, z;			\
-  BOOLEAN jn;								\
+  BOOLEAN2 jn;								\
   NextDefiniteWithGap(x, link, y, g, jn);				\
   while( link != x && objectOfType(y, VCAT) )					\
   { FirstDefinite(y, ylink, z, jn);					\
