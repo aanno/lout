@@ -76,7 +76,7 @@ extern	void	  ProfilePrint(void);
 
 struct dbs
 {	char	*flag;			/* external names for debug flags    */
-	BOOLEAN	on[3];			/* the debug flags                   */
+	BOOLEAN2	on[3];			/* the debug flags                   */
 };
 extern	struct dbs 	dbg[];
 
@@ -2680,7 +2680,7 @@ typedef struct font_rec {
 typedef struct mapvec {
   OBJECT        file_name;              /* name of file containing the vec   */
   FILE_NUM      fnum;                   /* the file number of this file      */
-  BOOLEAN       seen_recoded;           /* TRUE if a font recode was seen    */
+  BOOLEAN2       seen_recoded;           /* TRUE if a font recode was seen    */
   int		last_page_printed;	/* most recent page on which printed */
   OBJECT        name;                   /* PostScript name of encoding vec   */
   OBJECT        vector[MAX_CHARS];      /* character names                   */
@@ -3889,7 +3889,7 @@ extern	OBJECT	  Parse(OBJECT *token, OBJECT encl, BOOLEAN defs_allowed,
 		    BOOLEAN transfer_allowed);
 
 /*****  z07.c	  Object Service	**************************************/
-// extern	BOOLEAN	  SplitIsDefinite(OBJECT x);
+// extern	BOOLEAN2	  SplitIsDefinite(OBJECT x);
 // extern	int	  DisposeObject(OBJECT x);
 extern	OBJECT	  MakeWord(OBJTYPE typ, const FULL_CHAR *str, FILE_POS *pos);
 extern	OBJECT	  MakeWordTwo(OBJTYPE typ, const FULL_CHAR *str1, const FULL_CHAR *str2,
