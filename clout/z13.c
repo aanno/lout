@@ -120,7 +120,7 @@ CONSTRAINT *c, FULL_LENGTH *res_back, FULL_LENGTH *res_fwd)
 static OBJECT BreakVcat(OBJECT x, CONSTRAINT *c)
 { OBJECT y, link, start_group, m = nilobj;
   FULL_LENGTH b, f, dble_fwd;  CONSTRAINT tc;
-  BOOLEAN dble_found;
+  BOOLEAN2 dble_found;
   debug1(DOB, DD, "[ BreakVcat(x, %s)", EchoConstraint(c));
   assert(Down(x) != x, "BreakVcat: Down(x) == x!" );
   SetConstraint(tc, MAX_FULL_LENGTH, find_min(bfc(*c), fc(*c)), MAX_FULL_LENGTH);
@@ -223,7 +223,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
 { FULL_LENGTH bwidth, fwidth;	/* running back(x) and fwd(x)		     */
   int    bcount, fcount;	/* running no. of components		     */
   OBJECT mlink = nilobj, my;	/* minimum-width unbroken component	     */
-  BOOLEAN ratm = FALSE;		/* TRUE when my has a mark to its right      */
+  BOOLEAN2 ratm = FALSE;		/* TRUE when my has a mark to its right      */
   int    mside;			/* side of the mark my is on: BACK, ON, FWD  */
   FULL_LENGTH msize;		/* size of my (minimal among unbroken)	     */
   CONSTRAINT mc;		/* desirable constraint for my		     */

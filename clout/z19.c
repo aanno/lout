@@ -234,12 +234,12 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
   OBJECT target_index;		/* the index of target                       */
   OBJECT target_galley;		/* the body of target, made into a galley    */
   OBJECT tg_inners;		/* inner galleys of target_galley            */
-  BOOLEAN need_precedes = FALSE;/* true if destination lies before galley    */
+  BOOLEAN2 need_precedes = FALSE;/* true if destination lies before galley    */
   OBJECT recs;			/* list of recursive definite objects        */
   OBJECT link, y = nilobj;	/* for scanning through the components of hd */
   CONSTRAINT c;			/* temporary variable holding a constraint   */
   OBJECT env, n1, tmp, zlink, z, sym;	/* placeholders and temporaries	     */
-  BOOLEAN was_sized;		/* true if sized(hd) initially               */
+  BOOLEAN2 was_sized;		/* true if sized(hd) initially               */
   int dim;			/* the galley direction                      */
   FULL_LENGTH perp_back, perp_fwd;
   OBJECT why, junk;
@@ -651,7 +651,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  debug3(DGF, DD, "  dest parallel Constrained(%s, %s) = %s",
 	    EchoObject(dest), dimen(dim), EchoConstraint(&c));
 	  if( !FitsConstraint(back(y, dim), fwd(y, dim), c) )
-	  { BOOLEAN scaled;
+	  { BOOLEAN2 scaled;
 
 	    /* if forcing galley doesn't fit, try scaling first component */
 	    scaled = FALSE;
@@ -706,7 +706,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  debug3(DGF, DD, "  dest perpendicular Constrained(%s, %s) = %s",
 	    EchoObject(dest), dimen(1-dim), EchoConstraint(&c));
 	  if( !FitsConstraint(perp_back, perp_fwd, c) )
-	  { BOOLEAN scaled;
+	  { BOOLEAN2 scaled;
 
 	    /* if forcing galley doesn't fit, try scaling first component */
 	    scaled = FALSE;
@@ -755,7 +755,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  assert( !is_index(type(z)), "AttachGalley: is_index(z)!" );
 	  assert( back(z, dim)>=0 && fwd(z, dim)>=0, "AttachGalley: z size!" );
 	  if( !FitsConstraint(back(z, dim), fwd(z, dim), c) )
-	  { BOOLEAN scaled;
+	  { BOOLEAN2 scaled;
 
 	    debug2(DGA, DD, "  why     = %p %s", why, EchoObject(why));
 	    debug2(DGA, DD, "  limiter = %p %s", limiter(hd),
@@ -817,7 +817,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  assert( back(z, 1-dim)>=0 && fwd(z, 1-dim)>=0,
 	    "AttachGalley: z size (perpendicular)!" );
 	  if( !FitsConstraint(back(z, 1-dim), fwd(z, 1-dim), c) )
-	  { BOOLEAN scaled;
+	  { BOOLEAN2 scaled;
 
 	    /* if forcing galley doesn't fit, try scaling z */
 	    scaled = FALSE;

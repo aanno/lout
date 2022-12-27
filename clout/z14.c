@@ -166,7 +166,7 @@ typedef struct {
 
 #define MoveRightToGap(I,x,rlink,right,max_width,etc_width,hyph_word)	\
 { OBJECT newg, foll = nilobj, tmp;  int ch;				\
-  BOOLEAN jn, unbreakable_at_right = FALSE;				\
+  BOOLEAN2 jn, unbreakable_at_right = FALSE;				\
   debug0(DOF, DDD, "MoveRightToGap(I, x, rlink, right, -, -, -)");	\
 									\
   /* search onwards to find newg, the next true breakpoint */		\
@@ -275,7 +275,7 @@ typedef struct {
 /*****************************************************************************/
 
 #define IntervalInit(I, x, max_width, etc_width, hyph_word)		\
-{ OBJECT rlink, right = nilobj; BOOLEAN jn;				\
+{ OBJECT rlink, right = nilobj; BOOLEAN2 jn;				\
   debug0(DOF, DDD, "IntervalInit(I, x, -, -, hyph_word)");		\
   I.llink = x;								\
 									\
@@ -363,7 +363,7 @@ typedef struct {
 /*****************************************************************************/
 
 #define IntervalShiftLeftEnd(I, x, max_width, etc_width)		\
-{ OBJECT llink, left = nilobj, lgap, y;  BOOLEAN jn;			\
+{ OBJECT llink, left = nilobj, lgap, y;  BOOLEAN2 jn;			\
   debug1(DOF, DDD, "IntervalShiftLeftEnd(%s)", IntervalPrint(I, x));	\
   assert( I.class != AT_END, "IntervalShiftLeftEnd: AT_END!" );		\
 									\
@@ -506,7 +506,7 @@ static FULL_CHAR *IntervalPrint(INTERVAL I, OBJECT x)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN SmallGlyphHeight(FONT_NUM fnum, FULL_CHAR chr)                   */
+/*  BOOLEAN2 SmallGlyphHeight(FONT_NUM fnum, FULL_CHAR chr)                   */
 /*                                                                           */
 /*  Part of margin kerning, contributed by Ludovic Courtes.                  */
 /*                                                                           */
@@ -778,7 +778,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
   BOOLEAN2 allow_shrink, BOOLEAN2 extend_unbreakable, BOOLEAN2 *hyph_used)
 { INTERVAL I, BestI;
   OBJECT res, gp, tmp, z = nilobj, y = nilobj, link, ylink, prev, next;
-  int max_width, etc_width, outdent_margin = 0, f;  BOOLEAN jn;
+  int max_width, etc_width, outdent_margin = 0, f;  BOOLEAN2 jn;
   OBJTYPE typ;
   static OBJECT hyph_word = nilobj;
   BOOLEAN2 hyph_allowed;	    /* TRUE when hyphenation of words is permitted  */

@@ -51,10 +51,10 @@ static int debug_depth_max = 7;
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN BuildSpanner(OBJECT x)
+static BOOLEAN2 BuildSpanner(OBJECT x)
 { OBJECT link, prnt, y, hspanner = nilobj, vspanner = nilobj, end_link, t;
   OBJECT hprnt, vprnt, spanobj;
-  BOOLEAN need_hspanner, need_vspanner;
+  BOOLEAN2 need_hspanner, need_vspanner;
   debug1(DSF, DD, "BuildSpanner(%s)", EchoObject(x));
   assert( objectOfType(x, START_HVSPAN) || objectOfType(x, START_HSPAN) ||
 	  objectOfType(x, START_VSPAN), "BuildSpanner: type(x) != SPAN!" );
@@ -174,7 +174,7 @@ static BOOLEAN BuildSpanner(OBJECT x)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN FindSpannerGap(thr, cat_op, gp)                                  */
+/*  BOOLEAN2 FindSpannerGap(thr, cat_op, gp)                                  */
 /*                                                                           */
 /*  For the purposes of calculating spanning spacing, find the gap between   */
 /*  this object and the preceding one under the nearest cat_op.              */
@@ -183,7 +183,7 @@ static BOOLEAN BuildSpanner(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN FindSpannerGap(OBJECT thr, unsigned dim, OBJTYPE cat_op,
+static BOOLEAN2 FindSpannerGap(OBJECT thr, unsigned dim, OBJTYPE cat_op,
   OBJECT *res)
 { OBJECT link, x;
 
@@ -906,7 +906,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
     case ACAT_E:
 
       if( fill_style(&save_style(x)) == FILL_OFF_E )
-      { OBJECT new_line, g, z, res;  BOOLEAN jn;
+      { OBJECT new_line, g, z, res;  BOOLEAN2 jn;
 
 	/* convert ACAT to VCAT of lines if more than one line */
 	/* first, compress all ACAT children                   */

@@ -369,7 +369,7 @@ OBJECT *crs, OBJECT *res_env)
 { OBJECT sym, res, tag, y, cs, link, db, tmp, index;
   OBJTYPE ctype; 
   int count, i;  FULL_CHAR buff[MAX_BUFF], seq[MAX_BUFF], *str;
-  FILE_NUM fnum, dfnum;  BOOLEAN tagerror = FALSE;
+  FILE_NUM fnum, dfnum;  BOOLEAN2 tagerror = FALSE;
   long cont, dfpos;  int dlnum;
   OBJECT nbt[2], nft[2], ntarget, nenclose;
   assert( is_cross(type(x)), "CrossExpand: x!" );

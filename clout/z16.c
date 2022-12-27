@@ -153,7 +153,7 @@ OBJECT *sg, OBJECT *sdef, int *side)
 /*                                                                           */
 /*****************************************************************************/
 
-static void CatAdjustSize(OBJECT x, FULL_LENGTH *b, FULL_LENGTH *f, BOOLEAN ratm,
+static void CatAdjustSize(OBJECT x, FULL_LENGTH *b, FULL_LENGTH *f, BOOLEAN2 ratm,
 OBJECT y, int dim)
 { OBJECT link;
   OBJECT pg, prec_def, sg, sd;
@@ -251,8 +251,8 @@ OBJECT y, int dim)
 
 void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 { OBJECT y, link, tlink, lp, rp, z, index;
-  BOOLEAN ratm;  FULL_LENGTH tb, tf, cby, cfy, rby, rfy;
-  BOOLEAN is_rotate;
+  BOOLEAN2 ratm;  FULL_LENGTH tb, tf, cby, cfy, rby, rfy;
+  BOOLEAN2 is_rotate;
 
   SetLengthDim(dim);
   debug6(DSA, D, "[ AdjustSize( %s(%s,%s), %s, %s, %s ), x =",

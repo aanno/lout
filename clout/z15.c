@@ -308,7 +308,7 @@ BOOLEAN2 InsertScale(OBJECT x, CONSTRAINT *c)
 /*                                                                           */
 /*****************************************************************************/
 
-static void CatConstrained(OBJECT x, CONSTRAINT *xc, BOOLEAN ratm,
+static void CatConstrained(OBJECT x, CONSTRAINT *xc, BOOLEAN2 ratm,
 OBJECT y, int dim, OBJECT *why)
 { int side;			/* the size of y that x is on: BACK, ON, FWD */
   CONSTRAINT yc;		/* constraints on y                          */
@@ -450,7 +450,7 @@ OBJECT y, int dim, OBJECT *why)
 
 void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 { OBJECT y, link, lp, rp, z, tlink, g;  CONSTRAINT yc, hc, vc;
-  BOOLEAN ratm;  FULL_LENGTH xback, xfwd;  int tb, tf, tbf, tbc, tfc;
+  BOOLEAN2 ratm;  FULL_LENGTH xback, xfwd;  int tb, tf, tbf, tbc, tfc;
   SetLengthDim(dim);
   debug2(DSC, DD, "[ Constrained(%s, xc, %s, why), x =",
     Image(type(x)), dimen(dim));
@@ -571,7 +571,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 
       if( (objectOfType(y, HLIMITED)) == (dim == COLM) )
       {
-	BOOLEAN still_searching = TRUE;
+	BOOLEAN2 still_searching = TRUE;
 	z = y;
 	SetConstraint(*xc, back(z, dim), size(z, dim), fwd(z, dim));
 	debug2(DSC, D, "  [ %s (%s)", Image(type(z)), EchoConstraint(xc));
