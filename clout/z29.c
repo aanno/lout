@@ -41,11 +41,11 @@
 #define	length(x)	word_font(x)
 
 static	OBJECT		scope[MAX_STACK];		/* the scope stack   */
-static	BOOLEAN		npars_only[MAX_STACK];		/* look for NPAR exc */
-static	BOOLEAN		vis_only[MAX_STACK];		/* look for visibles */
-static	BOOLEAN		body_ok[MAX_STACK];		/* look for body par */
-static	BOOLEAN		suppress_scope;			/* suppress scoping  */
-static	BOOLEAN		suppress_visible;		/* suppress visible  */
+static	BOOLEAN2		npars_only[MAX_STACK];		/* look for NPAR exc */
+static	BOOLEAN2		vis_only[MAX_STACK];		/* look for visibles */
+static	BOOLEAN2		body_ok[MAX_STACK];		/* look for body par */
+static	BOOLEAN2		suppress_scope;			/* suppress scoping  */
+static	BOOLEAN2		suppress_visible;		/* suppress visible  */
 static	int		scope_top;			/* scope stack top   */
 static	struct { OBJECT f1, f2; } symtab[MAX_TAB];	/* the hash table    */
 #if DEBUG_ON
@@ -299,7 +299,7 @@ OBJECT GetScopeSnapshot(void)
 
 
 void LoadScopeSnapshot(OBJECT ss)
-{ OBJECT link, x, sym;  BOOLEAN tmp;
+{ OBJECT link, x, sym;  BOOLEAN2 tmp;
   assert( objectOfType(ss, ACAT), "LoadScopeSnapshot: type(ss)!" );
   PushScope(StartSym, FALSE, FALSE);
   for( link = LastDown(ss);  link != ss;  link = PrevDown(link) )

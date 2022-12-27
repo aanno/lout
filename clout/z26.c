@@ -37,7 +37,7 @@
 static	FULL_CHAR buff[MULTI][2*MAX_BUFF];/* buffers for strings       */
 static	int	curr = 1;		/* current buffer in use             */
 static	int	bp;			/* next free space in buff[curr]     */
-static	BOOLEAN	instring = FALSE;	/* TRUE while making a string        */
+static	BOOLEAN2	instring = FALSE;	/* TRUE while making a string        */
 
 
 /*****************************************************************************/

@@ -177,7 +177,7 @@ typedef struct trie_rec
 } *TRIE;
 
 static TRIE	HyphTables[MAX_LANGUAGE];
-static BOOLEAN	TriedFile[MAX_LANGUAGE];
+static BOOLEAN2	TriedFile[MAX_LANGUAGE];
 
 
 /*****************************************************************************/
@@ -579,14 +579,14 @@ static void AddClassToTrie(FULL_CHAR *str, TRIE T)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  static BOOLEAN TrieInsert(key, value, T, fname, hline_num)               */
+/*  static BOOLEAN2 TrieInsert(key, value, T, fname, hline_num)               */
 /*                                                                           */
 /*  Insert a new key and value into trie T (originating in file fname on     */
 /*  line hline_num).                                                         */
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN TrieInsert(FULL_CHAR *key, FULL_CHAR *value, TRIE T,
+static BOOLEAN2 TrieInsert(FULL_CHAR *key, FULL_CHAR *value, TRIE T,
 FULL_CHAR *fname, int hline_num)
 { FULL_CHAR str[MAX_BUFF], compressed_value[MAX_BUFF];
   int i, curr_node, next_node, pos, ch;  short strpos;
@@ -1040,7 +1040,7 @@ static TRIE TrieRead(LANGUAGE_NUM lnum, BOOLEAN2 *success)
 
 /*@::ReadHyphTable()@*********************************************************/
 /*                                                                           */
-/*  BOOLEAN ReadHyphTable(lnum)                                              */
+/*  BOOLEAN2 ReadHyphTable(lnum)                                              */
 /*                                                                           */
 /*  Read hyphenation table for language lnum.                                */
 /*                                                                           */

@@ -103,7 +103,7 @@ static float ScaleFactor(FULL_LENGTH avail_size, FULL_LENGTH inner_size)
 
 static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size,int dim)
 { OBJECT y = nilobj, link, prev = nilobj, g;
-  int adjustable_gaps;  BOOLEAN jn;
+  int adjustable_gaps;  BOOLEAN2 jn;
   FULL_LENGTH inc, mk, actual_size;
 
   debug2(DGP, DD, "FindAdjustIncrement(x, %s, %s)",
@@ -900,7 +900,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	debug0(DGP, DD, "] FAPO-CAT returning.");
       }
       else
-      { OBJECT start_group, zlink, m;  BOOLEAN dble_found;
+      { OBJECT start_group, zlink, m;  BOOLEAN2 dble_found;
 	FULL_LENGTH b, f, dlen;
 	start_group = nilobj;  dble_found = FALSE;  dlen = 0;
 	debug0(DGP, DD, "  groups beginning.");
@@ -1003,11 +1003,11 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case ACAT_E:
 
       if( dim == COLM )
-      { BOOLEAN will_adjust, adjusting;
+      { BOOLEAN2 will_adjust, adjusting;
 	FULL_LENGTH actual_size, adjust_indent, frame_size, back_edge;
 	FULL_LENGTH adjust_inc, inc = 0, adjust_sofar = 0;
 	int adjustable_gaps, gaps_sofar = 0;
-	BOOLEAN underlining; int underline_xstart = 0;
+	BOOLEAN2 underlining; int underline_xstart = 0;
 	FONT_NUM underline_font = 0;
 	COLOUR_NUM underline_colour = 0;
 	TEXTURE_NUM underline_texture = 0;

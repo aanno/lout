@@ -47,7 +47,7 @@
 /*  typedef struct mapvec {                                                  */
 /*    OBJECT      file_name;                                                 */
 /*    FILE_NUM    fnum;                                                      */
-/*    BOOLEAN     seen_recoded;                                              */
+/*    BOOLEAN2     seen_recoded;                                              */
 /*    int	  last_page_printed;                                         */
 /*    OBJECT      name;                                                      */
 /*    OBJECT      vector[MAX_CHARS];                                         */
@@ -677,7 +677,7 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN MapIsLowerCase(FULL_CHAR ch, MAPPING m)                          */
+/*  BOOLEAN2 MapIsLowerCase(FULL_CHAR ch, MAPPING m)                          */
 /*                                                                           */
 /*  Returns TRUE if ch is a lower-case character in mapping m; i.e. if it    */
 /*  has a corresponding upper-case character.                                */

@@ -961,7 +961,7 @@ void CrossSequence(OBJECT x)
 /*****************************************************************************/
 
 void CrossClose(void)
-{ OBJECT link, cs, ylink, y, sym;  BOOLEAN g;  int len, count;
+{ OBJECT link, cs, ylink, y, sym;  BOOLEAN2 g;  int len, count;
   FILE_NUM dfnum;  long dfpos, cont;  int dlnum;
   FULL_CHAR buff[MAX_BUFF], seq[MAX_BUFF], tag[MAX_BUFF];
   debug0(DCR, D, "[ CrossClose()");

@@ -162,7 +162,7 @@ static	OBJECT		fd_recode;		/* @FontDef @Recode entry    */
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT load(const FULL_CHAR *name, OBJTYPE dtype, OBJECT encl, BOOLEAN compulsory)
+static OBJECT load(const FULL_CHAR *name, OBJTYPE dtype, OBJECT encl, BOOLEAN2 compulsory)
 { OBJECT res;
   res = InsertSym(name, dtype, no_fpos, DEFAULT_PREC, FALSE, FALSE, DUMMY, encl,
     MakeWord(WORD, STR_EMPTY, no_fpos));
@@ -277,13 +277,13 @@ static void DebugKernTable(FONT_NUM fnum)
 /*                                                                           */
 /*****************************************************************************/
 
-static void ReadCharMetrics(OBJECT face, BOOLEAN fixed_pitch, int xheight2,
+static void ReadCharMetrics(OBJECT face, BOOLEAN2 fixed_pitch, int xheight2,
   FULL_CHAR *lig, int *ligtop, FILE_NUM fnum, struct metrics *fnt,
   int *lnum, FILE *fp)
 { FULL_CHAR buff[MAX_BUFF], command[MAX_BUFF], ch, ligchar;
   int prev_ligtop, prev_lig, i, wx = 0, llx = 0, lly = 0, urx = 0, ury = 0;
   float fl_wx, fl_llx, fl_lly, fl_urx, fl_ury;
-  BOOLEAN wxfound, bfound;
+  BOOLEAN2 wxfound, bfound;
   OBJECT AFMfilename;
 
   Child(AFMfilename, NextDown(Down(face)));
@@ -485,7 +485,7 @@ static OBJECT FontRead(FULL_CHAR *family_name, FULL_CHAR *face_name, OBJECT err)
   OBJECT cs, link, db, fontdef_obj, y, ylink;
   FULL_CHAR tag[100], seq[100];
   FILE_NUM dfnum; long dfpos, cont; int dlnum;
-  BOOLEAN font_name_found, font_bbox_found;
+  BOOLEAN2 font_name_found, font_bbox_found;
   OBJECT family, face, font_name, AFMfilename, Extrafilename, LCMfilename;
   OBJECT recode, first_size;
   FULL_CHAR buff[MAX_BUFF], command[MAX_BUFF], ch;
@@ -493,8 +493,8 @@ static OBJECT FontRead(FULL_CHAR *family_name, FULL_CHAR *face_name, OBJECT err)
   int xheight2, i, lnum, ligtop, cmptop;
   float fl_xheight2, fl_under_pos, fl_under_thick;
   int under_pos, under_thick;
-  BOOLEAN upfound, utfound, xhfound;
-  BOOLEAN fixed_pitch = FALSE;
+  BOOLEAN2 upfound, utfound, xhfound;
+  BOOLEAN2 fixed_pitch = FALSE;
   FILE_NUM fnum, extra_fnum;  FILE *fp, *extra_fp;
   struct metrics *fnt;
   FULL_CHAR *lig;  unsigned short *composite;  COMPOSITE *cmp;
@@ -1949,7 +1949,7 @@ void FontPrintPageSetup(FILE *fp)
 #pragma clang diagnostic ignored "-Wunused-parameter"
 void FontPrintPageResources(FILE *fp)
 { OBJECT face, ps_name, link, pface, pname, plink;
-  BOOLEAN first;
+  BOOLEAN2 first;
   assert(font_root!=nilobj && objectOfType(font_root, ACAT), "FontDebug: font_root!");
   assert(font_used!=nilobj && objectOfType(font_used, ACAT), "FontDebug: font_used!");
   debug0(DFT, DD, "FontPrintPageResources(fp)");

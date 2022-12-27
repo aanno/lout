@@ -148,7 +148,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
   char *op;  
 #pragma clang diagnostic ignored "-Wunused-but-set-variable"
   unsigned prec, i, childcount, ycount;
-  BOOLEAN npar_seen, name_printed, lbr_printed, braces_needed;
+  BOOLEAN2 npar_seen, name_printed, lbr_printed, braces_needed;
   unsigned cpcount;
 
   switch( type(x).objtype )

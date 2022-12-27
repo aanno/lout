@@ -155,7 +155,7 @@ static void dtab_debug(DBCHECK_TABLE S, FILE *fp)
 #endif
 
 static DBCHECK_TABLE DbCheckTable;		/* the dbcheck table         */
-static BOOLEAN	     DbCheckTableInit;		/* TRUE if table inited	     */
+static BOOLEAN2	     DbCheckTableInit;		/* TRUE if table inited	     */
 static int extra_seq;
 
 
@@ -285,9 +285,9 @@ OBJECT DbCreate(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-void DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, const FULL_CHAR *tag,
+void DbInsert(OBJECT db, BOOLEAN2 gall, OBJECT sym, const FULL_CHAR *tag,
 FILE_POS *tagfpos, const FULL_CHAR *seq, FILE_NUM dfnum, long dfpos, int dlnum,
-BOOLEAN check)
+BOOLEAN2 check)
 { int symnum;  OBJECT chk;
   FULL_CHAR buff[MAX_BUFF];
   assert( is_word(type(db)), "DbInsert: db!" );
@@ -365,7 +365,7 @@ BOOLEAN check)
 /*                                                                           */
 /*****************************************************************************/
 
-void DbConvert(OBJECT db, BOOLEAN full_name)
+void DbConvert(OBJECT db, BOOLEAN2 full_name)
 { FULL_CHAR oldname[MAX_BUFF+10], newname[MAX_BUFF];
   OBJECT link, y;
   ifdebug(DPP, D, ProfileOn("DbConvert"));
@@ -432,12 +432,12 @@ void DbClose(OBJECT db)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
-  BOOLEAN in_mem)
+OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN2 create, OBJECT symbs,
+  BOOLEAN2 in_mem)
 { FILE *fp;  OBJECT db, t, res, tag, par, sym, link, y;
   int i, lnum, dlnum, num, count, leftp;
   FILE_NUM index_fnum, dfnum;  long dfpos;
-  BOOLEAN gall;  FULL_CHAR line[MAX_BUFF], sym_name[MAX_BUFF]; int status;
+  BOOLEAN2 gall;  FULL_CHAR line[MAX_BUFF], sym_name[MAX_BUFF]; int status;
   ifdebug(DPP, D, ProfileOn("DbLoad"));
   debug3(DBS, DD, "[ DbLoad(%s, %d, %s, -)", string(stem), fpath, bool2s(create));
 
@@ -630,7 +630,7 @@ OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
 
 /*@::SearchFile()@************************************************************/
 /*                                                                           */
-/*  static BOOLEAN SearchFile(fp, left, right, str, line)                    */
+/*  static BOOLEAN2 SearchFile(fp, left, right, str, line)                    */
 /*                                                                           */
 /*  File fp is a text file.  left is the beginning of a line, right is the   */
 /*  end of a line.   Search the file by binary search for a line beginning   */
@@ -641,9 +641,9 @@ OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN SearchFile(FILE *fp, int left, int right,
+static BOOLEAN2 SearchFile(FILE *fp, int left, int right,
 FULL_CHAR *str, FULL_CHAR *line)
-{ int l, r, mid, mid_end;  FULL_CHAR buff[MAX_BUFF];  BOOLEAN res;
+{ int l, r, mid, mid_end;  FULL_CHAR buff[MAX_BUFF];  BOOLEAN2 res;
   int ch;
   ifdebug(DPP, D, ProfileOn("SearchFile"));
   debug3(DBS, D, "SearchFile(fp, %d, %d, %s, line)", left, right, str);
@@ -715,7 +715,7 @@ FULL_CHAR *str, FULL_CHAR *line)
 
 /*@::SearchLines()@***********************************************************/
 /*                                                                           */
-/*  static BOOLEAN SearchLines(LINE *lines, int left, int right, str, lnum)  */
+/*  static BOOLEAN2 SearchLines(LINE *lines, int left, int right, str, lnum)  */
 /*                                                                           */
 /*  Search the sorted array of LINE arrays lines[left..right] for a line     */
 /*  beginning with str, and return TRUE if found else FALSE.                 */
@@ -724,10 +724,10 @@ FULL_CHAR *str, FULL_CHAR *line)
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN SearchLines(LINE *lines, int left, int right, FULL_CHAR *str,
+static BOOLEAN2 SearchLines(LINE *lines, int left, int right, FULL_CHAR *str,
   int *lnum)
 { int l, r, mid;  FULL_CHAR buff[MAX_BUFF];
-  BOOLEAN res;
+  BOOLEAN2 res;
   debug3(DBS, D, "SearchLines(lines, %d, %d, %s, lnum)", left, right, str);
   if( right < left )
   {
@@ -763,7 +763,7 @@ static BOOLEAN SearchLines(LINE *lines, int left, int right, FULL_CHAR *str,
 
 /*@::DbRetrieve()@************************************************************/
 /*                                                                           */
-/*  BOOLEAN DbRetrieve(db, gall, sym, tag, seq, dfnum, dfpos, dlnum, cont)   */
+/*  BOOLEAN2 DbRetrieve(db, gall, sym, tag, seq, dfnum, dfpos, dlnum, cont)   */
 /*                                                                           */
 /*  Retrieve the first entry of database db with the given gall, sym and     */
 /*  tag.  Set *seq, *dfnum, *dlnum, *dfpos to the associated value.          */
@@ -771,7 +771,7 @@ static BOOLEAN SearchLines(LINE *lines, int left, int right, FULL_CHAR *str,
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN DbRetrieve(OBJECT db, BOOLEAN gall, OBJECT sym, FULL_CHAR *tag,
+BOOLEAN2 DbRetrieve(OBJECT db, BOOLEAN2 gall, OBJECT sym, FULL_CHAR *tag,
   FULL_CHAR *seq, FILE_NUM *dfnum, long *dfpos, int *dlnum, long *cont)
 { int symnum, lnum;  FULL_CHAR line[MAX_BUFF], buff[MAX_BUFF];
   ifdebug(DPP, D, ProfileOn("DbRetrieve"));
@@ -837,7 +837,7 @@ BOOLEAN DbRetrieve(OBJECT db, BOOLEAN gall, OBJECT sym, FULL_CHAR *tag,
 
 /*@::DbRetrieveNext()@********************************************************/
 /*                                                                           */
-/*  BOOLEAN DbRetrieveNext(db, gall, sym, tag, seq, dfnum, dfpos,dlnum,cont) */
+/*  BOOLEAN2 DbRetrieveNext(db, gall, sym, tag, seq, dfnum, dfpos,dlnum,cont) */
 /*                                                                           */
 /*  Retrieve the entry of database db pointed to by *cont.                   */
 /*  Set *gall, *sym, *tag, *seq, *dfnum, *dlnum, *dfpos to the value.        */
@@ -845,7 +845,7 @@ BOOLEAN DbRetrieve(OBJECT db, BOOLEAN gall, OBJECT sym, FULL_CHAR *tag,
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN DbRetrieveNext(OBJECT db, BOOLEAN *gall, OBJECT *sym, FULL_CHAR *tag,
+BOOLEAN2 DbRetrieveNext(OBJECT db, BOOLEAN2 *gall, OBJECT *sym, FULL_CHAR *tag,
   FULL_CHAR *seq, FILE_NUM *dfnum, long *dfpos, int *dlnum, long *cont)
 { FULL_CHAR line[MAX_BUFF], *cline, fname[MAX_BUFF]; int symnum;
   char format[MAX_FORMAT];

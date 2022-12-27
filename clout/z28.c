@@ -33,12 +33,12 @@
 #define	MAX_BLOCKS	 20		/* max number of error blocks        */
 #define	MAX_ERRORS	 20		/* max number of held error messages */
 
-static BOOLEAN	print_block[MAX_BLOCKS];	/* TRUE if print this block  */
+static BOOLEAN2	print_block[MAX_BLOCKS];	/* TRUE if print this block  */
 static int	start_block[MAX_BLOCKS];	/* first message of block    */
 static char	message[MAX_ERRORS][MAX_BUFF];	/* the error messages        */
 static int	message_fnum[MAX_ERRORS];	/* file number of error mess */
 static FILE	*fp;				/* file pointer of log file  */
-static BOOLEAN	error_seen;			/* TRUE after first error    */
+static BOOLEAN2	error_seen;			/* TRUE after first error    */
 static int	block_top;			/* first free error block    */
 static int	mess_top;			/* first free error message  */
 static int	CurrentFileNum;
@@ -81,7 +81,7 @@ void ErrorSetFile(FULL_CHAR *str)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN ErrorSeen()                                                      */
+/*  BOOLEAN2 ErrorSeen()                                                      */
 /*                                                                           */
 /*  TRUE once an error has been found.                                       */
 /*                                                                           */

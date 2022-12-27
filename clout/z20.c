@@ -81,7 +81,7 @@ FULL_CHAR *DebugInnersNames(OBJECT inners)
 /*                                                                           */
 /*****************************************************************************/
 
-static void ParentFlush(BOOLEAN prnt_flush, OBJECT dest_index, BOOLEAN kill)
+static void ParentFlush(BOOLEAN2 prnt_flush, OBJECT dest_index, BOOLEAN2 kill)
 { OBJECT prnt;
   debug3(DGF, DD, "ParentFlush(%s, %s, %s)",
     bool2s(prnt_flush), EchoIndex(dest_index), bool2s(kill));
@@ -118,7 +118,7 @@ void FlushGalley(OBJECT hd)
 
   OBJECT dest_encl = nilobj;	/* the VCAT or ACAT enclosing dest, if any   */
   int    dest_side;		/* if dest_encl != nilobj, side dest is on   */
-  BOOLEAN need_adjust = FALSE;	/* TRUE as soon as dest_encl needs adjusting */
+  BOOLEAN2 need_adjust = FALSE;	/* TRUE as soon as dest_encl needs adjusting */
   FULL_LENGTH dest_back = 0;    /* the current back size of dest_encl or dest*/
   FULL_LENGTH dest_fwd = 0;     /* the current fwd size of dest_encl or dest */
   FULL_LENGTH frame_size = 0;	/* the total constraint of dest_encl         */
@@ -131,10 +131,10 @@ void FlushGalley(OBJECT hd)
   FULL_LENGTH stop_fwd = 0;     /* fwd(dest_encl) incl. all before stop_link */
   FULL_LENGTH stop_perp_back=0; /* back(dest_encl) in other direction        */
   FULL_LENGTH stop_perp_fwd=0;  /* fwd(dest_encl) in other direction         */
-  BOOLEAN prnt_flush;		/* TRUE when the parent of hd needs a flush  */
-  BOOLEAN target_is_internal;   /* TRUE if flushing into an internal target  */
-  BOOLEAN headers_seen;		/* TRUE if a header is seen at all           */
-  OBJECT zlink, z, tmp, prnt;  ATTACH attach_status;  BOOLEAN remove_target;
+  BOOLEAN2 prnt_flush;		/* TRUE when the parent of hd needs a flush  */
+  BOOLEAN2 target_is_internal;   /* TRUE if flushing into an internal target  */
+  BOOLEAN2 headers_seen;		/* TRUE if a header is seen at all           */
+  OBJECT zlink, z, tmp, prnt;  ATTACH attach_status;  BOOLEAN2 remove_target;
   OBJECT why;
   FULL_LENGTH perp_back = 0, perp_fwd = 0; /* current perp size of dest_encl */
 
@@ -729,7 +729,7 @@ void FlushGalley(OBJECT hd)
 	debug1(DGF, DDD, "    prnt_flush = %s", bool2s(prnt_flush));
 	debug1(DGF, DDD, "    inners = %s", DebugInnersNames(inners));
 	if( inners != nilobj )
-	{ BOOLEAN promotable;  OBJECT tgp;
+	{ BOOLEAN2 promotable;  OBJECT tgp;
 
 	  /* We would prefer to promote right now, then give these inners */
 	  /* a chance.  However this is not possible unless the following */
@@ -899,7 +899,7 @@ void FlushGalley(OBJECT hd)
     /* check whether external galleys can remove the blockage */
     if( objectOfType(y, RECEPTIVE) && ready_galls(hd) != nilobj && AllowCrossDb )
     { OBJECT eg, val, index2, hd2, tag, seq, newsym;
-      BOOLEAN found, gall;  FULL_CHAR newtag[MAX_BUFF], newseq[MAX_BUFF];
+      BOOLEAN2 found, gall;  FULL_CHAR newtag[MAX_BUFF], newseq[MAX_BUFF];
 
       /* get first ready galley in from cross reference database */
       Child(eg, Down(ready_galls(hd)));
@@ -1000,7 +1000,7 @@ void FlushGalley(OBJECT hd)
       goto RESUME;
     }
     else if( objectOfType(y, RECEPTIVE) && trigger_externs(y) && AllowCrossDb )
-    { OBJECT sym, cr, ins, tag, seq, eg, cnt;  BOOLEAN found;
+    { OBJECT sym, cr, ins, tag, seq, eg, cnt;  BOOLEAN2 found;
       FULL_CHAR newseq[MAX_BUFF];  FILE_NUM tfnum;  long tfpos, tcont;
       int tlnum;
       debug1(DGF, DD, "  ext gall target %s", SymName(actual(actual(y))));

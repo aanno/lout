@@ -38,7 +38,7 @@
 /*****************************************************************************/
 /*                                                                           */
 /*          AsciiToFull(str)          Returns ASCII string as FULL_CHARs.    */
-/*  BOOLEAN StringEqual(a, b)         TRUE if strings a and b are equal      */
+/*  BOOLEAN2 StringEqual(a, b)         TRUE if strings a and b are equal      */
 /*          StringCat(a, b)           Catenate string b onto end of a        */
 /*          StringCopy(a, b)          Overwrite string a with string b       */
 /*          StringLength(a)           Length of string a                     */
@@ -150,7 +150,7 @@ BOOLEAN2 StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN StringContains(str, pattern)                                     */
+/*  BOOLEAN2 StringContains(str, pattern)                                     */
 /*                                                                           */
 /*  Check whether str contains pattern.                                      */
 /*                                                                           */

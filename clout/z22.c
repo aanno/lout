@@ -33,7 +33,7 @@
 #include "lout.h"
 
 /* these three variables refer to the root galley only */
-static BOOLEAN first = TRUE;		  /* if first component unwritten    */
+static BOOLEAN2 first = TRUE;		  /* if first component unwritten    */
 static OBJECT page_label = nilobj;	  /* current page label object       */
 static OBJECT prev_page_label = nilobj; /* previous page label object      */
 
@@ -1207,7 +1207,7 @@ OBJECT relocate_link, OBJECT sym)
 
 void SetTarget(OBJECT hd)
 { OBJECT x, y, link, cr, lpar, rpar, env;
-  BOOLEAN copied;
+  BOOLEAN2 copied;
   debug1(DGS, DD, "SetTarget(%s)", SymName(actual(hd)));
   assert( objectOfType(hd, HEAD), "SetTarget: type(hd) != HEAD!" );
   Child(x, Down(hd));

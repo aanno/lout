@@ -123,7 +123,7 @@ void FlattenUses(void)
 
 /*@::SearchUses(), FirstExternTarget(), NextExternTarget()@*******************/
 /*                                                                           */
-/*  BOOLEAN SearchUses(x, y)                                                 */
+/*  BOOLEAN2 SearchUses(x, y)                                                 */
 /*                                                                           */
 /*  Discover whether symbol x uses symbol y by searching the uses list of x. */
 /*                                                                           */

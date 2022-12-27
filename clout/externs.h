@@ -4099,17 +4099,17 @@ extern	OBJECT	  OldCrossDb;
 extern	OBJECT	  NewCrossDb;
 extern	void	  DbInit(void);
 extern	OBJECT	  DbCreate(OBJECT x);
-extern	void	  DbInsert(OBJECT db, BOOLEAN gall, OBJECT sym, const FULL_CHAR *tag,
+extern	void	  DbInsert(OBJECT db, BOOLEAN2 gall, OBJECT sym, const FULL_CHAR *tag,
 		    FILE_POS *tagfpos, const FULL_CHAR *seq, FILE_NUM dfnum,
-		    long dfpos, int dlnum, BOOLEAN check);
-extern	void	  DbConvert(OBJECT db, BOOLEAN full_name);
+		    long dfpos, int dlnum, BOOLEAN2 check);
+extern	void	  DbConvert(OBJECT db, BOOLEAN2 full_name);
 extern	void	  DbClose(OBJECT db);
-extern	OBJECT	  DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN create, OBJECT symbs,
-		    BOOLEAN in_memory);
-extern	BOOLEAN	  DbRetrieve(OBJECT db, BOOLEAN gall, OBJECT sym,
+extern	OBJECT	  DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN2 create, OBJECT symbs,
+		    BOOLEAN2 in_memory);
+extern	BOOLEAN2	  DbRetrieve(OBJECT db, BOOLEAN2 gall, OBJECT sym,
 		    FULL_CHAR *tag, FULL_CHAR *seq, FILE_NUM *dfnum,
 		    long *dfpos, int *dlnum, long *cont);
-extern	BOOLEAN	  DbRetrieveNext(OBJECT db, BOOLEAN *gall, OBJECT *sym,
+extern	BOOLEAN2	  DbRetrieveNext(OBJECT db, BOOLEAN2 *gall, OBJECT *sym,
 		    FULL_CHAR *tag, FULL_CHAR *seq, FILE_NUM *dfnum,
 		    long *dfpos, int *dlnum, long *cont);
 
