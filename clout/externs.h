@@ -4303,10 +4303,10 @@ extern	BACK_END  Plain_BackEnd;	/* Plain Text back end record        */
 extern	BACK_END  Plain_NullBackEnd;	/* Plain Text null back end record   */
 extern	FULL_LENGTH PlainCharWidth;	/* character width                   */
 extern	FULL_LENGTH PlainCharHeight;	/* character height		     */
-extern	BOOLEAN	  PlainFormFeed;	/* true if using \f		     */
+extern	BOOLEAN2	  PlainFormFeed;	/* true if using \f		     */
 
 /*****  z52.c	  Texture Service        **************************************/
-extern	BOOLEAN	  UseTexture;
+extern	BOOLEAN2	  UseTexture;
 extern	void	  TextureInit(void);
 extern	void	  TextureChange(STYLE *style, OBJECT x);
 extern	FULL_CHAR *TextureCommand(TEXTURE_NUM pnum);

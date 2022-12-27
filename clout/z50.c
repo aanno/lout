@@ -50,10 +50,10 @@ static FILE		*out_fp;	/* file to print PDF on              */
 typedef struct
 {
   FONT_NUM	gs_font;		/* font number of this state         */
-  BOOLEAN	gs_baselinemark;	/* TRUE if baseline mark             */
+  BOOLEAN2	gs_baselinemark;	/* TRUE if baseline mark             */
   COLOUR_NUM	gs_colour;		/* colour number of this state       */
   TEXTURE_NUM	gs_texture;		/* texture number of this state      */
-  BOOLEAN	gs_cpexists;		/* TRUE if a current point exists    */
+  BOOLEAN2	gs_cpexists;		/* TRUE if a current point exists    */
   FULL_LENGTH	gs_currenty;		/* if cpexists, its y coordinate     */
   short		gs_xheight2;		/* of font exists, half xheight      */
 } GRAPHICS_STATE;
@@ -62,16 +62,16 @@ static GRAPHICS_STATE	gs_stack[MAX_GS];/* graphics state stack             */
 static int		gs_stack_top;	/* top of graphics state stack       */
 
 static FONT_NUM		currentfont;	/* font of most recent atom          */
-static BOOLEAN		currentbaselinemark;	/* baseline mark in use      */
+static BOOLEAN2		currentbaselinemark;	/* baseline mark in use      */
 static COLOUR_NUM	currentcolour;	/* colour of most recent atom        */
 static TEXTURE_NUM	currenttexture;	/* texture of most recent atom       */
 static short		currentxheight2;/* half xheight in current font      */
-static BOOLEAN		cpexists;	/* true if a current point exists    */
+static BOOLEAN2		cpexists;	/* true if a current point exists    */
 static FULL_LENGTH	currenty;	/* if cpexists, its y coordinate     */
 
 static int		wordcount;	/* atoms printed since last newline  */
 static int		pagecount;	/* total number of pages printed     */
-static BOOLEAN		prologue_done;	/* TRUE after prologue is printed    */
+static BOOLEAN2		prologue_done;	/* TRUE after prologue is printed    */
 static OBJECT		needs;		/* Resource needs of included EPSFs  */
 static OBJECT		supplied;	/* Resources supplied by this file   */
 
@@ -96,7 +96,7 @@ static OBJECT		supplied;	/* Resources supplied by this file   */
 
 /*****************************************************************************/
 /*                                                                           */
-/*  void PDF_PrintInitialize(FILE *fp, BOOLEAN enc)                          */
+/*  void PDF_PrintInitialize(FILE *fp, BOOLEAN2 enc)                          */
 /*                                                                           */
 /*  Initialize this module; fp is the output file.                           */
 /*                                                                           */
@@ -175,7 +175,7 @@ static void PDF_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 
 /*****************************************************************************/
 /*                                                                           */
-/*  PDF_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)        */
+/*  PDF_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN2 first)        */
 /*                                                                           */
 /*  Print page resource info on file fp for font font_name; first is true    */
 /*  if this is the first resource on this page.                              */
@@ -260,7 +260,7 @@ static void PDF_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
 
 /*****************************************************************************/
 /*                                                                           */
-/*  static void PrintComposite(COMPOSITE *cp, BOOLEAN outline, FILE *fp)     */
+/*  static void PrintComposite(COMPOSITE *cp, BOOLEAN2 outline, FILE *fp)     */
 /*                                                                           */
 /*  This routine is unused in this module because it is the PostScript       */
 /*  version and no PDF version has been written so far.  JeffK 2/5/00.       */
@@ -272,7 +272,7 @@ static void PDF_PrintBetweenPages(FULL_LENGTH h, FULL_LENGTH v,
 /*****************************************************************************/
 
 /* ***
-static void PrintComposite(COMPOSITE *cp, BOOLEAN outline, FILE *fp)
+static void PrintComposite(COMPOSITE *cp, BOOLEAN2 outline, FILE *fp)
 { debug1(DPF, D, "PrintComposite(cp, %s, fp)", bool(outline));
   while( cp->char_code != '\0' )
   {

@@ -41,7 +41,7 @@
 /*****************************************************************************/
 
 FULL_LENGTH PlainCharWidth, PlainCharHeight;
-BOOLEAN PlainFormFeed;
+BOOLEAN2 PlainFormFeed;
 
 /*****************************************************************************/
 /*                                                                           */
@@ -53,12 +53,12 @@ static FILE		*out_fp;	/* file to print output on           */
 static int		hsize;		/* horizontal size of page in chars  */
 static int		vsize;		/* vertical size of page in chars    */
 static FULL_CHAR	*page;		/* the page (two-dim array of chars) */
-static BOOLEAN		prologue_done;	/* TRUE after prologue is printed    */
+static BOOLEAN2		prologue_done;	/* TRUE after prologue is printed    */
 
 
 /*****************************************************************************/
 /*                                                                           */
-/*  void Plain_PrintInitialize(FILE *fp, BOOLEAN enc)                        */
+/*  void Plain_PrintInitialize(FILE *fp, BOOLEAN2 enc)                        */
 /*                                                                           */
 /*  Initialize this module; fp is the output file.                           */
 /*                                                                           */
@@ -120,8 +120,7 @@ static void Plain_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 
 /*****************************************************************************/
 /*                                                                           */
-/*  void Plain_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first) */
-/*    BOOLEAN first)                                                         */
+/*  void Plain_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN2 first) */
 /*                                                                           */
 /*  Print page resource info on file fp for font font_name; first is true    */
 /*  if this is the first resource on this page.                              */
