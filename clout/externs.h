@@ -51,7 +51,7 @@ extern nl_catd MsgCat;
 typedef unsigned char FULL_CHAR;
 
 // TODO: making this BOOLEAN will break crossrefs
-// #define	BOOLEAN		bool
+#define	BOOLEAN2		bool
 #define	BOOLEAN		unsigned
 #define	FALSE		false
 #define	TRUE		true
@@ -817,15 +817,15 @@ extern const FULL_CHAR* const STR_SCALE_DOWN;
 
 // typesafe enum inline functions
 
-INLINE BOOLEAN sameFiletype(FILE_TYPE x, FILE_TYPE y) {
+INLINE BOOLEAN2 sameFiletype(FILE_TYPE x, FILE_TYPE y) {
   return x.filetype == y.filetype;
 }
 
-INLINE BOOLEAN sameTidy(TIDY_TE x, TIDY_TE y) {
+INLINE BOOLEAN2 sameTidy(TIDY_TE x, TIDY_TE y) {
   return x.tidy == y.tidy;
 }
 
-INLINE BOOLEAN sameUnit(UNIT x, UNIT y) {
+INLINE BOOLEAN2 sameUnit(UNIT x, UNIT y) {
   return x.unit == y.unit;
 }
 
@@ -839,9 +839,9 @@ INLINE BOOLEAN sameUnit(UNIT x, UNIT y) {
 
 typedef struct
 { FULL_LENGTH	owidth;			/* width of the gap                  */
-  BOOLEAN	onobreak : 1;		/* TRUE if this gap is unbreakable   */
-  BOOLEAN	omark	 : 1;		/* TRUE if this gap is marked        */
-  BOOLEAN	ojoin	 : 1;		/* TRUE if joins exist across gap    */
+  BOOLEAN2	onobreak : 1;		/* TRUE if this gap is unbreakable   */
+  BOOLEAN2	omark	 : 1;		/* TRUE if this gap is marked        */
+  BOOLEAN2	ojoin	 : 1;		/* TRUE if joins exist across gap    */
   unsigned	ounits	 : 3;		/* units of measurement: fixed, etc  */
   unsigned	omode	 : 3;		/* spacing mode: edge-to-edge, etc   */
 } GAP;
@@ -854,13 +854,13 @@ typedef struct
 #define	mode_m(x)		(x).omode
 #define	width_m(x)	(x).owidth
 
-INLINE BOOLEAN nobreak(GAP* x) {
+INLINE BOOLEAN2 nobreak(GAP* x) {
   return x->onobreak;
 }
-INLINE BOOLEAN mark(GAP* x) {
+INLINE BOOLEAN2 mark(GAP* x) {
   return x->omark;
 }
-INLINE BOOLEAN join(GAP* x) {
+INLINE BOOLEAN2 join(GAP* x) {
   return x->ojoin;
 }
 INLINE UNIT units(GAP* x) {
@@ -893,7 +893,7 @@ INLINE UNIT units(GAP* x) {
   }
   return res;
 }
-INLINE BOOLEAN gapHasUnit(GAP* x, UNIT u) {
+INLINE BOOLEAN2 gapHasUnit(GAP* x, UNIT u) {
   return x->ounits == u.unit;
 }
 INLINE SPACE_MODE mode(GAP* x) {
@@ -935,13 +935,13 @@ INLINE FULL_LENGTH width(GAP* x) {
 }
 
 
-INLINE void setNobreak(GAP* x, BOOLEAN xnobreak) {
+INLINE void setNobreak(GAP* x, BOOLEAN2 xnobreak) {
   x->onobreak = xnobreak;
 }
-INLINE void setMark(GAP* x, BOOLEAN xmark) {
+INLINE void setMark(GAP* x, BOOLEAN2 xmark) {
   x->omark = xmark;
 }
-INLINE void setJoin(GAP* x, BOOLEAN xjoin) {
+INLINE void setJoin(GAP* x, BOOLEAN2 xjoin) {
   x->ojoin = xjoin;
 }
 INLINE void setUnits(GAP* x, UNIT xunits) {
@@ -956,7 +956,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
 ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
-INLINE void SetGapOnRef(GAP* x, BOOLEAN xnobreak, BOOLEAN xmark, BOOLEAN xjoin, UNIT xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
+INLINE void SetGapOnRef(GAP* x, BOOLEAN2 xnobreak, BOOLEAN2 xmark, BOOLEAN2 xjoin, UNIT xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
   setJoin(x, xjoin);
@@ -993,7 +993,7 @@ INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   */
 }
 
-INLINE BOOLEAN GapEqual(GAP* x, GAP* y) {
+INLINE BOOLEAN2 GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
              && units(x).unit == units(y).unit 
              && mode(x).spacemode == mode(y).spacemode && width(x) == width(y);
@@ -1033,9 +1033,9 @@ typedef struct style_type
   TEXTURE_NUM	otexture;		/* current texture		     */
   unsigned short oblanklinescale;	/* scale factor for blank lines      */
   LANGUAGE_NUM	olanguage       : 6;	/* current language		     */
-  BOOLEAN	ovadjust	: 1;	/* @VAdjust in effect                */
-  BOOLEAN	ohadjust	: 1;	/* @HAdjust in effect                */
-  BOOLEAN	opadjust	: 1;	/* @PAdjust in effect                */
+  BOOLEAN2	ovadjust	: 1;	/* @VAdjust in effect                */
+  BOOLEAN2	ohadjust	: 1;	/* @HAdjust in effect                */
+  BOOLEAN2	opadjust	: 1;	/* @PAdjust in effect                */
   unsigned	osmall_caps	: 1;	/* small capitals                    */
   unsigned	ospace_style	: 3;	/* space style: lout, troff, tex, .. */
   unsigned	ohyph_style	: 2;	/* hyphenation off or on             */
@@ -1043,12 +1043,12 @@ typedef struct style_type
   unsigned	odisplay_style	: 3;	/* display lines adjusted, ragged... */
   // TODO: making this BOOLEAN will break crossrefs
   unsigned	ooutline	: 2;	/* TRUE if outlining words           */
-  BOOLEAN	onobreakfirst	: 1;	/* no break after first line of para */
-  BOOLEAN	onobreaklast	: 1;	/* no break after last line of para  */
-  BOOLEAN	obaselinemark	: 1;	/* baseline char metrics             */
-  BOOLEAN	ostrut		: 1;	/* strut char metrics                */
-  BOOLEAN	oligatures	: 1;	/* use ligatures                     */
-  BOOLEAN	omarginkerning	: 1;	/* perform margin kerning            */
+  BOOLEAN2	onobreakfirst	: 1;	/* no break after first line of para */
+  BOOLEAN2	onobreaklast	: 1;	/* no break after last line of para  */
+  BOOLEAN2	obaselinemark	: 1;	/* baseline char metrics             */
+  BOOLEAN2	ostrut		: 1;	/* strut char metrics                */
+  BOOLEAN2	oligatures	: 1;	/* use ligatures                     */
+  BOOLEAN2	omarginkerning	: 1;	/* perform margin kerning            */
   CONTEXT	ocontext;		/* context stack		     */
 } STYLE;
 
@@ -1122,13 +1122,13 @@ INLINE unsigned short blanklinescale(STYLE* x) {
 INLINE LANGUAGE_NUM language(STYLE* x) {
   return (x)->olanguage;
 }
-INLINE BOOLEAN vadjust(STYLE* x) {
+INLINE BOOLEAN2 vadjust(STYLE* x) {
   return (x)->ovadjust;
 }
-INLINE BOOLEAN hadjust(STYLE* x) {
+INLINE BOOLEAN2 hadjust(STYLE* x) {
   return (x)->ohadjust;
 }
-INLINE BOOLEAN padjust(STYLE* x) {
+INLINE BOOLEAN2 padjust(STYLE* x) {
   return (x)->opadjust;
 }
 INLINE unsigned small_caps(STYLE* x) {
@@ -1160,7 +1160,7 @@ INLINE SPACE_STYLE space_style(STYLE* x) {
   }
   return res;
 }
-INLINE BOOLEAN styleHasSpaceStyle(STYLE* x, SPACE_STYLE y) {
+INLINE BOOLEAN2 styleHasSpaceStyle(STYLE* x, SPACE_STYLE y) {
   return x->ospace_style == y.spacestyle;
 }
 INLINE HYPH_STYLE hyph_style(STYLE* x) {
@@ -1183,7 +1183,7 @@ INLINE HYPH_STYLE hyph_style(STYLE* x) {
   }
   return res;
 }
-INLINE BOOLEAN styleHasHyphStyle(STYLE* x, HYPH_STYLE y) {
+INLINE BOOLEAN2 styleHasHyphStyle(STYLE* x, HYPH_STYLE y) {
   return x->ohyph_style == y.hyphstyle;
 }
 INLINE unsigned fill_style(STYLE* x) {
@@ -1195,22 +1195,22 @@ INLINE unsigned display_style(STYLE* x) {
 INLINE BOOLEAN outline(STYLE* x) {
   return (x)->ooutline;
 }
-INLINE BOOLEAN nobreakfirst(STYLE* x) {
+INLINE BOOLEAN2 nobreakfirst(STYLE* x) {
   return (x)->onobreakfirst;
 }
-INLINE BOOLEAN nobreaklast(STYLE* x) {
+INLINE BOOLEAN2 nobreaklast(STYLE* x) {
   return (x)->onobreaklast;
 }
-INLINE BOOLEAN baselinemark(STYLE* x) {
+INLINE BOOLEAN2 baselinemark(STYLE* x) {
   return (x)->obaselinemark;
 }
-INLINE BOOLEAN strut(STYLE* x) {
+INLINE BOOLEAN2 strut(STYLE* x) {
   return (x)->ostrut;
 }
-INLINE BOOLEAN ligatures(STYLE* x) {
+INLINE BOOLEAN2 ligatures(STYLE* x) {
   return (x)->oligatures;
 }
-INLINE BOOLEAN marginkerning(STYLE* x) {
+INLINE BOOLEAN2 marginkerning(STYLE* x) {
   return (x)->omarginkerning;
 }
 INLINE CONTEXT context(STYLE* x) {
@@ -1253,13 +1253,13 @@ INLINE void setBlanklinescale(STYLE* x, unsigned short blanklinescale) {
 INLINE void setLanguage(STYLE* x, LANGUAGE_NUM language) {
   (x)->olanguage = language;
 }
-INLINE void setVadjust(STYLE* x, BOOLEAN vadjust) {
+INLINE void setVadjust(STYLE* x, BOOLEAN2 vadjust) {
   (x)->ovadjust = vadjust;
 }
-INLINE void setHadjust(STYLE* x, BOOLEAN hadjust) {
+INLINE void setHadjust(STYLE* x, BOOLEAN2 hadjust) {
   (x)->ohadjust = hadjust;
 }
-INLINE void setPadjust(STYLE* x, BOOLEAN padjust) {
+INLINE void setPadjust(STYLE* x, BOOLEAN2 padjust) {
   (x)->opadjust = padjust;
 }
 INLINE void setSmall_caps(STYLE* x, unsigned small_caps) {
@@ -1280,22 +1280,22 @@ INLINE void setDisplay_style(STYLE* x, unsigned display_style) {
 INLINE void setOutline(STYLE* x, BOOLEAN outline) {
   (x)->ooutline = outline;
 }
-INLINE void setNobreakfirst(STYLE* x, BOOLEAN nobreakfirst) {
+INLINE void setNobreakfirst(STYLE* x, BOOLEAN2 nobreakfirst) {
   (x)->onobreakfirst = nobreakfirst;
 }
-INLINE void setNobreaklast(STYLE* x, BOOLEAN nobreaklast) {
+INLINE void setNobreaklast(STYLE* x, BOOLEAN2 nobreaklast) {
   (x)->onobreaklast = nobreaklast;
 }
-INLINE void setBaselinemark(STYLE* x, BOOLEAN baselinemark) {
+INLINE void setBaselinemark(STYLE* x, BOOLEAN2 baselinemark) {
   (x)->obaselinemark = baselinemark;
 }
-INLINE void setStrut(STYLE* x, BOOLEAN strut) {
+INLINE void setStrut(STYLE* x, BOOLEAN2 strut) {
   (x)->ostrut = strut;
 }
-INLINE void setLigatures(STYLE* x, BOOLEAN ligatures) {
+INLINE void setLigatures(STYLE* x, BOOLEAN2 ligatures) {
   (x)->oligatures = ligatures;
 }
-INLINE void setMarginkerning(STYLE* x, BOOLEAN marginkerning) {
+INLINE void setMarginkerning(STYLE* x, BOOLEAN2 marginkerning) {
   (x)->omarginkerning = marginkerning;
 }
 INLINE void setContext(STYLE* x, CONTEXT* context) {
@@ -1384,7 +1384,7 @@ typedef struct
 #define	fc(x)		(x).ofc
 #define	sparec(x)	(x).osparec
 
-INLINE BOOLEAN constrained(CONSTRAINT x) {
+INLINE BOOLEAN2 constrained(CONSTRAINT x) {
     return bc(x) != MAX_FULL_LENGTH || bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH;
 }
 
@@ -1410,11 +1410,11 @@ INLINE void FlipConstraintOnRef(CONSTRAINT* x, CONSTRAINT* y) {
 }
 
 #define FitsConstraint(b, f, c)	( FitsConstraintOnRef(b, f, &(c)) )
-INLINE BOOLEAN FitsConstraintOnRef(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT* c) {
+INLINE BOOLEAN2 FitsConstraintOnRef(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT* c) {
     return b <= bc(*c)  && b + f <= bfc(*c) && f <= fc(*c);
 }
 
-INLINE BOOLEAN EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
+INLINE BOOLEAN2 EqualConstraint(CONSTRAINT a, CONSTRAINT b) {
     return bc(a)==bc(b) && bfc(a)==bfc(b) && fc(a)==fc(b);
 }
 
@@ -1487,11 +1487,11 @@ typedef union
 	COLOUR_NUM	oword_underline_colour;
 	TEXTURE_NUM	oword_texture;
 	unsigned	ounderline	   : 2; /* aligns with os23.underline */
-	BOOLEAN		oword_outline	   : 1;
+	BOOLEAN2		oword_outline	   : 1;
 	LANGUAGE_NUM	oword_language	   : 6;
-	BOOLEAN		oword_baselinemark : 1;
-	BOOLEAN		oword_strut	   : 1;
-	BOOLEAN		oword_ligatures	   : 1;
+	BOOLEAN2		oword_baselinemark : 1;
+	BOOLEAN2		oword_strut	   : 1;
+	BOOLEAN2		oword_ligatures	   : 1;
 	unsigned	oword_hyph	   : 1;
   } os22;
 
@@ -1502,19 +1502,19 @@ typedef union
 	unsigned short  ounused_os23_a;
 	unsigned short  ounused_os23_b;
 	unsigned	ounderline   : 2;    /* aligns with os22.underline */
-	BOOLEAN		onon_blocking: 1;
-	BOOLEAN		osized       : 1;
-	BOOLEAN		othreaded    : 1;
-	BOOLEAN		oexternal_hor: 1;
-	BOOLEAN		oexternal_ver: 1;
-	BOOLEAN		oblocked     : 1;
-	BOOLEAN		otrigger_ext : 1;
-	BOOLEAN	        omust_expand : 1;
-	BOOLEAN		ogall_dir    : 1;
-	BOOLEAN		oopt_hyph    : 1;
-	BOOLEAN		oopt_gazumped: 1;
-	BOOLEAN		oadjust_cat  : 1;
-	BOOLEAN		oforce_gall  : 1;
+	BOOLEAN2		onon_blocking: 1;
+	BOOLEAN2		osized       : 1;
+	BOOLEAN2		othreaded    : 1;
+	BOOLEAN2		oexternal_hor: 1;
+	BOOLEAN2		oexternal_ver: 1;
+	BOOLEAN2		oblocked     : 1;
+	BOOLEAN2		otrigger_ext : 1;
+	BOOLEAN2	        omust_expand : 1;
+	BOOLEAN2		ogall_dir    : 1;
+	BOOLEAN2		oopt_hyph    : 1;
+	BOOLEAN2		oopt_gazumped: 1;
+	BOOLEAN2		oadjust_cat  : 1;
+	BOOLEAN2		oforce_gall  : 1;
 	/* don't forget ounderline from os22 applies in this union! */
   } os23;
 
@@ -1532,29 +1532,29 @@ typedef union
 
   struct /* used by symbol table entries */
   {	unsigned char	oprecedence;
-	BOOLEAN		ois_tag		     : 1;
-	BOOLEAN		ohas_tag             : 1;
-	BOOLEAN		ohas_lpar            : 1;
-	BOOLEAN		ohas_rpar            : 1;
-	BOOLEAN		oright_assoc         : 1;
-	BOOLEAN		ois_target           : 1;
-	BOOLEAN		ohas_target          : 1;
-	BOOLEAN		oforce_target	     : 1;
-	BOOLEAN		ohas_body            : 1;
-	BOOLEAN		oindefinite          : 1;
-	BOOLEAN		orecursive           : 1;
-	BOOLEAN		ouses_extern_target  : 1;
-	BOOLEAN		ois_extern_target    : 1;
-	BOOLEAN		ois_key		     : 1;
-	BOOLEAN		ohas_key	     : 1;
-	BOOLEAN		odirty               : 1;
-	BOOLEAN		ovisible	     : 1;
-	BOOLEAN		ohas_mark	     : 1;
-	BOOLEAN		ohas_join	     : 1;
-	BOOLEAN		ohas_par             : 1;
-	BOOLEAN		ouses_galley	     : 1;
-	BOOLEAN		ohoriz_galley	     : 1;
-	BOOLEAN		oimports_encl	     : 1;
+	BOOLEAN2		ois_tag		     : 1;
+	BOOLEAN2		ohas_tag             : 1;
+	BOOLEAN2		ohas_lpar            : 1;
+	BOOLEAN2		ohas_rpar            : 1;
+	BOOLEAN2		oright_assoc         : 1;
+	BOOLEAN2		ois_target           : 1;
+	BOOLEAN2		ohas_target          : 1;
+	BOOLEAN2		oforce_target	     : 1;
+	BOOLEAN2		ohas_body            : 1;
+	BOOLEAN2		oindefinite          : 1;
+	BOOLEAN2		orecursive           : 1;
+	BOOLEAN2		ouses_extern_target  : 1;
+	BOOLEAN2		ois_extern_target    : 1;
+	BOOLEAN2		ois_key		     : 1;
+	BOOLEAN2		ohas_key	     : 1;
+	BOOLEAN2		odirty               : 1;
+	BOOLEAN2		ovisible	     : 1;
+	BOOLEAN2		ohas_mark	     : 1;
+	BOOLEAN2		ohas_join	     : 1;
+	BOOLEAN2		ohas_par             : 1;
+	BOOLEAN2		ouses_galley	     : 1;
+	BOOLEAN2		ohoriz_galley	     : 1;
+	BOOLEAN2		oimports_encl	     : 1;
   } os26;
 
 } SECOND_UNION;
@@ -1589,7 +1589,7 @@ typedef union
     	FONT_NUM	ofont_num;
 	unsigned short	ofont_page;
 	MAPPING		ofont_mapping	: 7;
-	BOOLEAN		ofont_recoded	: 1;
+	BOOLEAN2		ofont_recoded	: 1;
   } os32;
 
   struct
@@ -2332,13 +2332,13 @@ typedef union rec
      unsigned short 	ohas_compulsory;
      unsigned char	ouses_count;
      unsigned char	onpar_code;
-     BOOLEAN		ois_optimize	     : 1;
-     BOOLEAN		ohas_optimize	     : 1;
-     BOOLEAN		ois_merge	     : 1;
-     BOOLEAN		ohas_merge	     : 1;
-     BOOLEAN		ois_enclose	     : 1;
-     BOOLEAN		ohas_enclose	     : 1;
-     BOOLEAN		ois_compulsory	     : 1;
+     BOOLEAN2		ois_optimize	     : 1;
+     BOOLEAN2		ohas_optimize	     : 1;
+     BOOLEAN2		ois_merge	     : 1;
+     BOOLEAN2		ohas_merge	     : 1;
+     BOOLEAN2		ois_enclose	     : 1;
+     BOOLEAN2		ohas_enclose	     : 1;
+     BOOLEAN2		ois_compulsory	     : 1;
   } os6;
 
   struct cr_type
@@ -2462,7 +2462,7 @@ INLINE UNDER underline(OBJECT x) {
 INLINE void setUnderline(OBJECT x, UNDER under) {
   (x)->os1.ou2.os22.ounderline = under.underline;
 }
-INLINE BOOLEAN objectHasUnderline(OBJECT x, UNDER under) {
+INLINE BOOLEAN2 objectHasUnderline(OBJECT x, UNDER under) {
   return (x)->os1.ou2.os22.ounderline == under.underline;
 }
 
@@ -2631,11 +2631,11 @@ INLINE BOOLEAN objectHasUnderline(OBJECT x, UNDER under) {
 #define	font_mapping(x)		(x)->os1.ou3.os32.ofont_mapping
 #define	font_recoded(x)		(x)->os1.ou3.os32.ofont_recoded
 
-INLINE BOOLEAN objectOfType(OBJECT x, OBJTYPE typ) {
+INLINE BOOLEAN2 objectOfType(OBJECT x, OBJTYPE typ) {
   return type(x).objtype == typ.objtype;
 }
 
-INLINE BOOLEAN spaceMode(GAP* x, SPACE_MODE m) {
+INLINE BOOLEAN2 spaceMode(GAP* x, SPACE_MODE m) {
   return (mode(x).spacemode == m.spacemode);
 }
 
@@ -2741,31 +2741,31 @@ typedef struct back_end_rec {
 } *BACK_END;
 
 
-INLINE BOOLEAN is_indefinite(OBJTYPE x) {
+INLINE BOOLEAN2 is_indefinite(OBJTYPE x) {
     return (x).objtype >= CLOSURE_E && (x).objtype <= HEAD_E;
 }
-INLINE BOOLEAN is_header(OBJTYPE x) {
+INLINE BOOLEAN2 is_header(OBJTYPE x) {
     return (x).objtype >= BEGIN_HEADER_E && (x).objtype <= CLEAR_HEADER_E;
 }
-INLINE BOOLEAN is_definite(OBJTYPE x) {
+INLINE BOOLEAN2 is_definite(OBJTYPE x) {
     return (x).objtype >= SPLIT_E && (x).objtype <= LINK_URL_E;
 }
-INLINE BOOLEAN is_par(OBJTYPE x) {
+INLINE BOOLEAN2 is_par(OBJTYPE x) {
     return (x).objtype >= LPAR_E && (x).objtype <= RPAR_E;
 }
-INLINE BOOLEAN is_index(OBJTYPE x) {
+INLINE BOOLEAN2 is_index(OBJTYPE x) {
     return (x).objtype >= DEAD_E && (x).objtype <= EXPAND_IND_E;
 }
-INLINE BOOLEAN is_type(OBJTYPE x) {
+INLINE BOOLEAN2 is_type(OBJTYPE x) {
     return (x).objtype >= LINK_E && (x).objtype < DISPOSED_E;
 }
-INLINE BOOLEAN is_word(OBJTYPE x) {
+INLINE BOOLEAN2 is_word(OBJTYPE x) {
     return (x).objtype == WORD_E || (x).objtype == QWORD_E;
 }
-INLINE BOOLEAN is_cross(OBJTYPE x) {
+INLINE BOOLEAN2 is_cross(OBJTYPE x) {
     return (x).objtype == CROSS_E || (x).objtype == FORCE_CROSS_E;
 }
-INLINE BOOLEAN is_cat_op(OBJTYPE x) {
+INLINE BOOLEAN2 is_cat_op(OBJTYPE x) {
     return ((x).objtype>=ACAT_E && (x).objtype<=VCAT_E) || (x).objtype==TSPACE_E || (x).objtype<=TJUXTA_E;
 }
 
