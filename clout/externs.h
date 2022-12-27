@@ -854,6 +854,11 @@ typedef struct
 #define	mode_m(x)		(x).omode
 #define	width_m(x)	(x).owidth
 
+// don't forget to free
+INLINE GAP* newGap(void) {
+  return calloc(1L, ceiling(sizeof(GAP), sizeof(ALIGN)));
+}
+
 INLINE BOOLEAN2 nobreak(GAP* x) {
   return x->onobreak;
 }
@@ -955,7 +960,7 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
 }
 
 #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
-( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
+( SetGapOnRef( (x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN2 xnobreak, BOOLEAN2 xmark, BOOLEAN2 xjoin, UNIT xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
@@ -973,7 +978,7 @@ inline void ClearGap(GAP x) {
 */
 
 #define GapCopy(x, y)							\
-( GapCopyOnRef( &(x), &(y) ) )
+( GapCopyOnRef( (x), (y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   nobreak_m(*x) = nobreak(y);
   mark_m(*x) = mark(y);
@@ -1021,8 +1026,8 @@ typedef struct context_type
 
 typedef struct style_type
 {
-  GAP		oline_gap;		/* separation between lines          */
-  GAP		ospace_gap;		/* separation induced by white space */
+  GAP*		oline_gap;		/* separation between lines          */
+  GAP*		ospace_gap;		/* separation induced by white space */
   FULL_LENGTH	oyunit;			/* value of y unit of measurement    */
   FULL_LENGTH	ozunit;			/* value of z unit of measurement    */
   FULL_LENGTH	ooutdent_len;		/* amount to outdent in outdent style*/
@@ -1086,10 +1091,33 @@ typedef struct style_type
 */
 #define	context_m(x)	(x)->ocontext
 
-INLINE GAP line_gap(STYLE* x) {
+INLINE void clearStyle(STYLE* x) {
+  x->oline_gap = NULL;
+  x->ospace_gap = NULL;
+}
+INLINE void initStyle(STYLE* x) {
+  // if (!x->oline_gap) {
+    x->oline_gap = newGap();
+  // }
+  // if (!x->ospace_gap) {
+    x->ospace_gap = newGap();
+  // }
+}
+INLINE void disposeStyle(STYLE* x) {
+  if (x->oline_gap) {
+    free(x->oline_gap);
+  }
+  x->oline_gap = NULL;
+  if (x->ospace_gap) {
+    free(x->ospace_gap);
+  }
+  x->ospace_gap = NULL;
+}
+
+INLINE GAP* line_gap(STYLE* x) {
   return (x)->oline_gap;
 } 
-INLINE GAP space_gap(STYLE* x) {
+INLINE GAP* space_gap(STYLE* x) {
   return (x)->ospace_gap;
 }
 INLINE FULL_LENGTH yunit(STYLE* x) {
@@ -1218,10 +1246,10 @@ INLINE CONTEXT context(STYLE* x) {
 }
 
 INLINE void setLine_gap(STYLE* x, GAP* line_gap) {
-  (x)->oline_gap = *line_gap;
+  (x)->oline_gap = line_gap;
 } 
 INLINE void setSpace_gap(STYLE* x, GAP* space_gap) {
-  (x)->ospace_gap = *space_gap;
+  (x)->ospace_gap = space_gap;
 }
 INLINE void setYunit(STYLE* x, FULL_LENGTH yunit) {
   (x)->oyunit = yunit;
@@ -1336,8 +1364,8 @@ INLINE void setContext(STYLE* x, CONTEXT* context) {
 */
 
 INLINE void StyleCopy(STYLE* x, STYLE* y) {
-  GapCopyOnRef(&line_gap_m(x), &line_gap_m(y));
-  GapCopyOnRef(&space_gap_m(x), &space_gap_m(y));
+  GapCopyOnRef(line_gap_m(x), line_gap_m(y));
+  GapCopyOnRef(space_gap_m(x), space_gap_m(y));
   setYunit(x, yunit(y));
   setZunit(x, zunit(y));
   setOutdent_len(x, outdent_len(y));
@@ -2307,7 +2335,7 @@ typedef union rec
   {  LIST		olist[2];
      FIRST_UNION	ou1;
      SECOND_UNION	ou2;
-     GAP		ogap;
+     GAP*		ogap;
      int		osave_badness;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_space;		/* optimum paragraph breaker */
      FULL_LENGTH	osave_actual_gap;	/* optimum paragraph breaker */
@@ -2402,6 +2430,8 @@ INLINE OBJTYPE type(OBJECT x) {
 }
 INLINE void setType(OBJECT x, OBJTYPE type) {
   (x)->os1.ou1.os11.otype = type;
+  // potential leak?
+  initObject(x, type);
 }
 
 #define	word_font(x)		(x)->os1.ou2.os22.oword_font
@@ -2551,8 +2581,8 @@ INLINE BOOLEAN2 objectHasUnderline(OBJECT x, UNDER under) {
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(&space_gap_ms(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap_ms(save_style(x)), (y))
+#define	shift_type(x)		width(space_gap_ms(save_style(x)))
+#define	setShift_type(x, y)		setWidth(space_gap_ms(save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
 #define	shift_gap(x)		line_gap_m(&save_style(x))
 
@@ -2633,6 +2663,10 @@ INLINE BOOLEAN2 objectHasUnderline(OBJECT x, UNDER under) {
 
 INLINE BOOLEAN2 objectOfType(OBJECT x, OBJTYPE typ) {
   return type(x).objtype == typ.objtype;
+}
+
+INLINE BOOLEAN2 sameObjType(OBJTYPE x, OBJTYPE y) {
+  return x.objtype == y.objtype;
 }
 
 INLINE BOOLEAN2 spaceMode(GAP* x, SPACE_MODE m) {
@@ -3060,7 +3094,7 @@ extern	POINTER	  MemCheck;
 extern	const FULL_CHAR *Image(OBJTYPE c);
 extern	const FULL_CHAR *Image4Constraints(int c);
 
-#define	USE_SYSTEM_MALLOC	0
+#define	USE_SYSTEM_MALLOC	1
 #define	USE_MALLOC_DEBUG	0
 
 // defined in z31.c
@@ -3203,6 +3237,25 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
 */
 #define New(x, typ) (x) = returnNew((x), (typ))
 
+INLINE void initObject(OBJECT x, OBJTYPE typ) {
+  // OBJTYPEs with gap (x->os5.ogap)
+  // if (!gap(x)) {
+    if (sameObjType(typ, GAP_OBJ) || sameObjType(typ, TSPACE) || sameObjType(typ, TJUXTA)) {
+      GAP* g;
+      // slow
+      g = calloc(1L, zz_lengths[GAP_OBJ_E]);
+      gap(x) = g;
+    } 
+  // }
+  // OBJTYPEs with save_style (x->os2.ou4.osave_style)
+  if (sameObjType(typ, CLOSURE) || sameObjType(typ, NULL_CLOS) || sameObjType(typ, ACAT) || sameObjType(typ, HCAT) || sameObjType(typ, VCAT) || sameObjType(typ, HSHIFT) || sameObjType(typ, VSHIFT) ||
+      sameObjType(typ, INCGRAPHIC) || sameObjType(typ, SINCGRAPHIC) || sameObjType(typ, GRAPHIC) || sameObjType(typ, PLAIN_GRAPHIC) || 
+      sameObjType(typ, LINK_DEST) || sameObjType(typ, LINK_SOURCE) || sameObjType(typ, LINK_URL) ||
+      sameObjType(typ, BEGIN_HEADER) || sameObjType(typ, SET_HEADER)) {
+    initStyle(&save_style(x));
+  }
+}
+
 #pragma clang diagnostic ignored "-Wuninitialized"
 INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checknew(typ);
@@ -3213,6 +3266,7 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   checkmem(zz_hold, typ);
   x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =
   pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;
+  initObject(x, typ);
   assert(objectOfType(x, typ), "returnNew: created object has unexpected token type");
   return x;
 }
@@ -3396,7 +3450,28 @@ INLINE void PutMem(POINTER x, int size) {
   setdisposed;								\
 }
 */
+
+INLINE void finalizeObject(OBJECT x, OBJTYPE typ) {
+    // OBJTYPEs with gap (x->os5.ogap)
+    if (gap(x)) {
+      if (typ == GAP_OBJ || typ == TSPACE || typ == TJUXTA) {
+        // slow
+        free(gap(x));
+        gap(x) = NULL;
+      }
+    }
+    // OBJTYPEs with save_style (x->os2.ou4.osave_style)
+  if (typ == CLOSURE || typ == NULL_CLOS || typ == ACAT || typ == HCAT || typ == VCAT || typ == HSHIFT || typ == VSHIFT ||
+      typ == INCGRAPHIC || typ == SINCGRAPHIC || typ == GRAPHIC || typ == PLAIN_GRAPHIC || 
+      typ == LINK_DEST || typ == LINK_SOURCE || typ == LINK_URL ||
+      typ == BEGIN_HEADER || typ == SET_HEADER) {
+      disposeStyle(&save_style(x));
+    }
+}
+
 INLINE void Dispose(OBJECT x) {
+    OBJTYPE typ = type(x);
+    finalizeObject(x, typ);
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
         rec_size(zz_hold) : zz_lengths[type(zz_hold).objtype]);
@@ -3665,7 +3740,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( objectOfType(y, GAP_OBJ) )  jn = jn && join(&gap(y));			\
+    if( objectOfType(y, GAP_OBJ) )  jn = jn && join(gap(y));			\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
   }									\
@@ -3729,7 +3804,7 @@ INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(&gap(y));		\
+    if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(gap(y));		\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGap at %s %s",			\

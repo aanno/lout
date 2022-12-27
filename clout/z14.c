@@ -107,8 +107,8 @@ typedef struct {
   { OBJECT glink = NextDown(NextDown(I.llink));				\
     assert( objectOfType(glink, LINK), "SIB: glink!");			\
     Child(g, glink);							\
-    if( objectOfType(g, GAP_OBJ) && spaceMode(&gap(g), TAB_MODE) &&		\
-	gapHasUnit(&gap(g), AVAIL_UNIT) && width(&gap(g)) == 1*FR )		\
+    if( objectOfType(g, GAP_OBJ) && spaceMode(gap(g), TAB_MODE) &&		\
+	gapHasUnit(gap(g), AVAIL_UNIT) && width(gap(g)) == 1*FR )		\
       I.badness += WIDOW_BAD_INCR;					\
   }									\
 									\
@@ -182,13 +182,13 @@ typedef struct {
     /* set save_space(newg) now so that it is OK to forget right */	\
     debug0(DOF, DDD, "  MoveRightToGap setting save_space(newg)");	\
     if( I.cwid != nilobj )  etc_width = bfc(constraint(I.cwid));	\
-    if( spaceMode(&gap(newg), TAB_MODE) )					\
+    if( spaceMode(gap(newg), TAB_MODE) )					\
     { save_space(newg) = ActualGap(0, back(foll,COLM), fwd(foll,COLM),	\
-	  &gap(newg), etc_width, 0) - back(foll, COLM);			\
+	  gap(newg), etc_width, 0) - back(foll, COLM);			\
     }									\
     else								\
     { save_space(newg) = ActualGap(fwd(right, COLM), back(foll, COLM),	\
-	  fwd(foll,COLM), &gap(newg), etc_width,			\
+	  fwd(foll,COLM), gap(newg), etc_width,			\
 	  I.nat_width - fwd(right,COLM))				\
 	  - back(foll, COLM) - fwd(right, COLM);			\
     }									\
@@ -199,16 +199,16 @@ typedef struct {
 	Child(tmp, Down(newg));						\
 	debug5(DOF, DDD, "newg %s: %s %s, gap = %s, save_space = %s",	\
 	Image(type(newg)), Image(type(tmp)), EchoObject(tmp),		\
-	EchoGap(&gap(newg)), EchoLength(save_space(newg)));		\
+	EchoGap(gap(newg)), EchoLength(save_space(newg)));		\
       }									\
       else debug3(DOF, DDD, "newg %s: gap = %s, save_space = %s",	\
-	Image(type(newg)), EchoGap(&gap(newg)),				\
+	Image(type(newg)), EchoGap(gap(newg)),				\
 	EchoLength(save_space(newg)));					\
     )									\
 									\
     /* sort out ending with hyphenation and/or being unbreakable */	\
     /* NB ADD_HYPH is possible after a restart                   */	\
-    if( spaceMode(&gap(newg), HYPH_MODE) || spaceMode(&gap(newg), ADD_HYPH) )	\
+    if( spaceMode(gap(newg), HYPH_MODE) || spaceMode(gap(newg), ADD_HYPH) )	\
     { if( hyph_allowed )						\
       {									\
 	/* hyphenation is allowed, so add hyph_word to nat_width */	\
@@ -238,7 +238,7 @@ typedef struct {
 	      FontWordSize(hyph_word);					\
 	    }								\
 									\
-	    setMode(&gap(newg), ADD_HYPH);					\
+	    setMode(gap(newg), ADD_HYPH);					\
 	    if( !marginkerning(&save_style(x)) )				\
 	      I.nat_width += size(hyph_word, COLM);			\
 	    debug0(DOF, DDD, "   adding hyph_word from nat_width");	\
@@ -251,7 +251,7 @@ typedef struct {
 	unbreakable_at_right = TRUE;					\
       }									\
     }									\
-    else if( nobreak(&gap(newg)) )					\
+    else if( nobreak(gap(newg)) )					\
       unbreakable_at_right = TRUE;					\
 									\
     I.rlink = Up(newg);							\
@@ -261,7 +261,7 @@ typedef struct {
   else I.rlink = x;							\
   SetIntervalBadness(I, max_width, etc_width);				\
   if( unbreakable_at_right )  I.class = UNBREAKABLE_RIGHT;		\
-  else if( I.class == TIGHT && spaceMode(&gap(newg), TAB_MODE) )		\
+  else if( I.class == TIGHT && spaceMode(gap(newg), TAB_MODE) )		\
     I.class = TOO_TIGHT, I.badness = TOO_TIGHT_BAD;			\
   debug0(DOF, DDD, "MoveRightToGap returning.");				\
 }
@@ -323,7 +323,7 @@ typedef struct {
 									\
     /* if hyphenation case, must take away width of hyph_word */	\
     /* and increase the badness to discourage breaks at this point */	\
-    if( spaceMode(&gap(g), ADD_HYPH) )					\
+    if( spaceMode(gap(g), ADD_HYPH) )					\
     {									\
       if( !marginkerning(&save_style(x)) )				\
 	I.nat_width -= size(hyph_word,COLM);				\
@@ -336,7 +336,7 @@ typedef struct {
     assert( rlink != x, "IntervalShiftRightEnd: rlink == x!" );		\
 									\
     /* modify I to reflect the addition of g and right */		\
-    if( spaceMode(&gap(g), TAB_MODE) )					\
+    if( spaceMode(gap(g), TAB_MODE) )					\
     { I.tab_count++;							\
       I.tab_pos = save_space(g);					\
       I.width_to_tab = I.nat_width;					\
@@ -377,7 +377,7 @@ typedef struct {
   assert( llink != x, "IntervalShiftLeftEnd: llink == x!" );		\
 									\
   /* calculate width and badness of interval minus left and lgap */	\
-  if( spaceMode(&gap(lgap), TAB_MODE) )					\
+  if( spaceMode(gap(lgap), TAB_MODE) )					\
   { assert( I.tab_count > 0 || Up(lgap) == I.rlink,			\
 			"IntervalShiftLeftEnd: tab_count <= 0!" );	\
     I.tab_count--;							\
@@ -407,8 +407,8 @@ typedef struct {
       else Child(I.cwid, tlink);					\
     }									\
     SetIntervalBadness(I, max_width, etc_width);			\
-    if( nobreak(&gap(lgap)) || ( !hyph_allowed &&			\
-	(spaceMode(&gap(lgap), HYPH_MODE) || spaceMode(&gap(lgap), ADD_HYPH)) ) )	\
+    if( nobreak(gap(lgap)) || ( !hyph_allowed &&			\
+	(spaceMode(gap(lgap), HYPH_MODE) || spaceMode(gap(lgap), ADD_HYPH)) ) )	\
       I.class = UNBREAKABLE_LEFT;					\
   }									\
   debug1(DOF, DDD, "IShiftLeftEnd returning %s", IntervalPrint(I, x));	\
@@ -471,7 +471,7 @@ static FULL_CHAR *IntervalPrint(INTERVAL I, OBJECT x)
       if( Down(g) != g )
       {	Child(z, Down(g));
 	StringCat(res, STR_SPACE);
-	StringCat(res, EchoCatOp(ACAT, mark(&gap(g)), join(&gap(g)))),
+	StringCat(res, EchoCatOp(ACAT, mark(gap(g)), join(gap(g)))),
 	StringCat(res, is_word(type(z)) ? string(z) : Image(type(z)));
 	StringCat(res, STR_SPACE);
       }
@@ -860,11 +860,11 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
     while( link != x )
     {
       /* add unbreakableness if gap is overshadowed by a previous one */
-      f += MinGap(fwd(prev, COLM), back(y, COLM), fwd(y, COLM), &gap(g))
+      f += MinGap(fwd(prev, COLM), back(y, COLM), fwd(y, COLM), gap(g))
 	     - fwd(prev, COLM) + back(y, COLM);
       if( f < max_f )
-      { if( gapHasUnit(&gap(g), FIXED_UNIT) )
-	  setNobreak(&gap(g), TRUE);
+      { if( gapHasUnit(gap(g), FIXED_UNIT) )
+	  setNobreak(gap(g), TRUE);
       }
       else
       { max_f = f;
@@ -1058,7 +1058,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 
       /* add hyphen to end of previous line, if lgap is ADD_HYPH */
       Child(lgap, llink);
-      if( spaceMode(&gap(lgap), ADD_HYPH) )
+      if( spaceMode(gap(lgap), ADD_HYPH) )
       { OBJECT z, tmp;
         FONT_NUM font;
         #pragma clang diagnostic ignored "-Wunused-but-set-variable"
@@ -1175,12 +1175,12 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
     if( nobreakfirst(&save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, NextDown(Down(res)));
       assert( objectOfType(gp, GAP_OBJ), "FillObject: type(gp) != GAP_OBJ (a)!" );
-      setNobreak(&gap(gp), TRUE);
+      setNobreak(gap(gp), TRUE);
     }
     if( nobreaklast(&save_style(x)) && Down(res) != LastDown(res) )
     { Child(gp, PrevDown(LastDown(res)));
       assert( objectOfType(gp, GAP_OBJ), "FillObject: type(gp) != GAP_OBJ (b)!" );
-      setNobreak(&gap(gp), TRUE);
+      setNobreak(gap(gp), TRUE);
     }
 
     /* recalculate the width of the last line, since it may now be smaller */
@@ -1192,7 +1192,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
     NextDefiniteWithGap(y, link, z, gp, jn);
     while( link != y )
     {
-      f += MinGap(fwd(prev, COLM), back(z, COLM), fwd(z, COLM), &gap(gp));
+      f += MinGap(fwd(prev, COLM), back(z, COLM), fwd(z, COLM), gap(gp));
       prev = z;
       NextDefiniteWithGap(y, link, z, gp, jn);
     }
@@ -1209,8 +1209,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
       if( objectOfType(y, ACAT) )
       { for( ylink = Down(y);  ylink != y;  ylink = NextDown(ylink) )
         { Child(gp, ylink);
-	  if( objectOfType(gp, GAP_OBJ) && width(&gap(gp)) == 0 &&
-	      spaceMode(&gap(gp), ADD_HYPH) )
+	  if( objectOfType(gp, GAP_OBJ) && width(gap(gp)) == 0 &&
+	      spaceMode(gap(gp), ADD_HYPH) )
 	  {
 	    /* possible candidate for joining, look into what's on each side */
 	    Child(prev, PrevDown(ylink));

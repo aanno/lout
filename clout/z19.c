@@ -517,7 +517,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	case GAP_OBJ_E:
 
 	  setUnderline(y, underline(dest));
-	  if( !join(&gap(y)) )  seen_nojoin(hd) = TRUE;
+	  if( !join(gap(y)) )  seen_nojoin(hd) = TRUE;
 	  break;
 
 
@@ -632,7 +632,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 
 	        case GAP_OBJ_E:
 		
-		  if( !join(&gap(z)) )  zlink = PrevDown(hd);
+		  if( !join(gap(z)) )  zlink = PrevDown(hd);
 		  break;
 
 

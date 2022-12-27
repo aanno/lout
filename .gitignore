@@ -8,6 +8,9 @@ __debug_bin
 *.ldx
 *.lix
 
+*.ldx
+*.lix
+
 /main
 /example
 /clout/liblout.so

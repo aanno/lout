@@ -47,12 +47,12 @@ FULL_LENGTH FindShift(OBJECT x, OBJECT y, int dim)
     Image(type(y)), EchoObject(y), dimen(dim));
 
   /* first determine the magnitude of the shift */
-  switch( units(&shift_gap(x)).unit )
+  switch( units(shift_gap(x)).unit )
   {
-    case FIXED_UNIT_E:	len = width(&shift_gap(x));
+    case FIXED_UNIT_E:	len = width(shift_gap(x));
 			break;
 
-    case NEXT_UNIT_E:	len = (size(y, dim) * width(&shift_gap(x))) / FR;
+    case NEXT_UNIT_E:	len = (size(y, dim) * width(shift_gap(x))) / FR;
 			break;
 
     default:		assert(FALSE, "FindShift: units");
@@ -135,7 +135,7 @@ OBJECT *sg, OBJECT *sdef, int *side)
     }
   }
 
-  *side = ratm ? BACK : *pg == nilobj || mark(&gap(*pg)) ? ON : FWD;
+  *side = ratm ? BACK : *pg == nilobj || mark(gap(*pg)) ? ON : FWD;
   debug4(DSA, DD,
     "SetNeighbours: ratm == %s, pg %s nilobj, sg %s nilobj, side == %s",
     bool2s(ratm), *pg == nilobj ? "==" : "!=", *sg == nilobj ? "==" : "!=", 
@@ -192,30 +192,30 @@ OBJECT y, int dim)
   if( is_indefinite(type(x)) )
   {
     beffect = pg == nilobj ? *b :
-      MinGap(fwd(prec_def, dim), *b, *f, &gap(pg));
+      MinGap(fwd(prec_def, dim), *b, *f, gap(pg));
 
     feffect = sg == nilobj ? *f :
-      MinGap(*f, back(sd, dim), fwd(sd, dim), &gap(sg));
+      MinGap(*f, back(sd, dim), fwd(sd, dim), gap(sg));
 
     seffect = pg == nilobj ? sg == nilobj ? 0 : back(sd, dim) :
       sg == nilobj ? fwd(prec_def, dim) :
-      MinGap(fwd(prec_def, dim), back(sd,dim), fwd(sd,dim), &gap(sg));
+      MinGap(fwd(prec_def, dim), back(sd,dim), fwd(sd,dim), gap(sg));
   }
   else /* !is_indefinite(type(x)) */
   {
     beffect = pg == nilobj ?  *b - back(x, dim) :
-      MinGap(fwd(prec_def, dim), *b,           *f,          &gap(pg)) -
-      MinGap(fwd(prec_def, dim), back(x, dim), fwd(x, dim), &gap(pg));
+      MinGap(fwd(prec_def, dim), *b,           *f,          gap(pg)) -
+      MinGap(fwd(prec_def, dim), back(x, dim), fwd(x, dim), gap(pg));
 
     feffect = sg == nilobj ? *f - fwd(x, dim) :
-      MinGap(*f,          back(sd, dim), fwd(sd, dim), &gap(sg)) -
-      MinGap(fwd(x, dim), back(sd, dim), fwd(sd, dim), &gap(sg));
+      MinGap(*f,          back(sd, dim), fwd(sd, dim), gap(sg)) -
+      MinGap(fwd(x, dim), back(sd, dim), fwd(sd, dim), gap(sg));
 	
     seffect = 0;
   }
 
   debug3(DSA, D, "  pg = %s, sg = %s, side = %s",
-    pg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(pg)),
+    pg == nilobj ? AsciiToFull("<nil>") : EchoGap(gap(pg)),
     sg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(sg)), Image4Constraints(side));
   debug3(DSA, D, "  beffect = %s, feffect = %s, seffect = %s",
     EchoLength(beffect), EchoLength(feffect), EchoLength(seffect));
@@ -303,7 +303,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
     link = UpDim(x, dim);  ratm = FALSE;
     for( tlink=NextDown(link);  objectOfType(tlink, LINK);  tlink=NextDown(tlink) )
     { Child(y, tlink);
-      if( objectOfType(y, GAP_OBJ) && mark(&gap(y)) )  ratm = TRUE;
+      if( objectOfType(y, GAP_OBJ) && mark(gap(y)) )  ratm = TRUE;
     }
     y = tlink;
 
@@ -333,11 +333,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	  /* components joined to x                            */
 	  for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	  { Child(z, lp);
-	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(gap(z)) )  break;
 	  }
 	  for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	  { Child(z, rp);
-	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(gap(z)) )  break;
 	  }
 
 	  back(x, dim) = b;  fwd(x, dim) = f;
@@ -358,7 +358,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	    for( link = NextDown(lp);  link != rp;  link = NextDown(link) )
 	    { Child(z, link);
 	      debugcond1(DSA, D, objectOfType(z, GAP_OBJ),
-		"    gap %s", EchoCatOp(VCAT, mark(&gap(z)), join(&gap(z))));
+		"    gap %s", EchoCatOp(VCAT, mark(gap(z)), join(gap(z))));
 	      if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
 	      debug6(DSA, D,  "    component %s %s(%s, %s) so tb = %s, tf = %s",
 		Image(type(z)), objectOfType(z, CLOSURE) ?  SymName(actual(z)) : STR_EMPTY,
@@ -577,11 +577,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	  /* let lp and rp be the gaps bracketing the components joined to x */
 	  for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
 	  { Child(z, lp);
-	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(gap(z)) )  break;
 	  }
 	  for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
 	  { Child(z, rp);
-	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
+	    if( objectOfType(z, GAP_OBJ) && !join(gap(z)) )  break;
 	  }
 
 	  back(x, dim) = b;  fwd(x, dim) = f;

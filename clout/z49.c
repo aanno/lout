@@ -1709,7 +1709,7 @@ static void PS_DefineGraphicNames(OBJECT x)
   fprintf(out_fp, "%d %d %d %d %d %d %d LoutGraphic%s",
     size(x, COLM), size(x, ROWM), back(x, COLM), fwd(x, ROWM),
     currentfont <= 0 ? 12*PT : FontSize(currentfont, x),
-    width(&line_gap_ms(save_style(x))), width(&space_gap_ms(save_style(x))),
+    width(line_gap_ms(save_style(x))), width(space_gap_ms(save_style(x))),
     (char *) STR_NEWLINE);
   debug0(DPO, DD, "PS_DefineGraphicNames returning.");
 } /* end PS_DefineGraphicNames */
@@ -1775,7 +1775,7 @@ static void PS_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist,
     fprintf(out_fp, "%d %d %d %d %d %d %d %d %d LoutGr2%s",
       size(x, COLM), size(x, ROWM), back(x, COLM), fwd(x, ROWM),
       currentfont <= 0 ? 12*PT : FontSize(currentfont, x),
-      width(&line_gap_ms(save_style(x))), width(&space_gap_ms(save_style(x))),
+      width(line_gap_ms(save_style(x))), width(space_gap_ms(save_style(x))),
       xdist, ydist, (char *) STR_NEWLINE);
       
   }

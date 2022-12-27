@@ -414,7 +414,7 @@ void FlushGalley(OBJECT hd)
 	  /* *** not necessarily true
 	  assert( dest_encl != nilobj, "FlushGalley/GAP_OBJ: dest_encl!" );
 	  *** */
-	  if( dest_encl != nilobj && !nobreak(&gap(prec_gap)) )
+	  if( dest_encl != nilobj && !nobreak(gap(prec_gap)) )
 	  {
 	    stop_link = link;
 	    stop_back = dest_back;
@@ -424,7 +424,7 @@ void FlushGalley(OBJECT hd)
 	  }
 	}
 	else stop_link = link;
-	if( !join(&gap(y)) )  seen_nojoin(hd) = TRUE;
+	if( !join(gap(y)) )  seen_nojoin(hd) = TRUE;
 	break;
 
 
@@ -561,7 +561,7 @@ void FlushGalley(OBJECT hd)
 	      case RECEIVING_E:	y = z;
 				goto SUSPEND;
 
-	      case GAP_OBJ_E:	if( !join(&gap(z)) )  zlink = PrevDown(hd);
+	      case GAP_OBJ_E:	if( !join(gap(z)) )  zlink = PrevDown(hd);
 				break;
 
 	      default:		break;
@@ -615,21 +615,21 @@ void FlushGalley(OBJECT hd)
 	    /* calculate parallel effect of adding y to dest */
 	    f = dest_fwd  + fwd(y, dim) - fwd(prec_def, dim) +
 		  ActualGap(fwd(prec_def, dim), back(y, dim),
-			fwd(y, dim), &gap(prec_gap), frame_size,
+			fwd(y, dim), gap(prec_gap), frame_size,
 			dest_back + dest_fwd - fwd(prec_def, dim));
 	    debug5(DGF, DD, "  f = %s + %s - %s + %s (prec_gap %s)",
 	      EchoLength(dest_fwd), EchoLength(fwd(y, dim)),
 	      EchoLength(fwd(prec_def, dim)), EchoLength(
 		  ActualGap(fwd(prec_def, dim), back(y, dim),
-			fwd(y, dim), &gap(prec_gap), frame_size,
+			fwd(y, dim), gap(prec_gap), frame_size,
 			dest_back + dest_fwd - fwd(prec_def, dim))
-	      ), EchoGap(&gap(prec_gap)));
+	      ), EchoGap(gap(prec_gap)));
 	    debug3(DGF, DD, "  b,f: %s,%s;   dest_encl: %s",
 			EchoLength(dest_back), EchoLength(f),
 			EchoConstraint(&dest_par_constr));
 
 	    /* check new size against parallel constraint */
-	    if( (gapHasUnit(&gap(prec_gap), FRAME_UNIT) && width(&gap(prec_gap)) > FR)
+	    if( (gapHasUnit(gap(prec_gap), FRAME_UNIT) && width(gap(prec_gap)) > FR)
 	        || !FitsConstraint(dest_back, f, dest_par_constr)
 		|| (opt_components(hd) != nilobj && opt_comps_permitted(hd)<=0)
 	      )
@@ -645,8 +645,8 @@ void FlushGalley(OBJECT hd)
 		  debug2(DOG, D, "FlushGalley(%s) adding constraint %s",
 		    SymName(actual(hd)), EchoConstraint(&constraint(z)));
 		  if( gapHasUnit(&gap(prec_gap), FRAME_UNIT) &&
-		      width(&gap(prec_gap)) > FR ) 
-		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(&gap(prec_gap)));
+		      width(gap(prec_gap)) > FR ) 
+		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(gap(prec_gap)));
 		  }
 		  if( !FitsConstraint(dest_back, f, dest_par_constr) )
 		  { debug3(DOG, D, "  !FitsConstraint(%s, %s, %s)",
@@ -658,7 +658,7 @@ void FlushGalley(OBJECT hd)
 		      opt_comps_permitted(hd));
 		  }
 		  debug4(DOG, D, "prec_gap = %s;  y = %s (%s,%s):",
-		    EchoGap(&gap(prec_gap)), Image(type(y)),
+		    EchoGap(gap(prec_gap)), Image(type(y)),
 		    EchoLength(back(y, dim)), EchoLength(fwd(y, dim)));
 		  DebugObject(y);
 		)
@@ -738,7 +738,7 @@ void FlushGalley(OBJECT hd)
 	  if( objectOfType(NextDown(link), LINK) )
 	  { Child(tgp, NextDown(link));
 	    assert( objectOfType(tgp, GAP_OBJ), "FlushGalley:  tgp!" );
-	    promotable = !nobreak(&gap(tgp));
+	    promotable = !nobreak(gap(tgp));
 	  }
 	  else promotable = TRUE;
 

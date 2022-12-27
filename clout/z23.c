@@ -49,7 +49,7 @@
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
   { Child(y, link);							\
-    if( objectOfType(y, GAP_OBJ) )  jn = jn && join(&gap(y));			\
+    if( objectOfType(y, GAP_OBJ) )  jn = jn && join(gap(y));			\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
     else if( objectOfType(y, LINK_DEST_NULL) )				\
@@ -61,7 +61,7 @@
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
   { Child(y, link);							\
-    if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(&gap(y));		\
+    if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(gap(y));		\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
       debug2(DFS, DD, "  NextDefiniteWithGapLDN at %s %s",		\
@@ -114,12 +114,12 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size,int dim)
     mk = back(prev, dim);
     NextDefiniteWithGap(x, link, y, g, jn);
     while( link != x )
-    { if ( spaceMode(&gap(g), TAB_MODE) || gapHasUnit(&gap(g), AVAIL_UNIT)
-				    || gapHasUnit(&gap(g), FRAME_UNIT) )
+    { if ( spaceMode(gap(g), TAB_MODE) || gapHasUnit(gap(g), AVAIL_UNIT)
+				    || gapHasUnit(gap(g), FRAME_UNIT) )
       {	debug0(DGP, DD, "FindAdjustIncrement returning 0 (tab gap)");
 	return 0;
       }
-      mk += ActualGap(fwd(prev, dim), back(y, dim), fwd(y, dim), &gap(g),
+      mk += ActualGap(fwd(prev, dim), back(y, dim), fwd(y, dim), gap(g),
 		frame_size, mk);
       prev = y;
       adjustable_gaps++;
@@ -793,16 +793,16 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  /*******************************************************************/
 
 	  NextDefiniteWithGap(x, link, y, g, jn); /* not LDN since will redo */
-	  if( link != x && spaceMode(&gap(g), TAB_MODE) &&
-	      gapHasUnit(&gap(g), AVAIL_UNIT) && width(&gap(g)) == 0 )
+	  if( link != x && spaceMode(gap(g), TAB_MODE) &&
+	      gapHasUnit(gap(g), AVAIL_UNIT) && width(gap(g)) == 0 )
 	  {
 	    debug2(DGP, DD, "  FAPO-CAT converting 0rt (back(x, dim) %s, xb %s)",
 	      EchoLength(back(x, dim)), EchoLength(xb));
 	    /* NB state change here */
 	    fwd(prev, dim) += xb - back(x, dim);
 	    back(x, dim) = xb;
-	    setMode(&gap(g), EDGE_MODE);
-	    setUnits(&gap(g), FIXED_UNIT);
+	    setMode(gap(g), EDGE_MODE);
+	    setUnits(gap(g), FIXED_UNIT);
 	  }
 	  FirstDefinite(x, link, prev, jn);  /* not LDN since already done */
 
@@ -839,8 +839,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  NextDefiniteWithGapLDN(x, link, y, g, jn, mk, dim, NO_SUPPRESS, pg);
 	  while( link != x )
 	  {
-	    if( spaceMode(&gap(g), TAB_MODE) && gapHasUnit(&gap(g), AVAIL_UNIT) &&
-		width(&gap(g))==FR )
+	    if( spaceMode(gap(g), TAB_MODE) && gapHasUnit(gap(g), AVAIL_UNIT) &&
+		width(gap(g))==FR )
 	    {
 	      /* object is followed by 1rt gap, give it full space to print */
 	      debug5(DGP,D,"  FAPO (a) calling FAPO(%s, %s, %s, max(%s, %s))",
@@ -858,7 +858,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	      prev = FixAndPrintObject(prev, mk, back(prev, dim),
 		fwd(prev, dim) + inc, dim, NO_SUPPRESS, pg, count,&aback,&afwd);
 	    }
-	    mk += ActualGap(afwd, back(y, dim), fwd(y, dim), &gap(g),
+	    mk += ActualGap(afwd, back(y, dim), fwd(y, dim), gap(g),
 		    frame_size, mk - back_edge);
 	    prev = y;
 	    NextDefiniteWithGapLDN(x, link, y, g, jn, mk, dim, NO_SUPPRESS, pg);
@@ -1057,14 +1057,14 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	while( link != x )
 	{
 	  save_actual_gap(g) = ActualGap(fwd(prev, dim), back(y, dim),
-		fwd(y, dim), &gap(g), frame_size, mk - back_edge);
+		fwd(y, dim), gap(g), frame_size, mk - back_edge);
 	  mk += save_actual_gap(g);
-	  if( spaceMode(&gap(g), TAB_MODE) || gapHasUnit(&gap(g), AVAIL_UNIT)
-				       || gapHasUnit(&gap(g), FRAME_UNIT) )
+	  if( spaceMode(gap(g), TAB_MODE) || gapHasUnit(gap(g), AVAIL_UNIT)
+				       || gapHasUnit(gap(g), FRAME_UNIT) )
 	  { last_bad_gap = g;
 	    adjustable_gaps = 0;
 	  }
-	  else if( width(&gap(g)) > 0 )  adjustable_gaps++;
+	  else if( width(gap(g)) > 0 )  adjustable_gaps++;
 	  prev = y;
 	  NextDefiniteWithGap(x, link, y, g, jn);  /* no LDN, initial pass */
 	}
@@ -1274,7 +1274,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    }
 
 	    /* fix previous definite now we know it is not the last one  */
-	    if( adjusting && width(&gap(g)) > 0 )
+	    if( adjusting && width(gap(g)) > 0 )
 	    { int tmp;
 
 	      prev = FixAndPrintObject(prev, mk, back(prev, dim),

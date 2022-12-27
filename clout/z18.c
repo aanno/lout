@@ -71,7 +71,10 @@ void TransferInit(OBJECT InitEnv)
 
   /* set initial environment and style */
   InitialEnvironment = InitEnv;
-  SetGap(line_gap_ms(InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
+
+  initStyle(&InitialStyle);
+  SetGap(line_gap_m(&InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
+
   setHadjust(&InitialStyle, FALSE);
   setHadjust(&InitialStyle, FALSE);
   setPadjust(&InitialStyle, FALSE);
@@ -531,5 +534,8 @@ void TransferClose(void)
     debug0(DGF, D, "  calling FlushGalley from TransferClose");
     FlushGalley(root_galley);
   }
+
+  disposeStyle(&InitialStyle);
+
   debug0(DGT, D, "] TransferClose returning.");
 }
