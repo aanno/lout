@@ -624,3 +624,21 @@ const MAP_TE MAP_LOWERCASE = {MAP_LOWERCASE_E};
 const MAP_TE MAP_UNACCENTED = {MAP_UNACCENTED_E};
 const MAP_TE MAP_ACCENT = {MAP_ACCENT_E};
 
+void initObject(OBJECT x, OBJTYPE typ) {
+  // OBJTYPEs with gap (x->os5.ogap)
+  // if (!gap(x)) {
+    if (sameObjType(typ, GAP_OBJ) || sameObjType(typ, TSPACE) || sameObjType(typ, TJUXTA)) {
+      GAP* g;
+      // slow
+      g = calloc(1L, zz_lengths[GAP_OBJ_E]);
+      gap(x) = g;
+    } 
+  // }
+  // OBJTYPEs with save_style (x->os2.ou4.osave_style)
+  if (sameObjType(typ, CLOSURE) || sameObjType(typ, NULL_CLOS) || sameObjType(typ, ACAT) || sameObjType(typ, HCAT) || sameObjType(typ, VCAT) || sameObjType(typ, HSHIFT) || sameObjType(typ, VSHIFT) ||
+      sameObjType(typ, INCGRAPHIC) || sameObjType(typ, SINCGRAPHIC) || sameObjType(typ, GRAPHIC) || sameObjType(typ, PLAIN_GRAPHIC) || 
+      sameObjType(typ, LINK_DEST) || sameObjType(typ, LINK_SOURCE) || sameObjType(typ, LINK_URL) ||
+      sameObjType(typ, BEGIN_HEADER) || sameObjType(typ, SET_HEADER)) {
+    initStyle(&save_style(x));
+  }
+}
