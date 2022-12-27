@@ -532,7 +532,7 @@ static OBJECT ReadMacro(OBJECT *token, OBJECT curr_encl, OBJECT encl)
 
 void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 { OBJECT t, res, res_target, export_list, import_list, link, y, z;
-  OBJECT curr_encl;  BOOLEAN compulsory_par, has_import_encl;
+  OBJECT curr_encl;  BOOLEAN2 compulsory_par, has_import_encl;
   t = *token;
 
   while( res_type.objtype==LOCAL_E || is_string(t, KW_NAMED) || is_string(t, KW_IMPORT) )
