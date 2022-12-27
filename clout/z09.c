@@ -184,6 +184,7 @@ OBJECT *crs, OBJECT *res_env)
 	  Child(res, Down(par));
 	  if( dirty(enclosing(actual(par))) || is_enclose(actual(par)) )
 	  { debug2(DCE, DD, "copy %s %s", SymName(actual(par)), EchoObject(res));
+	    // TODO: This seems to be the place that trigger strange switch default in units()
 	    res = CopyObject(res, no_fpos);
 	  }
 	  else

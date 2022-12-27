@@ -47,6 +47,162 @@ extern nl_catd MsgCat;
 #define condcatgets(cat, set, msg, s) s
 #endif
 
+typedef unsigned char FULL_CHAR;
+
+#define	BOOLEAN		unsigned
+#define	FALSE		0
+#define	TRUE		1
+#define	bool(x)		(x ? AsciiToFull("TRUE") : AsciiToFull("FALSE") )
+
+/*@::assert(), debug(), debug flags@******************************************/
+/*                                                                           */
+/*  ASSERT AND DEBUG CODE                                                    */
+/*                                                                           */
+/*****************************************************************************/
+
+/*****	z27.c	  Debug Service		**************************************/
+#if DEBUG_ON
+extern	void	  DebugInit(FULL_CHAR *str);
+extern	void	  Debug(int category, int urgency, char *str, ...);
+extern	void	  ProfileOn(char *str);
+extern	void	  ProfileOff(char *str);
+extern	void	  ProfilePrint(void);
+#endif
+
+#if DEBUG_ON
+
+struct dbs
+{	char	*flag;			/* external names for debug flags    */
+	BOOLEAN	on[3];			/* the debug flags                   */
+};
+extern	struct dbs 	dbg[];
+
+/* debug routines */
+#define debug0(cat, urg, str)                				\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str); }
+#define debug1(cat, urg, str, p1)					\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1); }
+#define debug2(cat, urg, str, p1, p2)					\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2); }
+#define debug3(cat, urg, str, p1, p2, p3)				\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3); }
+#define debug4(cat, urg, str, p1, p2, p3, p4)				\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4); }
+#define debug5(cat, urg, str, p1, p2, p3, p4, p5)			\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4, p5); }
+#define debug6(cat, urg, str, p1, p2, p3, p4, p5, p6)			\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4, p5, p6); }
+#define debug7(cat, urg, str, p1, p2, p3, p4, p5, p6, p7)		\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4, p5,p6,p7); }
+#define debug8(cat, urg, str, p1, p2, p3, p4, p5, p6, p7, p8)		\
+    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2,p3,p4,p5,p6,p7,p8); }
+#define	ifdebug(cat, urg, x)						\
+    { if( dbg[cat].on[urg] ) { x; } }
+
+#define debugcond0(cat, urg, cond, str)                			\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str); }
+#define debugcond1(cat, urg, cond, str, p1)				\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1); }
+#define debugcond2(cat, urg, cond, str, p1, p2)				\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2); }
+#define debugcond3(cat, urg, cond, str, p1, p2, p3)			\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2, p3); }
+#define debugcond4(cat, urg, cond, str, p1, p2, p3, p4)			\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2, p3, p4); }
+#define debugcond5(cat, urg, cond, str, p1, p2, p3, p4, p5)		\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2, p3, p4, p5);}
+#define debugcond6(cat, urg, cond, str, p1, p2, p3, p4, p5, p6)		\
+    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2,p3,p4,p5,p6);}
+#define	ifdebugcond(cat, urg, cond, x)					\
+    { if( dbg[cat].on[urg] && cond ) { x; } }
+#define	debug_init(str)							\
+    DebugInit(str)
+
+/* debug styles */
+#define	D	 0
+#define	DD	 1
+#define	DDD	 2
+
+/* debug flags */
+#define	DSP	 1		/*  z01.c   -dsp   Supervise                 */
+#define	DLA	 2		/*  z02.c   -dla   Lexical Analyser          */
+#define	DFS	 3		/*  z03.c   -dfs   File Service              */
+#define	DTS	 4		/*  z04.c   -dts   Token Service             */
+#define	DRD	 5		/*  z05.c   -drd   Read Definitions          */
+#define	DOP	 6		/*  z06.c   -dop   Object Parser             */
+#define	DOS	 7		/*  z07.c   -dos   Object Service            */
+#define	DOM	 8		/*  z08.c   -dom   Object Manifest           */
+#define	DCE	 9		/*  z09.c   -dce   Closure Expansion         */
+#define	DCR	10		/*  z10.c   -dcr   Cross References	     */
+#define	DSS	11		/*  z11.c   -dss   Style Service	     */
+#define	DSF	12		/*  z12.c   -dsf   Size Finder               */
+#define	DOB	13		/*  z13.c   -dob   Object Breaking	     */
+#define	DOF	14		/*  z14.c   -dof   Object Filling	     */
+#define	DSC	15		/*  z15.c   -dsc   Size Constraints          */
+#define	DSA	16		/*  z16.c   -dsa   Size Adjustments	     */
+#define	DGW	17		/*  z17.c   -dgw   Gap Widths                */
+#define	DGT	18		/*  z18.c   -dgt   Galley Transfer           */
+#define	DGA	19		/*  z19.c   -dgf   Galley Attaching          */
+#define	DGF	20		/*  z20.c   -dgf   Galley Flushing           */
+#define	DGM	21		/*  z21.c   -dgm   Galley Maker              */
+#define	DGS	22		/*  z22.c   -dgs   Galley Service            */
+#define	DGP	23		/*  z23.c   -dgp   Galley Printer            */
+#define	DPS	24		/*  z24.c   -dps   Print Service             */
+#define	DOE	25		/*  z25.c   -doe   Object Echo               */
+#define	DES	26		/*  z26.c   -des   Echo Service		     */
+#define	DZZ	27		/*  z27.c   -dzz   Debug Service             */
+#define	DYY	28		/*  z28.c   -dyy   Error Service             */
+#define	DST	29		/*  z29.c   -dst   Symbol Table              */
+#define	DSU	30		/*  z30.c   -dsu   Symbol Uses               */
+#define	DMA	31		/*  z31.c   -dma   Memory Allocator          */
+#define	DCS	32		/*  z32.c   -dcs   Counter Service           */
+#define	DBS	33		/*  z33.c   -dbs   Database Service          */
+#define	DRS	34		/*  z34.c   -drs   Rotation Service          */
+#define	DTK	35		/*  z35.c   -dtk   Time Keeper               */
+#define	DHY	36		/*  z36.c   -dhy   Hyphenation               */
+#define	DFT	37		/*  z37.c   -dft   Font Service              */
+#define	DCM	38		/*  z38.c   -dcm   Character Mapping         */
+#define	DSH	39		/*  z39.c   -dsh   String Handler            */
+#define	DFH	40		/*  z40.c   -dsh   Filter Handler            */
+#define	DIO	41		/*  z41.c   -dio   Object Input-Output       */
+#define	DCO	42		/*  z42.c   -dco   Colour Service            */
+#define	DLS	43		/*  z43.c   -dls   Language Service          */
+#define	DVH	44		/*  z44.c   -dvh   Vertical Hyphenation      */
+#define	DEX	45		/*  z45.c   -dex   External Sort             */
+#define	DOG	46		/*  z46.c   -dex   Optimal Galleys           */
+#define	DET	47		/*  z47.c   -det   Environment Table         */
+#define	DPD	48		/*  z48.c   -dpd   PDF Back End (old)        */
+#define	DPO	49		/*  z49.c   -dpo   PostScript Back End       */
+#define	DPF	50		/*  z50.c   -dpf   PDF Back End              */
+#define	DPT	51		/*  z51.c   -dpt   Plain Text Back End       */
+#define	DTX	52		/*  z52.c   -dtx   Texture Service           */
+#define	DPP	53		/*          -dpp   Profiling                 */
+#define	ANY	54		/*          -d     any                       */
+
+#else
+#define ifdebug(cat, urg, x)
+#define debug0(cat, urg, str)
+#define debug1(cat, urg, str, p1)
+#define debug2(cat, urg, str, p1, p2)
+#define debug3(cat, urg, str, p1, p2, p3)
+#define debug4(cat, urg, str, p1, p2, p3, p4)
+#define debug5(cat, urg, str, p1, p2, p3, p4, p5)
+#define debug6(cat, urg, str, p1, p2, p3, p4, p5, p6)
+#define debug7(cat, urg, str, p1, p2, p3, p4, p5, p6, p7)
+#define debug8(cat, urg, str, p1, p2, p3, p4, p5, p6, p7, p8)
+
+#define debugcond0(cat, urg, cond, str)
+#define debugcond1(cat, urg, cond, str, p1)
+#define debugcond2(cat, urg, cond, str, p1, p2)
+#define debugcond3(cat, urg, cond, str, p1, p2, p3)
+#define debugcond4(cat, urg, cond, str, p1, p2, p3, p4)
+#define debugcond5(cat, urg, cond, str, p1, p2, p3, p4, p5)
+#define debugcond6(cat, urg, cond, str, p1, p2, p3, p4, p5, p6)
+#define	ifdebugcond(cat, urg, cond, x)
+#define	debug_init(str)	Error(1, 4, "%s - debug flags not implemented", \
+	FATAL, no_fpos, str)
+#endif
+
 /*****************************************************************************/
 /*                                                                           */
 /*  typedef POINTER- name for type of generic pointer                        */
@@ -84,7 +240,7 @@ typedef	struct
 #define	FATAL		     1		/* fatal error, abort now            */
 #define	FATAL_WITH_USAGE     2		/* fatal error, abort now + usage    */
 #define	WARN		     3		/* warning, non-fatal                */
-#define UNEXPECTED_DEFAULT WARN /* switch which uses default branch: this is unexpected and points to uninitialized memory */
+#define UNEXPECTED_DEFAULT FATAL /* switch which uses default branch: this is unexpected and points to uninitialized memory */
 
 // from z03 header below - but used here
 extern	FILE_POS  *no_fpos;
@@ -156,7 +312,7 @@ extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS 
 /*                                                                           */
 /*****************************************************************************/
 
-typedef unsigned char FULL_CHAR;
+// typedef unsigned char FULL_CHAR;
 #define              AsciiToFull(x)        ( (FULL_CHAR *) (x) )
 
 extern const FULL_CHAR *const LOUT_VERSION;
@@ -361,10 +517,6 @@ extern const char* const LOUT_EPS;
 /*                                                                           */
 /*****************************************************************************/
 
-#define	BOOLEAN		unsigned
-#define	FALSE		0
-#define	TRUE		1
-#define	bool(x)		(x ? AsciiToFull("TRUE") : AsciiToFull("FALSE") )
 #define	CHILD		0
 #define	PARENT		1
 #define	COLM		0
@@ -711,7 +863,7 @@ INLINE BOOLEAN join(GAP* x) {
 INLINE UNIT units(GAP* x) {
   // return x->ounits;
   unsigned units = x->ounits;
-  UNIT res = NO_UNIT;
+  UNIT res = FIXED_UNIT;
   switch(units) {
     case NO_UNIT_E:
       res = NO_UNIT;
@@ -733,7 +885,8 @@ INLINE UNIT units(GAP* x) {
       break;
     default:
       // TODO
-      Error(2, 201, "units %u unknown in GAP* %p", UNEXPECTED_DEFAULT, no_fpos, units, x);
+      // Error(2, 201, "units %u unknown in GAP* %p", UNEXPECTED_DEFAULT, no_fpos, units, x);
+      debug2(DCE, DD, "units %u unknown in GAP* %p", units, x);
   }
   return res;
 }
@@ -3888,15 +4041,6 @@ extern	FULL_CHAR *EchoLength(int len);
 // extern	FULL_CHAR *Image(unsigned int c);
 extern	void	  SetLengthDim(int dim);
 
-/*****	z27.c	  Debug Service		**************************************/
-#if DEBUG_ON
-extern	void	  DebugInit(FULL_CHAR *str);
-extern	void	  Debug(int category, int urgency, char *str, ...);
-extern	void	  ProfileOn(char *str);
-extern	void	  ProfileOff(char *str);
-extern	void	  ProfilePrint(void);
-#endif
-
 /*****	z28.c	  Error Service		**************************************/
 extern	void	  ErrorInit(void);
 extern	void	  ErrorSetFile(FULL_CHAR *str);
@@ -4162,145 +4306,5 @@ extern	BOOLEAN	  UseTexture;
 extern	void	  TextureInit(void);
 extern	void	  TextureChange(STYLE *style, OBJECT x);
 extern	FULL_CHAR *TextureCommand(TEXTURE_NUM pnum);
-
-/*@::assert(), debug(), debug flags@******************************************/
-/*                                                                           */
-/*  ASSERT AND DEBUG CODE                                                    */
-/*                                                                           */
-/*****************************************************************************/
-
-#if DEBUG_ON
-
-struct dbs
-{	char	*flag;			/* external names for debug flags    */
-	BOOLEAN	on[3];			/* the debug flags                   */
-};
-extern	struct dbs 	dbg[];
-
-/* debug routines */
-#define debug0(cat, urg, str)                				\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str); }
-#define debug1(cat, urg, str, p1)					\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1); }
-#define debug2(cat, urg, str, p1, p2)					\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2); }
-#define debug3(cat, urg, str, p1, p2, p3)				\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3); }
-#define debug4(cat, urg, str, p1, p2, p3, p4)				\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4); }
-#define debug5(cat, urg, str, p1, p2, p3, p4, p5)			\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4, p5); }
-#define debug6(cat, urg, str, p1, p2, p3, p4, p5, p6)			\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4, p5, p6); }
-#define debug7(cat, urg, str, p1, p2, p3, p4, p5, p6, p7)		\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2, p3, p4, p5,p6,p7); }
-#define debug8(cat, urg, str, p1, p2, p3, p4, p5, p6, p7, p8)		\
-    { if( dbg[cat].on[urg] ) Debug(cat, urg, str, p1, p2,p3,p4,p5,p6,p7,p8); }
-#define	ifdebug(cat, urg, x)						\
-    { if( dbg[cat].on[urg] ) { x; } }
-
-#define debugcond0(cat, urg, cond, str)                			\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str); }
-#define debugcond1(cat, urg, cond, str, p1)				\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1); }
-#define debugcond2(cat, urg, cond, str, p1, p2)				\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2); }
-#define debugcond3(cat, urg, cond, str, p1, p2, p3)			\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2, p3); }
-#define debugcond4(cat, urg, cond, str, p1, p2, p3, p4)			\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2, p3, p4); }
-#define debugcond5(cat, urg, cond, str, p1, p2, p3, p4, p5)		\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2, p3, p4, p5);}
-#define debugcond6(cat, urg, cond, str, p1, p2, p3, p4, p5, p6)		\
-    { if( dbg[cat].on[urg] && cond ) Debug(cat, urg, str, p1, p2,p3,p4,p5,p6);}
-#define	ifdebugcond(cat, urg, cond, x)					\
-    { if( dbg[cat].on[urg] && cond ) { x; } }
-#define	debug_init(str)							\
-    DebugInit(str)
-
-/* debug styles */
-#define	D	 0
-#define	DD	 1
-#define	DDD	 2
-
-/* debug flags */
-#define	DSP	 1		/*  z01.c   -dsp   Supervise                 */
-#define	DLA	 2		/*  z02.c   -dla   Lexical Analyser          */
-#define	DFS	 3		/*  z03.c   -dfs   File Service              */
-#define	DTS	 4		/*  z04.c   -dts   Token Service             */
-#define	DRD	 5		/*  z05.c   -drd   Read Definitions          */
-#define	DOP	 6		/*  z06.c   -dop   Object Parser             */
-#define	DOS	 7		/*  z07.c   -dos   Object Service            */
-#define	DOM	 8		/*  z08.c   -dom   Object Manifest           */
-#define	DCE	 9		/*  z09.c   -dce   Closure Expansion         */
-#define	DCR	10		/*  z10.c   -dcr   Cross References	     */
-#define	DSS	11		/*  z11.c   -dss   Style Service	     */
-#define	DSF	12		/*  z12.c   -dsf   Size Finder               */
-#define	DOB	13		/*  z13.c   -dob   Object Breaking	     */
-#define	DOF	14		/*  z14.c   -dof   Object Filling	     */
-#define	DSC	15		/*  z15.c   -dsc   Size Constraints          */
-#define	DSA	16		/*  z16.c   -dsa   Size Adjustments	     */
-#define	DGW	17		/*  z17.c   -dgw   Gap Widths                */
-#define	DGT	18		/*  z18.c   -dgt   Galley Transfer           */
-#define	DGA	19		/*  z19.c   -dgf   Galley Attaching          */
-#define	DGF	20		/*  z20.c   -dgf   Galley Flushing           */
-#define	DGM	21		/*  z21.c   -dgm   Galley Maker              */
-#define	DGS	22		/*  z22.c   -dgs   Galley Service            */
-#define	DGP	23		/*  z23.c   -dgp   Galley Printer            */
-#define	DPS	24		/*  z24.c   -dps   Print Service             */
-#define	DOE	25		/*  z25.c   -doe   Object Echo               */
-#define	DES	26		/*  z26.c   -des   Echo Service		     */
-#define	DZZ	27		/*  z27.c   -dzz   Debug Service             */
-#define	DYY	28		/*  z28.c   -dyy   Error Service             */
-#define	DST	29		/*  z29.c   -dst   Symbol Table              */
-#define	DSU	30		/*  z30.c   -dsu   Symbol Uses               */
-#define	DMA	31		/*  z31.c   -dma   Memory Allocator          */
-#define	DCS	32		/*  z32.c   -dcs   Counter Service           */
-#define	DBS	33		/*  z33.c   -dbs   Database Service          */
-#define	DRS	34		/*  z34.c   -drs   Rotation Service          */
-#define	DTK	35		/*  z35.c   -dtk   Time Keeper               */
-#define	DHY	36		/*  z36.c   -dhy   Hyphenation               */
-#define	DFT	37		/*  z37.c   -dft   Font Service              */
-#define	DCM	38		/*  z38.c   -dcm   Character Mapping         */
-#define	DSH	39		/*  z39.c   -dsh   String Handler            */
-#define	DFH	40		/*  z40.c   -dsh   Filter Handler            */
-#define	DIO	41		/*  z41.c   -dio   Object Input-Output       */
-#define	DCO	42		/*  z42.c   -dco   Colour Service            */
-#define	DLS	43		/*  z43.c   -dls   Language Service          */
-#define	DVH	44		/*  z44.c   -dvh   Vertical Hyphenation      */
-#define	DEX	45		/*  z45.c   -dex   External Sort             */
-#define	DOG	46		/*  z46.c   -dex   Optimal Galleys           */
-#define	DET	47		/*  z47.c   -det   Environment Table         */
-#define	DPD	48		/*  z48.c   -dpd   PDF Back End (old)        */
-#define	DPO	49		/*  z49.c   -dpo   PostScript Back End       */
-#define	DPF	50		/*  z50.c   -dpf   PDF Back End              */
-#define	DPT	51		/*  z51.c   -dpt   Plain Text Back End       */
-#define	DTX	52		/*  z52.c   -dtx   Texture Service           */
-#define	DPP	53		/*          -dpp   Profiling                 */
-#define	ANY	54		/*          -d     any                       */
-
-#else
-#define ifdebug(cat, urg, x)
-#define debug0(cat, urg, str)
-#define debug1(cat, urg, str, p1)
-#define debug2(cat, urg, str, p1, p2)
-#define debug3(cat, urg, str, p1, p2, p3)
-#define debug4(cat, urg, str, p1, p2, p3, p4)
-#define debug5(cat, urg, str, p1, p2, p3, p4, p5)
-#define debug6(cat, urg, str, p1, p2, p3, p4, p5, p6)
-#define debug7(cat, urg, str, p1, p2, p3, p4, p5, p6, p7)
-#define debug8(cat, urg, str, p1, p2, p3, p4, p5, p6, p7, p8)
-
-#define debugcond0(cat, urg, cond, str)
-#define debugcond1(cat, urg, cond, str, p1)
-#define debugcond2(cat, urg, cond, str, p1, p2)
-#define debugcond3(cat, urg, cond, str, p1, p2, p3)
-#define debugcond4(cat, urg, cond, str, p1, p2, p3, p4)
-#define debugcond5(cat, urg, cond, str, p1, p2, p3, p4, p5)
-#define debugcond6(cat, urg, cond, str, p1, p2, p3, p4, p5, p6)
-#define	ifdebugcond(cat, urg, cond, x)
-#define	debug_init(str)	Error(1, 4, "%s - debug flags not implemented", \
-	FATAL, no_fpos, str)
-#endif
 
 #endif
