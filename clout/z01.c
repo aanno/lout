@@ -89,13 +89,13 @@ OBJECT StartSym, GalleySym, ForceGalleySym, InputSym, PrintSym, OptGallSym,
 
 BACK_END BackEnd;
 OBJECT CommandOptions;
-BOOLEAN UseCollate;
-BOOLEAN AllowCrossDb;
-BOOLEAN InMemoryDbIndexes;
-BOOLEAN Kern;
-BOOLEAN SafeExecution;
-BOOLEAN	AltErrorFormat;
-BOOLEAN InitializeAll;
+BOOLEAN2 UseCollate;
+BOOLEAN2 AllowCrossDb;
+BOOLEAN2 InMemoryDbIndexes;
+BOOLEAN2 Kern;
+BOOLEAN2 SafeExecution;
+BOOLEAN2	AltErrorFormat;
+BOOLEAN2 InitializeAll;
 #if LOCALE_ON
 nl_catd MsgCat;
 #endif
@@ -112,7 +112,7 @@ int TotalWordCount;
 /*****************************************************************************/
 
 static OBJECT load(const FULL_CHAR *xstr, OBJTYPE xpre,
-BOOLEAN xleft, BOOLEAN xright, BOOLEAN xindef, unsigned char xprec)
+BOOLEAN2 xleft, BOOLEAN2 xright, BOOLEAN2 xindef, unsigned char xprec)
 { OBJECT s;
   s = InsertSym(xstr, LOCAL, no_fpos, xprec, xindef, FALSE, xpre,
 	StartSym, nilobj);
@@ -246,7 +246,7 @@ void run(int argc, char *argv[], int run_num, int *runs_to_do,
   FULL_CHAR *lib)
 { int i, len;  FULL_CHAR *arg;
   OBJECT t, y, res, s;			/* current token, parser output      */
-  BOOLEAN stdin_seen;			/* TRUE when stdin file seen         */
+  BOOLEAN2 stdin_seen;			/* TRUE when stdin file seen         */
   int source_file_count;		/* number of source files in command */
   const FULL_CHAR *cross_db;			/* name of cross reference database  */
   const FULL_CHAR *outfile;			/* name of output file               */
@@ -254,7 +254,7 @@ void run(int argc, char *argv[], int run_num, int *runs_to_do,
   long MemCheckLong;
   FULL_CHAR oname[MAX_BUFF], oval[MAX_BUFF], buff[MAX_BUFF], *p;
   int bp, runcount;  OBJECT z;
-  BOOLEAN seen_wordcount, encapsulated;
+  BOOLEAN2 seen_wordcount, encapsulated;
   BE_TYPE be_type;
 
   /* initialise various modules, add current directory to search paths */

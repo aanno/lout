@@ -369,7 +369,7 @@ static const FULL_CHAR *IndexType(OBJECT index)
 OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 { OBJECT y, z, link, prev, t, g, full_name, catch_extras;
   FULL_LENGTH b, f, dble_fwd;
-  BOOLEAN2 dble_found, found, will_expand; BOOLEAN cp;
+  BOOLEAN2 dble_found, found, will_expand, cp;
   FILE *fp;
 
   debug2(DSF, DD, "[ MinSize( %s, %s, extras )", EchoObject(x), dimen(dim));

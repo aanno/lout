@@ -1124,7 +1124,7 @@ static void PS_PrintBeforeFirstPage(FULL_LENGTH h, FULL_LENGTH v,
   { int fnum;
     FILE *fp;
     #pragma clang diagnostic ignored "-Wunused-but-set-variable"
-    BOOLEAN2 junk; BOOLEAN cp;
+    BOOLEAN2 junk, cp;
     OBJECT link, x, full_name;
     p0("<< /MaxFormItem currentsystemparams /MaxFormCache get >> setuserparams");
     pnl;
@@ -1878,7 +1878,7 @@ BOOLEAN2 PS_FindBoundingBox(FILE *fp, FILE_POS *pos, FULL_LENGTH *llx,
 
 static void PS_PrintGraphicInclude(OBJECT x, FULL_LENGTH colmark,
   FULL_LENGTH rowmark)
-{ OBJECT y, full_name;  FILE *fp;  BOOLEAN compressed;  int fnum;
+{ OBJECT y, full_name;  FILE *fp;  BOOLEAN2 compressed;  int fnum;
   debug0(DPO, DD, "PS_PrintGraphicInclude(x)");
 
   assert(objectOfType(x, INCGRAPHIC) || objectOfType(x, SINCGRAPHIC), "PrintGraphicInclude!");

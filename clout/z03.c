@@ -658,9 +658,9 @@ FILE_POS *PosOfFile(FILE_NUM fnum)
 /*                                                                           */
 /*****************************************************************************/
 
-static FILE *SearchPath(const FULL_CHAR *str, OBJECT fpath, BOOLEAN check_ld,
-BOOLEAN check_lt, OBJECT *full_name, FILE_POS *xfpos, const char *read_mode,
-BOOLEAN *used_source_suffix)
+static FILE *SearchPath(const FULL_CHAR *str, OBJECT fpath, BOOLEAN2 check_ld,
+BOOLEAN2 check_lt, OBJECT *full_name, FILE_POS *xfpos, const char *read_mode,
+BOOLEAN2 *used_source_suffix)
 { FULL_CHAR buff[MAX_BUFF], buff2[MAX_BUFF];
   OBJECT link, y = nilobj, cpath;  FILE *fp, *fp2;
   debug4(DFS, DD, "[ SearchPath(%s, %s, %s, %s, -)", str, EchoObject(fpath),
@@ -798,8 +798,8 @@ BOOLEAN *used_source_suffix)
 /*                                                                           */
 /*****************************************************************************/
 
-FILE *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt)
-{ FILE *fp;  OBJECT fname, full_name, y;  BOOLEAN used_source_suffix;
+FILE *OpenFile(FILE_NUM fnum, BOOLEAN2 check_ld, BOOLEAN2 check_lt)
+{ FILE *fp;  OBJECT fname, full_name, y;  BOOLEAN2 used_source_suffix;
   ifdebug(DPP, D, ProfileOn("OpenFile"));
   debug2(DFS, DD, "[ OpenFile(%s, %s)", FileName(fnum), bool2s(check_ld));
   fname = ftab_num(file_tab, fnum);
@@ -843,8 +843,8 @@ static char *compress_suffixes[MAX_COMPRESSED]
   = { ".gz", "-gz", ".z", "-z", "_z", ".Z" };
 
 FILE *OpenIncGraphicFile(const FULL_CHAR *str, OBJTYPE typ,
-OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed)
-{ FILE *fp = NULL;  PATH_TYPE p; int i;  BOOLEAN used_source_suffix;
+OBJECT *full_name, FILE_POS *xfpos, BOOLEAN2 *compressed)
+{ FILE *fp = NULL;  PATH_TYPE p; int i;  BOOLEAN2 used_source_suffix;
   FULL_CHAR sort_name[128];  int sort_start = 0, sort_end = 0;
   static FULL_CHAR last_sort_name[128];  static FILE *last_ceps_fp = NULL;
   debug2(DFS, DD, "OpenIncGraphicFile(%s, %s, -)", str, Image(typ));
@@ -1117,12 +1117,12 @@ int FileGetLineCount(FILE_NUM fnum)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  BOOLEAN FileTestUpdated(fnum)                                            */
+/*  BOOLEAN2 FileTestUpdated(fnum)                                            */
 /*                                                                           */
 /*  Test whether file fnum has been declared to be updated.                  */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN FileTestUpdated(FILE_NUM fnum)
-{ return (BOOLEAN) updated(ftab_num(file_tab, fnum));
+BOOLEAN2 FileTestUpdated(FILE_NUM fnum)
+{ return (BOOLEAN2) updated(ftab_num(file_tab, fnum));
 } /* end FileTestUpdated */

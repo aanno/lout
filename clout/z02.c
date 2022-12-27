@@ -66,7 +66,7 @@ static	FILE_TYPE	ftype;		/* the type of the current file      */
 static	OBJECT		next_token;	/* next token if already read	     */
 static	int		offset;		/* where to start reading in file    */
 static	int		first_line_num;	/* number of first line (if offset)  */
-static	BOOLEAN		same_file;	/* TRUE if same file as preceding    */
+static	BOOLEAN2		same_file;	/* TRUE if same file as preceding    */
 static	FULL_CHAR	*mem_block;	/* file buffer                       */
 
 static int stack_free;		/* first free slot in lexical stack  */
@@ -85,14 +85,14 @@ static struct {
   OBJECT	next_token;	/* next token if already read	     */
   int		offset;		/* where to start reading in file    */
   int		first_line_num;	/* number of first line (if offset)  */
-  BOOLEAN	same_file;	/* TRUE if same file as preceding    */
+  BOOLEAN2	same_file;	/* TRUE if same file as preceding    */
   long		save_ftell;	/* ftell() position if same_file     */
   FULL_CHAR	*mem_block;	/* file buffer                       */
 } lex_stack[MAX_LEX_STACK];
 
 /*@::LexLegalName(), LexInit()@***********************************************/
 /*                                                                           */
-/*  BOOLEAN LexLegalName(str)                                                */
+/*  BOOLEAN2 LexLegalName(str)                                                */
 /*                                                                           */
 /*  Check whether str is a valid name for a symbol table entry.              */
 /*  Valid names have the BNF form                                            */
@@ -105,8 +105,8 @@ static struct {
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN LexLegalName(const FULL_CHAR *str)
-{ int i;  BOOLEAN res;
+BOOLEAN2 LexLegalName(const FULL_CHAR *str)
+{ int i;  BOOLEAN2 res;
   debug1(DLA, DDD, "LexLegalName( %s )", str);
   switch( chtbl[str[0]] )
   {
@@ -198,7 +198,7 @@ void LexInit(void)
 /*                                                                           */
 /*****************************************************************************/
 
-void LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN same)
+void LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN2 same)
 { int i;
   debug5(DLA, DD, "LexPush(%s, %d, %s, %d, %s)", FileName(x), offs,
     sameFiletype(ftyp, SOURCE_FILE) ? "source" : sameFiletype(ftyp, INCLUDE_FILE) ? "include":"database",
@@ -660,7 +660,7 @@ OBJECT LexGetToken(void)
 	  res = NewToken(CLOSURE, &file_pos, 0, 0, precedence(res), res);
 	}
 	else if( predefined(res).objtype == INCLUDE_E || predefined(res).objtype == SYS_INCLUDE_E )
-	{ OBJECT t, fname;  FILE_NUM fnum;  int len;  BOOLEAN scope_suppressed;
+	{ OBJECT t, fname;  FILE_NUM fnum;  int len;  BOOLEAN2 scope_suppressed;
 	  chpt = p;
 	  t = LexGetToken();
 	  scope_suppressed = (objectOfType(t, WORD) && StringEqual(string(t), KW_LBR));
@@ -937,12 +937,12 @@ static OBJECT BuildLines(OBJECT current, FULL_CHAR *buff, int *bufftop, int ladj
   return res;
 }
 
-OBJECT LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos, BOOLEAN lessskip)
+OBJECT LexScanVerbatim(FILE *fp, BOOLEAN2 end_stop, FILE_POS *err_pos, BOOLEAN2 lessskip)
 {
   register FULL_CHAR *p;		/* pointer to current input char     */
   int depth;				/* depth of nesting of { ... }       */
-  BOOLEAN finished;			/* TRUE when finished                */
-  BOOLEAN skipping;			/* TRUE when skipping initial spaces */
+  BOOLEAN2 finished;			/* TRUE when finished                */
+  BOOLEAN2 skipping;			/* TRUE when skipping initial spaces */
   FULL_CHAR hs_buff[MAX_BUFF];		/* hold spaces here in case last     */
   int hs_top;				/* next free spot in hs_buff         */
   int hs_lnum_overshoot = 0;		/* subtract this from lnum           */
@@ -1057,7 +1057,7 @@ OBJECT LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos, BOOLEAN le
 		   StringBeginsWithWord(p, KW_SYSINCLUDE) )
 	  {
 	    OBJECT incl_fname, t;  FILE *incl_fp;  int ch;  FILE_NUM fnum;
-	    BOOLEAN sysinc = StringBeginsWith(p, KW_SYSINCLUDE);
+	    BOOLEAN2 sysinc = StringBeginsWith(p, KW_SYSINCLUDE);
 	    clear();
 	    p += sysinc ? StringLength(KW_SYSINCLUDE):StringLength(KW_INCLUDE);
 	    chpt = p;

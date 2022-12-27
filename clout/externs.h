@@ -3816,27 +3816,27 @@ extern	OBJECT	  RawVerbatimSym;
 extern	OBJECT	  OptGallSym;
 extern	BACK_END  BackEnd;
 extern	OBJECT	  CommandOptions;
-extern	BOOLEAN	  AllowCrossDb;
-extern	BOOLEAN	  UseCollate;
-extern	BOOLEAN	  InMemoryDbIndexes;
-extern	BOOLEAN	  Kern;
-extern	BOOLEAN	  SafeExecution;
-extern	BOOLEAN   AltErrorFormat;
+extern	BOOLEAN2	  AllowCrossDb;
+extern	BOOLEAN2	  UseCollate;
+extern	BOOLEAN2	  InMemoryDbIndexes;
+extern	BOOLEAN2	  Kern;
+extern	BOOLEAN2	  SafeExecution;
+extern	BOOLEAN2   AltErrorFormat;
 extern	int	  TotalWordCount;
-extern	BOOLEAN	  InitializeAll;
+extern	BOOLEAN2	  InitializeAll;
 #if LOCALE_ON
 extern	nl_catd	  MsgCat;
 #endif
 
 /*****  z02.c	  Lexical Analyser	**************************************/
-extern	BOOLEAN	  LexLegalName(const FULL_CHAR *str);
+extern	BOOLEAN2	  LexLegalName(const FULL_CHAR *str);
 extern	void	  LexInit(void);
-extern	void	  LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN same);
+extern	void	  LexPush(FILE_NUM x, int offs, FILE_TYPE ftyp, int lnum, BOOLEAN2 same);
 extern	void	  LexPop(void);
 extern	long	  LexNextTokenPos(void);
 extern	OBJECT	  LexGetToken(void);
-extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN end_stop, FILE_POS *err_pos,
-		    BOOLEAN lessskip);
+extern	OBJECT	  LexScanVerbatim(FILE *fp, BOOLEAN2 end_stop, FILE_POS *err_pos,
+		    BOOLEAN2 lessskip);
 
 /*****  z03.c	  File Service	        **************************************/
 // extern	FILE_POS  *no_fpos;
@@ -3856,12 +3856,12 @@ extern	FULL_CHAR *EchoAltFilePos(FILE_POS *pos);
 extern	FULL_CHAR *EchoFileSource(FILE_NUM fnum);
 extern	FULL_CHAR *EchoFileLine(FILE_POS *pos);
 extern	FILE_POS  *PosOfFile(FILE_NUM fnum);
-extern	FILE	  *OpenFile(FILE_NUM fnum, BOOLEAN check_ld, BOOLEAN check_lt);
+extern	FILE	  *OpenFile(FILE_NUM fnum, BOOLEAN2 check_ld, BOOLEAN2 check_lt);
 extern	FILE	  *OpenIncGraphicFile(const FULL_CHAR *str, OBJTYPE typ,
-		    OBJECT *full_name, FILE_POS *xfpos, BOOLEAN *compressed);
+		    OBJECT *full_name, FILE_POS *xfpos, BOOLEAN2 *compressed);
 extern	void	  FileSetUpdated(FILE_NUM fnum, int newlines);
 extern	int	  FileGetLineCount(FILE_NUM fnum);
-extern	BOOLEAN	  FileTestUpdated(FILE_NUM fnum);
+extern	BOOLEAN2	  FileTestUpdated(FILE_NUM fnum);
 
 /*****  z04.c	  Token Service	        **************************************/
 extern	OBJECT	  NewToken(OBJTYPE xtype, FILE_POS *xfpos,
@@ -3870,9 +3870,9 @@ extern	OBJECT	  NewToken(OBJTYPE xtype, FILE_POS *xfpos,
 extern	OBJECT	  CopyTokenList(OBJECT x, FILE_POS *pos);
 
 // deprecated
-extern	const FULL_CHAR *EchoCatOpUnsafe(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin);
+extern	const FULL_CHAR *EchoCatOpUnsafe(unsigned xtype, BOOLEAN2 xmark, BOOLEAN2 xjoin);
 
-extern	const FULL_CHAR *EchoCatOp(OBJTYPE xtype, BOOLEAN xmark, BOOLEAN xjoin);
+extern	const FULL_CHAR *EchoCatOp(OBJTYPE xtype, BOOLEAN2 xmark, BOOLEAN2 xjoin);
 extern	const FULL_CHAR *EchoToken(OBJECT x);
 
 /*****  z05.c	  Read Definitions  	**************************************/

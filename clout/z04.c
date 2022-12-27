@@ -85,7 +85,7 @@ OBJECT CopyTokenList(OBJECT x, FILE_POS *pos)
 /*****************************************************************************/
 
 // deprecated
-const FULL_CHAR *EchoCatOpUnsafe(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin)
+const FULL_CHAR *EchoCatOpUnsafe(unsigned xtype, BOOLEAN2 xmark, BOOLEAN2 xjoin)
 { switch( xtype )
   {
     case VCAT_E:	return	(xmark ? xjoin ? KW_VCAT_MJ : KW_VCAT_MN
@@ -103,7 +103,7 @@ const FULL_CHAR *EchoCatOpUnsafe(unsigned xtype, BOOLEAN xmark, BOOLEAN xjoin)
   } /* end switch */
 } /* end EchoCatOp */
 
-const FULL_CHAR *EchoCatOp(OBJTYPE xtype, BOOLEAN xmark, BOOLEAN xjoin)
+const FULL_CHAR *EchoCatOp(OBJTYPE xtype, BOOLEAN2 xmark, BOOLEAN2 xjoin)
 { 
   return EchoCatOpUnsafe(xtype.objtype, xmark, xjoin);
 } /* end EchoCatOp */
