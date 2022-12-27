@@ -59,12 +59,12 @@
 /*                                                                           */
 /*****************************************************************************/
 
-void SizeGalley(OBJECT hd, OBJECT env, BOOLEAN rows, BOOLEAN joined,
-BOOLEAN nonblock, BOOLEAN trig, STYLE *style, CONSTRAINT *c, OBJECT target,
+void SizeGalley(OBJECT hd, OBJECT env, BOOLEAN2 rows, BOOLEAN2 joined,
+BOOLEAN2 nonblock, BOOLEAN2 trig, STYLE *style, CONSTRAINT *c, OBJECT target,
 OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 { OBJECT y, link, z, crs, t, tlink, zlink, tmp, why;
   OBJECT extras, tmp1, tmp2, bt[2], ft[2], hold_env;
-  BOOLEAN after_target;
+  BOOLEAN2 after_target;
   
   assert( objectOfType(hd, HEAD) && Down(hd) != hd, "SizeGalley: precondition!" );
   assert( !sized(hd), "SizeGalley: already sized!" );

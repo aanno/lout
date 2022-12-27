@@ -129,7 +129,7 @@ void FlattenUses(void)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN SearchUses(OBJECT x, OBJECT y)
+BOOLEAN2 SearchUses(OBJECT x, OBJECT y)
 { OBJECT p;
   debug3(DSU, DD, "SearchUses(%s, %s) uses: %d", SymName(x),SymName(y),uses(x));
   if( x == y )  return TRUE;

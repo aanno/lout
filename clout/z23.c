@@ -172,13 +172,13 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size,int dim)
 /*****************************************************************************/
 
 OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
-  FULL_LENGTH xf, int dim, BOOLEAN suppress, FULL_LENGTH pg, int count,
+  FULL_LENGTH xf, int dim, BOOLEAN2 suppress, FULL_LENGTH pg, int count,
   FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd)
 { OBJECT y = nilobj, link, prev = nilobj, g, z, face, thr, res, uplink;
   /* OBJECT fixed_thr, tmp; */
   FULL_LENGTH mk, ymk, frame_size, back_edge, yb, yf, inc, f;
   FULL_LENGTH aback, afwd;
-  int i; float scale_factor;  BOOLEAN jn;
+  int i; float scale_factor;  BOOLEAN2 jn;
   debug8(DGP, DD, "[ FixAndPrintObject(%s %s%s, %s, %s,%s, %s, %s, pg, count)",
     Image(type(x)),
     ((objectOfType(x, WORD) || objectOfType(x, QWORD)) ? string(x) : STR_EMPTY),

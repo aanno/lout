@@ -763,7 +763,7 @@ static void CompressTrie(TRIE T)
 #define LENGTH_LIMIT_STATE	3
 #define PATTERNS_STATE		4
 
-static TRIE TrieRead(LANGUAGE_NUM lnum, BOOLEAN *success)
+static TRIE TrieRead(LANGUAGE_NUM lnum, BOOLEAN2 *success)
 { TRIE T;  FILE_NUM unpacked_fnum, packed_fnum;  OBJECT fname;
   FILE *unpacked_fp, *packed_fp;  unsigned len;
   int prev, i, j, c, state, hline_num, length_limit;
@@ -1046,8 +1046,8 @@ static TRIE TrieRead(LANGUAGE_NUM lnum, BOOLEAN *success)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN ReadHyphTable(LANGUAGE_NUM lnum)
-{ BOOLEAN res;
+BOOLEAN2 ReadHyphTable(LANGUAGE_NUM lnum)
+{ BOOLEAN2 res;
   debug1(DHY, DD, "ReadHyphTable(%d)", lnum);
   assert(lnum > 0, "ReadHyphTable: lnum <= 0!");
   assert(HyphTables[lnum]==(TRIE) NULL && !TriedFile[lnum], "ReadHyphTable!");
@@ -1071,7 +1071,7 @@ OBJECT Hyphenate(OBJECT x)
   FULL_CHAR str[MAX_WORD+2], rate[MAX_WORD+3], val[MAX_WORD+3],
     *class, *key, *ss, *s, *p, *rem, *lig, *a, *b;
   int start, stop, i, curr_node, next_node, pos;
-  BOOLEAN hyphenated, success;
+  BOOLEAN2 hyphenated, success;
   assert( objectOfType(x, ACAT), "Hyphenate: type(x) != ACAT!" );
   debug1(DHY, D, "Hyphenate(%s)", EchoObject(x));
 

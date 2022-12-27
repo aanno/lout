@@ -105,16 +105,16 @@ int strcollcmp(char *a, char *b)
 
 /*@::StringBeginsWith(), StringContains(), StringInt(), StringFiveInt()@******/
 /*                                                                           */
-/*  BOOLEAN StringBeginsWith(str, pattern)                                   */
-/*  BOOLEAN StringBeginsWithWord(str, pattern)                               */
-/*  BOOLEAN StringEndsWith(str, pattern)                                     */
+/*  BOOLEAN2 StringBeginsWith(str, pattern)                                   */
+/*  BOOLEAN2 StringBeginsWithWord(str, pattern)                               */
+/*  BOOLEAN2 StringEndsWith(str, pattern)                                     */
 /*                                                                           */
 /*  Check whether str begins with or ends with pattern; in the case of       */
 /*  StringBeginsWithWord there may not be a letter after the pattern.        */
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN StringBeginsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
+BOOLEAN2 StringBeginsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
 { const FULL_CHAR *sp, *pp;
   sp = str;  pp = pattern;
   while( *sp != '\0' && *pp != '\0' )
@@ -125,7 +125,7 @@ BOOLEAN StringBeginsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
 
 #define is_letter(c) (((c) >= 'a' && (c) <= 'z') || ((c) >= 'A' && (c) <= 'Z'))
 
-BOOLEAN StringBeginsWithWord(const FULL_CHAR *str, const FULL_CHAR *pattern)
+BOOLEAN2 StringBeginsWithWord(const FULL_CHAR *str, const FULL_CHAR *pattern)
 { const FULL_CHAR *sp, *pp;
   sp = str;  pp = pattern;
   while( *sp != '\0' && *pp != '\0' )
@@ -135,7 +135,7 @@ BOOLEAN StringBeginsWithWord(const FULL_CHAR *str, const FULL_CHAR *pattern)
 } /* end StringBeginsWithWord */
 
 
-BOOLEAN StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
+BOOLEAN2 StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
 { const FULL_CHAR *sp, *pp; int slen, plen;
   slen = StringLength(str);
   plen = StringLength(pattern);
@@ -156,7 +156,7 @@ BOOLEAN StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN StringContains(const FULL_CHAR *str, const FULL_CHAR *pattern)
+BOOLEAN2 StringContains(const FULL_CHAR *str, const FULL_CHAR *pattern)
 { const FULL_CHAR *sp;
   for( sp = str;  *sp != '\0';  sp++ )
   { if( StringBeginsWith(sp, pattern) )  return TRUE;

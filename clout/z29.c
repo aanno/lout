@@ -120,7 +120,7 @@ void InitSym(void)
 /*                                                                           */
 /*****************************************************************************/
 
-void PushScope(OBJECT x, BOOLEAN npars, BOOLEAN vis)
+void PushScope(OBJECT x, BOOLEAN2 npars, BOOLEAN2 vis)
 { debug3(DST, DD, "[ PushScope(%s, %s, %s)", SymName(x), bool2s(npars), bool2s(vis));
   assert( suppress_scope == FALSE, "PushScope: suppress_scope!" );
   if( scope_top >= MAX_STACK )
@@ -340,7 +340,7 @@ void ClearScopeSnapshot(OBJECT ss)
 /*****************************************************************************/
 
 OBJECT InsertSym(const FULL_CHAR *str, OBJTYPE xtype, FILE_POS *xfpos,
-unsigned char xprecedence, BOOLEAN xindefinite, BOOLEAN xrecursive,
+unsigned char xprecedence, BOOLEAN2 xindefinite, BOOLEAN2 xrecursive,
 OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
 { register int sum, rlen;
   register const FULL_CHAR *x;

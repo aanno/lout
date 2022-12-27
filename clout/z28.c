@@ -87,7 +87,7 @@ void ErrorSetFile(FULL_CHAR *str)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN ErrorSeen(void)
+BOOLEAN2 ErrorSeen(void)
 { return error_seen;
 } /* end ErrorSeen */
 
@@ -119,7 +119,7 @@ static void PrintFileBanner(int fnum)
 /*                                                                           */
 /*****************************************************************************/
 
-void EnterErrorBlock(BOOLEAN ok_to_print)
+void EnterErrorBlock(BOOLEAN2 ok_to_print)
 { if( block_top < MAX_BLOCKS )
   { print_block[block_top] = ok_to_print;
     start_block[block_top] = mess_top;
@@ -138,7 +138,7 @@ void EnterErrorBlock(BOOLEAN ok_to_print)
 /*                                                                           */
 /*****************************************************************************/
 
-void LeaveErrorBlock(BOOLEAN commit)
+void LeaveErrorBlock(BOOLEAN2 commit)
 { int i;
   debug0(DYY, D, "  leaving error block");
   assert( block_top > 0, "LeaveErrorBlock: no matching EnterErrorBlock!" );

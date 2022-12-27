@@ -102,7 +102,7 @@ static OBJECT		supplied;	/* Resources supplied by this file   */
 /*                                                                           */
 /*****************************************************************************/
 
-static void PDF_PrintInitialize(FILE *fp, BOOLEAN enc)
+static void PDF_PrintInitialize(FILE *fp, BOOLEAN2 enc)
 {
   debug0(DPF, DD, "PDF_PrintInitialize(fp)");
   assert(!enc, "PDF_PrintInitialize");
@@ -183,7 +183,7 @@ static void PDF_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 /*****************************************************************************/
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
-static void PDF_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)
+static void PDF_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN2 first)
 {
   /* JK: this was always commented out */
   /* PDFWriteFontResource(out_fp, font_name); */

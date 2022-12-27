@@ -127,7 +127,7 @@ static FULL_CHAR NameRetrieve(const FULL_CHAR *cname, MAP_VEC map)
 /*                                                                           */
 /*****************************************************************************/
 
-MAPPING MapLoad(OBJECT file_name, BOOLEAN recoded)
+MAPPING MapLoad(OBJECT file_name, BOOLEAN2 recoded)
 { FILE *fp;  MAP_VEC map;  MAPPING res;
   int i, m, curr_line_num, line_pos, prev_code, dc, count;
   unsigned int oc;
@@ -684,8 +684,8 @@ OBJECT MapSmallCaps(OBJECT x, STYLE *style)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN MapIsLowerCase(FULL_CHAR ch, MAPPING m)
-{ BOOLEAN res;
+BOOLEAN2 MapIsLowerCase(FULL_CHAR ch, MAPPING m)
+{ BOOLEAN2 res;
   debug2(DCM, D, "MapIsLowerCase(%c, %d)", ch, m);
   res = (MapTable[m]->map[MAP_UPPERCASE_E][ch] != '\0');
   debug1(DCM, D, "MapIsLowerCase returning %s", bool2s(res));

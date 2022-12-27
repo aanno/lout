@@ -2027,8 +2027,8 @@ void FontPageUsed(OBJECT face)
 /*                                                                           */
 /*****************************************************************************/
 
-BOOLEAN FontNeeded(FILE *fp)
-{ BOOLEAN first_need = TRUE;
+BOOLEAN2 FontNeeded(FILE *fp)
+{ BOOLEAN2 first_need = TRUE;
   OBJECT link, flink, family, face, ps_name;
   for( link = Down(font_root); link != font_root; link = NextDown(link) )
   { Child(family, link);

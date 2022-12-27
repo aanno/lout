@@ -64,7 +64,7 @@ static BOOLEAN		prologue_done;	/* TRUE after prologue is printed    */
 /*                                                                           */
 /*****************************************************************************/
 
-static void Plain_PrintInitialize(FILE *fp, BOOLEAN enc)
+static void Plain_PrintInitialize(FILE *fp, BOOLEAN2 enc)
 {
   debug0(DPT, DD, "Plain_PrintInitialize(fp)");
   assert(!enc, "Plain_PrintInitialize");
@@ -129,7 +129,7 @@ static void Plain_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 /*****************************************************************************/
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
-static void Plain_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)
+static void Plain_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN2 first)
 {
   /* nothing to do here */
 
@@ -692,7 +692,7 @@ BACK_END Plain_BackEnd = &plain_back;
 /*****************************************************************************/
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
-static void Plain_NullPrintInitialize(FILE *fp, BOOLEAN enc)
+static void Plain_NullPrintInitialize(FILE *fp, BOOLEAN2 enc)
 {}
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -702,7 +702,7 @@ static void Plain_NullPrintPageSetupForFont(OBJECT face, int font_curr_page,
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 static void Plain_NullPrintPageResourceForFont(FULL_CHAR *font_name,
-  BOOLEAN first)
+  BOOLEAN2 first)
 {}
 
 #pragma clang diagnostic ignored "-Wunused-parameter"

@@ -586,7 +586,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
 /*                                                                           */
 /*****************************************************************************/
 
-void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN join_after)
+void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after)
 {
   OBJECT dest, link, y, z, tmp1, tmp2, why, top_y;
   FULL_CHAR *label_string, buff[MAX_LINE];
@@ -1071,7 +1071,7 @@ static void MakeDead(OBJECT y)
 /*                                                                           */
 /*****************************************************************************/
 
-void KillGalley(OBJECT hd, BOOLEAN optimize)
+void KillGalley(OBJECT hd, BOOLEAN2 optimize)
 { OBJECT prnt, link, y, z;
   debug2(DGF, D, "[ KillGalley(Galley %s into %s)",
 	SymName(actual(hd)), SymName(whereto(hd)));

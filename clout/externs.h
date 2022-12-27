@@ -2698,20 +2698,20 @@ typedef struct mapvec {
 typedef struct back_end_rec {
   int code;				/* the code number of the back end   */
   FULL_CHAR *name;			/* string name of the back end	     */
-  BOOLEAN scale_avail;			/* TRUE if @Scale is available	     */
-  BOOLEAN rotate_avail;			/* TRUE if @Rotate is available	     */
-  BOOLEAN mirror_avail;			/* TRUE if @HMirror, @VMirror avail  */
-  BOOLEAN graphic_avail;		/* TRUE if @Graphic is available     */
-  BOOLEAN incgraphic_avail;		/* TRUE if @IncludeGraphic is avail. */
-  BOOLEAN plaingraphic_avail;		/* TRUE if @PlainGraphic is avail.   */
-  BOOLEAN fractional_spacing_avail;	/* TRUE if fractional spacing avail. */
-  BOOLEAN uses_font_metrics;		/* TRUE if actual font metrics used  */
-  BOOLEAN colour_avail;			/* TRUE if colour is available       */
-  void (*PrintInitialize)(FILE *fp, BOOLEAN encapsulated);
+  BOOLEAN2 scale_avail;			/* TRUE if @Scale is available	     */
+  BOOLEAN2 rotate_avail;			/* TRUE if @Rotate is available	     */
+  BOOLEAN2 mirror_avail;			/* TRUE if @HMirror, @VMirror avail  */
+  BOOLEAN2 graphic_avail;		/* TRUE if @Graphic is available     */
+  BOOLEAN2 incgraphic_avail;		/* TRUE if @IncludeGraphic is avail. */
+  BOOLEAN2 plaingraphic_avail;		/* TRUE if @PlainGraphic is avail.   */
+  BOOLEAN2 fractional_spacing_avail;	/* TRUE if fractional spacing avail. */
+  BOOLEAN2 uses_font_metrics;		/* TRUE if actual font metrics used  */
+  BOOLEAN2 colour_avail;			/* TRUE if colour is available       */
+  void (*PrintInitialize)(FILE *fp, BOOLEAN2 encapsulated);
   void (*PrintLength)(FULL_CHAR *buff, int length, int length_dim);
   void (*PrintPageSetupForFont)(OBJECT face, int font_curr_page,
     FULL_CHAR *font_name, FULL_CHAR *first_size_str);
-  void (*PrintPageResourceForFont)(FULL_CHAR *font_name, BOOLEAN first);
+  void (*PrintPageResourceForFont)(FULL_CHAR *font_name, BOOLEAN2 first);
   void (*PrintMapping)(MAPPING m);
   void (*PrintBeforeFirstPage)(FULL_LENGTH h, FULL_LENGTH v, FULL_CHAR *label);
   void (*PrintBetweenPages)(FULL_LENGTH h, FULL_LENGTH v, FULL_CHAR *label);
@@ -4002,8 +4002,8 @@ extern	FULL_CHAR *DebugInnersNames(OBJECT inners);
 extern	void	  FlushGalley(OBJECT hd);
 
 /***    z21.c	  Galley Maker		**************************************/
-extern	void	  SizeGalley(OBJECT hd, OBJECT env, BOOLEAN rows,
-		    BOOLEAN joined, BOOLEAN nonblock, BOOLEAN trig,
+extern	void	  SizeGalley(OBJECT hd, OBJECT env, BOOLEAN2 rows,
+		    BOOLEAN2 joined, BOOLEAN2 nonblock, BOOLEAN2 trig,
 		    STYLE *style, CONSTRAINT *c, OBJECT target,
 		    OBJECT *dest_index, OBJECT *recs, OBJECT *inners,
 		    OBJECT enclose);
@@ -4016,8 +4016,8 @@ extern	void	  FlushInners(OBJECT inners, OBJECT hd);
 extern	void	  ExpandRecursives(OBJECT recs);
 extern	void	  HandleHeader(OBJECT hd, OBJECT header);
 extern	void	  Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index,
-		    BOOLEAN join_after);
-extern	void	  KillGalley(OBJECT hd, BOOLEAN optimize);
+		    BOOLEAN2 join_after);
+extern	void	  KillGalley(OBJECT hd, BOOLEAN2 optimize);
 extern	void	  FreeGalley(OBJECT hd, OBJECT stop_link, OBJECT *inners,
 		    OBJECT relocate_link, OBJECT sym);
 extern	void	  SetTarget(OBJECT hd);
@@ -4025,7 +4025,7 @@ extern	int	  CheckComponentOrder(OBJECT preceder, OBJECT follower);
 
 /*****  z23.c	  Galley Printer	**************************************/
 extern	OBJECT	  FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
-		    FULL_LENGTH xf, int dim, BOOLEAN suppress, FULL_LENGTH pg,
+		    FULL_LENGTH xf, int dim, BOOLEAN2 suppress, FULL_LENGTH pg,
 		    int count, FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd);
 
 /*****  z24.c	  Print Service         **************************************/
@@ -4048,15 +4048,15 @@ extern	void	  SetLengthDim(int dim);
 /*****	z28.c	  Error Service		**************************************/
 extern	void	  ErrorInit(void);
 extern	void	  ErrorSetFile(FULL_CHAR *str);
-extern	BOOLEAN	  ErrorSeen(void);
-extern	void	  EnterErrorBlock(BOOLEAN ok_to_print);
-extern	void	  LeaveErrorBlock(BOOLEAN commit);
+extern	BOOLEAN2	  ErrorSeen(void);
+extern	void	  EnterErrorBlock(BOOLEAN2 ok_to_print);
+extern	void	  LeaveErrorBlock(BOOLEAN2 commit);
 extern	void	  CheckErrorBlocks(void);
 // extern	POINTER	  Error(int set_num, int msg_num, char *str, int etype, FILE_POS *pos, ...);
 
 /*****  z29.c	  Symbol Table		**************************************/
 extern	void	  InitSym(void);
-extern	void	  PushScope(OBJECT x, BOOLEAN npars, BOOLEAN vis);
+extern	void	  PushScope(OBJECT x, BOOLEAN2 npars, BOOLEAN2 vis);
 extern	void	  PopScope(void);
 extern	void	  SuppressVisible(void);
 extern	void	  UnSuppressVisible(void);
@@ -4071,7 +4071,7 @@ extern	void	  LoadScopeSnapshot(OBJECT ss);
 extern	void	  ClearScopeSnapshot(OBJECT ss);
 extern	OBJECT	  InsertSym(const FULL_CHAR *str, OBJTYPE xtype,
 		    FILE_POS *xfpos, unsigned char xprecedence,
-		    BOOLEAN xindefinite, BOOLEAN xrecursive,
+		    BOOLEAN2 xindefinite, BOOLEAN2 xrecursive,
 		    OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody);
 extern	void	  InsertAlternativeName(FULL_CHAR *str, OBJECT s,
 		    FILE_POS *xfpos);
@@ -4087,12 +4087,12 @@ extern	void	  DebugScope(void);
 /*****  z30.c	  Symbol Uses		**************************************/
 extern	void	  InsertUses(OBJECT x, OBJECT y);
 extern	void	  FlattenUses(void);
-extern	BOOLEAN	  SearchUses(OBJECT x, OBJECT y);
+extern	BOOLEAN2	  SearchUses(OBJECT x, OBJECT y);
 extern	OBJECT	  FirstExternTarget(OBJECT sym, OBJECT *cont);
 extern	OBJECT	  NextExternTarget(OBJECT sym, OBJECT *cont);
 
 /*****  z32.c	  Counter Service           **********************************/
-extern	OBJECT	  Next(OBJECT x, int inc, BOOLEAN *done);
+extern	OBJECT	  Next(OBJECT x, int inc, BOOLEAN2 *done);
 
 /*****  z33.c	  Database Service	**************************************/
 extern	OBJECT	  OldCrossDb;
@@ -4126,7 +4126,7 @@ extern	OBJECT	  StartMoment(void);
 
 /*****  z36.c	  Hyphenation     	**************************************/
 extern	void	  HyphInit(void);
-extern	BOOLEAN	  ReadHyphTable(LANGUAGE_NUM lnum);
+extern	BOOLEAN2	  ReadHyphTable(LANGUAGE_NUM lnum);
 extern	OBJECT	  Hyphenate(OBJECT x);
 
 /*****  z37.c	  Font Service           *************************************/
@@ -4150,21 +4150,21 @@ extern	void	  FontPrintPageSetup(FILE *fp);
 extern	void	  FontPrintPageResources(FILE *fp);
 extern	void	  FontAdvanceCurrentPage(void);
 extern	void	  FontPageUsed(OBJECT face);
-extern	BOOLEAN	  FontNeeded(FILE *fp);
+extern	BOOLEAN2	  FontNeeded(FILE *fp);
 extern	FULL_LENGTH FontGlyphHeight(FONT_NUM fnum, FULL_CHAR chr);
 extern	FULL_LENGTH FontGlyphWidth(FONT_NUM fnum, FULL_CHAR chr);
 
 /*****  z38.c	  Character Mappings    **************************************/
 extern	MAP_VEC	  MapTable[];
 extern	void	  MapInit(void);
-extern	MAPPING	  MapLoad(OBJECT filename, BOOLEAN recoded);
+extern	MAPPING	  MapLoad(OBJECT filename, BOOLEAN2 recoded);
 extern	FULL_CHAR MapCharEncoding(const FULL_CHAR *str, MAPPING m);
 extern	FULL_CHAR *MapEncodingName(MAPPING m);
 extern	void	  MapPrintEncodings(void);
 extern	void	  MapEnsurePrinted(MAPPING m, int curr_page);
 extern	void	  MapPrintPSResources(FILE *fp);
 extern	OBJECT	  MapSmallCaps(OBJECT x, STYLE *style);
-extern	BOOLEAN	  MapIsLowerCase(FULL_CHAR ch, MAPPING m);
+extern	BOOLEAN2	  MapIsLowerCase(FULL_CHAR ch, MAPPING m);
 
 
 /*****  z39.c	  String Handler        **************************************/
@@ -4181,10 +4181,10 @@ extern int	  strcollcmp(char *a, char *b);
 #define		  StringFPuts(a, b)	fputs( (char *) (a), (b) )
 #define		  StringRemove(a)	remove((char *)(a))
 #define		  StringRename(a, b)	rename((char *)(a),(char *)(b))
-extern	BOOLEAN	  StringBeginsWith(const FULL_CHAR *str, const FULL_CHAR *pattern);
-extern	BOOLEAN	  StringBeginsWithWord(const FULL_CHAR *str, const FULL_CHAR *pattern);
-extern	BOOLEAN	  StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern);
-extern	BOOLEAN	  StringContains(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN2	  StringBeginsWith(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN2	  StringBeginsWithWord(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN2	  StringEndsWith(const FULL_CHAR *str, const FULL_CHAR *pattern);
+extern	BOOLEAN2	  StringContains(const FULL_CHAR *str, const FULL_CHAR *pattern);
 extern	FULL_CHAR *StringInt(int i);
 extern	FULL_CHAR *StringFiveInt(int i);
 extern	FULL_CHAR *StringQuotedWord(OBJECT x);

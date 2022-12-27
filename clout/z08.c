@@ -915,7 +915,7 @@ OBJECT *enclose, BOOLEAN fcr)
   OBJECT link1, link2, x1, x2, y1, y2, vc, value_env, key, value;
   int i, par, num1, num2;  GAP res_gap;  unsigned res_inc;  STYLE new_style;
   #pragma clang diagnostic ignored "-Wunused-but-set-variable"
-  BOOLEAN done, multiline;
+  BOOLEAN2 done, multiline;
   FULL_CHAR ch;
   float scale_factor;
   static int depth = 0;

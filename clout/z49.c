@@ -328,7 +328,7 @@ static	OBJECT		link_source_list;	/* the link source names     */
 /*                                                                           */
 /*****************************************************************************/
 
-static void PS_PrintInitialize(FILE *fp, BOOLEAN enc)
+static void PS_PrintInitialize(FILE *fp, BOOLEAN2 enc)
 {
   debug0(DPO, DD, "PS_PrintInitialize(fp)");
   out_fp = fp;
@@ -462,7 +462,7 @@ static void PS_PrintPageSetupForFont(OBJECT face, int font_curr_page,
 /*                                                                           */
 /*****************************************************************************/
 
-static void PS_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN first)
+static void PS_PrintPageResourceForFont(FULL_CHAR *font_name, BOOLEAN2 first)
 {
   p2("%s font %s", first ? "%%PageResources:" : "%%+", font_name);
 } /* end PS_PrintPageResourceForFont */
@@ -2143,7 +2143,7 @@ BACK_END PS_BackEnd = &ps_back;
 /*****************************************************************************/
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
-static void PS_NullPrintInitialize(FILE *fp, BOOLEAN enc)
+static void PS_NullPrintInitialize(FILE *fp, BOOLEAN2 enc)
 {}
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -2153,7 +2153,7 @@ static void PS_NullPrintPageSetupForFont(OBJECT face, int font_curr_page,
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 static void PS_NullPrintPageResourceForFont(FULL_CHAR *font_name,
-  BOOLEAN first)
+  BOOLEAN2 first)
 {}
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
