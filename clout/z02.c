@@ -650,7 +650,7 @@ OBJECT LexGetToken(void)
 	    else hcount = 0;
 	  }
 	}
-	else if( predefined(res).objtype == DUMMY_E )
+	else if( sameObjType(predefined(res), DUMMY) )
 	{
 	  /* nice try but does not work for @Database @FontDef { ... } !! ***
 	  if( res == FontDefSym && ftype != DATABASE_FILE )
@@ -659,7 +659,7 @@ OBJECT LexGetToken(void)
 	  *** */
 	  res = NewToken(CLOSURE, &file_pos, 0, 0, precedence(res), res);
 	}
-	else if( predefined(res).objtype == INCLUDE_E || predefined(res).objtype == SYS_INCLUDE_E )
+	else if( sameObjType(predefined(res), INCLUDE) || sameObjType(predefined(res), SYS_INCLUDE) )
 	{ OBJECT t, fname;  FILE_NUM fnum;  int len;  BOOLEAN2 scope_suppressed;
 	  chpt = p;
 	  t = LexGetToken();
@@ -701,7 +701,7 @@ OBJECT LexGetToken(void)
 		FileNum(string(fname), SOURCE_SUFFIX));
 	    fnum = DefineFile(string(fname), STR_EMPTY, &fpos(fname),
 	      INCLUDE_FILE,
-	      predefined(res).objtype==INCLUDE_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
+	      sameObjType(predefined(res), INCLUDE) ? INCLUDE_PATH : SYSINCLUDE_PATH);
 	    Dispose(fname);
 	    LexPush(fnum, 0, INCLUDE_FILE, 1, FALSE);
 	    res = LexGetToken();
@@ -718,7 +718,7 @@ OBJECT LexGetToken(void)
 	    break;
 	  }
 	}
-	else if( predefined(res).objtype == END_E )
+	else if( sameObjType(predefined(res), END) )
 	  res = NewToken(predefined(res), &file_pos,0,0,precedence(res),nilobj);
 	else
 	  res = NewToken(predefined(res), &file_pos,0,0,precedence(res),res);

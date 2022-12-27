@@ -44,7 +44,7 @@
 void InsertUses(OBJECT x, OBJECT y)
 { OBJECT tmp;
   debug2(DSU, D, "InsertUses( %s, %s )", SymName(x), SymName(y));
-  if( objectOfType(x, LOCAL) && objectOfType(y, LOCAL) && predefined(y).objtype == DUMMY_E )
+  if( objectOfType(x, LOCAL) && objectOfType(y, LOCAL) && sameObjType(predefined(y), DUMMY) )
   { tmp = GetMem(tmp, USES_SIZE, no_fpos);  item(tmp) = y;
     if( base_uses(x) == nilobj )  next(tmp) = tmp;
     else next(tmp) = next(base_uses(x)), next(base_uses(x)) = tmp;

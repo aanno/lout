@@ -744,7 +744,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       {
 	if( dim == COLM )
 	{ save_mark(x) = xmk;
-	  if( incgraphic_ok(x).objtype != DUMMY_E )
+	  if( !sameObjType(incgraphic_ok(x), DUMMY) )
 	  { debug2(DGP, DD, "  %s (style %s)",
 	      EchoObject(x), EchoStyle(&save_style(x)));
 	    face = finfo[font(&save_style(x))].original_face;
@@ -755,7 +755,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    }
 	  }
 	}
-	else if( incgraphic_ok(x).objtype != DUMMY_E )
+	else if( !sameObjType(incgraphic_ok(x), DUMMY) )
 	  BackEnd->PrintGraphicInclude(x, save_mark(x), pg - xmk);
       }
       *actual_back = xb;  *actual_fwd = xf;
@@ -1398,7 +1398,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
       assert( !objectOfType(y, GAP_OBJ), "FAPO: THR!");
 
-      if( thr_state(x).objtype != FINALSIZE.objtype )
+      if( !sameObjType(thr_state(x), FINALSIZE) )
       {	back(x, dim) = xb;  fwd(x, dim) = xf;
 	thr_state(x) = FINALSIZE;
       }

@@ -2635,6 +2635,10 @@ INLINE BOOLEAN2 objectOfType(OBJECT x, OBJTYPE typ) {
   return type(x).objtype == typ.objtype;
 }
 
+INLINE BOOLEAN2 sameObjType(OBJTYPE x, OBJTYPE y) {
+  return x.objtype == y.objtype;
+}
+
 INLINE BOOLEAN2 spaceMode(GAP* x, SPACE_MODE m) {
   return (mode(x).spacemode == m.spacemode);
 }

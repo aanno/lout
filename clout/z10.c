@@ -663,10 +663,10 @@ void CrossSequence(OBJECT x)
 
       /* either write out the index immediately or store it for later */
       /* if( ctype == GALL_PREC || ctype == GALL_FOLL_OR_PREC ) */
-      if( ctype.objtype == GALL_PREC_E )
+      if( sameObjType(ctype, GALL_PREC) )
       {	if( gall_tag(cs) == nilobj )
 	{
-	  if( ctype.objtype == GALL_PREC_E )
+	  if( sameObjType(ctype, GALL_PREC) )
 	    Error(10, 12, "no %s galley target precedes this %s%s%s", WARN,
 	      &fpos(val), SymName(sym), SymName(sym), KW_CROSS, KW_PRECEDING);
 	  else
@@ -680,7 +680,7 @@ void CrossSequence(OBJECT x)
 	  !StringEqual(string(gall_tag(cs)), STR_EMPTY),
 	  "CrossSequence: gall_tag!" );
 	debug4(DCR, DD, "  inserting galley (%s) %s&%s %s",
-	  ctype.objtype == GALL_PREC_E ? "GALL_PREC" : "GALL_FOLL_OR_PREC", SymName(sym),
+	  sameObjType(ctype, GALL_PREC) ? "GALL_PREC" : "GALL_FOLL_OR_PREC", SymName(sym),
 	  string(gall_tag(cs)), seq);
 	DbInsert(NewCrossDb, TRUE, sym, string(gall_tag(cs)), no_fpos, seq,
 			dfnum, (long) dfpos, dlnum, FALSE);

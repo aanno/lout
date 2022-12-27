@@ -103,7 +103,7 @@ void ReadPrependDef(OBJTYPE typ, OBJECT encl)
   fnum = FileNum(string(fname), STR_EMPTY);
   if( fnum == NO_FILE || !sameFiletype(FileType(fnum), PREPEND_FILE) )
     DefineFile(string(fname), STR_EMPTY, &fpos(fname), PREPEND_FILE,
-	   typ.objtype == PREPEND_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
+	   sameObjType(typ, PREPEND) ? INCLUDE_PATH : SYSINCLUDE_PATH);
 
 } /* end ReadPrependDef */
 
@@ -134,7 +134,7 @@ void ReadIncGRepeatedDef(OBJTYPE typ, OBJECT encl)
     return;
   }
   debug0(DFS, D, "  calling PS_IncGRepeated from ReadPrependDef");
-  setIncg_type(fname, (typ.objtype == INCG_REPEATED_E ? INCGRAPHIC : SINCGRAPHIC));
+  setIncg_type(fname, (sameObjType(typ, INCG_REPEATED) ? INCGRAPHIC : SINCGRAPHIC));
   PS_IncGRepeated(fname);
 } /* end ReadPrependDef */
 
@@ -186,7 +186,7 @@ void ReadDatabaseDef(OBJTYPE typ, OBJECT encl)
     return;
   }
   if( Down(symbs) != symbs )
-    (void) DbLoad(fname, typ.objtype == DATABASE_E ? DATABASE_PATH : SYSDATABASE_PATH,
+    (void) DbLoad(fname, sameObjType(typ, DATABASE) ? DATABASE_PATH : SYSDATABASE_PATH,
       TRUE, symbs, InMemoryDbIndexes);
 } /* end ReadDatabaseDef */
 
@@ -535,7 +535,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
   OBJECT curr_encl;  BOOLEAN2 compulsory_par, has_import_encl;
   t = *token;
 
-  while( res_type.objtype==LOCAL_E || is_string(t, KW_NAMED) || is_string(t, KW_IMPORT) )
+  while( sameObjType(res_type, LOCAL) || is_string(t, KW_NAMED) || is_string(t, KW_IMPORT) )
   {
     curr_encl = encl;
 
@@ -655,12 +655,12 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
     }
 
 
-    if( res_type.objtype == LOCAL_E && !is_string(t, KW_DEF) && !is_string(t, KW_MACRO) )
+    if( sameObjType(res_type, LOCAL) && !is_string(t, KW_DEF) && !is_string(t, KW_MACRO) )
     { Error(5, 30, "keyword %s or %s expected here", WARN, &fpos(t),
 	KW_DEF, KW_MACRO);
       break;
     }
-    if( res_type.objtype == NPAR_E && !is_string(t, KW_NAMED) )
+    if( sameObjType(res_type, NPAR) && !is_string(t, KW_NAMED) )
     { Error(5, 31, "keyword %s expected here", WARN, &fpos(t), KW_NAMED);
       break;
     }
@@ -675,7 +675,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
       SuppressScope();  Dispose(t);  t = LexGetToken();
 
       /* check for compulsory keyword */
-      if( res_type.objtype == NPAR_E && is_string(t, KW_COMPULSORY) )
+      if( sameObjType(res_type, NPAR) && is_string(t, KW_COMPULSORY) )
       { compulsory_par = TRUE;
 	Dispose(t);  t = LexGetToken();
       }

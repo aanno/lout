@@ -766,8 +766,8 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	    link = NextDown(link);
 	  }
 	  /* ??? else if( foll_or_prec(z) == GALL_PREC ) */
-	  else if( foll_or_prec(z).objtype == GALL_PREC_E ||
-		   foll_or_prec(z).objtype == GALL_FOLL_OR_PREC_E )
+	  else if( sameObjType(foll_or_prec(z), GALL_PREC) ||
+		   sameObjType(foll_or_prec(z), GALL_FOLL_OR_PREC) )
 	  {
 	    /* galley is preceding or foll_or_prec, send to CrossSequence */
 	    OBJECT t;

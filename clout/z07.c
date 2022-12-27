@@ -70,7 +70,7 @@ static void DisposeSplitObject(OBJECT x)
 
   /* handle first child */
   CountChild(y, Down(x), count);
-  if( type(y).objtype == COL_THR_E )
+  if( objectOfType(y, COL_THR) )
   {
     /* find corresponding child link out of y and delete that link */
     for( link = Down(y), uplink = Up(y), i = 1;
@@ -84,7 +84,7 @@ static void DisposeSplitObject(OBJECT x)
 
   /* handle second child */
   CountChild(y, LastDown(x), count);
-  if( type(y).objtype == ROW_THR_E )
+  if( objectOfType(y, ROW_THR) )
   {
     /* find corresponding child link out of y and delete that link */
     for( link = Down(y), uplink = Up(y), i = 1;
@@ -772,7 +772,7 @@ BOOLEAN2 EqualManifested(OBJECT x, OBJECT y)
   {
     return StringEqual(string(x), string(y));
   }
-  else if( type(x).objtype != type(y).objtype )
+  else if( !objectOfType(x, type(y)) )
   {
     return FALSE;
   }

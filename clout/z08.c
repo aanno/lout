@@ -935,7 +935,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
     while( --depth >= 0 )
     {
       Error(8, 22, "at %d: %d %s %s", WARN, &fpos(x), depth, debug_lnum[depth],
-	Image(debug_type[depth]), debug_type[depth].objtype == CLOSURE_E ?
+	Image(debug_type[depth]), sameObjType(debug_type[depth], CLOSURE) ?
 	  FullSymName(debug_actual[depth], AsciiToFull(".")) : STR_EMPTY);
     }
     Error(8, 23, "exiting now", FATAL, &fpos(x));

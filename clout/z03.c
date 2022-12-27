@@ -848,8 +848,8 @@ OBJECT *full_name, FILE_POS *xfpos, BOOLEAN2 *compressed)
   FULL_CHAR sort_name[128];  int sort_start = 0, sort_end = 0;
   static FULL_CHAR last_sort_name[128];  static FILE *last_ceps_fp = NULL;
   debug2(DFS, DD, "OpenIncGraphicFile(%s, %s, -)", str, Image(typ));
-  assert( typ.objtype == INCGRAPHIC_E || typ.objtype == SINCGRAPHIC_E, "OpenIncGraphicFile!" );
-  p = (typ.objtype == INCGRAPHIC_E ? INCLUDE_PATH : SYSINCLUDE_PATH);
+  assert( sameObjType(typ, INCGRAPHIC) || sameObjType(typ, SINCGRAPHIC), "OpenIncGraphicFile!" );
+  p = (sameObjType(typ, INCGRAPHIC) ? INCLUDE_PATH : SYSINCLUDE_PATH);
   if (str[0] == '@')
   {
     /* parse @name@start:end */

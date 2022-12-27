@@ -302,7 +302,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     }
     else /* unsized galley, either backwards or normal */
     {
-      if( foll_or_prec(hd).objtype == GALL_PREC_E )
+      if( sameObjType(foll_or_prec(hd), GALL_PREC) )
       {	target_index= SearchGalley(Up(hd_index), sym, FALSE, TRUE,TRUE,FALSE);
 	need_precedes = FALSE;
       }
@@ -940,7 +940,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       debug0(DYY, D, "] LeaveErrorBlock(TRUE) (REJECT)");
       if( tg_inners != nilobj )  DisposeObject(tg_inners), tg_inners = nilobj;
       DisposeObject(target_galley);
-      if( foll_or_prec(hd).objtype == GALL_PREC_E && !sized(hd) )
+      if( sameObjType(foll_or_prec(hd), GALL_PREC) && !sized(hd) )
       {
 	/* move to just before the failed target */
 	MoveLink(Up(hd_index), Up(target_index), PARENT);

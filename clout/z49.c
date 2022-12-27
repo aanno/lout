@@ -403,13 +403,13 @@ static int PS_FindIncGRepeated(OBJECT x, OBJTYPE typ)
       Child(y, link);
       if( StringEqual(string(x), string(y)) )
       {
-	if( objtype == INCGRAPHIC_E && incg_type(y).objtype == SINCGRAPHIC.objtype )
+	if( objtype == INCGRAPHIC_E && sameObjType(incg_type(y), SINCGRAPHIC) )
 	{
           Error(49, 15, "use of %s rather than %s contradicts prior %s at %s",
 	    WARN, &fpos(x), KW_INCGRAPHIC, KW_SINCGRAPHIC,
 	    KW_SINCG_REPEATED, EchoFilePos(&fpos(y)));
 	}
-	else if( objtype == SINCGRAPHIC_E && incg_type(y).objtype == INCGRAPHIC.objtype )
+	else if( objtype == SINCGRAPHIC_E && sameObjType(incg_type(y), INCGRAPHIC) )
 	{
           Error(49, 16, "use of %s rather than %s contradicts prior %s at %s",
 	    WARN, &fpos(x), KW_SINCGRAPHIC, KW_INCGRAPHIC,

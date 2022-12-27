@@ -120,7 +120,7 @@ BOOLEAN2 xleft, BOOLEAN2 xright, BOOLEAN2 xindef, unsigned char xprec)
     FALSE, FALSE, DUMMY, s, nilobj);
   if( xright )  InsertSym( AsciiToFull("pb"), RPAR, no_fpos, DEFAULT_PREC,
     FALSE, FALSE, DUMMY, s, nilobj);
-  if( xleft && xright && xpre.objtype != PLUS_E && xpre.objtype != MINUS_E )
+  if( xleft && xright && !sameObjType(xpre, PLUS) && !sameObjType(xpre, MINUS) )
     right_assoc(s) = TRUE;
   return s;
 } /* end load */

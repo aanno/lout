@@ -190,13 +190,13 @@ static BOOLEAN2 FindSpannerGap(OBJECT thr, unsigned dim, OBJTYPE cat_op,
   /* find nearest enclosing cat_op that we aren't the first element of */
   link = UpDim(thr, dim);
   Parent(x, link);
-  while( (type(x).objtype != cat_op.objtype || !objectOfType(PrevDown(link), LINK)) && Up(x) != x )
+  while( (!objectOfType(x, cat_op) || !objectOfType(PrevDown(link), LINK)) && Up(x) != x )
   { link = UpDim(x, dim);
     Parent(x, link);
   }
 
   /* if found and a gap precedes thr's component of it, return that gap */
-  if( type(x).objtype == cat_op.objtype && objectOfType(PrevDown(link), LINK) )
+  if( objectOfType(x, cat_op) && objectOfType(PrevDown(link), LINK) )
   { Child(*res, PrevDown(link));
     assert(objectOfType(*res, GAP_OBJ), "FindSpannerGap: type(*res)!" );
   }
@@ -248,9 +248,9 @@ void SpannerAvailableSpace(OBJECT y, int dim, FULL_LENGTH *resb,
   for( slink = Up(y);  slink != y;  slink = NextUp(slink) )
   { Parent(s, slink);
     Parent(thr, UpDim(s, dim));
-    if( type(thr).objtype == thr_type.objtype )
+    if( objectOfType(thr, thr_type) )
     {
-      assert( thr_state(thr).objtype == SIZED.objtype, "SpannerAvailableSpace: thr_state!" );
+      assert( sameObjType(thr_state(thr), SIZED), "SpannerAvailableSpace: thr_state!" );
       if( prevthr == nilobj )
       {
         /* this is the first column spanned over */
@@ -1037,7 +1037,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	    }
 	    continue;
 	  }
-	  else if( type(y).objtype == type(x).objtype )
+	  else if( objectOfType(y, type(x)) )
 	  { link = PrevDown(link);
 	    TransferLinks(Down(y), y, NextDown(link));
 	    DisposeChild(Up(y));
@@ -1189,7 +1189,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 	    }
 	    continue;
 	  }
-	  else if( type(y).objtype == type(x).objtype )
+	  else if( objectOfType(y, type(x)) )
 	  { link = PrevDown(link);
 	    TransferLinks(Down(y), y, NextDown(link));
 	    DisposeChild(Up(y));
@@ -1245,7 +1245,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
     case COL_THR_E:
 
       assert( dim == COLM, "MinSize/COL_THR: dim!" );
-      if( thr_state(x).objtype == NOTSIZED.objtype )
+      if( sameObjType(thr_state(x), NOTSIZED) )
       {	assert( Down(x) != x, "MinSize/COL_THR: Down(x)!" );
 
 	/* first size all the non-spanning members of the thread */
@@ -1290,7 +1290,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
     case ROW_THR_E:
 
       assert( dim == ROWM, "MinSize/ROW_THR: dim!" );
-      if( thr_state(x).objtype == NOTSIZED.objtype )
+      if( sameObjType(thr_state(x), NOTSIZED) )
       {	assert( Down(x) != x, "MinSize/ROW_THR: Down(x)!" );
 
 	/* first size all the non-spanning members of the thread */

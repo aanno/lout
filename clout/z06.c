@@ -625,7 +625,7 @@ static BOOLEAN Reduce(void)
     case ACAT_E:
     
 	p3 = PopObj();  p2 = PopObj();  p1 = PopObj();
-	if( type(p1).objtype == type(op).objtype )
+	if( objectOfType(p1, type(op)) )
 	{ Dispose(op);
 	}
 	else
@@ -1106,7 +1106,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	/* read right parameter and add it to the stacks, and reduce */
 	y = LexScanVerbatim( (FILE *) NULL, objectOfType(t, BEGIN), &fpos(t),
-	  type(x).objtype == RAW_VERBATIM_E);
+	  objectOfType(x, RAW_VERBATIM));
 	ShiftObj(y, PREV_OBJ);
 
 	/* carry on, hopefully to the corresponding right brace or @End @Verbatim */
@@ -1160,7 +1160,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    Dispose(x);
 	    x = nilobj;
 	  }
-	  else if( type(x).objtype == RAW_VERBATIM_E )
+	  else if( objectOfType(x, RAW_VERBATIM) )
 	  { actual(t) = RawVerbatimSym;
 	    Dispose(x);
 	    x = nilobj;
@@ -1331,7 +1331,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	/* or could be @NotRevealed */
 	PushScope(xsym, TRUE, FALSE);
 	t = LexGetToken();
-	if( type(t).objtype == NOT_REVEALED_E )
+	if( objectOfType(t, NOT_REVEALED) )
 	{ Dispose(t);
 	  t = LexGetToken();
 	  revealed = FALSE;
@@ -1475,7 +1475,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    ifdebug(DGT, D, DebugStacks(initial_ttop, obj_prev));
 	    i = has_rpar(xsym) ? ttop -1 : ttop;
 	    while( is_cat_op(type(tok_stack[i])) )   i--;
-	    if( (type(tok_stack[i]).objtype==LBR_E || type(tok_stack[i]).objtype==BEGIN_E)
+	    if( (objectOfType(tok_stack[i], LBR) || objectOfType(tok_stack[i], BEGIN))
 		  && objectOfType(tok_stack[i-1], GSTUB_EXT) )
 	    {
 	      /* at this point it is likely that x is transferable */
@@ -1491,12 +1491,12 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	      if( objectOfType(x, CLOSURE) )	/* failure: unReduce */
 	      {	if( has_rpar(xsym) )
 		{ Child(tmp, LastDown(x));
-		  assert(type(tmp).objtype==PAR_E && type(actual(tmp)).objtype==RPAR_E,
+		  assert(objectOfType(tmp, PAR) && objectOfType(actual(tmp), RPAR),
 				"Parse: cannot undo rpar" );
 		  DisposeChild(LastDown(x));
 		  if( has_lpar(xsym) )
 		  { Child(tmp, Down(x));
-		    assert(type(tmp).objtype==PAR_E && type(actual(tmp)).objtype==LPAR_E,
+		    assert(objectOfType(tmp, PAR) && objectOfType(actual(tmp), LPAR),
 				"Parse: cannot undo lpar" );
 		    Child(tmp, Down(tmp));
 		    PushObj(tmp);
