@@ -846,14 +846,6 @@ typedef struct
   unsigned	omode	 : 3;		/* spacing mode: edge-to-edge, etc   */
 } GAP;
 
-/** inline function not possible - also used for setters */
-#define	nobreak_m(x)	(x).onobreak
-#define	mark_m(x)		(x).omark
-#define	join_m(x)		(x).ojoin
-#define	units_m(x)	(x).ounits
-#define	mode_m(x)		(x).omode
-#define	width_m(x)	(x).owidth
-
 INLINE BOOLEAN2 nobreak(GAP* x) {
   return x->onobreak;
 }
@@ -975,27 +967,17 @@ inline void ClearGap(GAP x) {
 #define GapCopy(x, y)							\
 ( GapCopyOnRef( &(x), &(y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
-  nobreak_m(*x) = nobreak(y);
-  mark_m(*x) = mark(y);
-  join_m(*x) = join(y);
-  // units_m(*x) = units(y);
-  setUnits(x, units(y));
-  // mode_m(*x) = mode(y);
-  setMode(x, mode(y));
-  width_m(*x) = width(y);
-  /* not working!
   setNobreak(x, nobreak(y));
   setMark(x, mark(y));
   setJoin(x, join(y));
   setUnits(x, units(y));
   setMode(x, mode(y));
   setWidth(x, width(y));
-  */
 }
 
 INLINE BOOLEAN2 GapEqual(GAP* x, GAP* y) {
     return nobreak(x) == nobreak(y) && mark(x) == mark(y) && join(x) == join(y)
-             && units(x).unit == units(y).unit 
+             && sameUnit(units(x), units(y)) 
              && mode(x).spacemode == mode(y).spacemode && width(x) == width(y);
 }
 
@@ -1041,8 +1023,8 @@ typedef struct style_type
   unsigned	ohyph_style	: 2;	/* hyphenation off or on             */
   unsigned	ofill_style	: 2;	/* fill lines with text off/on       */
   unsigned	odisplay_style	: 3;	/* display lines adjusted, ragged... */
-  // TODO: making this BOOLEAN will break crossrefs
-  unsigned	ooutline	: 2;	/* TRUE if outlining words           */
+  // TODO: making this BOOLEAN2 will break crossrefs
+  BOOLEAN	ooutline	: 2;	/* TRUE if outlining words           */
   BOOLEAN2	onobreakfirst	: 1;	/* no break after first line of para */
   BOOLEAN2	onobreaklast	: 1;	/* no break after last line of para  */
   BOOLEAN2	obaselinemark	: 1;	/* baseline char metrics             */
