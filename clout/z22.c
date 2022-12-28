@@ -68,10 +68,10 @@ void Interpose(OBJECT z, OBJTYPE typ, OBJECT x, OBJECT y)
   New(encl, typ);
   FposCopy(fpos(encl), fpos(y));
   ReplaceNode(encl, z);  Link(encl, z);
-  back(encl, COLM) = back(x, COLM);
-  fwd(encl, COLM) = fwd(x, COLM);
-  back(encl, ROWM) = back(y, ROWM);
-  fwd(encl, ROWM) = fwd(y, ROWM);
+  setBack(encl, COLM, back(x, COLM));
+  setFwd(encl, COLM, fwd(x, COLM));
+  setBack(encl, ROWM, back(y, ROWM));
+  setFwd(encl, ROWM, fwd(y, ROWM));
   setUnderline(encl, underline(z));
 } /* end Interpose */
 
@@ -248,7 +248,7 @@ void ExpandRecursives(OBJECT recs)
     tmp =  CopyObject(target, &fpos(target));  env = DetachEnv(tmp);
     Link(hd, tmp);  Link(target_index, hd);
     SizeGalley(hd, env, external_ver(target),
-      gall_dir(hd) == ROWM ? threaded(target) : FALSE, FALSE, FALSE,
+      gall_dir(hd) == ROWM_E ? threaded(target) : FALSE, FALSE, FALSE,
       &save_style(target), &non_c, nilobj, &n1, &newrecs, &inners, nilobj);
     debug1(DGA, D, "  ExpandRecursives inners: %s", DebugInnersNames(inners));
     debug0(DCR, DDD, "    as galley:");
@@ -498,7 +498,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
       {
         /* make new headers if required */
         if( headers(hd, i) == nilobj )
-	  New(headers(hd, i), gall_dir(hd) == ROWM ? VCAT : ACAT);
+	  New(headers(hd, i), gall_dir(hd) == ROWM_E ? VCAT : ACAT);
 
         /* construct a gap object from the left parameter */
         New(g, GAP_OBJ);
@@ -591,7 +591,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
   OBJECT dest, link, y, z, tmp1, tmp2, why, top_y;
   FULL_CHAR *label_string, buff[MAX_LINE];
   FULL_LENGTH aback, afwd;
-  int dim, pnval;
+  CR_TE dim; int pnval;
   debug2(DGS, DD, "[ Promote(%s width %s, stop_link):",
     SymName(actual(hd)), EchoLength(size(hd, COLM)));
   ifdebug(DGS, DD, DebugGalley(hd, stop_link, 2));
@@ -676,8 +676,9 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	/* definite, must be stored */
 	opt_gazumped(hd) = FALSE;
 	last = MakeWord(type(y), string(y), &fpos(y));
-	back(last, COLM) = back(y, gall_dir(hd));
-	fwd(last, COLM) = fwd(y, gall_dir(hd));
+  CR_TE mydim = crFromU(gall_dir(hd));
+	setBack(last, COLM, back(y, mydim));
+	setFwd(last, COLM, fwd(y, mydim));
 	word_font(last) = word_font(y);
 	word_colour(last) = word_colour(y);
 	word_underline_colour(last) = word_underline_colour(y);
@@ -700,8 +701,9 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	/* definite other than WORD, add it */
 	opt_gazumped(hd) = FALSE;
 	last = MakeWord(QWORD, AsciiToFull("w"), &fpos(y));
-	back(last, COLM) = back(y, gall_dir(hd));
-	fwd(last, COLM) = fwd(y, gall_dir(hd));
+  CR_TE mydim = crFromU(gall_dir(hd));
+	setBack(last, COLM, back(y, mydim));
+	setFwd(last, COLM, fwd(y, mydim));
 	Link(opt_components(hd), last);
 	debug1(DOG, DD, "  adding word for %s", EchoObject(y));
       }
@@ -710,12 +712,12 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
   }
 
   /* error if promoting a seen_nojoin galley into a threaded destination */
-  if( seen_nojoin(hd) && gall_dir(hd) == ROWM && threaded(dest) )
+  if( seen_nojoin(hd) && gall_dir(hd) == ROWM_E && threaded(dest) )
     Error(22, 3, "galley %s must have a single column mark",
       FATAL, &fpos(hd), SymName(actual(hd)));
 
   /* make nojoin status clear by adding an extra gap at start if needed */
-  if( gall_dir(hd) == ROWM && !external_ver(dest) && seen_nojoin(hd) &&
+  if( gall_dir(hd) == ROWM_E && !external_ver(dest) && seen_nojoin(hd) &&
       join(&gap(y)) )
   { OBJECT prnt, extra_null, extra_gap;
 
@@ -723,8 +725,10 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
     Parent(prnt, Up(dest));  /* can't be threaded */
     assert( objectOfType(prnt, VCAT), "Promote: nojoin case, can't find VCAT" );
     New(extra_null, NULL_CLOS);
-    back(extra_null, COLM) = fwd(extra_null, COLM) = 0;
-    back(extra_null, ROWM) = fwd(extra_null, ROWM) = 0;
+    setFwd(extra_null, COLM, 0);
+    setBack(extra_null, COLM, 0);
+    setFwd(extra_null, ROWM, 0);
+    setBack(extra_null, ROWM, 0);
     New(extra_gap, GAP_OBJ);
     hspace(extra_gap) = vspace(extra_gap) = 0;
     SetGapOnRef(&gap(extra_gap), FALSE, FALSE, FALSE, FIXED_UNIT, EDGE_MODE, 0);
@@ -980,7 +984,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
   }
 
   /* prepare the promotion */
-  if( external_ver(dest) && gall_dir(hd) == ROWM )
+  if( external_ver(dest) && gall_dir(hd) == ROWM_E )
   { if( threaded(dest) )
     { Parent(tmp1, UpDim(dest, COLM));
       assert( objectOfType(tmp1, COL_THR), "Promote: tmp1 not COL_THR!" );
@@ -1000,12 +1004,12 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
     }
     link = Up(dest_index);
   }
-  else if( external_hor(dest) && gall_dir(hd) == COLM )
+  else if( external_hor(dest) && gall_dir(hd) == COLM_E )
   { link = Up(dest_index);
   }
   else
   {
-    dim = gall_dir(hd);
+    dim = crFromU(gall_dir(hd));
     for( link = hd;  NextDown(link) != stop_link;  )
     { Child(y, NextDown(link));
       debug1(DGS, DD, "ordinary promote examining %s", EchoObject(y));
@@ -1240,7 +1244,7 @@ void SetTarget(OBJECT hd)
   copied = FALSE;
   if( !is_cross(type(cr)) )
   { OBJECT nbt[2], nft[2], ntarget, ncrs, nenclose;
-    nbt[COLM] = nft[COLM] = nbt[ROWM] = nft[ROWM] = nilobj;
+    nbt[COLM_E] = nft[COLM_E] = nbt[ROWM_E] = nft[ROWM_E] = nilobj;
     ntarget = ncrs = nenclose = nilobj;
     cr = CopyObject(cr, &fpos(x));
     copied = TRUE;

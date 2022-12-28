@@ -614,8 +614,8 @@ static void KernWordLeftMargin(OBJECT first_on_line, OBJECT parent)
        paragraph itself while still appearing as having a null
        width.  */
     glyph_width = size(z, COLM);
-    back(z, COLM) = -glyph_width;
-    fwd(z, COLM) = glyph_width;
+    setBack(z, COLM, -glyph_width);
+    setFwd(z, COLM, glyph_width);
     Link(parent, z);
 
     /* Add a zero-width gap object.  */
@@ -740,8 +740,8 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
     FontWordSize(z);
 
     /* Make it zero-width.  */
-    fwd(z, COLM) = 0;
-    back(z, COLM) = 0;
+    setFwd(z, COLM, 0);
+    setBack(z, COLM, 0);
 
     /* Remove the last char from LAST_ON_LINE and recompute its size.  */
     word_content[word_len - kerned_glyph_count] = '\0';
@@ -821,7 +821,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
       word_strut(res) = strut(&save_style(x));
       word_ligatures(res) = ligatures(&save_style(x));
       word_hyph(res) = (hyph_style(&save_style(x)).hyphstyle == HYPH_ON_E);
-      back(res, COLM) = fwd(res, COLM) = 0;
+      setFwd(res, COLM, 0);
+      setBack(res, COLM, 0);
       ReplaceNode(res, x);
       DisposeObject(x);
       return res;
@@ -835,7 +836,10 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
   tmp = MakeWord(WORD, STR_GAP_RJUSTIFY, &fpos(x));
   Link(gp, tmp);  Link(x, gp);
   tmp = MakeWord(WORD, STR_EMPTY, &fpos(x));
-  back(tmp, COLM) = fwd(tmp, COLM) = back(tmp, ROWM) = fwd(tmp, ROWM) = 0;
+  setFwd(tmp, ROWM, 0);
+  setBack(tmp, ROWM, 0);
+  setFwd(tmp, COLM, 0);
+  setBack(tmp, COLM, 0);
   word_font(tmp) = 0;
   word_colour(tmp) = 0;
   word_underline_colour(tmp) = 0;
@@ -979,7 +983,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
     /* the line was only slightly tight                                     */
     if( multi == nilobj )
     { res = x;
-      back(res, COLM) = 0;  fwd(res, COLM) = max_width;
+      setBack(res, COLM, 0);  setFwd(res, COLM, max_width);
     }
     else
     { New(res, VCAT);
@@ -992,7 +996,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
   { OBJECT lgap, llink;
     New(res, VCAT);
     adjust_cat(res) = FALSE;
-    back(res, COLM) = 0;  fwd(res, COLM) = max_width;
+    setBack(res, COLM, 0);  setFwd(res, COLM, max_width);
     ReplaceNode(res, x);
     llink = I.llink;
 
@@ -1006,8 +1010,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 		(display_style(&save_style(y)) == DISPLAY_ADJUST_E ||
 		 display_style(&save_style(y)) == DISPLAY_OUTDENT_E) )
 	 setDisplay_style(&save_style(y), DO_ADJUST_E);
-      back(y, COLM) = 0;
-      fwd(y, COLM) = max_width;
+      setBack(y, COLM, 0);
+      setFwd(y, COLM, max_width);
 
       if( marginkerning(&save_style(x)) )
       {
@@ -1028,7 +1032,10 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
       {
 	OBJECT t1, t2, z;
 	t1 = MakeWord(WORD, STR_EMPTY, &fpos(x));
-	back(t1, COLM) = fwd(t1, COLM) = back(t1, ROWM) = fwd(t1, ROWM) = 0;
+  setFwd(t1, ROWM, 0);
+  setBack(t1, ROWM, 0);
+  setFwd(t1, COLM, 0);
+	setBack(t1, COLM, 0);
 	word_font(t1) = 0;
 	word_colour(t1) = 0;
 	word_underline_colour(t1) = 0;
@@ -1043,7 +1050,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 	New(t2, WIDE);
 	SetConstraintOnRef(&constraint(t2), MAX_FULL_LENGTH, outdent_margin,
 	  MAX_FULL_LENGTH);
-	back(t2, COLM) = 0;  fwd(t2, COLM) = outdent_margin;
+	setBack(t2, COLM, 0);  setFwd(t2, COLM, outdent_margin);
 	setUnderline(t2, UNDER_OFF);
 	Link(t2, t1);
 	Link(y, t2);
@@ -1116,8 +1123,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 	if( marginkerning(&save_style(x)) )
         {
           /* Margin kerning: set the hyphen's width to zero.  */
-          back(z, COLM) = 0;
-          fwd(z, COLM) = 0;
+          setBack(z, COLM, 0);
+          setFwd(z, COLM, 0);
         }
 	Link(x, z);
       }
@@ -1146,8 +1153,8 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 
     /* attach first line, x, to res */
     Link(NextDown(res), x);
-    back(x, COLM) = 0;
-    fwd(x, COLM) = max_width;
+    setBack(x, COLM, 0);
+    setFwd(x, COLM, max_width);
     if( display_style(&save_style(x)) == DISPLAY_ADJUST_E ||
 	display_style(&save_style(x)) == DISPLAY_OUTDENT_E )
 	  setDisplay_style(&save_style(x), DO_ADJUST_E);
@@ -1196,7 +1203,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
       prev = z;
       NextDefiniteWithGap(y, link, z, gp, jn);
     }
-    fwd(y, COLM) = find_min(MAX_FULL_LENGTH, f + fwd(prev, COLM));
+    setFwd(y, COLM, find_min(MAX_FULL_LENGTH, f + fwd(prev, COLM)));
 
     /* make last line DO_ADJUST if it is oversize */
     if( size(y, COLM) > max_width )  setDisplay_style(&save_style(y), DO_ADJUST_E);

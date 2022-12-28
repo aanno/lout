@@ -41,7 +41,7 @@
 /*                                                                           */
 /*****************************************************************************/
 
-FULL_LENGTH FindShift(OBJECT x, OBJECT y, int dim)
+FULL_LENGTH FindShift(OBJECT x, OBJECT y, CR_TE dim)
 { FULL_LENGTH len = 0, res = 0;  /* initial values unused */
   debug4(DSF, DD, "FindShift(%s, %s %s, %s)", Image(type(x)),
     Image(type(y)), EchoObject(y), dimen(dim));
@@ -154,7 +154,7 @@ OBJECT *sg, OBJECT *sdef, int *side)
 /*****************************************************************************/
 
 static void CatAdjustSize(OBJECT x, FULL_LENGTH *b, FULL_LENGTH *f, BOOLEAN2 ratm,
-OBJECT y, int dim)
+OBJECT y, CR_TE dim)
 { OBJECT link;
   OBJECT pg, prec_def, sg, sd;
   FULL_LENGTH beffect, feffect, seffect;  int side;
@@ -168,8 +168,8 @@ OBJECT y, int dim)
   ifdebug(DSA, DD, DebugObject(y));
 
   /* DO_ADJUST ACAT is a special case because adjustment affects its size */
-  if( dim==COLM && objectOfType(y, ACAT) && display_style(&save_style(y)) == DO_ADJUST_E )
-  { back(x, dim) = *b;  fwd(x, dim) = *f;
+  if( sameCr(dim, COLM) && objectOfType(y, ACAT) && display_style(&save_style(y)) == DO_ADJUST_E )
+  { setBack(x, dim, *b);  setFwd(x, dim, *f);
     *b = back(y, dim);  *f = fwd(y, dim);
     debug2(DSA, DD, "CatAdjustSize ACAT %s,%s", EchoLength(*b), EchoLength(*f));
     return;
@@ -219,7 +219,7 @@ OBJECT y, int dim)
     sg == nilobj ? AsciiToFull("<nil>") : EchoGap(&gap(sg)), Image4Constraints(side));
   debug3(DSA, D, "  beffect = %s, feffect = %s, seffect = %s",
     EchoLength(beffect), EchoLength(feffect), EchoLength(seffect));
-  back(x, dim) = *b;  fwd(x, dim) = *f;
+  setBack(x, dim, *b);  setFwd(x, dim, *f);
   switch( side )
   {
     case BACK:	bb = back(y, dim) + beffect + feffect - seffect;
@@ -249,7 +249,7 @@ OBJECT y, int dim)
 /*                                                                           */
 /*****************************************************************************/
 
-void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
+void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, CR_TE dim)
 { OBJECT y, link, tlink, lp, rp, z, index;
   BOOLEAN2 ratm;  FULL_LENGTH tb, tf, cby, cfy, rby, rfy;
   BOOLEAN2 is_rotate;
@@ -267,13 +267,13 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
     if (b < 0) {
       fprintf(stderr,
         "b %d < 0, back(x, dim %d) = %d, type(x) %d is_rotate %d, declared %s:%d\n",
-        b, dim, back(x, dim), type(x).objtype, is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
+        b, dim.cr, back(x, dim), type(x).objtype, is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
       ifdebug(DSA, D, DebugObject(x));
     }
     if (f < 0) {
       fprintf(stderr,
         "f %d < 0, fwd(x, dim %d) = %d, type(x) %d is_rotate %d, declared %s:%d\n",
-        f, dim, fwd(x, dim), type(x).objtype, is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
+        f, dim.cr, fwd(x, dim), type(x).objtype, is_rotate, malloc_oalloc_file_name(x), malloc_oalloc_line_num(x));
       ifdebug(DSA, D, DebugObject(x));
     }
     if (b < 0 || f < 0) {
@@ -289,8 +289,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 
     /* these cases are unique because they have multiple parents */
     if( objectOfType(x, COL_THR) || objectOfType(x, ROW_THR) )
-    { assert( (objectOfType(x, COL_THR)) == (dim==COLM), "AdjustSize: COL_THR!" );
-      back(x, dim) = b;  fwd(x, dim) = f;
+    { assert( (objectOfType(x, COL_THR)) == (sameCr(dim, COLM)), "AdjustSize: COL_THR!" );
+      setBack(x, dim, b);  setFwd(x, dim, f);
       for( link = Up(x);  link != x;  link = NextUp(link) )
       { Parent(y, link);
 	assert( objectOfType(y, SPLIT), "AdjustSize: type(y) != SPLIT!") ;
@@ -317,13 +317,13 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 
       case HEAD_E:
       
-	if( gall_dir(y) == COLM )
-	{ back(x, dim) = b, fwd(x, dim) = f;
+	if( gall_dir(y) == COLM_E )
+	{ setBack(x, dim, b), setFwd(x, dim, f);
 	  debug0(DSA, D, "] AdjustSize returning at horiz HEAD");
 	  return;
 	}
-	else if( dim == ROWM )
-	{ back(x, dim) = b, fwd(x, dim) = f;
+	else if( sameCr(dim, ROWM) )
+	{ setBack(x, dim, b), setFwd(x, dim, f);
 	  debug0(DSA, D, "] AdjustSize ROWM returning at HEAD");
 	  return;
 	}
@@ -340,7 +340,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 
-	  back(x, dim) = b;  fwd(x, dim) = f;
+	  setBack(x, dim, b);  setFwd(x, dim, f);
 	  if( lp == y && rp == y && !seen_nojoin(y) )
 	  {	
 	    /* if whole object is joined, do this */
@@ -364,7 +364,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 		Image(type(z)), objectOfType(z, CLOSURE) ?  SymName(actual(z)) : STR_EMPTY,
 		EchoLength(back(z, dim)), EchoLength(fwd(z, dim)),
 		EchoLength(tb), EchoLength(tf));
-	      ifdebugcond(DSA, DD,  dim == COLM && fwd(z, dim) > 20*CM, DebugObject(z));
+	      ifdebugcond(DSA, DD,  sameCr(dim, COLM) && fwd(z, dim) > 20*CM, DebugObject(z));
 	      tb = find_max(tb, back(z, dim));
 	      tf = find_max(tf, fwd(z, dim));
 	    }
@@ -380,8 +380,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	  }
 	  debug3(DSA, DD, "AdjustSize widening HEAD %s to b = %s, f = %s",
 		   SymName(actual(y)), EchoLength(b), EchoLength(f));
-	  ifdebugcond(DSA, DD,  dim == COLM && f > 20*CM, DebugObject(y));
-	  back(y, dim) = b;  fwd(y, dim) = f;
+	  ifdebugcond(DSA, DD,  sameCr(dim, COLM) && f > 20*CM, DebugObject(y));
+	  setBack(y, dim, b);  setFwd(y, dim, f);
 	  if( Up(y) == y )
 	  {
 	    debug0(DSA, D, "] AdjustSize ret. at HEAD (no parent)" );
@@ -428,15 +428,15 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case KERN_SHRINK_E:
       case BACKGROUND_E:
 
-	back(x, dim) = b;  fwd(x, dim) = f;
+	setBack(x, dim, b);  setFwd(x, dim, f);
 	break;
 
 
       case HMIRROR_E:
       case VMIRROR_E:
 
-	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (dim == COLM) == (objectOfType(y, HMIRROR)) )
+	setBack(x, dim, b);  setFwd(x, dim, f);
+	if( (sameCr(dim, COLM)) == (objectOfType(y, HMIRROR)) )
 	{
 	  tb = b; b = f; f = tb;
 	}
@@ -446,8 +446,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case HSCALE_E:
       case VSCALE_E:
 
-	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (dim==COLM) == (objectOfType(y, HSCALE)) )
+	setBack(x, dim, b);  setFwd(x, dim, f);
+	if( (sameCr(dim, COLM)) == (objectOfType(y, HSCALE)) )
 	{ debug0(DSA, D, "] AdjustSize returning at HSCALE or VSCALE");
 	  return;
 	}
@@ -458,8 +458,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case VCOVER_E:
 
 	/* dubious, but not likely to arise in practice */
-	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (dim==COLM) == (objectOfType(y, HCOVER)) )
+	setBack(x, dim, b);  setFwd(x, dim, f);
+	if( (sameCr(dim, COLM)) == (objectOfType(y, HCOVER)) )
 	{ debug0(DSA, D, "] AdjustSize returning at HCOVER or VCOVER");
 	  return;
 	}
@@ -468,8 +468,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 
       case SCALE_E:
 
-	back(x, dim) = b;  fwd(x, dim) = f;
-	if( dim == COLM )
+	setBack(x, dim, b);  setFwd(x, dim, f);
+	if( sameCr(dim, COLM) )
 	{ b *= bc(constraint(y)) / SF;
 	  f *= bc(constraint(y)) / SF;
 	}
@@ -482,7 +482,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 
       case ROTATE_E:
       
-	back(x, dim) = b;  fwd(x, dim) = f;
+	setBack(x, dim, b);  setFwd(x, dim, f);
 	RotateSize(&cby, &cfy, &rby, &rfy, x, sparec(constraint(y)));
 	if( cby != back(y, COLM) || cfy != fwd(y, COLM) )
 	  AdjustSize(y, cby, cfy, COLM);
@@ -495,7 +495,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case WIDE_E:
       case HIGH_E:
       
-	if( (objectOfType(y, WIDE)) == (dim == COLM) )
+	if( (objectOfType(y, WIDE)) == (sameCr(dim, COLM)) )
 	{ if( !FitsConstraintOnRef(b, f, &constraint(y)) )
 	  { Error(16, 2, "size constraint %s,%s,%s broken by %s,%s",
 	      WARN, &fpos(y),
@@ -503,12 +503,12 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	      EchoLength(fc(constraint(y))), EchoLength(b), EchoLength(f));
 	    SetConstraintOnRef(&constraint(y), MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
 	  }
-	  back(x, dim) = b;  fwd(x, dim) = f;
+	  setBack(x, dim, b);  setFwd(x, dim, f);
 	  EnlargeToConstraint(&b, &f, &constraint(y));
 	}
 	else
-	{ back(x, dim) = b;
-	  fwd(x, dim) = f;
+	{ setBack(x, dim, b);
+	  setFwd(x, dim, f);
 	}
 	break;
 
@@ -516,7 +516,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case HLIMITED_E:
       case VLIMITED_E:
       
-	if( (objectOfType(y, HLIMITED)) == (dim == COLM) )
+	if( (objectOfType(y, HLIMITED)) == (sameCr(dim, COLM)) )
 	{
 	  /* ***
           Parent(z, UpDim(y, dim));
@@ -535,11 +535,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	      EchoLength(b), EchoLength(f));
 	  }
 	  *** */
-	  back(x, dim) = b;  fwd(x, dim) = f;
+	  setBack(x, dim, b);  setFwd(x, dim, f);
 	}
 	else
-	{ back(x, dim) = b;
-	  fwd(x, dim) = f;
+	{ setBack(x, dim, b);
+	  setFwd(x, dim, f);
 	}
 	break;
 
@@ -547,8 +547,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case HSHIFT_E:
       case VSHIFT_E:
 
-	back(x, dim) = b;  fwd(x, dim) = f;
-	if( (objectOfType(y, HSHIFT)) == (dim == COLM) )
+	setBack(x, dim, b);  setFwd(x, dim, f);
+	if( (objectOfType(y, HSHIFT)) == (sameCr(dim, COLM)) )
 	{ tf = FindShift(y, x, dim);
 	  b = find_min(MAX_FULL_LENGTH, find_max(0, b + tf));
 	  f = find_min(MAX_FULL_LENGTH, find_max(0, f - tf));
@@ -559,8 +559,8 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case COL_THR_E:
       case ROW_THR_E:
 
-	assert( (objectOfType(y, COL_THR)) == (dim==COLM), "AdjustSize: COL_THR!" );
-	back(x, dim) = b;  fwd(x, dim) = f;
+	assert( (objectOfType(y, COL_THR)) == (sameCr(dim, COLM)), "AdjustSize: COL_THR!" );
+	setBack(x, dim, b);  setFwd(x, dim, f);
 	b = find_max(b, back(y, dim));
 	f = find_max(f, fwd(y, dim));
 	break;
@@ -570,7 +570,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case HCAT_E:
       case ACAT_E:
 
-	if( (objectOfType(y, VCAT)) == (dim == ROWM) )
+	if( (objectOfType(y, VCAT)) == (sameCr(dim, ROWM)) )
 	  CatAdjustSize(x, &b, &f, ratm, y, dim);
 	else
 	{
@@ -584,7 +584,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
 	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 
-	  back(x, dim) = b;  fwd(x, dim) = f;
+	  setBack(x, dim, b);  setFwd(x, dim, f);
 	  if( lp == y && rp == y )
 	  {
 	    /* if whole object is joined, do this */
@@ -616,9 +616,9 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case START_VSPAN_E:
       case VSPAN_E:
 
-	if( dim == COLM )
+	if( sameCr(dim, COLM) )
 	{
-	  back(x, dim) = b;  fwd(x, dim) = f;
+	  setBack(x, dim, b);  setFwd(x, dim, f);
 	}
 	else Error(16, 4, "size adjustment of %s not implemented",
 	       WARN, &fpos(y), Image(type(y)));
@@ -628,9 +628,9 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case START_HSPAN_E:
       case HSPAN_E:
 
-	if( dim == ROWM )
+	if( sameCr(dim, ROWM) )
 	{
-	  back(x, dim) = b;  fwd(x, dim) = f;
+	  setBack(x, dim, b);  setFwd(x, dim, f);
 	}
 	else Error(16, 4, "size adjustment of %s not implemented",
 	       WARN, &fpos(y), Image(type(y)));
@@ -640,12 +640,12 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case HSPANNER_E:
       case VSPANNER_E:
 
-	assert( (dim == COLM) == (objectOfType(y, HSPANNER)), "AdjustSize: span");
-	back(x, dim) = b;  fwd(x, dim) = f;
+	assert( (sameCr(dim, COLM)) == (objectOfType(y, HSPANNER)), "AdjustSize: span");
+	setBack(x, dim, b);  setFwd(x, dim, f);
 	debug5(DSC, D, "  adjusting %s from (%s,%s) to (%s,%s)",
 	  Image(type(y)), EchoLength(back(y, dim)), EchoLength(fwd(y, dim)),
 	  EchoLength(b), EchoLength(f));
-	back(y, dim) = b;  fwd(y, dim) = f;
+	setBack(y, dim, b);  setFwd(y, dim, f);
 	debug1(DSA, D, "] AdjustSize returning at %s", Image(type(y)));
 	return;
 	break;

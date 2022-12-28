@@ -321,7 +321,10 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
     case ENV_OBJ_E:
     
       New(res, type(x));
-      back(res, COLM) = back(res, ROWM) = fwd(res, COLM) = fwd(res, ROWM) = 0;
+      setFwd(res, ROWM, 0);
+      setFwd(res, COLM, 0);
+      setBack(res, ROWM, 0);
+      setBack(res, COLM, 0);
       for( link = Down(x);  link != x;  link = NextDown(link) )
       {	Child(y, link);
 	tmp = CopyObject(y, pos);

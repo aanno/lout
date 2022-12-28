@@ -66,7 +66,7 @@ static void SetUnderline(OBJECT x)
 /*****************************************************************************/
 
 #define ReplaceWithSplit(x, bthr, fthr)					\
-   if( bthr[ROWM] || bthr[COLM] || fthr[ROWM] || fthr[COLM] )		\
+   if( bthr[ROWM_E] || bthr[COLM_E] || fthr[ROWM_E] || fthr[COLM_E] )		\
 	x = insert_split(x, bthr, fthr)
 
 static OBJECT insert_split(OBJECT x, OBJECT bthr[2], OBJECT fthr[2])
@@ -74,17 +74,21 @@ static OBJECT insert_split(OBJECT x, OBJECT bthr[2], OBJECT fthr[2])
   debug1(DOM, DD, "ReplaceWithSplit(%s, -)", EchoObject(x));
   assert( !objectOfType(x, SPLIT), "ReplaceWithSplit: type(x) already SPLIT!" );
   New(res, SPLIT);
-  back(res, COLM) = back(res, ROWM) = fwd(res, COLM) = fwd(res, ROWM) = 0;
+  setFwd(res, ROWM, 0);
+  setFwd(res, COLM, 0);
+  setBack(res, ROWM, 0);
+  setBack(res, COLM, 0);
   FposCopy(fpos(res), fpos(x));
   ReplaceNode(res, x);
-  for( dim = COLM;  dim <= ROWM;  dim++ )
+  for( dim = COLM_E;  dim <= ROWM_E;  dim++ )
   { if( bthr[dim] || fthr[dim] )
     {
       debug0(DGP, DD, "  calling New(thread) from Manifest now");
-      New(new_op, dim == COLM ? COL_THR : ROW_THR);
+      New(new_op, dim == COLM_E ? COL_THR : ROW_THR);
       thr_state(new_op) = NOTSIZED;
-      fwd(new_op, 1-dim) = 0;	/* will hold max frame_size */
-      back(new_op, 1-dim) = 0;	/* will hold max frame_origin */
+      CR_TE other = otherCr(crFromU(dim));
+      setFwd(new_op, other, 0);	/* will hold max frame_size */
+      setBack(new_op, other, 0);	/* will hold max frame_origin */
       FposCopy(fpos(new_op), fpos(x));
       Link(res, new_op);  Link(new_op, x);
       if( bthr[dim] )  Link(bthr[dim], new_op);
@@ -301,12 +305,12 @@ OBJECT *enclose, BOOLEAN2 fcr)
     
   StyleCopy(&new_style, style);
   if( objectOfType(x, HCAT) )
-  { par = ROWM;
+  { par = ROWM_E;
     adjust_cat(x) = hadjust(style);
     setHadjust(&new_style, FALSE);
   }
   else
-  { par = COLM;
+  { par = COLM_E;
     adjust_cat(x) = vadjust(style);
     setVadjust(&new_style, FALSE);
   }
@@ -782,7 +786,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
     enclose_obj(hd) = (has_enclose(sym) ? BuildEnclose(hd) : nilobj);
     ClearHeaders(hd);
     x = hd;
-    threaded(x) = bthr[COLM] != nilobj || fthr[COLM] != nilobj;
+    threaded(x) = bthr[COLM_E] != nilobj || fthr[COLM_E] != nilobj;
     ReplaceWithSplit(x, bthr, fthr);
     debug3(DGA, D, "  manifesting %sgalley %s at %s",
       force_gall(hd) ? "force " : "", SymName(actual(hd)),
@@ -832,7 +836,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
   else
   {
     AttachEnv(env, x);
-    threaded(x) = bthr[COLM] != nilobj || fthr[COLM] != nilobj;
+    threaded(x) = bthr[COLM_E] != nilobj || fthr[COLM_E] != nilobj;
     debug0(DOM, DD,  "  closure; calling ReplaceWithSplit");
     ReplaceWithSplit(x, bthr, fthr);
   }
@@ -955,8 +959,8 @@ OBJECT *enclose, BOOLEAN2 fcr)
   debug1(DOM, DD,  "  environment: %s", EchoObject(env));
   debug6(DOM, DD,  "  style: %s;  target: %s;  threads: %s%s%s%s",
 	EchoStyle(style), SymName(*target),
-	bthr[COLM] ? " up"    : "",  fthr[COLM] ? " down"  : "",
-	bthr[ROWM] ? " left"  : "",  fthr[ROWM] ? " right" : "");
+	bthr[COLM_E] ? " up"    : "",  fthr[COLM_E] ? " down"  : "",
+	bthr[ROWM_E] ? " left"  : "",  fthr[ROWM_E] ? " right" : "");
   debugcond2(DHY, DD, eee, "[ Manifest(%s, *enclose = %s)",
     EchoObject(x), EchoObject(*enclose));
 
@@ -1363,7 +1367,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
     
       ETC:
       par = (objectOfType(x, ONE_COL) || objectOfType(x, HEXPAND) || objectOfType(x, HCONTRACT) ||
-	   objectOfType(x, HLIMITED) || objectOfType(x, WIDE) || objectOfType(x, HSHIFT)) ? COLM : ROWM;
+	   objectOfType(x, HLIMITED) || objectOfType(x, WIDE) || objectOfType(x, HSHIFT)) ? COLM_E : ROWM_E;
       Child(y, Down(x));
 
       /* manifest the child, propagating perp threads and suppressing pars */
@@ -2226,10 +2230,10 @@ OBJECT *enclose, BOOLEAN2 fcr)
 
   debug2(DOM, DD, "]Manifest returning %s %s", Image(type(x)), EchoObject(x));
   debug1(DOM, DD, "  at exit, style = %s", EchoStyle(style));
-  debug1(DOM, DDD, "up:    ", EchoObject(bthr[COLM]));
-  debug1(DOM, DDD, "down:  ", EchoObject(fthr[COLM]));
-  debug1(DOM, DDD, "left:  ", EchoObject(bthr[ROWM]));
-  debug1(DOM, DDD, "right: ", EchoObject(fthr[ROWM]));
+  debug1(DOM, DDD, "up:    ", EchoObject(bthr[COLM_E]));
+  debug1(DOM, DDD, "down:  ", EchoObject(fthr[COLM_E]));
+  debug1(DOM, DDD, "left:  ", EchoObject(bthr[ROWM_E]));
+  debug1(DOM, DDD, "right: ", EchoObject(fthr[ROWM_E]));
   debugcond1(DHY, DD, eee, "] Manifest returning %s", EchoObject(x));
   depth--;
   return x;

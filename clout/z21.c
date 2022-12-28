@@ -79,7 +79,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   tmp1 = target;
   tmp2 = enclose;
   crs = nilobj;
-  bt[COLM] = ft[COLM] = bt[ROWM] = ft[ROWM] = nilobj;
+  bt[COLM_E] = ft[COLM_E] = bt[ROWM_E] = ft[ROWM_E] = nilobj;
   New(hold_env, ACAT);  Link(hold_env, env);
   if( AllowCrossDb && objectOfType(y, CLOSURE) && has_optimize(actual(y))
       && FindOptimize(y, env) )
@@ -91,18 +91,18 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   debug2(DOB, D, "[ calling Manifest(%s) from SizeGalley(%s)",
     Image(type(y)), SymName(actual(hd)));
   if( joined )
-  { New(bt[COLM], THREAD);  New(ft[COLM], THREAD);
+  { New(bt[COLM_E], THREAD);  New(ft[COLM_E], THREAD);
     debug0(DGM, DD, "SizeGalley calling Manifest (joined)");
     y = Manifest(y, env, style, bt, ft, &tmp1, &crs, TRUE, must_expand(hd),
       &tmp2, FALSE);
-    assert( Down(bt[COLM]) != bt[COLM] && Down(ft[COLM]) != ft[COLM],
+    assert( Down(bt[COLM_E]) != bt[COLM_E] && Down(ft[COLM_E]) != ft[COLM_E],
 	"SizeGalley: threads!" );
-    Child(tmp1, Down(bt[COLM]));  Child(tmp2, Down(ft[COLM]));
-    if( Down(bt[COLM]) != LastDown(bt[COLM]) ||
-	  Down(ft[COLM]) != LastDown(ft[COLM]) || tmp1 != tmp2 )
+    Child(tmp1, Down(bt[COLM_E]));  Child(tmp2, Down(ft[COLM_E]));
+    if( Down(bt[COLM_E]) != LastDown(bt[COLM_E]) ||
+	  Down(ft[COLM_E]) != LastDown(ft[COLM_E]) || tmp1 != tmp2 )
       Error(21, 1, "galley %s must have just one column mark",
 	FATAL, &fpos(y), SymName(actual(hd)) );
-    DisposeObject(bt[COLM]);  DisposeObject(ft[COLM]);
+    DisposeObject(bt[COLM_E]);  DisposeObject(ft[COLM_E]);
   }
   else
   { debug0(DGM, DD, "SizeGalley calling Manifest (not joined)");
@@ -127,7 +127,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
     Image(type(y)), SymName(actual(hd)));
 
   /* break hd if vertical galley */
-  if( gall_dir(hd) == ROWM )
+  if( gall_dir(hd) == ROWM_E )
   {
     CopyConstraintOnRef(&constraint(hd), c);
     debug0(DGM, DD, "SizeGalley calling BreakObject:");
@@ -139,8 +139,8 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
     if( !FitsConstraintOnRef(back(y, COLM), fwd(y, COLM), c) )
       Error(21, 13, "%s,%s object too wide for available space",
         FATAL, &fpos(y), EchoLength(back(y, COLM)), EchoLength(fwd(y, COLM)));
-    back(hd, COLM) = back(y, COLM);
-    fwd(hd, COLM)  = fwd(y, COLM);
+    setBack(hd, COLM, back(y, COLM));
+    setFwd(hd, COLM, fwd(y, COLM));
     assert( FitsConstraintOnRef(back(hd, COLM), fwd(hd, COLM), c),
 	"SizeGalley: BreakObject failed to fit!" );
     debug2(DSF, D, "MinSize(hd, COLM) = %s,%s",
@@ -174,7 +174,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  
           debug1(DGM, DD, "  cleaning %s:", Image(type(y)));
           ifdebug(DGM, DD, DebugObject(y));
-	  if( gall_dir(hd) == ROWM )
+	  if( gall_dir(hd) == ROWM_E )
 	  { TransferLinks(Down(y), y, Up(y));
 	    DisposeChild(Up(y));
 	    link = PrevDown(link);
@@ -185,7 +185,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	case ACAT_E:
 	  
           debug2(DGM, DD, "  cleaning %s: %s", Image(type(y)), EchoObject(y));
-	  if( gall_dir(hd) == COLM )
+	  if( gall_dir(hd) == COLM_E )
 	  { TransferLinks(Down(y), y, Up(y));
 	    DisposeChild(Up(y));
 	    link = PrevDown(link);
@@ -220,8 +220,8 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      }
 	      else
 	      {	New(tmp, SPLIT);
-		back(tmp, COLM) = back(hor, COLM);
-		fwd(tmp, COLM) = fwd(hor, COLM);
+		setBack(tmp, COLM, back(hor, COLM));
+		setFwd(tmp, COLM, fwd(hor, COLM));
 		Link(NextDown(link), tmp);
 		Link(tmp, NextUp(clink));
 		Link(NextDown(dlink), t);
@@ -240,7 +240,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	case HEAD_E:
 	  
           debug2(DGM, DD, "  cleaning %s: %s", Image(type(y)), EchoObject(y));
-	  if( gall_dir(hd) == COLM )
+	  if( gall_dir(hd) == COLM_E )
 	    external_hor(y) = TRUE;
 	  else
 	  {
@@ -275,7 +275,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 
       /* use @Scale COLM size constraint to determine a suitable scale factor */
       /* check that @Scale is not in a horizontal galley */
-      if( gall_dir(hd) == COLM )
+      if( gall_dir(hd) == COLM_E )
       { Error(21, 2, "%s with unspecified scale factor in horizontal galley",
 	  FATAL, &fpos(z), KW_SCALE);
       }
@@ -307,8 +307,10 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	    WARN, &fpos(z));
 	bc(constraint(z)) = fc(constraint(z)) = 1 * SF;
 	tmp = MakeWord(WORD, STR_EMPTY, &fpos(t));
-	back(tmp, COLM) = fwd(tmp, COLM) = 0;
-	back(tmp, ROWM) = fwd(tmp, ROWM) = 0;
+	setFwd(tmp, COLM, 0);
+	setBack(tmp, COLM, 0);
+	setFwd(tmp, ROWM, 0);
+	setBack(tmp, ROWM, 0);
 	word_font(tmp) = word_colour(tmp) = word_language(tmp) = 0;
 	word_underline_colour(tmp) = 0;
 	word_texture(tmp) = 1;
@@ -434,7 +436,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  /* adjust size of the COVER object, change it to @Scale etc. */
 	  { OBJECT cover, prnt, chld;
 	    OBJTYPE ok1, ok2, thr_type, subst, esubst;
-	    int dirn, sf;
+	    CR_TE dirn; int sf;
 	    float sf1, sf2;  CONSTRAINT c;  FULL_LENGTH b, f;
 	    cover = actual(z);
 	    if( objectOfType(cover, HCOVER) )
@@ -485,8 +487,9 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	    else /* sensible scale factor exists */
 	    {
 	      /* work out proposed scale factor and sizes for cover */
-	      sf1 = (float) back(prnt, dirn) / back(chld, dirn);
-	      sf2 = (float) fwd(prnt, dirn)  / fwd(chld, dirn);
+		  // TODO
+	      sf1 = (float) (back(prnt, dirn)+0.0) / back(chld, dirn);
+	      sf2 = (float) (fwd(prnt, dirn)+0.0)  / fwd(chld, dirn);
 	      sf = find_max(sf1, sf2) * SF;
 	      b = (back(chld, dirn) * sf) / SF;
 	      f = (fwd(chld,  dirn) * sf) / SF;
@@ -497,7 +500,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      {
 		/* it fits, so make cover a SCALE object with this size */
 		setType(cover, SCALE);
-		if( dirn == COLM )
+		if( sameCr(dirn, COLM) )
 		{ bc(constraint(cover)) = sf;
 		  fc(constraint(cover)) = SF;
 		}

@@ -71,14 +71,15 @@ void RotateSize(FULL_LENGTH *xcb, FULL_LENGTH *xcf, FULL_LENGTH *xrb,
 	EchoLength(back(y, ROWM)), EchoLength(fwd(y, ROWM)));
 
   /* set up coordinates of the four corners of y */
-  ycorners[0].x =   (float) fwd(y, COLM);
-  ycorners[0].y =   (float) back(y, ROWM);
-  ycorners[1].x = - (float) back(y, COLM);
-  ycorners[1].y =   (float) back(y, ROWM);
-  ycorners[2].x = - (float) back(y, COLM);
-  ycorners[2].y = - (float) fwd(y, ROWM);
-  ycorners[3].x =   (float) fwd(y, COLM);
-  ycorners[3].y = - (float) fwd(y, ROWM);
+  // TODO
+  ycorners[0].x =   (float) (fwd(y, COLM) + 0.0);
+  ycorners[0].y =   (float) (back(y, ROWM) + 0.0);
+  ycorners[1].x = - (float) (back(y, COLM) + 0.0);
+  ycorners[1].y =   (float) (back(y, ROWM) + 0.0);
+  ycorners[2].x = - (float) (back(y, COLM) + 0.0);
+  ycorners[2].y = - (float) (fwd(y, ROWM) + 0.0);
+  ycorners[3].x =   (float) (fwd(y, COLM) + 0.0);
+  ycorners[3].y = - (float) (fwd(y, ROWM) + 0.0);
 
   /* rotate these four corners by theta and store their extremes */
   maxx = maxy = (float) - MAX_FULL_LENGTH;

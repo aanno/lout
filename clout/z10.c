@@ -381,7 +381,7 @@ OBJECT *crs, OBJECT *res_env)
   Child(tag, LastDown(x));
   debug0(DOM, D, "  [ calling Manifest from CrossExpand");
   ntarget = nenclose = nilobj;
-  nbt[COLM] = nft[COLM] = nbt[ROWM] = nft[ROWM] = nilobj;
+  nbt[COLM_E] = nft[COLM_E] = nbt[ROWM_E] = nft[ROWM_E] = nilobj;
   tag = Manifest(tag, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, FALSE);
   debug0(DOM, D, "  ] returning from Manifest");
   tag = ReplaceWithTidy(tag, WORD_TIDY);   /* && */
@@ -619,7 +619,7 @@ void CrossSequence(OBJECT x)
 	{ Child(y, link);
 	  if( is_key(y) )
 	  { OBJECT nbt[2], nft[2], crs, ntarget, nenclose;
-	    nbt[COLM] = nft[COLM] = nbt[ROWM] = nft[ROWM] = nilobj;
+	    nbt[COLM_E] = nft[COLM_E] = nbt[ROWM_E] = nft[ROWM_E] = nilobj;
 	    crs = ntarget = nenclose = nilobj;
 	    New(key, CLOSURE);
 	    actual(key) = y;

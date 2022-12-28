@@ -107,7 +107,7 @@ void TransferInit(OBJECT InitEnv)
   actual(up_hd) = enclose_obj(up_hd) = limiter(up_hd) = nilobj;
   ClearHeaders(up_hd);
   opt_components(up_hd) = opt_constraints(up_hd) = nilobj;
-  gall_dir(up_hd) = ROWM;
+  gall_dir(up_hd) = ROWM_E;
   ready_galls(up_hd) = nilobj;
   seen_nojoin(up_hd) = must_expand(up_hd) = sized(up_hd) = FALSE;
   foll_or_prec(up_hd) = GALL_FOLL;
@@ -131,7 +131,7 @@ void TransferInit(OBJECT InitEnv)
   enclose_obj(root_galley) = limiter(root_galley) = nilobj;
   ClearHeaders(root_galley);
   opt_components(root_galley) = opt_constraints(root_galley) = nilobj;
-  gall_dir(root_galley) = ROWM;
+  gall_dir(root_galley) = ROWM_E;
   ready_galls(root_galley) = nilobj;
   must_expand(root_galley) = sized(root_galley) =FALSE;
   foll_or_prec(root_galley) = GALL_FOLL;
@@ -216,7 +216,7 @@ OBJECT TransferBegin(OBJECT x)
   FposCopy(fpos(hd), fpos(x));
   actual(hd) = xsym;
   limiter(hd) = opt_components(hd) = opt_constraints(hd) = nilobj;
-  gall_dir(hd) = ROWM;
+  gall_dir(hd) = ROWM_E;
   ready_galls(hd) = nilobj;
   must_expand(hd) = TRUE;
   sized(hd) = FALSE;
@@ -329,7 +329,7 @@ void TransferComponent(OBJECT x)
   ClearHeaders(hd);
   enclose_obj(hd) = limiter(hd) = nilobj;
   opt_components(hd) = opt_constraints(hd) = nilobj;
-  gall_dir(hd) = ROWM;
+  gall_dir(hd) = ROWM_E;
   actual(hd) = whereto(hd) = ready_galls(hd) = nilobj;
   must_expand(hd) = sized(hd) = FALSE;
   seen_nojoin(hd) = FALSE;
@@ -435,7 +435,7 @@ void TransferEnd(OBJECT x)
   ClearHeaders(hd);
   enclose_obj(hd) = limiter(hd) = nilobj;
   opt_components(hd) = opt_constraints(hd) = nilobj;
-  gall_dir(hd) = ROWM;
+  gall_dir(hd) = ROWM_E;
   actual(hd) = whereto(hd) = ready_galls(hd) = nilobj;
   foll_or_prec(hd) = GALL_FOLL;
   seen_nojoin(hd) = must_expand(hd) = sized(hd) = FALSE;

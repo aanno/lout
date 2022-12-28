@@ -1711,8 +1711,8 @@ void FontWordSize(OBJECT x)
     }
 
     /* set sizes of x */
-    back(x, COLM) = 0;
-    fwd(x, COLM)  = r;
+    setBack(x, COLM, 0);
+    setFwd(x, COLM, r);
     if( word_strut(x) )
     {
       int vadjust;
@@ -1723,16 +1723,21 @@ void FontWordSize(OBJECT x)
     }
     if( word_baselinemark(x) )
     { int vadjust = font_xheight2(finfo[word_font(x)].font_table);
-      back(x, ROWM) = u + vadjust;
-      fwd(x, ROWM)  = -d - vadjust;
+      setBack(x, ROWM, u + vadjust);
+      setFwd(x, ROWM, -d - vadjust);
     }
     else
     {
-      back(x, ROWM) = u;
-      fwd(x, ROWM)  = -d;
+      setBack(x, ROWM, u);
+      setFwd(x, ROWM, -d);
     }
   } 
-  else back(x, COLM) = fwd(x, COLM) = back(x, ROWM) = fwd(x, ROWM) = 0;
+  else {
+    setFwd(x, ROWM, 0);
+    setBack(x, ROWM, 0);
+    setFwd(x, COLM, 0);
+    setBack(x, COLM, 0);
+  }
   debug4(DFT, DD, "FontWordSize returning %hd %hd %hd %hd",
 	  back(x, COLM), fwd(x, COLM), back(x, ROWM), fwd(x, ROWM));
 } /* end FontWordSize */

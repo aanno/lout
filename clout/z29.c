@@ -373,7 +373,8 @@ OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
   uses_extern_target(s)= FALSE;
   visible(s)           = FALSE;
   uses_galley(s)       = FALSE;
-  horiz_galley(s)      = ROWM;
+  // TODO
+  horiz_galley(s)      = ROWM_E;
   has_compulsory(s)    = 0;
   is_compulsory(s)     = FALSE;
 

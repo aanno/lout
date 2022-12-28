@@ -726,7 +726,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 	
       /* find horizontally, if any */
       if( is_string(t, KW_HORIZ) )
-      { horiz_galley(res) = COLM;
+      { horiz_galley(res) = COLM_E;
 	Dispose(t);  t = LexGetToken();
 	/* *** want to allow KW_HORIZ with @Target form now
 	if( !is_string(t, KW_INTO) )

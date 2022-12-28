@@ -737,4 +737,24 @@ extern const MAP_TE MAP_LOWERCASE;
 extern const MAP_TE MAP_UNACCENTED;
 extern const MAP_TE MAP_ACCENT;
 
+typedef enum dim_t {
+    CHILD_E = 0,
+    PARENT_E,
+} DIM_T;
+
+typedef struct dim_te { DIM_T dim; } DIM_TE;
+
+extern const DIM_TE CHILD;
+extern const DIM_TE PARENT;
+
+typedef enum cr_t {
+    COLM_E = 0,
+    ROWM_E,
+} CR_T;
+
+typedef struct cr_te { CR_T cr; } CR_TE;
+
+extern const CR_TE COLM;
+extern const CR_TE ROWM;
+
 #endif
