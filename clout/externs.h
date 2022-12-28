@@ -527,18 +527,18 @@ extern const char* const LOUT_EPS;
 #define	ROWM		1
 */
 
-INLINE BOOLEAN2 sameCr(CR_TE x, CR_TE y) {
-  return x.cr == y.cr;
-}
 INLINE BOOLEAN2 sameDim(DIM_TE x, DIM_TE y) {
-  return x.dim = y.dim;
+  return x.dim == y.dim;
 }
-INLINE CR_TE otherCr(CR_TE x) {
-  return x.cr == ROWM_E ? COLM : ROWM;
+INLINE BOOLEAN2 sameDir(DIR_TE x, DIR_TE y) {
+  return x.dir = y.dir;
 }
-INLINE CR_TE crFromU(unsigned v) {
+INLINE DIM_TE otherDim(DIM_TE x) {
+  return x.dim == ROWM_E ? COLM : ROWM;
+}
+INLINE DIM_TE dimFromU(unsigned v) {
   // dummy value
-  CR_TE res = COLM;
+  DIM_TE res = COLM;
   switch(v) {
     case COLM_E:
       res = COLM;
@@ -552,12 +552,12 @@ INLINE CR_TE crFromU(unsigned v) {
   }
   return res;
 }
-INLINE DIM_TE otherDim(DIM_TE x) {
-  return x.dim == PARENT_E ? CHILD : PARENT;
+INLINE DIR_TE otherDir(DIR_TE x) {
+  return x.dir == PARENT_E ? CHILD : PARENT;
 }
-INLINE DIM_TE dimFromU(unsigned v) {
+INLINE DIR_TE dirFromU(unsigned v) {
   // dummy value
-  DIM_TE res = CHILD;
+  DIR_TE res = CHILD;
   switch(v) {
     case PARENT_E:
       res = PARENT;
@@ -571,7 +571,7 @@ INLINE DIM_TE dimFromU(unsigned v) {
   }
   return res;
 }
-#define	dimen(x)	( sameCr(x, COLM) ? AsciiToFull("COLM") : AsciiToFull("ROWM") )
+#define	dimen(x)	( sameDim(x, COLM) ? AsciiToFull("COLM") : AsciiToFull("ROWM") )
 
 #define	nilobj		( (OBJECT) NULL )
 #define	null		( (FILE *) NULL )
@@ -2371,20 +2371,20 @@ typedef REAL_OBJECT* OBJECT;
 /*****************************************************************************/
 
 // #define	succ(x, dim)		(x)->os1.olist[dim].osucc
-INLINE OBJECT succ(OBJECT x, DIM_TE dim) {
-  return (x)->os1.olist[dim.dim].osucc;
+INLINE OBJECT succ(OBJECT x, DIR_TE dir) {
+  return (x)->os1.olist[dir.dir].osucc;
 }
 // TODO: make void
-INLINE OBJECT setSucc(OBJECT x, DIM_TE dim, OBJECT y) {
-  return (x)->os1.olist[dim.dim].osucc = y;
+INLINE OBJECT setSucc(OBJECT x, DIR_TE dir, OBJECT y) {
+  return (x)->os1.olist[dir.dir].osucc = y;
 }
 // #define	pred(x, dim)		(x)->os1.olist[dim].opred
-INLINE OBJECT pred(OBJECT x, DIM_TE dim) {
-  return (x)->os1.olist[dim.dim].opred;
+INLINE OBJECT pred(OBJECT x, DIR_TE dir) {
+  return (x)->os1.olist[dir.dir].opred;
 }
 // TODO: make void
-INLINE OBJECT setPred(OBJECT x, DIM_TE dim, OBJECT y) {
-  return (x)->os1.olist[dim.dim].opred = y;
+INLINE OBJECT setPred(OBJECT x, DIR_TE dir, OBJECT y) {
+  return (x)->os1.olist[dir.dir].opred = y;
 }
 
 #define	rec_size(x)		(x)->os1.ou1.os11.orec_size
@@ -2522,25 +2522,26 @@ INLINE BOOLEAN2 objectHasUnderline(OBJECT x, UNDER under) {
 #define word_save_mark(x)	(x)->os1.ou1.os11.oword_save_mark
 
 // #define	back(x, dim)		(x)->os1.ou3.os31.oback[dim]
-INLINE FULL_LENGTH back(OBJECT x, CR_TE cr) {
-  return (x)->os1.ou3.os31.oback[cr.cr];
+INLINE FULL_LENGTH back(OBJECT x, DIM_TE dim) {
+  return (x)->os1.ou3.os31.oback[dim.dim];
 }
-INLINE FULL_LENGTH* back_ref(OBJECT x, CR_TE cr) {
-  return &((x)->os1.ou3.os31.oback[cr.cr]);
+INLINE FULL_LENGTH* back_ref(OBJECT x, DIM_TE dim) {
+  return &((x)->os1.ou3.os31.oback[dim.dim]);
 }
-INLINE void setBack(OBJECT x, CR_TE cr, FULL_LENGTH l) {
-  (x)->os1.ou3.os31.oback[cr.cr] = l;
+INLINE void setBack(OBJECT x, DIM_TE dim, FULL_LENGTH l) {
+  (x)->os1.ou3.os31.oback[dim.dim] = l;
 }
 #define	comp_count(x)		back(x, COLM)
+#define	setComp_count(x, l)		setBack(x, COLM, l)
 // #define	fwd(x, dim)		(x)->os1.ou3.os31.ofwd[dim]
-INLINE FULL_LENGTH fwd(OBJECT x, CR_TE cr) {
-  return (x)->os1.ou3.os31.ofwd[cr.cr];
+INLINE FULL_LENGTH fwd(OBJECT x, DIM_TE dim) {
+  return (x)->os1.ou3.os31.ofwd[dim.dim];
 }
-INLINE FULL_LENGTH* fwd_ref(OBJECT x, CR_TE cr) {
-  return &((x)->os1.ou3.os31.ofwd[cr.cr]);
+INLINE FULL_LENGTH* fwd_ref(OBJECT x, DIM_TE dim) {
+  return &((x)->os1.ou3.os31.ofwd[dim.dim]);
 }
-INLINE void setFwd(OBJECT x, CR_TE cr, FULL_LENGTH l) {
-  (x)->os1.ou3.os31.ofwd[cr.cr] = l;
+INLINE void setFwd(OBJECT x, DIM_TE dim, FULL_LENGTH l) {
+  (x)->os1.ou3.os31.ofwd[dim.dim] = l;
 }
 #define	size(x, dim)		(back(x, dim) + fwd(x, dim))
 #define	db_filep(x)		(x)->os1.ou3.odb_filep
@@ -2725,7 +2726,7 @@ typedef struct back_end_rec {
   BOOLEAN2 uses_font_metrics;		/* TRUE if actual font metrics used  */
   BOOLEAN2 colour_avail;			/* TRUE if colour is available       */
   void (*PrintInitialize)(FILE *fp, BOOLEAN2 encapsulated);
-  void (*PrintLength)(FULL_CHAR *buff, int length, CR_TE length_dim);
+  void (*PrintLength)(FULL_CHAR *buff, int length, DIM_TE length_dim);
   void (*PrintPageSetupForFont)(OBJECT face, int font_curr_page,
     FULL_CHAR *font_name, FULL_CHAR *first_size_str);
   void (*PrintPageResourceForFont)(FULL_CHAR *font_name, BOOLEAN2 first);
@@ -3376,7 +3377,7 @@ INLINE void Dispose(OBJECT x) {
 /*                                                                           */
 /*****************************************************************************/
 
-INLINE OBJECT Append(OBJECT x, OBJECT y, DIM_TE dir) {
+INLINE OBJECT Append(OBJECT x, OBJECT y, DIR_TE dir) {
     return zz_res = (x),
     zz_hold = (y),
     zz_hold == nilobj ? zz_res  : 
@@ -3398,7 +3399,7 @@ INLINE OBJECT Append(OBJECT x, OBJECT y, DIM_TE dir) {
 /*                                                                           */
 /*****************************************************************************/
 
-INLINE OBJECT Delete(OBJECT x, DIM_TE dir) {
+INLINE OBJECT Delete(OBJECT x, DIR_TE dir) {
     return zz_hold = (x),
     succ(zz_hold, dir) == zz_hold ? nilobj :
         ( zz_res = succ(zz_hold, dir),
@@ -3445,9 +3446,9 @@ for( y = pred(link, CHILD);   objectOfType(y, LINK);  y = pred(y, CHILD) ) \
 /*****************************************************************************/
 
 // cannot inline
-#define UpDim(x, dim)	( sameCr(dim, COLM) ? succ(x, PARENT) : pred(x, PARENT) )
+#define UpDim(x, dim)	( sameDim(dim, COLM) ? succ(x, PARENT) : pred(x, PARENT) )
 // cannot inline
-#define DownDim(x, dim)	( sameCr(dim, COLM) ? succ(x, CHILD) : pred(x, CHILD) )
+#define DownDim(x, dim)	( sameDim(dim, COLM) ? succ(x, CHILD) : pred(x, CHILD) )
 
 
 /*****************************************************************************/
@@ -3510,9 +3511,9 @@ INLINE void DisposeChild(OBJECT link) {
 /*                                                                           */
 /*****************************************************************************/
 
-INLINE OBJECT MoveLink(OBJECT link, OBJECT x, DIM_TE dir) {
+INLINE OBJECT MoveLink(OBJECT link, OBJECT x, DIR_TE dir) {
     OBJECT xx_link = (link);
-    DIM_TE other = otherDim(dir);
+    DIR_TE other = otherDir(dir);
     Delete(xx_link, other );
     return Append(xx_link, (x), other );
 }
@@ -3876,9 +3877,9 @@ extern	void	  YUnitChange(STYLE *style, OBJECT x);
 extern	void	  ZUnitChange(STYLE *style, OBJECT x);
 
 /*****  z12.c	  Size Finder		**************************************/
-extern	void	  SpannerAvailableSpace(OBJECT y, CR_TE dim, FULL_LENGTH *resb,
+extern	void	  SpannerAvailableSpace(OBJECT y, DIM_TE dim, FULL_LENGTH *resb,
 		     FULL_LENGTH *resf);
-extern	OBJECT	  MinSize(OBJECT x, CR_TE dim, OBJECT *extras);
+extern	OBJECT	  MinSize(OBJECT x, DIM_TE dim, OBJECT *extras);
 
 /*****  z13.c	  Object Breaking	**************************************/
 extern	OBJECT	  BreakObject(OBJECT x, CONSTRAINT *c);
@@ -3899,17 +3900,17 @@ extern	int	  ScaleToConstraint(FULL_LENGTH b, FULL_LENGTH f,
 extern	void	  InvScaleConstraint(CONSTRAINT *yc, FULL_LENGTH sf,
 		    CONSTRAINT*xc);
 extern	void	  RotateConstraint(CONSTRAINT *c, OBJECT y, FULL_LENGTH angle,
-		    CONSTRAINT *hc, CONSTRAINT *vc, CR_TE dim);
+		    CONSTRAINT *hc, CONSTRAINT *vc, DIM_TE dim);
 extern	BOOLEAN2	  InsertScale(OBJECT x, CONSTRAINT *c);
-extern	void	  Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why);
+extern	void	  Constrained(OBJECT x, CONSTRAINT *xc, DIM_TE dim, OBJECT *why);
 extern	FULL_CHAR *EchoConstraint(CONSTRAINT *c);
 extern	void	  DebugConstrained(OBJECT x);
 
 /*****  z16.c	  Size Adjustments	**************************************/
-extern	FULL_LENGTH	  FindShift(OBJECT x, OBJECT y, CR_TE dim);
+extern	FULL_LENGTH	  FindShift(OBJECT x, OBJECT y, DIM_TE dim);
 extern	void	  SetNeighbours(OBJECT link, BOOLEAN2 ratm, OBJECT *pg,
 		    OBJECT *pdef, OBJECT *sg, OBJECT *sdef, int *side);
-extern	void	  AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, CR_TE dim);
+extern	void	  AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, DIM_TE dim);
 
 /*****  z17.c	  Gap Widths		**************************************/
 extern	int	  GetWidth(OBJECT x, STYLE *style);
@@ -3965,7 +3966,7 @@ extern	int	  CheckComponentOrder(OBJECT preceder, OBJECT follower);
 
 /*****  z23.c	  Galley Printer	**************************************/
 extern	OBJECT	  FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
-		    FULL_LENGTH xf, CR_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg,
+		    FULL_LENGTH xf, DIM_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg,
 		    int count, FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd);
 
 /*****  z24.c	  Print Service         **************************************/
@@ -3983,7 +3984,7 @@ extern	void	  AppendString(const FULL_CHAR *str);
 extern	FULL_CHAR *EndString(void);
 extern	FULL_CHAR *EchoLength(int len);
 // extern	FULL_CHAR *Image(unsigned int c);
-extern	void	  SetLengthDim(CR_TE dim);
+extern	void	  SetLengthDim(DIM_TE dim);
 
 /*****	z28.c	  Error Service		**************************************/
 extern	void	  ErrorInit(void);

@@ -74,7 +74,7 @@ BOOLEAN2 FindOptimize(OBJECT x, OBJECT env)
   assert( res != nilobj, "FindOptimize: res == nilobj!" );
 
   /* manifest and tidy the parameter, return TRUE if Yes */
-  bt[COLM] = ft[COLM] = bt[ROWM] = ft[ROWM] = ntarget = nenclose = crs = nilobj;
+  bt[COLM_E] = ft[COLM_E] = bt[ROWM_E] = ft[ROWM_E] = ntarget = nenclose = crs = nilobj;
   res = Manifest(res, env, &save_style(x), bt, ft, &ntarget, &crs, TRUE, FALSE,
     &nenclose, FALSE);
   res = ReplaceWithTidy(res, WORD_TIDY);
@@ -153,7 +153,7 @@ void SetOptimize(OBJECT hd, STYLE *style)
 	{ int num = 0;
 	  sscanf( (char *) string(z), "%d", &num);
 	  assert( num > 0, "SetOptimize: num <= 0!" );
-	  comp_count(z) = num;
+	  setComp_count(z, num);
 	}
       }
       else
@@ -180,7 +180,7 @@ void SetOptimize(OBJECT hd, STYLE *style)
   opt_gazumped(hd) = FALSE;
   New(opt_constraints(hd), ACAT);
   StyleCopy(&save_style(opt_components(hd)), style);
-  if( gall_dir(hd) == ROWM )
+  if( gall_dir(hd) == ROWM_E )
   {
     setHyph_style(&save_style(opt_components(hd)), HYPH_OFF);
     setMarginkerning(&save_style(opt_components(hd)), FALSE);
@@ -211,13 +211,13 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
 
   /* record the size of this just-completed target area for hd */
   New(tmp, WIDE);
-  if( (gall_dir(hd) == COLM && external_hor(dest)) ||
-      (gall_dir(hd) == COLM && external_hor(dest)) )
+  if( (gall_dir(hd) == COLM_E && external_hor(dest)) ||
+      (gall_dir(hd) == COLM_E && external_hor(dest)) )
   { SetConstraintOnRef(&constraint(tmp), MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
   }
   else
   { Parent(prnt, Up(dest));
-    Constrained(prnt, &constraint(tmp), gall_dir(hd), &junk);
+    Constrained(prnt, &constraint(tmp), dimFromU(gall_dir(hd)), &junk);
   }
   Link(opt_constraints(hd), tmp);
   debug2(DOG, D, "GazumpOptimize(%s) adding constraint %s",
@@ -244,8 +244,10 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
 
     /* next we add an empty word */
     tmp = MakeWord(WORD, STR_EMPTY, &fpos(g));
-    back(tmp, COLM) = fwd(tmp, COLM) = 0;
-    back(tmp, ROWM) = fwd(tmp, ROWM) = 0;
+    setFwd(tmp, COLM, 0);
+    setBack(tmp, COLM, 0);
+    setFwd(tmp, ROWM, 0);
+    setBack(tmp, ROWM, 0);
     word_font(tmp) = word_colour(tmp) = 0;
     word_underline_colour(tmp) = 0;
     word_texture(tmp) = 1;
@@ -441,7 +443,7 @@ void DebugOptimize(OBJECT hd)
 
   assert( opt_components(hd) != nilobj, "DebugOptimize!");
   debug3(DOG, D, "Optimized Galley %s %sinto %s", SymName(actual(hd)),
-    gall_dir(hd) == COLM ? "horizontally " : "", SymName(whereto(hd)));
+    gall_dir(hd) == COLM_E ? "horizontally " : "", SymName(whereto(hd)));
 
   /* print components */
   /* *** believe this now ***

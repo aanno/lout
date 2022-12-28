@@ -591,7 +591,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
   OBJECT dest, link, y, z, tmp1, tmp2, why, top_y;
   FULL_CHAR *label_string, buff[MAX_LINE];
   FULL_LENGTH aback, afwd;
-  CR_TE dim; int pnval;
+  DIM_TE dim; int pnval;
   debug2(DGS, DD, "[ Promote(%s width %s, stop_link):",
     SymName(actual(hd)), EchoLength(size(hd, COLM)));
   ifdebug(DGS, DD, DebugGalley(hd, stop_link, 2));
@@ -676,7 +676,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	/* definite, must be stored */
 	opt_gazumped(hd) = FALSE;
 	last = MakeWord(type(y), string(y), &fpos(y));
-  CR_TE mydim = crFromU(gall_dir(hd));
+  DIM_TE mydim = dimFromU(gall_dir(hd));
 	setBack(last, COLM, back(y, mydim));
 	setFwd(last, COLM, fwd(y, mydim));
 	word_font(last) = word_font(y);
@@ -701,7 +701,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	/* definite other than WORD, add it */
 	opt_gazumped(hd) = FALSE;
 	last = MakeWord(QWORD, AsciiToFull("w"), &fpos(y));
-  CR_TE mydim = crFromU(gall_dir(hd));
+  DIM_TE mydim = dimFromU(gall_dir(hd));
 	setBack(last, COLM, back(y, mydim));
 	setFwd(last, COLM, fwd(y, mydim));
 	Link(opt_components(hd), last);
@@ -1009,7 +1009,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
   }
   else
   {
-    dim = crFromU(gall_dir(hd));
+    dim = dimFromU(gall_dir(hd));
     for( link = hd;  NextDown(link) != stop_link;  )
     { Child(y, NextDown(link));
       debug1(DGS, DD, "ordinary promote examining %s", EchoObject(y));

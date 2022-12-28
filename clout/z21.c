@@ -436,7 +436,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  /* adjust size of the COVER object, change it to @Scale etc. */
 	  { OBJECT cover, prnt, chld;
 	    OBJTYPE ok1, ok2, thr_type, subst, esubst;
-	    CR_TE dirn; int sf;
+	    DIM_TE dirn; int sf;
 	    float sf1, sf2;  CONSTRAINT c;  FULL_LENGTH b, f;
 	    cover = actual(z);
 	    if( objectOfType(cover, HCOVER) )
@@ -500,7 +500,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	      {
 		/* it fits, so make cover a SCALE object with this size */
 		setType(cover, SCALE);
-		if( sameCr(dirn, COLM) )
+		if( sameDim(dirn, COLM) )
 		{ bc(constraint(cover)) = sf;
 		  fc(constraint(cover)) = SF;
 		}

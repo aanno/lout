@@ -86,7 +86,7 @@ static OBJECT insert_split(OBJECT x, OBJECT bthr[2], OBJECT fthr[2])
       debug0(DGP, DD, "  calling New(thread) from Manifest now");
       New(new_op, dim == COLM_E ? COL_THR : ROW_THR);
       thr_state(new_op) = NOTSIZED;
-      CR_TE other = otherCr(crFromU(dim));
+      DIM_TE other = otherDim(dimFromU(dim));
       setFwd(new_op, other, 0);	/* will hold max frame_size */
       setBack(new_op, other, 0);	/* will hold max frame_origin */
       FposCopy(fpos(new_op), fpos(x));

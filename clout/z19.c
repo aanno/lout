@@ -39,11 +39,11 @@
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT InterposeScale(OBJECT y, int scale_factor, CR_TE dim)
+static OBJECT InterposeScale(OBJECT y, int scale_factor, DIM_TE dim)
 { OBJECT res;
   New(res, SCALE);
   FposCopy(fpos(res), fpos(y));
-  if( sameCr(dim, COLM) )
+  if( sameDim(dim, COLM) )
   { bc(constraint(res)) = scale_factor;
     fc(constraint(res)) = 1 * SF;
   }
@@ -53,7 +53,7 @@ static OBJECT InterposeScale(OBJECT y, int scale_factor, CR_TE dim)
   }
   setBack(res, dim, (back(y, dim) * scale_factor) / SF);
   setFwd(res, dim, (fwd(y, dim) * scale_factor) / SF);
-  CR_TE other = otherCr(dim);
+  DIM_TE other = otherDim(dim);
   setBack(res, other, back(y, other));
   setFwd(res, other, fwd(y, other));
   ReplaceNode(res, y);
@@ -71,13 +71,13 @@ static OBJECT InterposeScale(OBJECT y, int scale_factor, CR_TE dim)
 /*                                                                           */
 /*****************************************************************************/
 
-static OBJECT InterposeWideOrHigh(OBJECT y, CR_TE dim)
+static OBJECT InterposeWideOrHigh(OBJECT y, DIM_TE dim)
 { OBJECT res;
-  New(res, sameCr(dim, COLM) ? WIDE : HIGH);
+  New(res, sameDim(dim, COLM) ? WIDE : HIGH);
   FposCopy(fpos(res), fpos(y));
   setBack(res, dim, back(y, dim));
   setFwd(res, dim, fwd(y, dim));
-  CR_TE other = otherCr(dim);
+  DIM_TE other = otherDim(dim);
   setBack(res, other, back(y, other));
   setFwd(res, other, fwd(y, other));
   SetConstraintOnRef(&constraint(res), MAX_FULL_LENGTH, size(res, dim), MAX_FULL_LENGTH);
@@ -242,7 +242,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
   CONSTRAINT c;			/* temporary variable holding a constraint   */
   OBJECT env, n1, tmp, zlink, z, sym;	/* placeholders and temporaries	     */
   BOOLEAN2 was_sized;		/* true if sized(hd) initially               */
-  CR_TE dim;			/* the galley direction                      */
+  DIM_TE dim;			/* the galley direction                      */
   FULL_LENGTH perp_back, perp_fwd;
   OBJECT why, junk;
 
@@ -254,7 +254,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
   assert( objectOfType(hd_index, UNATTACHED), "AttachGalley: not UNATTACHED!" );
   hd_inners = tg_inners = nilobj;
   was_sized = sized(hd);
-  dim = crFromU(gall_dir(hd));
+  dim = dimFromU(gall_dir(hd));
 
   for(;;)
   {
@@ -345,9 +345,9 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     seen_nojoin(target_galley) = FALSE;
 
     /* get perpendicular constraint (none if horizontal galley) */
-    if( sameCr(dim, ROWM) )
+    if( sameDim(dim, ROWM) )
     {
-      CR_TE other = otherCr(dim);
+      DIM_TE other = otherDim(dim);
       Constrained(target, &c, other, &junk);
       if( !constrained(c) )
         Error(19, 2, "receptive symbol %s has unconstrained width",
@@ -382,9 +382,9 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     if( underline(dest).underline == UNDER_UNDEF_E )  setUnderline(dest, UNDER_OFF);
 
     /* verify that hd satisfies any horizontal constraint on dest */
-    if( sameCr(dim, ROWM) )
+    if( sameDim(dim, ROWM) )
     {
-      CR_TE other = otherCr(dim);
+      DIM_TE other = otherDim(dim);
       debug1(DGA, DDD, "  checking hor fit of hd in %s",SymName(actual(dest)));
       Constrained(dest, &c, other, &junk);
       debug3(DSC, DD, "Constrained( %s, %s ) = %s",
@@ -410,7 +410,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       SizeGalley(hd, env, TRUE, threaded(dest), non_blocking(target_index),
 	TRUE, &save_style(dest), &c, nilobj, &n1, &recs, &hd_inners);
       *** */
-      SizeGalley(hd, env, TRUE, sameCr(dim, ROWM) ? threaded(dest) : FALSE,
+      SizeGalley(hd, env, TRUE, sameDim(dim, ROWM) ? threaded(dest) : FALSE,
 	non_blocking(target_index), TRUE, &save_style(dest), &c, nilobj,
 	&n1, &recs, &hd_inners, nilobj);
       debug1(DGA, D,"  AttachGalley hd_inners: %s",DebugInnersNames(hd_inners));
@@ -430,8 +430,8 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       debug0(DYY, D, "] LeaveErrorBlock(TRUE) (finished sizing galley)");
     }
 
-    if( sameCr(dim, ROWM) )
-    { CR_TE other = otherCr(dim);
+    if( sameDim(dim, ROWM) )
+    { DIM_TE other = otherDim(dim);
       if( !FitsConstraintOnRef(back(hd, other), fwd(hd, other), &c) ) { 
         debug3(DGA, D, "  reject: hd %s,%s does not fit target_galley %s",
           EchoLength(back(hd, other)), EchoLength(fwd(hd, other)),
@@ -591,7 +591,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    
 
 	  setUnderline(y, underline(dest));
-	  if( sameCr(dim, ROWM) )
+	  if( sameDim(dim, ROWM) )
 	  {
 	    /* make sure y is not joined to a target below (vertical only) */
 	    for( zlink = NextDown(link); zlink != hd; zlink = NextDown(zlink) )
@@ -667,7 +667,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	      {	char num1[20], num2[20];
 		sprintf(num1, "%.1fc", (float) size(y, dim) / CM);
 		sprintf(num2, "%.1fc", (float) bfc(c) / CM);
-		if( sameCr(dim, ROWM) )
+		if( sameDim(dim, ROWM) )
 		  Error(19, 4, "%s object too high for %s space; %s inserted",
 		    WARN, &fpos(y), num1, num2, KW_SCALE);
 		else
@@ -688,7 +688,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	      if( size(y, dim) > 0 )
 	      { sprintf(num1, "%.1fc", (float) size(y, dim) / CM);
 	        sprintf(num2, "%.1fc", (float) bfc(c) / CM);
-	        if( sameCr(dim, ROWM) )
+	        if( sameDim(dim, ROWM) )
 		  Error(19, 12, "%s object too high for %s space; will try elsewhere",
 		    WARN, &fpos(y), num1, num2);
 	        else
@@ -701,8 +701,8 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  }
 
 	  /* check availability of perpendicular space for first component */
-	  CR_TE other = otherCr(dim);
-	  if( sameCr(dim, ROWM) )
+	  DIM_TE other = otherDim(dim);
+	  if( sameDim(dim, ROWM) )
 	  { perp_back = back(hd, other);  perp_fwd = fwd(hd, other);
 	  }
 	  else
@@ -723,7 +723,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	      {	char num1[20], num2[20];
 		sprintf(num1, "%.1fc", (float) (perp_back + perp_fwd) / CM);
 		sprintf(num2, "%.1fc", (float) bfc(c) / CM);
-		if( sameCr(other, ROWM) )
+		if( sameDim(other, ROWM) )
 		  Error(19, 6, "%s object too high for %s space; %s inserted",
 		    WARN, &fpos(y), num1, num2, KW_SCALE);
 		else
@@ -750,7 +750,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  debug0(DSA, D, "calling AdjustSize from AttachGalley (a)");
 	  AdjustSize(dest, back(y, dim), fwd(y, dim), dim);
 	  debug0(DSA, D, "calling AdjustSize from AttachGalley (b)");
-	  AdjustSize(dest, perp_back, perp_fwd, otherCr(dim));
+	  AdjustSize(dest, perp_back, perp_fwd, otherDim(dim));
 
 
 	  /* now check parallel space for target_galley in target */
@@ -776,7 +776,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	      {	char num1[20], num2[20];
 		sprintf(num1, "%.1fc", (float) size(z, dim) / CM);
 		sprintf(num2, "%.1fc", (float) bfc(c) / CM);
-		if( sameCr(dim, ROWM) )
+		if( sameDim(dim, ROWM) )
 		  Error(19, 8, "%s object too high for %s space; %s inserted",
 		    WARN, &fpos(y), num1, num2, KW_SCALE);
 		else
@@ -800,7 +800,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	      if( size(z, dim) > 0 )
 	      { sprintf(num1, "%.1fc", (float) size(z, dim) / CM);
 	        sprintf(num2, "%.1fc", (float) bfc(c) / CM);
-	        if( sameCr(dim, ROWM) )
+	        if( sameDim(dim, ROWM) )
 		  Error(19, 14, "%s object too high for %s space; will try elsewhere",
 		    WARN, &fpos(y), num1, num2);
 	        else
@@ -816,7 +816,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 
 	  /* now check perpendicular space for target_galley in target */
 	  // needed?
-	  other = otherCr(dim);
+	  other = otherDim(dim);
 	  Constrained(target, &c, other, &junk);
 	  debug3(DGF, DD, "  target perpendicular Constrained(%s, %s) = %s",
 	    EchoObject(target), dimen(other), EchoConstraint(&c));
@@ -836,7 +836,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	      {	char num1[20], num2[20];
 		sprintf(num1, "%.1fc", (float) size(z, other) / CM);
 		sprintf(num2, "%.1fc", (float) bfc(c) / CM);
-		if( sameCr(other, ROWM) )
+		if( sameDim(other, ROWM) )
 		  Error(19, 10, "%s object too high for %s space; %s inserted",
 		    WARN, &fpos(y), num1, num2, KW_SCALE);
 		else
@@ -858,7 +858,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	    }
 	  }
 	  // needed?
-	  other = otherCr(dim);
+	  other = otherDim(dim);
 	  /* target seems OK, so adjust sizes and accept */
 	  if( external_hor(target) )
 	  {
@@ -1005,9 +1005,9 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 
       /* move first component of hd into dest */
       /* nb Interpose must be done after all AdjustSize calls */
-      if( sameCr(dim, ROWM) && !external_ver(dest) )
+      if( sameDim(dim, ROWM) && !external_ver(dest) )
 	Interpose(dest, VCAT, hd, y);
-      else if( sameCr(dim, COLM) && !external_hor(dest) )
+      else if( sameDim(dim, COLM) && !external_hor(dest) )
       { Interpose(dest, ACAT, y, y);
 	Parent(junk, Up(dest));
 	assert( objectOfType(junk, ACAT), "AttachGalley: type(junk) != ACAT!" );
@@ -1044,7 +1044,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       debug1(DGA, D, "] AttachGalley returning ATTACH_ACCEPT (inners %s)",
 	DebugInnersNames(*inners));
       ifdebug(DGA, D,
-	if( sameCr(dim, COLM) && !external_hor(dest) )
+	if( sameDim(dim, COLM) && !external_hor(dest) )
 	{ OBJECT z;
 	  Parent(z, Up(dest));
 	  debug2(DGA, D, "  COLM dest_encl on exit = %s %s",

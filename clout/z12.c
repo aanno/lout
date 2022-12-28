@@ -183,7 +183,7 @@ static BOOLEAN2 BuildSpanner(OBJECT x)
 /*                                                                           */
 /*****************************************************************************/
 
-static BOOLEAN2 FindSpannerGap(OBJECT thr, CR_TE dim, OBJTYPE cat_op,
+static BOOLEAN2 FindSpannerGap(OBJECT thr, DIM_TE dim, OBJTYPE cat_op,
   OBJECT *res)
 { OBJECT link, x;
 
@@ -200,7 +200,7 @@ static BOOLEAN2 FindSpannerGap(OBJECT thr, CR_TE dim, OBJTYPE cat_op,
   { Child(*res, PrevDown(link));
     assert(objectOfType(*res, GAP_OBJ), "FindSpannerGap: type(*res)!" );
   }
-  else if( objectOfType(x, HEAD) && gall_dir(x)==dim.cr && objectOfType(PrevDown(link), LINK) )
+  else if( objectOfType(x, HEAD) && gall_dir(x)==dim.dim && objectOfType(PrevDown(link), LINK) )
   { Child(*res, PrevDown(link));
     assert(objectOfType(*res, GAP_OBJ), "FindSpannerGap (HEAD): type(*res)!" );
     setNobreak(&gap(*res), TRUE);
@@ -223,7 +223,7 @@ static BOOLEAN2 FindSpannerGap(OBJECT thr, CR_TE dim, OBJTYPE cat_op,
 /*                                                                           */
 /*****************************************************************************/
 
-void SpannerAvailableSpace(OBJECT y, CR_TE dim, FULL_LENGTH *resb,
+void SpannerAvailableSpace(OBJECT y, DIM_TE dim, FULL_LENGTH *resb,
 					      FULL_LENGTH *resf)
 { OBJECT slink, s, thr, gp, prevthr;
   FULL_LENGTH b = 0, f = 0;  /* initial values not used */
@@ -232,7 +232,7 @@ void SpannerAvailableSpace(OBJECT y, CR_TE dim, FULL_LENGTH *resb,
   assert( objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER), "SpannerAvail!");
   debug4(DSF, DD, "SpannerAvailableSpace(%d %s %s, %s)",
     spanner_count(y), Image(type(y)), EchoObject(y), dimen(dim));
-  if( sameCr(dim, COLM) )
+  if( sameDim(dim, COLM) )
   { thr_type = COL_THR;
     cat_type = HCAT;
   }
@@ -366,14 +366,14 @@ static const FULL_CHAR *IndexType(OBJECT index)
 /*                                                                           */
 /*****************************************************************************/
 
-OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
+OBJECT MinSize(OBJECT x, DIM_TE dim, OBJECT *extras)
 { OBJECT y, z, link, prev, t, g, full_name, catch_extras;
   FULL_LENGTH b, f, dble_fwd;
   BOOLEAN2 dble_found, found, will_expand, cp;
   FILE *fp;
 
   debug2(DSF, DD, "[ MinSize( %s, %s, extras )", EchoObject(x), dimen(dim));
-  debugcond4(DSF, D, sameCr(dim, COLM) && debug_depth++ < debug_depth_max,
+  debugcond4(DSF, D, sameDim(dim, COLM) && debug_depth++ < debug_depth_max,
     "%*s[ MinSize(COLM, %s %p)", (debug_depth-1)*2, " ",
     Image(type(x)), x);
   ifdebug(DSF, DDD, DebugObject(x));
@@ -384,7 +384,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case WORD_E:
     case QWORD_E:
     
-      if( sameCr(dim, COLM) )  FontWordSize(x);
+      if( sameDim(dim, COLM) )  FontWordSize(x);
       break;
 
 
@@ -392,7 +392,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case FORCE_CROSS_E:
 
       /* add index to the cross-ref */
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       {	New(z, cross_type(x)); /* CROSS_PREC, CROSS_FOLL or CROSS_FOLL_OR_PREC */
 	debug2(DCR, DD, "  MinSize CROSS: %ld %s", (long) x, EchoObject(x));
 	actual(z) = x;
@@ -407,7 +407,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
     case PAGE_LABEL_E:
     
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       { New(z, PAGE_LABEL_IND);
 	actual(z) = x;
 	Link(z, x);
@@ -427,7 +427,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
     case HEAD_E:
 
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       {	
 	/* replace the galley x by a dummy closure y */
 	New(y, NULL_CLOS);
@@ -476,7 +476,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case CLOSURE_E:
 
       assert( !has_target(actual(x)), "MinSize: CLOSURE has target!" );
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       { if( indefinite(actual(x)) )
 	{ New(z, RECEPTIVE);
 	  actual(z) = x;
@@ -537,7 +537,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
       /* if first touch, build the spanner */
       if( (objectOfType(x, START_HVSPAN) || objectOfType(x, START_HSPAN) ||
-	   objectOfType(x, START_VSPAN)) && sameCr(dim, COLM) )
+	   objectOfType(x, START_VSPAN)) && sameDim(dim, COLM) )
       {
         if( !BuildSpanner(x) )
 	{
@@ -551,7 +551,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       }
 
       /* if first vertical touch, break if necessary */
-      if( (objectOfType(x, START_HVSPAN) || objectOfType(x, START_HSPAN)) && sameCr(dim, ROWM) )
+      if( (objectOfType(x, START_HVSPAN) || objectOfType(x, START_HSPAN)) && sameDim(dim, ROWM) )
       { CONSTRAINT c;
  
         /* find the HSPANNER */
@@ -572,7 +572,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       if( (objectOfType(x, HSPAN) && !objectOfType(y, HSPANNER)) ||
 	  (objectOfType(x, VSPAN) && !objectOfType(y, VSPANNER)) )
       {
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	  Error(12, 15, "%s replaced by empty object (out of place)",
 	    WARN, &fpos(x), Image(type(x)));
         setFwd(x, dim, 0);
@@ -581,7 +581,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       }
 
       /* now size the object */
-      if( (objectOfType(x, HSPAN) && sameCr(dim, ROWM)) || (objectOfType(x, VSPAN) && sameCr(dim, COLM)) )
+      if( (objectOfType(x, HSPAN) && sameDim(dim, ROWM)) || (objectOfType(x, VSPAN) && sameDim(dim, COLM)) )
       {
 	/* perp dimension, covered by preceding @Span, so may be zero. */
 	setFwd(x, dim, 0);
@@ -622,7 +622,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case HSPANNER_E:
     case VSPANNER_E:
 
-      assert( (objectOfType(x, HSPANNER)) == (sameCr(dim, COLM)), "MinSize: SPANNER!" );
+      assert( (objectOfType(x, HSPANNER)) == (sameDim(dim, COLM)), "MinSize: SPANNER!" );
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
       setBack(x, dim, back(y, dim));
@@ -639,7 +639,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       setFwd(x, dim, fwd(y, dim));
 
       /* insert index into *extras for expanding later */
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       {	New(z, EXPAND_IND);
 	actual(z) = x;
 	Link(*extras, z);
@@ -706,7 +706,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       /* work out size and set to 0 if parallel */
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HCOVER)) ) {
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HCOVER)) ) {
         setFwd(x, dim, 0);
         setBack(x, dim, 0);
       } else
@@ -715,7 +715,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       }
 
       /* insert index into *extras for revising size later */
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       {	New(z, COVER_IND);
 	actual(z) = x;
 	Link(*extras, z);
@@ -730,7 +730,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HMIRROR)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HMIRROR)) )
       {	setBack(x, dim, fwd(y, dim));
         setFwd(x, dim, back(y, dim));
       }
@@ -747,7 +747,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
       /* work out size and set to 0 if parallel */
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HSCALE)) ) {
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HSCALE)) ) {
         setFwd(x, dim, 0);
         setBack(x, dim, 0);
       } else
@@ -760,7 +760,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case ROTATE_E:
     
       Child(y, Down(x));
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       {	y = MinSize(y, COLM, extras);
 	New(whereto(x), ACAT);
 	setFwd(whereto(x), ROWM, 0);
@@ -782,7 +782,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       { setBack(x, dim, (back(y, dim) * bc(constraint(x))) / SF);
         setFwd(x, dim, (fwd(y, dim)  * bc(constraint(x))) / SF);
 	if( bc(constraint(x)) == 0 )  /* Lout-supplied factor required */
@@ -806,7 +806,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
       Child(y, LastDown(x));
       y = MinSize(y, dim, extras);
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       { FULL_CHAR ch_left, ch_right;  FULL_LENGTH ksize;
 	debug3(DSF, DD, "MinSize(%s,%s %s, COLM)",
 	  EchoLength(back(y, COLM)), EchoLength(fwd(y, COLM)),
@@ -856,7 +856,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       { y = BreakObject(y, &constraint(x));
         assert( FitsConstraintOnRef(back(y, dim), fwd(y, dim), &constraint(x)),
 		"MinSize: BreakObject failed to fit!" );
@@ -875,7 +875,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
       { if( !FitsConstraintOnRef(back(y, dim), fwd(y, dim), &constraint(x)) )
         { Error(12, 1, "forced to enlarge %s from %s to %s", WARN, &fpos(x),
 	    KW_HIGH, EchoLength(bfc(constraint(x))), EchoLength(size(y, dim)));
@@ -899,7 +899,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HSHIFT)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HSHIFT)) )
       { f = FindShift(x, y, dim);
         setBack(x, dim, find_min(MAX_FULL_LENGTH, find_max(0, back(y, dim) + f)));
         setFwd(x, dim, find_min(MAX_FULL_LENGTH, find_max(0, fwd(y, dim)  - f)));
@@ -1028,7 +1028,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case HCAT_E:
     case VCAT_E:
     
-      if( (sameCr(dim, ROWM)) == (objectOfType(x, VCAT)) )
+      if( (sameDim(dim, ROWM)) == (objectOfType(x, VCAT)) )
       {
 	/********************************************************************/
 	/*                                                                  */
@@ -1049,7 +1049,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 	for( link = Down(x);  link != x;  link = NextDown(link) )
 	{ Child(y, link);
 	  if( is_index(type(y)) )
-	  { if( sameCr(dim, ROWM) )
+	  { if( sameDim(dim, ROWM) )
 	    { link = PrevDown(link);
 	      MoveLink(NextDown(link), *extras, PARENT);
 	    }
@@ -1064,7 +1064,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 	  else if( objectOfType(y, GAP_OBJ) )  g = y;
 	  else /* calculate size of y and accumulate it */
 	  { if( is_word(type(y)) )
-	    { if( sameCr(dim, COLM) )
+	    { if( sameDim(dim, COLM) )
 	      {
 		/* compress adjacent words if compatible */
 		if( prev != nilobj && width(&gap(g)) == 0 && nobreak(&gap(g)) &&
@@ -1203,7 +1203,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 	  debug4(DSF, DD, "  %s in %s, y = %s %s", dimen(dim),
 	    Image(type(x)), Image(type(y)), EchoObject(y));
 	  if( is_index(type(y)) )
-	  { if( sameCr(dim, ROWM) )
+	  { if( sameDim(dim, ROWM) )
 	    { link = PrevDown(link);
 	      MoveLink(NextDown(link), *extras, PARENT);
 	    }
@@ -1230,7 +1230,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 	  {
 	    /* calculate size of subobject y */
 	    if( is_word(type(y)) )
-	    { if( sameCr(dim, COLM) )  FontWordSize(y);
+	    { if( sameDim(dim, COLM) )  FontWordSize(y);
 	    }
 	    else y = MinSize(y, dim, extras);
 	    if( found )
@@ -1264,7 +1264,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
     case COL_THR_E:
 
-      assert( sameCr(dim, COLM), "MinSize/COL_THR: dim!" );
+      assert( sameDim(dim, COLM), "MinSize/COL_THR: dim!" );
       if( sameObjType(thr_state(x), NOTSIZED) )
       {	assert( Down(x) != x, "MinSize/COL_THR: Down(x)!" );
 
@@ -1309,7 +1309,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
     case ROW_THR_E:
 
-      assert( sameCr(dim, ROWM), "MinSize/ROW_THR: dim!" );
+      assert( sameDim(dim, ROWM), "MinSize/ROW_THR: dim!" );
       if( sameObjType(thr_state(x), NOTSIZED) )
       {	assert( Down(x) != x, "MinSize/ROW_THR: Down(x)!" );
 
@@ -1360,7 +1360,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
     case SINCGRAPHIC_E:
 
       /* open file and hunt for %%BoundingBox line */
-      if( sameCr(dim, ROWM) )  break;
+      if( sameDim(dim, ROWM) )  break;
       Child(y, Down(x));
       fp = OpenIncGraphicFile(string(y), type(x), &full_name, &fpos(y), &cp);
       incgraphic_ok(x) = PS_FindBoundingBox(fp, &fpos(y),
@@ -1389,7 +1389,7 @@ OBJECT MinSize(OBJECT x, CR_TE dim, OBJECT *extras)
 
 
   } /* end switch */
-  debugcond6(DSF, D, sameCr(dim, COLM) && --debug_depth < debug_depth_max,
+  debugcond6(DSF, D, sameDim(dim, COLM) && --debug_depth < debug_depth_max,
     "%*s] MinSize(COLM, %s %p) = (%s, %s)", debug_depth*2, " ", Image(type(x)),
     x, EchoLength(back(x, dim)), EchoLength(fwd(x, dim)));
   debug1(DSF, DD,  "] MinSize returning, x = %s", EchoObject(x));

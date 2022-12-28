@@ -82,9 +82,9 @@ static void Plain_PrintInitialize(FILE *fp, BOOLEAN2 enc)
 /*                                                                           */
 /*****************************************************************************/
 
-static void Plain_PrintLength(FULL_CHAR *buff, int length, int length_dim)
+static void Plain_PrintLength(FULL_CHAR *buff, int length, DIM_TE length_dim)
 {
-  if( length_dim == COLM )
+  if( sameDim(length_dim, COLM) )
   {
     sprintf( (char *) buff, "%.2fs", (float) length/PlainCharWidth);
   }

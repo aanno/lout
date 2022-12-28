@@ -186,7 +186,7 @@ float angle, CONSTRAINT *yc)
 /*****************************************************************************/
 
 void RotateConstraint(CONSTRAINT *c, OBJECT y, FULL_LENGTH angle,
-CONSTRAINT *hc, CONSTRAINT *vc, CR_TE dim)
+CONSTRAINT *hc, CONSTRAINT *vc, DIM_TE dim)
 { CONSTRAINT c1, c2, c3, dc;  float theta, psi;
 #if DEBUG_ON
   char buff[20];
@@ -226,7 +226,7 @@ CONSTRAINT *hc, CONSTRAINT *vc, CR_TE dim)
   debug2(DSC, DD, "  c1: %s;  c2: %s", EchoConstraint(&c1), EchoConstraint(&c2));
 
   /* return the minimum of the two constraints, rotated */
-  if( sameCr(dim, COLM) )
+  if( sameDim(dim, COLM) )
   { SemiRotateConstraint(c, back(y, ROWM), fwd(y, ROWM), theta, &c1);
     ReflectConstraintOnRef(&c3, c2);
     SemiRotateConstraint(&dc, fwd(y, ROWM), back(y, ROWM), psi, &c3);
@@ -309,7 +309,7 @@ BOOLEAN2 InsertScale(OBJECT x, CONSTRAINT *c)
 /*****************************************************************************/
 
 static void CatConstrained(OBJECT x, CONSTRAINT *xc, BOOLEAN2 ratm,
-OBJECT y, CR_TE dim, OBJECT *why)
+OBJECT y, DIM_TE dim, OBJECT *why)
 { int side;			/* the size of y that x is on: BACK, ON, FWD */
   CONSTRAINT yc;		/* constraints on y                          */
   FULL_LENGTH backy=0, fwdy=0;	/* back(y), fwd(y) would be if x was (0, 0)  */
@@ -448,7 +448,7 @@ OBJECT y, CR_TE dim, OBJECT *why)
 /*                                                                           */
 /*****************************************************************************/
 
-void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
+void Constrained(OBJECT x, CONSTRAINT *xc, DIM_TE dim, OBJECT *why)
 { OBJECT y, link, lp, rp, z, tlink, g;  CONSTRAINT yc, hc, vc;
   BOOLEAN2 ratm;  FULL_LENGTH xback, xfwd;  int tb, tf, tbf, tbc, tfc;
   SetLengthDim(dim);
@@ -459,7 +459,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
 
   /* a CLOSURE which is external_ver is unconstrained in the ROWM direction */
   /* a CLOSURE which is external_hor is unconstrained in both directions   */
-  if( objectOfType(x, CLOSURE) && ((sameCr(dim, ROWM) && external_ver(x)) || external_hor(x)) )
+  if( objectOfType(x, CLOSURE) && ((sameDim(dim, ROWM) && external_ver(x)) || external_hor(x)) )
   {
     SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
     debug1(DSC, DD, "] Constrained returning %s (external)",EchoConstraint(xc));
@@ -506,7 +506,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case HMIRROR_E:
     case VMIRROR_E:
     
-      if( (sameCr(dim, COLM)) == (objectOfType(y, HMIRROR)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(y, HMIRROR)) )
       {
         Constrained(y, &yc, dim, why);
 	FlipConstraintOnRef(xc, &yc);
@@ -519,7 +519,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case HSCALE_E:
     case VSCALE_E:
     
-      if( (sameCr(dim, COLM)) != objectOfType(y, HSCALE) )  Constrained(y, xc, dim, why);
+      if( (sameDim(dim, COLM)) != objectOfType(y, HSCALE) )  Constrained(y, xc, dim, why);
       else SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       break;
 
@@ -528,7 +528,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case VCOVER_E:
     
       /* dubious, but not likely to arise anyway */
-      if( (sameCr(dim, COLM)) != (objectOfType(y, HCOVER)) )  Constrained(y, xc, dim, why);
+      if( (sameDim(dim, COLM)) != (objectOfType(y, HCOVER)) )  Constrained(y, xc, dim, why);
       else SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       break;
 
@@ -536,14 +536,14 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case SCALE_E:
 
       Constrained(y, &yc, dim, why);
-      if( sameCr(dim, COLM) && bc(constraint(y)) == 0 )
+      if( sameDim(dim, COLM) && bc(constraint(y)) == 0 )
       {
 	/* Lout-supplied factor required later, could be tiny */
 	SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       }
       else
       { InvScaleConstraint(xc,
-	  sameCr(dim, COLM) ? bc(constraint(y)) : fc(constraint(y)), &yc);
+	  sameDim(dim, COLM) ? bc(constraint(y)) : fc(constraint(y)), &yc);
       }
       break;
 
@@ -559,7 +559,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case HIGH_E:
     
       Constrained(y, xc, dim, why);
-      if( (objectOfType(y, WIDE)) == (sameCr(dim, COLM)) )
+      if( (objectOfType(y, WIDE)) == (sameDim(dim, COLM)) )
       { MinConstraint(xc, &constraint(y));
 	*why = y;
       }
@@ -569,7 +569,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case HLIMITED_E:
     case VLIMITED_E:
 
-      if( (objectOfType(y, HLIMITED)) == (sameCr(dim, COLM)) )
+      if( (objectOfType(y, HLIMITED)) == (sameDim(dim, COLM)) )
       {
 	BOOLEAN2 still_searching = TRUE;
 	z = y;
@@ -639,7 +639,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case HSHIFT_E:
     case VSHIFT_E:
 
-      if( (objectOfType(y, HSHIFT)) == (sameCr(dim, COLM)) )
+      if( (objectOfType(y, HSHIFT)) == (sameDim(dim, COLM)) )
       { Constrained(y, &yc, dim, why);
 	tf = FindShift(y, x, dim);
 	SetConstraintOnRef(xc,
@@ -651,7 +651,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
 
     case HEAD_E:
     
-      if( sameCr(dim, ROWM) )
+      if( sameDim(dim, ROWM) )
 	SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       else
       {	CopyConstraintOnRef(&yc, &constraint(y));
@@ -665,7 +665,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case COL_THR_E:
     case ROW_THR_E:
 
-      assert( (objectOfType(y, COL_THR)) == (sameCr(dim, COLM)), "Constrained: COL_THR!" );
+      assert( (objectOfType(y, COL_THR)) == (sameDim(dim, COLM)), "Constrained: COL_THR!" );
       Constrained(y, &yc, dim, why);
       tb = bfc(yc) == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : bfc(yc) - fwd(y, dim);
       tb = find_min(bc(yc), tb);
@@ -679,7 +679,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, CR_TE dim, OBJECT *why)
     case HCAT_E:
     case ACAT_E:
     
-      if( (objectOfType(y, VCAT)) == (sameCr(dim, ROWM)) )
+      if( (objectOfType(y, VCAT)) == (sameDim(dim, ROWM)) )
       {	CatConstrained(x, xc, ratm, y, dim, why);
 	break;
       }

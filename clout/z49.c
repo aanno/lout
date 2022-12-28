@@ -359,7 +359,7 @@ static void PS_PrintInitialize(FILE *fp, BOOLEAN2 enc)
 /*****************************************************************************/
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
-static void PS_PrintLength(FULL_CHAR *buff, int length, int length_dim)
+static void PS_PrintLength(FULL_CHAR *buff, int length, DIM_TE length_dim)
 {
   sprintf( (char *) buff, "%.3fc", (float) length/CM);
 }

@@ -101,7 +101,7 @@ static float ScaleFactor(FULL_LENGTH avail_size, FULL_LENGTH inner_size)
 /*                                                                           */
 /*****************************************************************************/
 
-static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size, CR_TE dim)
+static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size, DIM_TE dim)
 { OBJECT y = nilobj, link, prev = nilobj, g;
   int adjustable_gaps;  BOOLEAN2 jn;
   FULL_LENGTH inc, mk, actual_size;
@@ -172,7 +172,7 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size, CR_TE d
 /*****************************************************************************/
 
 OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
-  FULL_LENGTH xf, CR_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg, int count,
+  FULL_LENGTH xf, DIM_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg, int count,
   FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd)
 { OBJECT y = nilobj, link, prev = nilobj, g, z, face, thr, res, uplink;
   /* OBJECT fixed_thr, tmp; */
@@ -256,7 +256,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case VSPAN_E:
 
       /* do the fix on the last one */
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HSPAN)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HSPAN)) )
       {
         CountChild(y, DownDim(x, dim), count);
 	assert(objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER), "FAPO HSPAN/VSPAN!");
@@ -283,7 +283,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case WORD_E:
     case QWORD_E:
     
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       {
 	/* save horizontal position for PrintWord below */
 	word_save_mark(x) = xmk;
@@ -314,7 +314,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case HIGH_E:
     
       CountChild(y, Down(x), count);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, WIDE)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, WIDE)) )
       { yf = bfc(constraint(x)) - back(y, dim);
         y = FixAndPrintObject(y, xmk, back(y,dim), yf, dim, NO_SUPPRESS, pg,
 	      count, &aback, &afwd);
@@ -331,7 +331,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case VSHIFT_E:
 
       CountChild(y, Down(x), count);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HSHIFT)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HSHIFT)) )
       {
 	/* work out the size of the shift depending on the units */
 	f = FindShift(x, y, dim);
@@ -357,7 +357,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case VCONTRACT_E:
     
       CountChild(y, Down(x), count);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, HCONTRACT)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, HCONTRACT)) )
       {	y = FixAndPrintObject(y, xmk, back(y,dim), fwd(y,dim), dim,
 	  NO_SUPPRESS, pg, count, &aback, &afwd);
         *actual_back = xb;  *actual_fwd = xf;
@@ -377,7 +377,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case VEXPAND_E:
     
       CountChild(y, Down(x), count);
-      if( (sameCr(dim, COLM)) == (objectOfType(x, ONE_COL) || objectOfType(x, HEXPAND)) )
+      if( (sameDim(dim, COLM)) == (objectOfType(x, ONE_COL) || objectOfType(x, HEXPAND)) )
       { y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 	      &aback, &afwd);
         *actual_back = xb;  *actual_fwd = xf;
@@ -394,7 +394,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       if( BackEnd->mirror_avail )
       {
 	CountChild(y, Down(x), count);
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	{
 	  save_mark(x) = xmk;
 	  y = FixAndPrintObject(y, 0, back(y, COLM), fwd(y, COLM), dim,
@@ -419,7 +419,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       if( BackEnd->mirror_avail )
       {
 	CountChild(y, Down(x), count);
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	  y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 		&aback, &afwd);
 	else
@@ -441,7 +441,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, Down(x), count);
       if( BackEnd->scale_avail )
       {
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	  y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 		&aback, &afwd);
 	else if( (scale_factor = ScaleFactor(xb+xf, size(y, ROWM))) > 0 )
@@ -466,7 +466,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       debug0(DRS, DD, "FixAndPrintObject at HSCALE");
       CountChild(y, Down(x), count);
       if( BackEnd->scale_avail )
-      {	if( sameCr(dim, COLM) )
+      {	if( sameDim(dim, COLM) )
         { save_mark(x) = xmk;
 	  bc(constraint(x)) = xb;
 	  fc(constraint(x)) = xf;
@@ -497,7 +497,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, Down(x), count);
       if( BackEnd->scale_avail )
       {
-        if( sameCr(dim, COLM) )
+        if( sameDim(dim, COLM) )
         { assert( bc(constraint(x)) > 0, "FAPO: horizontal scale factor!" );
 	  save_mark(x) = xmk;
 	  yb = (xb * SF) / bc(constraint(x));
@@ -534,7 +534,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case KERN_SHRINK_E:
 
       CountChild(y, LastDown(x), count);
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       { y = FixAndPrintObject(y, xmk, back(y,dim), fwd(y,dim), dim,
 	  NO_SUPPRESS, pg, count, &aback, &afwd);
 	*actual_back = back(x, dim);  *actual_fwd = fwd(x, dim);
@@ -565,7 +565,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, Down(x), count);
       if( BackEnd->rotate_avail )
       {
-        if( sameCr(dim, COLM) )
+        if( sameDim(dim, COLM) )
         { CONSTRAINT colc, rowc, yc;
           save_mark(x) = xmk;
 	  SetConstraintOnRef(&colc, back(x,COLM), MAX_FULL_LENGTH, fwd(x,COLM));
@@ -598,7 +598,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, LastDown(x), count);
       if( BackEnd->plaingraphic_avail )
       {
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	{
 	  setBack(x, dim, xb);		/* NB state change here */
 	  setFwd(x, dim, xf);
@@ -638,7 +638,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, LastDown(x), count);
       if( BackEnd->graphic_avail )
       {
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	{
 	  /* if first occurrence of this font on this page, notify font */
 	  if( font(&save_style(x)) > 0 )
@@ -699,7 +699,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	EchoLength(xmk), EchoLength(xb), EchoLength(xf), dimen(dim));
       );
       CountChild(y, LastDown(x), count);
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
 	save_mark(x) = xmk;
       else
       {	Child(z, Down(x));
@@ -742,7 +742,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, Down(x), count);
       if( BackEnd->incgraphic_avail )
       {
-	if( sameCr(dim, COLM) )
+	if( sameDim(dim, COLM) )
 	{ save_mark(x) = xmk;
 	  if( !sameObjType(incgraphic_ok(x), DUMMY) )
 	  { debug2(DGP, DD, "  %s (style %s)",
@@ -774,7 +774,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case VCAT_E:
     case HCAT_E:
 
-      if( (objectOfType(x, VCAT)) == (sameCr(dim, ROWM)) )
+      if( (objectOfType(x, VCAT)) == (sameDim(dim, ROWM)) )
       { 
 	debug6(DGP, DD, "[ FAPO-CAT %s (%s,%s): xmk %s, xb %s, xf %s",
 	    Image(type(x)), EchoLength(back(x, dim)), EchoLength(fwd(x, dim)),
@@ -1002,7 +1002,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case ACAT_E:
 
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
       { BOOLEAN2 will_adjust, adjusting;
 	FULL_LENGTH actual_size, adjust_indent, frame_size, back_edge;
 	FULL_LENGTH adjust_inc, inc = 0, adjust_sofar = 0;
@@ -1380,7 +1380,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case COL_THR_E:
     case ROW_THR_E:
 
-      assert( (objectOfType(x, COL_THR)) == (sameCr(dim, COLM)), "FixAndPrintObject: thr!" );
+      assert( (objectOfType(x, COL_THR)) == (sameDim(dim, COLM)), "FixAndPrintObject: thr!" );
       for( link = Down(x), uplink = Up(x), i = 1;
 	link != x && uplink != x && i < count;
 	link = NextDown(link), uplink = NextUp(uplink), i++ )
@@ -1492,7 +1492,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case SET_HEADER_E:
     case CLEAR_HEADER_E:
 
-      if( sameCr(dim, COLM) )
+      if( sameDim(dim, COLM) )
         Error(23, 8, "%s symbol ignored (out of place)", WARN, &fpos(x),
 	  Image(type(x)));
       break;

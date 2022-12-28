@@ -107,9 +107,9 @@ FULL_CHAR *EndString(void)
 /*                                                                           */
 /*****************************************************************************/
 
-static CR_TE length_dim = {COLM_E} /*COLM*/;
+static DIM_TE length_dim = {COLM_E} /*COLM*/;
 
-void SetLengthDim(CR_TE dim)
+void SetLengthDim(DIM_TE dim)
 {
   length_dim = dim;
 }

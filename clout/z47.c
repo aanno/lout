@@ -34,6 +34,7 @@
 #define	MAX_CACHE	180
 
 #define	env_offset(x)	back(x, ROWM)
+#define	setEnv_offset(x, l)	setBack(x, ROWM, l)
 #define	env_lnum(x)	line_num(fpos(x))
 #define	env_fnum(x)	file_num(fpos(x))
 #define	env_read(x)	sized(x)
@@ -146,7 +147,7 @@ void EnvWriteInsert(OBJECT env, FILE_NUM fnum, int offset, int lnum)
   if( tab[pos] == nilobj )  New(tab[pos], ACAT);
   New(x, ACAT);
   env_fnum(x) = fnum;
-  env_offset(x) = offset;
+  setEnv_offset(x, offset);
   env_lnum(x) = lnum;
   env_read(x) = FALSE;
   Link(tab[pos], x);
@@ -220,7 +221,7 @@ void EnvReadInsert(FILE_NUM fnum, int offset, OBJECT env)
   if( tab[pos] == nilobj )  New(tab[pos], ACAT);
   New(x, ACAT);
   env_fnum(x) = fnum;
-  env_offset(x) = offset;
+  setEnv_offset(x, offset);
   env_read(x) = TRUE;
   Link(tab[pos], x);
   Link(env_cache, x);

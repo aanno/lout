@@ -185,13 +185,13 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
   MoveLink(Up(nxt), new_y, CHILD);
   assert( Up(nxt) == nxt, "EncloseInHCat: Up(nxt) != nxt!" );
   FposCopy(fpos(new_y), fpos(y));
-  back(new_y, COLM) = back(y, COLM);
-  fwd(new_y, COLM) = fwd(y, COLM);
-  back(new_y, ROWM) = back(nxt, ROWM);
-  fwd(new_y, ROWM) = fwd(nxt, ROWM);
+  setBack(new_y, COLM, back(y, COLM));
+  setFwd(new_y, COLM, fwd(y, COLM));
+  setBack(new_y, ROWM, back(nxt, ROWM));
+  setFwd(new_y, ROWM, fwd(nxt, ROWM));
   New(new_row_thread, ROW_THR);
-  back(new_row_thread, ROWM) = back(new_y, ROWM);
-  fwd(new_row_thread, ROWM) = fwd(new_y, ROWM);
+  setBack(new_row_thread, ROWM, back(new_y, ROWM));
+  setFwd(new_row_thread, ROWM, fwd(new_y, ROWM));
   thr_state(new_row_thread) = SIZED;
   for( link = Down(y);  link != y;  link = NextDown(link) )
   { Child(s1, link);
@@ -216,10 +216,10 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
     FposCopy(fpos(new_s2), fpos(s2));
     if( s2 != s1 )
     { New(new_s1, type(s1));
-      back(new_s1, COLM) = back(s1, COLM);
-      fwd(new_s1, COLM) = fwd(s1, COLM);
-      back(new_s1, ROWM) = back(new_row_thread, COLM);
-      fwd(new_s1, ROWM) = fwd(new_row_thread, COLM);
+      setBack(new_s1, COLM, back(s1, COLM));
+      setFwd(new_s1, COLM, fwd(s1, COLM));
+      setBack(new_s1, ROWM, back(new_row_thread, COLM));
+      setFwd(new_s1, ROWM, fwd(new_row_thread, COLM));
       Link(new_y, new_s1);
       Link(new_s1, new_s2);
     }
@@ -228,8 +228,8 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
     { 
       /* replace sh by nxt in the copy */
       new_sh = nxt;
-      back(new_sh, COLM) = back(s2, COLM);
-      fwd(new_sh, COLM) = fwd(s2, COLM);
+      setBack(new_sh, COLM, back(s2, COLM));
+      setFwd(new_sh, COLM, fwd(s2, COLM));
     }
     else
     {
@@ -237,21 +237,24 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
       New(new_sh, WIDE);
       FposCopy(fpos(new_sh), fpos(sh));
       SetConstraintOnRef(&constraint(new_sh), back(sh,COLM),size(sh,COLM),fwd(sh,COLM));
-      back(new_sh, COLM) = back(sh, COLM);
-      fwd(new_sh, COLM) = fwd(sh, COLM);
-      back(new_sh, ROWM) = fwd(new_sh, ROWM) = 0;
+      setBack(new_sh, COLM, back(sh, COLM));
+      setFwd(new_sh, COLM, fwd(sh, COLM));
+      setFwd(new_sh, ROWM, 0);
+      setBack(new_sh, ROWM, 0);
       tmp = MakeWord(WORD, STR_EMPTY, &fpos(sh));
-      back(tmp, COLM) = fwd(tmp, COLM) = 0;
-      back(tmp, ROWM) = fwd(tmp, ROWM) = 0;
+      setFwd(tmp, COLM, 0);
+      setBack(tmp, COLM, 0);
+      setFwd(tmp, ROWM, 0);
+      setBack(tmp, ROWM, 0);
       setUnderline(tmp, UNDER_OFF);
       Link(new_sh, tmp);
     }
     Link(new_s2, new_sh);
-    back(new_s2, COLM) = back(new_sh, COLM);
-    fwd(new_s2, COLM) = fwd(new_sh, COLM);
+    setBack(new_s2, COLM, back(new_sh, COLM));
+    setFwd(new_s2, COLM, fwd(new_sh, COLM));
     Link(new_s2, new_row_thread);
-    back(new_s2, ROWM) = back(new_row_thread, ROWM);
-    fwd(new_s2, ROWM) = fwd(new_row_thread, ROWM);
+    setBack(new_s2, ROWM, back(new_row_thread, ROWM));
+    setFwd(new_s2, ROWM, fwd(new_row_thread, ROWM));
     Link(new_row_thread, new_sh);
   }
   return new_y;
@@ -378,8 +381,11 @@ BOOLEAN2 VerticalHyphenate(OBJECT y)
   TransferLinks(Up(g), large_comp, NextDown(Up(y)));
 
   /* change the size of y to its new, smaller value */
-  fwd(y, ROWM) = fwd(row_thread, ROWM) = fwd(large_comp, ROWM)
-	      = fwd(large_comp_split, ROWM) = fwd(prev, ROWM);
+  FULL_LENGTH smaller = fwd(prev, ROWM);
+  setFwd(large_comp_split, ROWM, smaller);
+  setFwd(large_comp, ROWM, smaller);
+  setFwd(row_thread, ROWM, smaller);
+  setFwd(y, ROWM, smaller);
 
   /* set link to the link of the first thing before y which is not an index */
   for( link = PrevDown(Up(y));  objectOfType(link, LINK);  link = PrevDown(link) )

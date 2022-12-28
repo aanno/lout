@@ -111,7 +111,7 @@ void FlushGalley(OBJECT hd)
   OBJECT dest_index;		/* the index of dest                         */
   OBJECT inners;		/* list of galleys and PRECEDES to flush     */
   OBJECT link, y;		/* for scanning through the components of hd */
-  CR_TE dim;			/* direction of galley                       */
+  DIM_TE dim;			/* direction of galley                       */
   CONSTRAINT dest_par_constr;	/* the parallel size constraint on dest      */
   CONSTRAINT dest_perp_constr;	/* the perpendicular size constraint on dest */
   int pb, pf, f;		/* candidate replacement sizes for dest      */
@@ -140,7 +140,7 @@ void FlushGalley(OBJECT hd)
 
   debug1(DGF, D, "[ FlushGalley %s (hd)", SymName(actual(hd)));
   prnt_flush = FALSE;
-  dim = crFromU(gall_dir(hd));
+  dim = dimFromU(gall_dir(hd));
 
   RESUME:
   assert( objectOfType(hd, HEAD), "FlushGalley: type(hd) != HEAD!" );
@@ -318,7 +318,7 @@ void FlushGalley(OBJECT hd)
   dest = actual(dest_index);
   if( underline(dest).underline == UNDER_UNDEF_E )  setUnderline(dest, UNDER_OFF);
   target_is_internal =
-    (sameCr(dim, ROWM) && !external_ver(dest)) || (sameCr(dim, COLM) && !external_hor(dest));
+    (sameDim(dim, ROWM) && !external_ver(dest)) || (sameDim(dim, COLM) && !external_hor(dest));
   headers_seen = FALSE;
   debug1(DGF, DD, "  dest_index: %s", EchoObject(dest_index));
 
@@ -550,7 +550,7 @@ void FlushGalley(OBJECT hd)
       case FORCE_CROSS_E:
 
 	setUnderline(y, underline(dest));
-	if( sameCr(dim, ROWM) )
+	if( sameDim(dim, ROWM) )
 	{
 	  /* make sure y is not joined to a target below (vertical case only) */
 	  for( zlink = NextDown(link); zlink != hd; zlink = NextDown(zlink) )
@@ -578,7 +578,7 @@ void FlushGalley(OBJECT hd)
 	{
 	  /* initialise dest_encl etc if not done yet */
 	  if( dest_encl == nilobj )
-	  { assert( UpDim(dest, otherCr(dim)) == UpDim(dest,dim), "FlushG: UpDims!" );
+	  { assert( UpDim(dest, otherDim(dim)) == UpDim(dest,dim), "FlushG: UpDims!" );
 	    /* *** weird old code, trying for UpDim(dest, ROWM)?
 	    Parent(dest_encl, NextDown(Up(dest)));
 	    *** */
@@ -586,8 +586,8 @@ void FlushGalley(OBJECT hd)
 	    debug4(DGF, DD, "  flush dest = %s %s, dest_encl = %s %s",
 	      Image(type(dest)), EchoObject(dest),
 	      Image(type(dest_encl)), EchoObject(dest_encl));
-	    assert( (sameCr(dim, ROWM) && objectOfType(dest_encl, VCAT)) ||
-	            (sameCr(dim, COLM) && objectOfType(dest_encl, ACAT)),
+	    assert( (sameDim(dim, ROWM) && objectOfType(dest_encl, VCAT)) ||
+	            (sameDim(dim, COLM) && objectOfType(dest_encl, ACAT)),
 	      "FlushGalley: dest != VCAT or ACAT!" );
 	    SetNeighbours(Up(dest), FALSE, &prec_gap, &prec_def,
 	      &succ_gap, &succ_def, &dest_side);
@@ -598,7 +598,7 @@ void FlushGalley(OBJECT hd)
 	      "FlushGalley: dest_side != FWD || !is_indefinite(type(y))!");
 	    dest_back = back(dest_encl, dim);
 	    dest_fwd  = fwd(dest_encl, dim);
-      CR_TE other = otherCr(dim);
+      DIM_TE other = otherDim(dim);
 	    perp_back = back(dest_encl, other);
 	    perp_fwd  = fwd(dest_encl, other);
 	    Constrained(dest_encl, &dest_par_constr, dim, &why);
@@ -678,7 +678,7 @@ void FlushGalley(OBJECT hd)
 	    }
 
 	    /* calculate perpendicular effect of adding y to dest */
-      CR_TE other = otherCr(dim);
+      DIM_TE other = otherDim(dim);
 	    if( seen_nojoin(hd) )
 	    {
 	      pb = 0;
@@ -699,7 +699,7 @@ void FlushGalley(OBJECT hd)
 		debug1(DOG, D, "FlushGalley(%s) de-optimizing (perp problem)",
 		  SymName(actual(hd)));
 	      }
-	      if( sameCr(dim, ROWM) )
+	      if( sameDim(dim, ROWM) )
 	      {
 		Error(20, 3, "component too wide for available space",
 		  WARN, &fpos(y));
@@ -751,7 +751,7 @@ void FlushGalley(OBJECT hd)
 	    if( need_adjust )
 	    { debug0(DSA, D, "  calling AdjustSize from FlushGalley (ACCEPT)");
 	      AdjustSize(dest_encl, dest_back, dest_fwd, dim);
-	      AdjustSize(dest_encl, perp_back, perp_fwd, otherCr(dim));
+	      AdjustSize(dest_encl, perp_back, perp_fwd, otherDim(dim));
 	    }
 	    debug0(DGF, DD, "  calling FlushInners() from FlushGalley (d)");
 	    FlushInners(inners, hd);
@@ -782,7 +782,7 @@ void FlushGalley(OBJECT hd)
       if( need_adjust )
       { debug0(DSA, D, "  calling AdjustSize from FlushGalley (EMPTY)");
 	AdjustSize(dest_encl, dest_back, dest_fwd, dim);
-	AdjustSize(dest_encl, perp_back, perp_fwd, otherCr(dim));
+	AdjustSize(dest_encl, perp_back, perp_fwd, otherDim(dim));
       }
     }
     if( opt_components(hd) != nilobj )
@@ -823,7 +823,7 @@ void FlushGalley(OBJECT hd)
       if( need_adjust )
       { debug0(DSA, D, "  calling AdjustSize from FlushGalley (REJECT)");
 	AdjustSize(dest_encl, stop_back, stop_fwd, dim);
-	AdjustSize(dest_encl, stop_perp_back, stop_perp_fwd, otherCr(dim));
+	AdjustSize(dest_encl, stop_perp_back, stop_perp_fwd, otherDim(dim));
       }
     }
 
@@ -894,7 +894,7 @@ void FlushGalley(OBJECT hd)
       if( need_adjust )
       { debug0(DSA, D, "  calling AdjustSize from FlushGalley (SUSPEND)");
 	AdjustSize(dest_encl, stop_back, stop_fwd, dim);
-	AdjustSize(dest_encl, stop_perp_back, stop_perp_fwd, otherCr(dim));
+	AdjustSize(dest_encl, stop_perp_back, stop_perp_fwd, otherDim(dim));
       }
     }
 
