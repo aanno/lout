@@ -1137,7 +1137,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
       MoveLink(llink, NextDown(res), PARENT);
       hspace(lgap) = 0;
       vspace(lgap) = 1;
-      GapCopyOnRef(&gap(lgap), &line_gap_ms(save_style(x)));
+      GapCopyOnRef(&gap(lgap), line_gap_ref(&save_style(x)));
       if( Down(lgap) != lgap )  DisposeChild(Down(lgap));
 
       /* move on to previous line */

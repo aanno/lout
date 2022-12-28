@@ -972,7 +972,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		hspace(z) = hspace(g);
 		vspace(z) = 0;
 		setUnderline(z, UNDER_OFF);
-		GapCopyOnRef(&gap(z), &space_gap_ms(save_style(x)));
+		GapCopyOnRef(&gap(z), space_gap_ref(&save_style(x)));
 		if( display_style(&save_style(x)) == DISPLAY_ORAGGED_E )
 		  setWidth(&gap(z), outdent_len(&save_style(x)));
 		else
@@ -985,7 +985,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
 	      /* append a gap to res (recycle g) */
 	      MoveLink(Up(g), res, PARENT);
-	      GapCopyOnRef(&gap(g), &line_gap_ms(save_style(x)));
+	      GapCopyOnRef(&gap(g), line_gap_ref(&save_style(x)));
 	      /* *** old formula before blanklinescale 
 	      width(gap(g)) *= find_max(1, vspace(g));
 	      *** */

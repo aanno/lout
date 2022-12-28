@@ -536,9 +536,9 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	fwd(y, ROWM) = fwd(x, ROWM);
 
 	/* set ACAT's save_style; have to invent a line_gap, unfortunately */
-	SetGapOnRef(&line_gap_ms(save_style(y)), FALSE, FALSE, FALSE, FIXED_UNIT,
+	SetGapOnRef(line_gap_ref(&save_style(y)), FALSE, FALSE, FALSE, FIXED_UNIT,
 	  MARK_MODE, 1.1 * FontSize(word_font(x), x));
-	SetGapOnRef(&space_gap_ms(save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
+	SetGapOnRef(space_gap_ref(&save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
 	  EDGE_MODE, 0);
 	setHyph_style(&save_style(y), HYPH_ON);
 	setFill_style(&save_style(y), FILL_ON_E);

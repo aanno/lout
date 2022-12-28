@@ -71,12 +71,12 @@ void TransferInit(OBJECT InitEnv)
 
   /* set initial environment and style */
   InitialEnvironment = InitEnv;
-  SetGapOnRef(&line_gap_ms(InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
+  SetGapOnRef(line_gap_ref(&InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
   setHadjust(&InitialStyle, FALSE);
   setHadjust(&InitialStyle, FALSE);
   setPadjust(&InitialStyle, FALSE);
   setSpace_style(&InitialStyle, SPACE_LOUT);
-  SetGapOnRef(&space_gap_m(&InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
+  SetGapOnRef(space_gap_ref(&InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
   setHyph_style(&InitialStyle, HYPH_UNDEF);
   setFill_style(&InitialStyle, FILL_UNDEF_E);
   setDisplay_style(&InitialStyle, DISPLAY_UNDEF_E);

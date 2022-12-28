@@ -1150,7 +1150,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 	else
 	{
 	  /* implicit & operator */
-	  GapCopyOnRef(&gap(g), &space_gap_m(style));
+	  GapCopyOnRef(&gap(g), space_gap_ref(style));
 	  switch( space_style(style).spacestyle )
 	  {
 	    case SPACE_LOUT_E:
@@ -1204,7 +1204,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 		    bool2s(LanguageWordEndsSentence(z, FALSE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, FALSE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(space_gap_ref(style)));
 		}
 	      }
 	      break;
@@ -1237,7 +1237,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 		      bool2s(LanguageWordEndsSentence(z, TRUE)));
 		  if( p != string(z) && LanguageSentenceEnds[*(p-1)]
 		      && LanguageWordEndsSentence(z, TRUE) )
-		    setWidth(&gap(g), width(&gap(g)) + width(&space_gap_m(style)));
+		    setWidth(&gap(g), width(&gap(g)) + width(space_gap_ref(style)));
 	        }
 	      }
 	      break;
@@ -1337,16 +1337,16 @@ OBJECT *enclose, BOOLEAN2 fcr)
       Child(y, Down(x));
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE, &nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &shift_gap(x), &res_inc);
+      GetGap(y, style, shift_gap_ref(x), &res_inc);
       setShift_type(x, res_inc);
-      if( !spaceMode(&shift_gap(x), EDGE_MODE) || 
-	  (!gapHasUnit(&shift_gap(x), FIXED_UNIT) && !gapHasUnit(&shift_gap(x), NEXT_UNIT)) )
+      if( !spaceMode(shift_gap_ref(x), EDGE_MODE) || 
+	  (!gapHasUnit(shift_gap_ref(x), FIXED_UNIT) && !gapHasUnit(shift_gap_ref(x), NEXT_UNIT)) )
       {	Error(8, 27, "replacing invalid left parameter of %s by +0i",
 	  WARN, &fpos(y), Image(type(x)) );
 	setShift_type(x, GAP_INC);
-	setUnits(&shift_gap(x), FIXED_UNIT);
-	setWidth(&shift_gap(x), 0);
-	setMode(&shift_gap(x), EDGE_MODE);
+	setUnits(shift_gap_ref(x), FIXED_UNIT);
+	setWidth(shift_gap_ref(x), 0);
+	setMode(shift_gap_ref(x), EDGE_MODE);
       }
       DisposeChild(Down(x));
       goto ETC;		/* next case down from here */
@@ -1387,7 +1387,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
       y = Manifest(y, env, style, nbt, nft, &ntarget, crs, FALSE, FALSE,
 	&nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
-      GetGap(y, style, &line_gap_ms(save_style(x)), &res_inc);
+      GetGap(y, style, line_gap_ref(&save_style(x)), &res_inc);
 
       /* make vc, a joined VCAT of MAX_HCOPIES copies of the header */
       Child(y, LastDown(x));
@@ -1798,10 +1798,10 @@ OBJECT *enclose, BOOLEAN2 fcr)
       /* memorize the key, value, style and environment for use when */
       /* manifesting VALUE in `@GetContext'.  */
       StyleCopy(&new_style, style);
-      context_key(context_m(&new_style)) = key;
-      context_value(context_m(&new_style)) = value;
-      context_style(context_m(&new_style)) = style;
-      context_env(context_m(&new_style)) = env;
+      context_key(*context_ref(&new_style)) = key;
+      context_value(*context_ref(&new_style)) = value;
+      context_style(*context_ref(&new_style)) = style;
+      context_env(*context_ref(&new_style)) = env;
 
       ReplaceNode(z, x);
       DisposeObject(x);
@@ -1825,7 +1825,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 	/* looked for (currently Y) is found.  */
 	for( s = style; s != NULL; )
 	{
-	  CONTEXT *ctx = &context_m(s);
+	  CONTEXT *ctx = context_ref(s);
 	  if( !ctx )
 	  { s = NULL;
 	  }
@@ -1836,7 +1836,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 
 	    /* VALUE is to be manifested with the style associated to CTX */
 	    StyleCopy(&new_style, style);
-	    setContext(&new_style, &context_m(context_style(*ctx)));
+	    setContext(&new_style, context_ref(context_style(*ctx)));
 	    debug3(DOM, D, " @GetContext %s -> value has type %s (%p)", string(y),
 	      Image(type(value)), value);
 

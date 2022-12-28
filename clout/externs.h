@@ -1029,14 +1029,29 @@ typedef struct style_type
   CONTEXT	ocontext;		/* context stack		     */
 } STYLE;
 
-#define	line_gap_ms(x)	(x).oline_gap
-#define	space_gap_ms(x)	(x).ospace_gap
+// #define	line_gap_ms(x)	(x).oline_gap
+// #define	space_gap_ms(x)	(x).ospace_gap
 
-#define	line_gap_m(x)	(x)->oline_gap
-#define	space_gap_m(x)	(x)->ospace_gap
-#define	underline_colour_m(x) (x)->ounderline_colour
-#define	colour_m(x)	(x)->ocolour
-#define	context_m(x)	(x)->ocontext
+// #define	line_gap_ref(x)	(x)->oline_gap
+INLINE GAP* line_gap_ref(STYLE* x) {
+  return &((x)->oline_gap);
+} 
+// #define	space_gap_ref(x)	(x)->ospace_gap
+INLINE GAP* space_gap_ref(STYLE* x) {
+  return &((x)->ospace_gap);
+}
+// #define	underline_colour_ref(x) (x)->ounderline_colour
+INLINE COLOUR_NUM* underline_colour_ref(STYLE* x) {
+  return &((x)->ounderline_colour);
+}
+// #define	colour_ref(x)	(x)->ocolour
+INLINE COLOUR_NUM* colour_ref(STYLE* x) {
+  return &((x)->ocolour);
+}
+// #define	context_ref(x)	(x)->ocontext
+INLINE CONTEXT* context_ref(STYLE* x) {
+  return &((x)->ocontext);
+}
 
 INLINE GAP line_gap(STYLE* x) {
   return (x)->oline_gap;
@@ -1255,8 +1270,8 @@ INLINE void setContext(STYLE* x, CONTEXT* context) {
 }
 
 INLINE void StyleCopy(STYLE* x, STYLE* y) {
-  GapCopyOnRef(&line_gap_m(x), &line_gap_m(y));
-  GapCopyOnRef(&space_gap_m(x), &space_gap_m(y));
+  GapCopyOnRef(line_gap_ref(x), line_gap_ref(y));
+  GapCopyOnRef(space_gap_ref(x), space_gap_ref(y));
   setYunit(x, yunit(y));
   setZunit(x, zunit(y));
   setOutdent_len(x, outdent_len(y));
@@ -1282,7 +1297,7 @@ INLINE void StyleCopy(STYLE* x, STYLE* y) {
   setStrut(x, strut(y));
   setLigatures(x, ligatures(y));
   setMarginkerning(x, marginkerning(y));
-  setContext(x, &context_m(y));
+  setContext(x, context_ref(y));
 }
 
 /*@::CONSTRAINT, FILE_NUM, FILE_POS, LIST@************************************/
@@ -2468,10 +2483,10 @@ INLINE BOOLEAN2 objectHasUnderline(OBJECT x, UNDER under) {
 
 #define	save_style(x)		(x)->os2.ou4.osave_style
 #define	constraint(x)		(x)->os2.ou4.oconstraint
-#define	shift_type(x)		width(&space_gap_ms(save_style(x)))
-#define	setShift_type(x, y)		setWidth(&space_gap_ms(save_style(x)), (y))
+#define	shift_type(x)		width(space_gap_ref(&save_style(x)))
+#define	setShift_type(x, y)		setWidth(space_gap_ref(&save_style(x)), (y))
 // #define	setShift_type(x, y)		width(space_gap(save_style(x))) = (y)
-#define	shift_gap(x)		line_gap_m(&save_style(x))
+#define	shift_gap_ref(x)		line_gap_ref(&save_style(x))
 
 #define actual(x)		(x)->os2.oactual
 #define whereto(x)		(x)->os2.oux.owhereto

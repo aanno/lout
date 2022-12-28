@@ -504,7 +504,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
         New(g, GAP_OBJ);
         setUnderline(g, UNDER_UNDEF /* FALSE */);
 	Link(g, CopyObject(gap_obj, &fpos(gap_obj)));
-        GapCopyOnRef(&gap(g), &line_gap_ms(save_style(header)));
+        GapCopyOnRef(&gap(g), line_gap_ref(&save_style(header)));
         setMark(&gap(g), FALSE);
         setJoin(&gap(g), FALSE);
 

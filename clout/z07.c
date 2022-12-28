@@ -717,7 +717,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 	hspace(g) = 1;  vspace(g) = 0;
 	FposCopy(fpos(g), *no_fpos);
 	SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE,
-	  width(&space_gap_ms(save_style(res))));
+	  width(space_gap_ref(&save_style(res))));
 	tmp = MakeWord(WORD, AsciiToFull("1s"), &fpos(g));
 	Link(g, tmp);
         Link(Down(res), g);
@@ -867,7 +867,7 @@ BOOLEAN2 EqualManifested(OBJECT x, OBJECT y)
 
       /* objects are equal if constraints and children are equal */
       return shift_type(x) == shift_type(y) &&
-	     GapEqual(&shift_gap(x), &shift_gap(y)) && EqualChildren(x, y);
+	     GapEqual(shift_gap_ref(x), shift_gap_ref(y)) && EqualChildren(x, y);
       break;
 
 
