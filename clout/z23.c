@@ -568,8 +568,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
         if( dim == COLM )
         { CONSTRAINT colc, rowc, yc;
           save_mark(x) = xmk;
-	  SetConstraint(colc, back(x,COLM), MAX_FULL_LENGTH, fwd(x,COLM));
-	  SetConstraint(rowc, back(x,ROWM), MAX_FULL_LENGTH, fwd(x,ROWM));
+	  SetConstraintOnRef(&colc, back(x,COLM), MAX_FULL_LENGTH, fwd(x,COLM));
+	  SetConstraintOnRef(&rowc, back(x,ROWM), MAX_FULL_LENGTH, fwd(x,ROWM));
 	  RotateConstraint(&yc, y, sparec(constraint(x)), &colc, &rowc,COLM);
 	  y = FixAndPrintObject(y, 0, bc(yc), fc(yc), COLM, NO_SUPPRESS, pg,
 		count, &aback, &afwd);
@@ -579,8 +579,8 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  BackEnd->SaveGraphicState(y);
 	  BackEnd->CoordTranslate(save_mark(x), pg - xmk);
 	  BackEnd->CoordRotate(sparec(constraint(x)));
-	  SetConstraint(colc, back(x,COLM), MAX_FULL_LENGTH, fwd(x,COLM));
-	  SetConstraint(rowc, back(x,ROWM), MAX_FULL_LENGTH, fwd(x,ROWM));
+	  SetConstraintOnRef(&colc, back(x,COLM), MAX_FULL_LENGTH, fwd(x,COLM));
+	  SetConstraintOnRef(&rowc, back(x,ROWM), MAX_FULL_LENGTH, fwd(x,ROWM));
 	  RotateConstraint(&yc, y, sparec(constraint(x)), &colc, &rowc, ROWM);
 	  y = FixAndPrintObject(y, 0, bc(yc), fc(yc), ROWM, NO_SUPPRESS, 0,
 		count, &aback, &afwd);
@@ -1085,7 +1085,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	{ 
 	  /* can't be fixed by adjustment, so scale the line or delete it */
 	  CONSTRAINT c;
-	  SetConstraint(c, 0, frame_size, frame_size);
+	  SetConstraintOnRef(&c, 0, frame_size, frame_size);
 	  fwd(x, dim) = actual_size;
 	  debug2(DGP, DD, "  oversize, actual_size = %s, frame_size = %s",
 	      EchoLength(actual_size), EchoLength(frame_size));

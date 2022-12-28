@@ -630,7 +630,7 @@ void FlushGalley(OBJECT hd)
 
 	    /* check new size against parallel constraint */
 	    if( (gapHasUnit(&gap(prec_gap), FRAME_UNIT) && width(&gap(prec_gap)) > FR)
-	        || !FitsConstraint(dest_back, f, dest_par_constr)
+	        || !FitsConstraintOnRef(dest_back, f, &dest_par_constr)
 		|| (opt_components(hd) != nilobj && opt_comps_permitted(hd)<=0)
 	      )
 	    {
@@ -639,7 +639,7 @@ void FlushGalley(OBJECT hd)
 
 		/* record the size of this just-completed target area for hd */
 		New(z, WIDE);
-		CopyConstraint(constraint(z), dest_par_constr);
+		CopyConstraintOnRef(&constraint(z), &dest_par_constr);
 		Link(opt_constraints(hd), z);
 		ifdebug(DOG, D,
 		  debug2(DOG, D, "FlushGalley(%s) adding constraint %s",
@@ -648,7 +648,7 @@ void FlushGalley(OBJECT hd)
 		      width(&gap(prec_gap)) > FR ) 
 		  { debug1(DOG, D, "  prec_gap = %s", EchoGap(&gap(prec_gap)));
 		  }
-		  if( !FitsConstraint(dest_back, f, dest_par_constr) )
+		  if( !FitsConstraintOnRef(dest_back, f, &dest_par_constr) )
 		  { debug3(DOG, D, "  !FitsConstraint(%s, %s, %s)",
 		      EchoLength(dest_back), EchoLength(f),
 		      EchoConstraint(&dest_par_constr));
@@ -689,7 +689,7 @@ void FlushGalley(OBJECT hd)
 	    }
 
 	    /* check new size against perpendicular constraint */
-	    if( !FitsConstraint(pb, pf, dest_perp_constr) )
+	    if( !FitsConstraintOnRef(pb, pf, &dest_perp_constr) )
 	    {
 	      if( opt_components(hd) != nilobj )
 	      { DisposeObject(opt_components(hd));
@@ -787,9 +787,9 @@ void FlushGalley(OBJECT hd)
     { OBJECT z;
       New(z, WIDE);
       if( dest_encl != nilobj )
-        CopyConstraint(constraint(z), dest_par_constr);
+        CopyConstraintOnRef(&constraint(z), &dest_par_constr);
       else
-        SetConstraint(constraint(z),
+        SetConstraintOnRef(&constraint(z),
 	  MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       Link(opt_constraints(hd), z);
       debug2(DOG, D, "FlushGalley(%s) empty adding constraint %s",

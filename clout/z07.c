@@ -223,7 +223,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
     case GAP_OBJ_E:
     
       New(res, GAP_OBJ);
-      GapCopy(gap(res), gap(x));
+      GapCopyOnRef(&gap(res), &gap(x));
       hspace(res) = hspace(x);
       vspace(res) = vspace(x);
       if( Down(x) != x )
@@ -490,7 +490,7 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
     case ACAT_E:
 
       New(g, GAP_OBJ);
-      SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
+      SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
       hspace(g) = vspace(g) = 0;
       setUnderline(g, UNDER_OFF);
       Link(Down(x), g);
@@ -716,7 +716,7 @@ OBJECT Meld(OBJECT x, OBJECT y)
 	New(g, GAP_OBJ);
 	hspace(g) = 1;  vspace(g) = 0;
 	FposCopy(fpos(g), *no_fpos);
-	SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE,
+	SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE,
 	  width(&space_gap_ms(save_style(res))));
 	tmp = MakeWord(WORD, AsciiToFull("1s"), &fpos(g));
 	Link(g, tmp);

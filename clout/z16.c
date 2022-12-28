@@ -496,12 +496,12 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
       case HIGH_E:
       
 	if( (objectOfType(y, WIDE)) == (dim == COLM) )
-	{ if( !FitsConstraint(b, f, constraint(y)) )
+	{ if( !FitsConstraintOnRef(b, f, &constraint(y)) )
 	  { Error(16, 2, "size constraint %s,%s,%s broken by %s,%s",
 	      WARN, &fpos(y),
 	      EchoLength(bc(constraint(y))), EchoLength(bfc(constraint(y))),
 	      EchoLength(fc(constraint(y))), EchoLength(b), EchoLength(f));
-	    SetConstraint(constraint(y), MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
+	    SetConstraintOnRef(&constraint(y), MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
 	  }
 	  back(x, dim) = b;  fwd(x, dim) = f;
 	  EnlargeToConstraint(&b, &f, &constraint(y));
@@ -522,13 +522,13 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, int dim)
           Parent(z, UpDim(y, dim));
           if( type(z) == ROW_THR || type(z) == COL_THR )
           {
-            SetConstraint(constraint(y), back(z,dim), size(z,dim), fwd(z,dim));
+            SetConstraintOnRef(&constraint(y), back(z,dim), size(z,dim), fwd(z,dim));
           }
           else
           {
-            SetConstraint(constraint(y), back(y,dim), size(y,dim), fwd(y,dim));
+            SetConstraintOnRef(&constraint(y), back(y,dim), size(y,dim), fwd(y,dim));
           }
-	  if( !FitsConstraint(b, f, constraint(y)) )
+	  if( !FitsConstraintOnRef(b, f, &constraint(y)) )
 	  { Error(16, 3, "%s of size %s,%s broken by %s,%s",
 	      WARN, &fpos(y), Image(type(y)),
 	      EchoLength(back(y, dim)), EchoLength(fwd(y, dim)),

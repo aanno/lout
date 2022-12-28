@@ -78,7 +78,7 @@ static OBJECT InterposeWideOrHigh(OBJECT y, int dim)
   fwd(res, dim)  = fwd(y, dim);
   back(res, 1-dim) = back(y, 1-dim);
   fwd(res, 1-dim)  = fwd(y, 1-dim);
-  SetConstraint(constraint(res), MAX_FULL_LENGTH, size(res, dim), MAX_FULL_LENGTH);
+  SetConstraintOnRef(&constraint(res), MAX_FULL_LENGTH, size(res, dim), MAX_FULL_LENGTH);
   ReplaceNode(res, y);
   Link(res, y);
   return res;
@@ -351,14 +351,14 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  FATAL, &fpos(target), SymName(actual(target)));
       debug2(DSC, DD, "Constrained( %s, 1-dim ) = %s",
 	EchoObject(target), EchoConstraint(&c));
-      if( !FitsConstraint(0, 0, c) )
+      if( !FitsConstraintOnRef(0, 0, &c) )
       { debug0(DGA, D, "  reject: target_galley horizontal constraint is -1");
 	y = nilobj;
         goto REJECT;
       }
     }
     else /* actually unused */
-      SetConstraint(c, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+      SetConstraintOnRef(&c, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
 
     debug1(DGA, DDD, "  expanding %s", EchoObject(target));
     tmp = CopyObject(target, no_fpos);
@@ -386,7 +386,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
       debug3(DSC, DD, "Constrained( %s, %s ) = %s",
 	EchoObject(dest), dimen(1-dim), EchoConstraint(&c));
       assert( constrained(c), "AttachGalley: dest unconstrained!" );
-      if( !FitsConstraint(0, 0, c) )
+      if( !FitsConstraintOnRef(0, 0, &c) )
       { debug0(DGA, D, "  reject: hd horizontal constraint is -1");
 	y = nilobj;
         goto REJECT;
@@ -427,7 +427,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
     }
 
     if( dim == ROWM )
-    { if( !FitsConstraint(back(hd, 1-dim), fwd(hd, 1-dim), c) )
+    { if( !FitsConstraintOnRef(back(hd, 1-dim), fwd(hd, 1-dim), &c) )
       { debug3(DGA, D, "  reject: hd %s,%s does not fit target_galley %s",
 	  EchoLength(back(hd, 1-dim)), EchoLength(fwd(hd, 1-dim)),
 	  EchoConstraint(&c));
@@ -650,7 +650,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  Constrained(dest, &c, dim, &why);
 	  debug3(DGF, DD, "  dest parallel Constrained(%s, %s) = %s",
 	    EchoObject(dest), dimen(dim), EchoConstraint(&c));
-	  if( !FitsConstraint(back(y, dim), fwd(y, dim), c) )
+	  if( !FitsConstraintOnRef(back(y, dim), fwd(y, dim), &c) )
 	  { BOOLEAN2 scaled;
 
 	    /* if forcing galley doesn't fit, try scaling first component */
@@ -705,7 +705,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  Constrained(dest, &c, 1-dim, &junk);
 	  debug3(DGF, DD, "  dest perpendicular Constrained(%s, %s) = %s",
 	    EchoObject(dest), dimen(1-dim), EchoConstraint(&c));
-	  if( !FitsConstraint(perp_back, perp_fwd, c) )
+	  if( !FitsConstraintOnRef(perp_back, perp_fwd, &c) )
 	  { BOOLEAN2 scaled;
 
 	    /* if forcing galley doesn't fit, try scaling first component */
@@ -754,7 +754,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  Child(z, LastDown(target_galley));  /* works in all cases? */
 	  assert( !is_index(type(z)), "AttachGalley: is_index(z)!" );
 	  assert( back(z, dim)>=0 && fwd(z, dim)>=0, "AttachGalley: z size!" );
-	  if( !FitsConstraint(back(z, dim), fwd(z, dim), c) )
+	  if( !FitsConstraintOnRef(back(z, dim), fwd(z, dim), &c) )
 	  { BOOLEAN2 scaled;
 
 	    debug2(DGA, DD, "  why     = %p %s", why, EchoObject(why));
@@ -816,7 +816,7 @@ ATTACH AttachGalley(OBJECT hd, OBJECT *inners, OBJECT *suspend_pt)
 	  assert( !is_index(type(z)), "AttachGalley: is_index(z)!" );
 	  assert( back(z, 1-dim)>=0 && fwd(z, 1-dim)>=0,
 	    "AttachGalley: z size (perpendicular)!" );
-	  if( !FitsConstraint(back(z, 1-dim), fwd(z, 1-dim), c) )
+	  if( !FitsConstraintOnRef(back(z, 1-dim), fwd(z, 1-dim), &c) )
 	  { BOOLEAN2 scaled;
 
 	    /* if forcing galley doesn't fit, try scaling z */

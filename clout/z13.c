@@ -73,7 +73,7 @@ CONSTRAINT *c, FULL_LENGTH *res_back, FULL_LENGTH *res_fwd)
     b = 0;
     f = 0;
   }
-  SetConstraint(yc, find_min(bc(*c), bfc(*c)-f), bfc(*c), find_min(fc(*c), bfc(*c)-b));
+  SetConstraintOnRef(&yc, find_min(bc(*c), bfc(*c)-f), bfc(*c), find_min(fc(*c), bfc(*c)-b));
 
   /* apply this constraint to each component in turn, m first */
   if( m != nilobj )
@@ -83,7 +83,7 @@ CONSTRAINT *c, FULL_LENGTH *res_back, FULL_LENGTH *res_fwd)
     m = BreakObject(m, &yc);
     b = back(m, COLM);
     f = fwd(m, COLM);
-    SetConstraint(yc, find_min(bc(yc), bfc(yc)-f), bfc(yc), find_min(fc(yc), bfc(yc)-b));
+    SetConstraintOnRef(&yc, find_min(bc(yc), bfc(yc)-f), bfc(yc), find_min(fc(yc), bfc(yc)-b));
   }
   else b = f = 0;
   for( link = start;  link != NextDown(stop);  link = NextDown(link) )
@@ -94,9 +94,9 @@ CONSTRAINT *c, FULL_LENGTH *res_back, FULL_LENGTH *res_fwd)
     y = BreakObject(y, &yc);
     b = find_max(b, back(y, COLM));
     f = find_max(f, fwd(y, COLM));
-    SetConstraint(yc, find_min(bc(yc), bfc(yc)-f), bfc(yc), find_min(fc(yc), bfc(yc)-b));
+    SetConstraintOnRef(&yc, find_min(bc(yc), bfc(yc)-f), bfc(yc), find_min(fc(yc), bfc(yc)-b));
   }
-  if( !FitsConstraint(b, f, *c) )
+  if( !FitsConstraintOnRef(b, f, c) )
   { debug3(DOB, DD, "  in BreakJoinedGroup: !FitsConstraint(%s, %s, %s)",
       EchoLength(b), EchoLength(f), EchoConstraint(c));
     Error(13, 1, "failed to break column to fit into its available space",
@@ -123,7 +123,7 @@ static OBJECT BreakVcat(OBJECT x, CONSTRAINT *c)
   BOOLEAN2 dble_found;
   debug1(DOB, DD, "[ BreakVcat(x, %s)", EchoConstraint(c));
   assert(Down(x) != x, "BreakVcat: Down(x) == x!" );
-  SetConstraint(tc, MAX_FULL_LENGTH, find_min(bfc(*c), fc(*c)), MAX_FULL_LENGTH);
+  SetConstraintOnRef(&tc, MAX_FULL_LENGTH, find_min(bfc(*c), fc(*c)), MAX_FULL_LENGTH);
   
   dble_found = FALSE;  dble_fwd = 0;  start_group = nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
@@ -134,7 +134,7 @@ static OBJECT BreakVcat(OBJECT x, CONSTRAINT *c)
       if( !join(&gap(y)) )
       {
 	/* finish off and break this group */
-	if( !FitsConstraint(b, f, tc) )
+	if( !FitsConstraintOnRef(b, f, &tc) )
 	  BreakJoinedGroup(start_group, link, m, &tc, &b, &f);
 	dble_found = TRUE;
 	dble_fwd = find_max(dble_fwd, b + f);
@@ -167,7 +167,7 @@ static OBJECT BreakVcat(OBJECT x, CONSTRAINT *c)
   if( dble_found )
   {	
     /* finish off and break this last group, and set sizes of x */
-    if( !FitsConstraint(b, f, tc) )
+    if( !FitsConstraintOnRef(b, f, &tc) )
       BreakJoinedGroup(start_group, LastDown(x), m, &tc, &b, &f);
     dble_fwd = find_max(dble_fwd, b + f);
     debug1(DOB, DD, "  ending last group, dble_fwd: %s",EchoLength(dble_fwd));
@@ -278,7 +278,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
   }
 
   /* if column gaps alone are too wide, kill them all */
-  if( !FitsConstraint(bwidth, fwidth, *c) )
+  if( !FitsConstraintOnRef(bwidth, fwidth, c) )
   {
     debug2(DOB, DD, "column gaps alone too wide: bwidth: %s; fwidth: %s",
        EchoLength(bwidth), EchoLength(fwidth));
@@ -287,7 +287,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
     for( link = Down(x);  link != x;  link = NextDown(link) )
     { Child(g, link);
       if( objectOfType(g, GAP_OBJ) )
-      {	SetGap(gap(g), nobreak(&gap(g)), mark(&gap(g)), join(&gap(g)),
+      {	SetGapOnRef(&gap(g), nobreak(&gap(g)), mark(&gap(g)), join(&gap(g)),
 	  FIXED_UNIT, EDGE_MODE, 0);
       }
     }
@@ -295,7 +295,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
   }
 
   /* break each column, from smallest to largest */
-  while( bcount + fcount > 0 && FitsConstraint(bwidth, fwidth, *c) )
+  while( bcount + fcount > 0 && FitsConstraintOnRef(bwidth, fwidth, c) )
   {
     debug2(DOB, DD, "bcount: %d;  bwidth: %s", bcount, EchoLength(bwidth));
     debug2(DOB, DD, "fcount: %d;  fwidth: %s", fcount, EchoLength(fwidth));
@@ -342,7 +342,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
 	col_size = (back_max - bwidth) / bcount;
 	if( col_size > prev_col_size && col_size - prev_col_size < PT )
 	  col_size = prev_col_size;
-	SetConstraint(mc,
+	SetConstraintOnRef(&mc,
 	  find_min(MAX_FULL_LENGTH, col_size + pd_extra),
 	  find_min(MAX_FULL_LENGTH, col_size + pd_extra + sd_extra),
 	  find_min(MAX_FULL_LENGTH, col_size + sd_extra));
@@ -355,7 +355,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
 	col_size = (fwd_max - fwidth) / fcount;
 	if( col_size > prev_col_size && col_size - prev_col_size < PT )
 	  col_size = prev_col_size;
-	SetConstraint(mc,
+	SetConstraintOnRef(&mc,
 	  find_min(MAX_FULL_LENGTH, pd_extra + back(my, COLM)),
 	  find_min(MAX_FULL_LENGTH, pd_extra + back(my, COLM) + col_size + sd_extra),
 	  find_min(MAX_FULL_LENGTH, col_size + sd_extra));
@@ -368,7 +368,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
 	col_size = (fwd_max - fwidth) / fcount;
 	if( col_size > prev_col_size && col_size - prev_col_size < PT )
 	  col_size = prev_col_size;
-	SetConstraint(mc,
+	SetConstraintOnRef(&mc,
 	  find_min(MAX_FULL_LENGTH, col_size + pd_extra),
 	  find_min(MAX_FULL_LENGTH, col_size + pd_extra + sd_extra),
 	  find_min(MAX_FULL_LENGTH, col_size + sd_extra));
@@ -470,7 +470,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
   }
 
   /* if no breaking required, return immediately */
-  if( FitsConstraint(back(x, COLM), fwd(x, COLM), *c) )
+  if( FitsConstraintOnRef(back(x, COLM), fwd(x, COLM), c) )
   { debug0(DOB, DD, "] BreakObject returning (fits).");
     debugcond6(DOB, D, --debug_depth < debug_depth_max,
       "%*s] BreakObject(%s %p) (fits) = (%s, %s)", debug_depth*2, " ",
@@ -536,9 +536,9 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	fwd(y, ROWM) = fwd(x, ROWM);
 
 	/* set ACAT's save_style; have to invent a line_gap, unfortunately */
-	SetGap(line_gap_ms(save_style(y)), FALSE, FALSE, FALSE, FIXED_UNIT,
+	SetGapOnRef(&line_gap_ms(save_style(y)), FALSE, FALSE, FALSE, FIXED_UNIT,
 	  MARK_MODE, 1.1 * FontSize(word_font(x), x));
-	SetGap(space_gap_ms(save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
+	SetGapOnRef(&space_gap_ms(save_style(y)), FALSE, FALSE, TRUE, FIXED_UNIT,
 	  EDGE_MODE, 0);
 	setHyph_style(&save_style(y), HYPH_ON);
 	setFill_style(&save_style(y), FILL_ON_E);
@@ -618,7 +618,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 
     case HMIRROR_E:
 
-      FlipConstraint(yc, *c);
+      FlipConstraintOnRef(&yc, c);
       Child(y, Down(x));
       y = BreakObject(y, &yc);
       back(x, COLM) = fwd(y, COLM);
@@ -692,7 +692,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 
       Child(y, Down(x));
       f = FindShift(x, y, COLM);
-      SetConstraint(yc,
+      SetConstraintOnRef(&yc,
 	find_min(bc(*c), bfc(*c)) - f, bfc(*c), find_min(fc(*c), bfc(*c)) + f);
       BreakObject(y, &yc);
       f = FindShift(x, y, COLM);
@@ -763,7 +763,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	    rpos = y;
 	  }
 	}
-	if( FitsConstraint(back(x, COLM), fwd(x, COLM), *c) )
+	if( FitsConstraintOnRef(back(x, COLM), fwd(x, COLM), c) )
 	{ Error(13, 9, "column mark of unbroken paragraph moved left",
 	    WARN, &fpos(rpos));
 	  break;

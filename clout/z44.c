@@ -198,7 +198,7 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
     if( objectOfType(s1, GAP_OBJ) )
     { New(new_s1, GAP_OBJ);
       FposCopy(fpos(new_s1), fpos(s1));
-      GapCopy(gap(new_s1), gap(s1));
+      GapCopyOnRef(&gap(new_s1), &gap(s1));
       hspace(new_s1) = hspace(s1);
       vspace(new_s1) = vspace(s1);
       Link(new_y, new_s1);
@@ -236,7 +236,7 @@ static OBJECT EncloseInHcat(OBJECT nxt, OBJECT y, OBJECT replace)
       /* replace sh by an empty object of the same width in the copy */
       New(new_sh, WIDE);
       FposCopy(fpos(new_sh), fpos(sh));
-      SetConstraint(constraint(new_sh), back(sh,COLM),size(sh,COLM),fwd(sh,COLM));
+      SetConstraintOnRef(&constraint(new_sh), back(sh,COLM),size(sh,COLM),fwd(sh,COLM));
       back(new_sh, COLM) = back(sh, COLM);
       fwd(new_sh, COLM) = fwd(sh, COLM);
       back(new_sh, ROWM) = fwd(new_sh, ROWM) = 0;

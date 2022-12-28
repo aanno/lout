@@ -129,19 +129,19 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   /* break hd if vertical galley */
   if( gall_dir(hd) == ROWM )
   {
-    CopyConstraint(constraint(hd), *c);
+    CopyConstraintOnRef(&constraint(hd), c);
     debug0(DGM, DD, "SizeGalley calling BreakObject:");
     debug2(DOB, D, "[ calling BreakObject(%s) from SizeGalley(%s)",
       Image(type(y)), SymName(actual(hd)));
     y = BreakObject(y, c);
     debug2(DOB, D, "] returning BreakObject(%s) from SizeGalley(%s)",
       Image(type(y)), SymName(actual(hd)));
-    if( !FitsConstraint(back(y, COLM), fwd(y, COLM), *c) )
+    if( !FitsConstraintOnRef(back(y, COLM), fwd(y, COLM), c) )
       Error(21, 13, "%s,%s object too wide for available space",
         FATAL, &fpos(y), EchoLength(back(y, COLM)), EchoLength(fwd(y, COLM)));
     back(hd, COLM) = back(y, COLM);
     fwd(hd, COLM)  = fwd(y, COLM);
-    assert( FitsConstraint(back(hd, COLM), fwd(hd, COLM), *c),
+    assert( FitsConstraintOnRef(back(hd, COLM), fwd(hd, COLM), c),
 	"SizeGalley: BreakObject failed to fit!" );
     debug2(DSF, D, "MinSize(hd, COLM) = %s,%s",
 	  EchoLength(back(hd, COLM)), EchoLength(fwd(hd, COLM)) );
@@ -493,7 +493,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 
 	      /* check whether new object fits */
 	      Constrained(cover, &c, dirn, &why);
-	      if( FitsConstraint(b, f, c) )
+	      if( FitsConstraintOnRef(b, f, &c) )
 	      {
 		/* it fits, so make cover a SCALE object with this size */
 		setType(cover, SCALE);

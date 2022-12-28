@@ -66,17 +66,17 @@ static void debug_targets(void)
 void TransferInit(OBJECT InitEnv)
 { OBJECT dest, x, y, recs, inners, nothing, dest_index, up_hd, why;
   debug1(DGT, D, "[ TransferInit( %s )", EchoObject(InitEnv));
-  SetConstraint(initial_constraint,
+  SetConstraintOnRef(&initial_constraint,
     MAX_FULL_LENGTH-1, MAX_FULL_LENGTH-1, MAX_FULL_LENGTH-1);
 
   /* set initial environment and style */
   InitialEnvironment = InitEnv;
-  SetGap(line_gap_ms(InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
+  SetGapOnRef(&line_gap_ms(InitialStyle), FALSE,FALSE,FALSE,FIXED_UNIT,MARK_MODE,18*PT);
   setHadjust(&InitialStyle, FALSE);
   setHadjust(&InitialStyle, FALSE);
   setPadjust(&InitialStyle, FALSE);
   setSpace_style(&InitialStyle, SPACE_LOUT);
-  SetGap(space_gap_m(&InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
+  SetGapOnRef(&space_gap_m(&InitialStyle), FALSE,FALSE,TRUE,FIXED_UNIT,EDGE_MODE,1*EM);
   setHyph_style(&InitialStyle, HYPH_UNDEF);
   setFill_style(&InitialStyle, FILL_UNDEF_E);
   setDisplay_style(&InitialStyle, DISPLAY_UNDEF_E);
@@ -262,7 +262,7 @@ OBJECT TransferBegin(OBJECT x)
       if( objectOfType(y, RECEPTIVE) && actual(actual(y)) == InputSym )
       {
 	Constrained(actual(y), &constraints[itop], COLM, &why);
-	if( FitsConstraint(0, 0, constraints[itop]) )
+	if( FitsConstraintOnRef(0, 0, &constraints[itop]) )
 	{ Link(targets[itop], y);  target = y;
 	  debug2(DSC, DD, "Constrained( %s, COLM ) = %s",
 	    EchoObject(y), EchoConstraint(&constraints[itop]));

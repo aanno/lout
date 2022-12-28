@@ -946,8 +946,8 @@ INLINE void setWidth(GAP* x, FULL_LENGTH xwidth) {
   x->owidth = xwidth;
 }
 
-#define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
-( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
+// #define SetGap(x, xnobreak, xmark, xjoin, xunits, xmode, xwidth)	\
+// ( SetGapOnRef( &(x), xnobreak, xmark, xjoin, xunits, xmode, xwidth) )
 INLINE void SetGapOnRef(GAP* x, BOOLEAN2 xnobreak, BOOLEAN2 xmark, BOOLEAN2 xjoin, UNIT xunits, SPACE_MODE xmode, FULL_LENGTH xwidth) {
   setNobreak(x, xnobreak);
   setMark(x, xmark);
@@ -958,14 +958,9 @@ INLINE void SetGapOnRef(GAP* x, BOOLEAN2 xnobreak, BOOLEAN2 xmark, BOOLEAN2 xjoi
 }
 
 #define ClearGap(x)     SetGap(x, FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0)
-/*
-inline void ClearGap(GAP x) {
-    SetGap(x, FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0);
-}
-*/
 
-#define GapCopy(x, y)							\
-( GapCopyOnRef( &(x), &(y) ) )
+// #define GapCopy(x, y)							\
+// ( GapCopyOnRef( &(x), &(y) ) )
 INLINE void GapCopyOnRef(GAP* x, GAP* y) {
   setNobreak(x, nobreak(y));
   setMark(x, mark(y));
@@ -1041,31 +1036,6 @@ typedef struct style_type
 #define	space_gap_m(x)	(x)->ospace_gap
 #define	underline_colour_m(x) (x)->ounderline_colour
 #define	colour_m(x)	(x)->ocolour
-/*
-#define	yunit(x)	(x).oyunit
-#define	zunit(x)	(x).ozunit
-#define	outdent_len(x)	(x).ooutdent_len
-#define	smallcaps_len(x)(x).osmallcaps_len
-#define	font(x)		(x).ofont
-#define	texture(x)	(x).otexture
-#define	blanklinescale(x)(x).oblanklinescale
-#define	language(x)	(x).olanguage
-#define	vadjust(x)	(x).ovadjust
-#define	hadjust(x)	(x).ohadjust
-#define	padjust(x)	(x).opadjust
-#define	small_caps(x)	(x).osmall_caps
-#define	space_style(x)	(x).ospace_style
-#define	hyph_style(x)	(x).ohyph_style
-#define	fill_style(x)	(x).ofill_style
-#define	display_style(x)(x).odisplay_style
-#define	outline(x)	(x).ooutline
-#define	nobreakfirst(x)	(x).onobreakfirst
-#define	nobreaklast(x)	(x).onobreaklast
-#define	baselinemark(x)	(x).obaselinemark
-#define	strut(x)	(x).ostrut
-#define	ligatures(x)	(x).oligatures
-#define	marginkerning(x)(x).omarginkerning
-*/
 #define	context_m(x)	(x)->ocontext
 
 INLINE GAP line_gap(STYLE* x) {
@@ -1284,39 +1254,6 @@ INLINE void setContext(STYLE* x, CONTEXT* context) {
   (x)->ocontext = *context;
 }
 
-/*
-#define StyleCopy(x, y)							\
-( GapCopy(line_gap_m(x), line_gap_m(y)),					\
-  GapCopy(space_gap_m(x), space_gap_m(y)),					\
-  setYunit(&x, yunit(y)),							\
-  setZunit(&x, zunit(y)),							\
-  setOutdent_len(&x, outdent_len(y)),					\
-  setSmallcaps_len(&x, smallcaps_len(y)),					\
-  setFont(&x, font(y)),							\
-  setColour(&x, colour(y)),						\
-  setUnderline_colour(x, underline_colour(y)),				\
-  setTexture(&x, texture(y)),						\
-  setBlanklinescale(&x, blanklinescale(y)),				\
-  setLanguage(&x, language(y)), 						\
-  setVadjust(&x, vadjust(y)), 						\
-  setHadjust(&x, hadjust(y)), 						\
-  setPadjust(&x, padjust(y)), 						\
-  setSmall_caps(&x, small_caps(y)),					\
-  setSpace_style(&x, space_style(y)),					\
-  setHyph_style(&x, hyph_style(y)),					\
-  setFill_style(&x, fill_style(y)),					\
-  setDisplay_style(&x, display_style(y)),					\
-  setOutline(&x, outline(y)),						\
-  setNobreakfirst(&x, nobreakfirst(y)),					\
-  setNobreaklast(&x, nobreaklast(y)),					\
-  setBaselinemark(&x, baselinemark(y)),					\
-  setStrut(&x, strut(y)),							\
-  setLigatures(&x, ligatures(y)),						\
-  setMarginkerning(&x, marginkerning(y)),					\
-  setContext(&x, context(y))						\
-)
-*/
-
 INLINE void StyleCopy(STYLE* x, STYLE* y) {
   GapCopyOnRef(&line_gap_m(x), &line_gap_m(y));
   GapCopyOnRef(&space_gap_m(x), &space_gap_m(y));
@@ -1370,28 +1307,28 @@ INLINE BOOLEAN2 constrained(CONSTRAINT x) {
     return bc(x) != MAX_FULL_LENGTH || bfc(x) != MAX_FULL_LENGTH || fc(x) != MAX_FULL_LENGTH;
 }
 
-#define	SetConstraint(c,x,y,z)	( SetConstraintOnRef(&(c), x, y, z) )
+// #define	SetConstraint(c,x,y,z)	( SetConstraintOnRef(&(c), x, y, z) )
 INLINE void SetConstraintOnRef(CONSTRAINT* c, FULL_LENGTH x, FULL_LENGTH y, FULL_LENGTH z) {
     bc(*c) = (x);
     bfc(*c) = (y);
     fc(*c) = (z);
 }
 
-#define	CopyConstraint(x, y)	( CopyConstraintOnRef( &(x), &(y)) )
+// #define	CopyConstraint(x, y)	( CopyConstraintOnRef( &(x), &(y)) )
 INLINE void CopyConstraintOnRef(CONSTRAINT* x, CONSTRAINT* y) {
     bc(*x) = bc(*y);
     bfc(*x) = bfc(*y);
     fc(*x) = fc(*y);
 }
 
-#define	FlipConstraint(x, y)	( FlipConstraintOnRef( &(x), &(y)) )
+// #define	FlipConstraint(x, y)	( FlipConstraintOnRef( &(x), &(y)) )
 INLINE void FlipConstraintOnRef(CONSTRAINT* x, CONSTRAINT* y) {
     bc(*x) = fc(*y);
     bfc(*x) = bfc(*y);
     fc(*x) = bc(*y);
 }
 
-#define FitsConstraint(b, f, c)	( FitsConstraintOnRef(b, f, &(c)) )
+// #define FitsConstraint(b, f, c)	( FitsConstraintOnRef(b, f, &(c)) )
 INLINE BOOLEAN2 FitsConstraintOnRef(FULL_LENGTH b, FULL_LENGTH f, CONSTRAINT* c) {
     return b <= bc(*c)  && b + f <= bfc(*c) && f <= fc(*c);
 }
@@ -2390,8 +2327,6 @@ INLINE void setType(OBJECT x, OBJTYPE type) {
 #define spanner_count(x)	word_font(x)
 
 // TODO: only allowed values INCGRAPHIC_E and SINCGRAPHIC_E
-// #define incg_type(x)		word_font(x)
-
 INLINE void setIncg_type(OBJECT x, OBJTYPE type) {
   word_font(x) = type.objtype;
 }
@@ -3145,21 +3080,6 @@ typedef struct
 /* Clearing the object with memset() adds 30% to the lout run time.          */
 /* Callers of New should initialize everything necessary.                    */
 
-/*
-#define	GetMem(x, siz, pos)						\
-{ newcount;								\
-  if( (zz_size=(siz)) >= MAX_OBJECT_REC )				\
-    x = NULL, Error(1, 1, "word is too long", FATAL, pos);		\
-  else if( zz_free[zz_size] == nilobj )					\
-    x = GetMemory(zz_size, pos);					\
-  else									\
-  { x = zz_free[zz_size];						\
-    freecount;								\
-    zz_free[zz_size] = pred(x, CHILD);					\
-  }									\
-  mallocsetfile(x);							\
-}
-*/
 INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
   newcount;
   if( (zz_size=(siz)) >= MAX_OBJECT_REC )
@@ -3175,18 +3095,6 @@ INLINE OBJECT GetMem(OBJECT x, size_t siz, FILE_POS* pos) {
   return x;
 }
 
-/*
-#define	New(x, typ)							\
-{ checknew(typ);							\
-  zz_hold = GetMem(zz_hold, zz_lengths[typ], no_fpos);				\
-  type(zz_hold) = typ;							\
-  setmemtype(zz_hold, typ);						\
-  mallocheadercheck(zz_hold,zz_lengths[typ]);				\
-  checkmem(zz_hold, typ);						\
-  x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =			\
-  pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;		\
-}
-*/
 #define New(x, typ) (x) = returnNew((x), (typ))
 
 #pragma clang diagnostic ignored "-Wuninitialized"
@@ -3203,20 +3111,6 @@ INLINE OBJECT returnNew(OBJECT x, OBJTYPE typ) {
   return x;
 }
 
-/*
-#define NewWord(x, typ, len, pos)					\
-{ zz_size = sizeof(struct word_type) - 4 + ((len)+1)*sizeof(FULL_CHAR);	\
-  / NB the following line RESETS zz_size /				\
-  zz_hold = GetMem(zz_hold, ceiling(zz_size, sizeof(ALIGN)), pos);		\
-  checkmem(zz_hold, typ);						\
-  rec_size(zz_hold) = zz_size;						\
-  setmemtype(zz_hold, typ);						\
-  type(zz_hold) = typ;							\
-  mallocheadercheck(zz_hold,zz_size);					\
-  x = pred(zz_hold, CHILD) = succ(zz_hold, CHILD) =			\
-  pred(zz_hold, PARENT) = succ(zz_hold, PARENT) = zz_hold;		\
-}
-*/
 INLINE OBJECT NewWord(OBJECT x, OBJTYPE typ, size_t len, FILE_POS* pos) {
   zz_size = sizeof(struct word_type) - 4 + ((len)+1)*sizeof(FULL_CHAR);
   /* NB the following line RESETS zz_size */
@@ -3353,17 +3247,6 @@ INLINE void Dispose(POINTER x) {
 
 #else
 
-/*
-#define PutMem(x, siz)							\
-{ disposecount;								\
-  zz_hold = (x);							\
-  zz_size = (siz);							\
-  mallocheadercheck(zz_hold,zz_size);					\
-  disposecheck;								\
-  pred(zz_hold, CHILD) = zz_free[zz_size];				\
-  zz_free[zz_size] = zz_hold;						\
-}
-*/
 INLINE void PutMem(POINTER x, int size) {
     disposecount();
     zz_hold = (x);
@@ -3374,14 +3257,6 @@ INLINE void PutMem(POINTER x, int size) {
     zz_free[zz_size] = zz_hold;
 }
 
-/*
-#define Dispose(x)							\
-{ zz_hold = (x);							\
-  PutMem(zz_hold, is_word(type(zz_hold)) ?				\
-    rec_size(zz_hold) : zz_lengths[type(zz_hold)]);			\
-  setdisposed;								\
-}
-*/
 INLINE void Dispose(OBJECT x) {
     zz_hold = (x);
     PutMem(zz_hold, is_word(type(zz_hold)) ?
@@ -3399,19 +3274,6 @@ INLINE void Dispose(OBJECT x) {
 /*                                                                           */
 /*****************************************************************************/
 
-/*
-#define	Append(x, y, dir)						\
-( zz_res = (x),	zz_hold = (y),						\
-  zz_hold == nilobj ? zz_res  :						\
-  zz_res  == nilobj ? zz_hold :						\
-  ( zz_tmp = pred(zz_hold, dir),					\
-    pred(zz_hold, dir) = pred(zz_res, dir),				\
-    succ(pred(zz_res, dir), dir) = zz_hold,				\
-    pred(zz_res, dir) = zz_tmp,						\
-    succ(zz_tmp, dir) = zz_res						\
-  )									\
-)
-*/
 INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
     return zz_res = (x),
     zz_hold = (y),
@@ -3434,18 +3296,6 @@ INLINE OBJECT Append(OBJECT x, OBJECT y, int dir) {
 /*                                                                           */
 /*****************************************************************************/
 
-/*
-#define Delete(x, dir)							\
-( zz_hold = (x),							\
-  succ(zz_hold, dir) == zz_hold ? nilobj :				\
-  ( zz_res = succ(zz_hold, dir),					\
-    pred(zz_res, dir) = pred(zz_hold, dir),				\
-    succ(pred(zz_hold, dir), dir) = zz_res,				\
-    pred(zz_hold, dir) = succ(zz_hold, dir) = zz_hold,			\
-    zz_res								\
-  )									\
-)
-*/
 INLINE OBJECT Delete(OBJECT x, int dir) {
     return zz_hold = (x),
     succ(zz_hold, dir) == zz_hold ? nilobj :

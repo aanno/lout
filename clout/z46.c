@@ -213,7 +213,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
   New(tmp, WIDE);
   if( (gall_dir(hd) == COLM && external_hor(dest)) ||
       (gall_dir(hd) == COLM && external_hor(dest)) )
-  { SetConstraint(constraint(tmp), MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+  { SetConstraintOnRef(&constraint(tmp), MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
   }
   else
   { Parent(prnt, Up(dest));
@@ -229,7 +229,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
     assert( objectOfType(g, GAP_OBJ), "FlushGalley: type(g) != GAP_OBJ!" );
 
     /* ***
-    SetGap(gap(g), FALSE, FALSE, TRUE, FRAME_UNIT, EDGE_MODE, 2 * FR);
+    SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, FRAME_UNIT, EDGE_MODE, 2 * FR);
     if( Down(g) == g )
     { junk = MakeWord(WORD, AsciiToFull("2b"), &fpos(g));
       Link(g, junk);
@@ -237,7 +237,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
     *** */
 
     /* first we overwrite whatever is there now by &1rt */
-    SetGap(gap(g), FALSE, FALSE, TRUE, AVAIL_UNIT, TAB_MODE, 1 * FR);
+    SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, AVAIL_UNIT, TAB_MODE, 1 * FR);
     if( Down(g) != g )  DisposeChild(Down(g));
     tmp = MakeWord(WORD, AsciiToFull("1rt"), &fpos(g));
     Link(g, tmp);
@@ -260,7 +260,7 @@ void GazumpOptimize(OBJECT hd, OBJECT dest)
     New(g, GAP_OBJ);
     hspace(g) = 1;  vspace(g) = 0;
     FposCopy(fpos(g), fpos(tmp));
-    SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 1 * CM);
+    SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 1 * CM);
     tmp = MakeWord(WORD, AsciiToFull("1c"), &fpos(g));
     Link(g, tmp);
     Link(opt_components(hd), g);
@@ -362,7 +362,7 @@ void CalculateOptimize(OBJECT hd)
     /* link wd to para, prepended by a gap if not first */
     if( Down(para) != para )
     { New(g, GAP_OBJ);
-      SetGap(gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 1*EM);
+      SetGapOnRef(&gap(g), FALSE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 1*EM);
       if( ++compcount % 20 == 0 )
       { hspace(g) = 0;
 	vspace(g) = 1;

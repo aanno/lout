@@ -287,7 +287,7 @@ void SpannerAvailableSpace(OBJECT y, int dim, FULL_LENGTH *resb,
 
   *resb = b;
   *resf = f;
-  SetConstraint(constraint(y), MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
+  SetConstraintOnRef(&constraint(y), MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
   debug2(DSF, DD, "SpannerAvailableSpace returning %s,%s",
     EchoLength(*resb), EchoLength(*resf));
 } /* end SpannerAvailableSpace */
@@ -553,7 +553,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
  
         /* find the available space for this HSPANNER and break it */
         SpannerAvailableSpace(t, COLM, &b, &f);
-        SetConstraint(c, MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
+        SetConstraintOnRef(&c, MAX_FULL_LENGTH, b+f, MAX_FULL_LENGTH);
         debug2(DSF,DD, "  BreakObject(%s,%s)",EchoObject(t),EchoConstraint(&c));
         t = BreakObject(t, &c);
         spanner_broken(t) = TRUE;
@@ -841,7 +841,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
       y = MinSize(y, dim, extras);
       if( dim == COLM )
       { y = BreakObject(y, &constraint(x));
-        assert( FitsConstraint(back(y, dim), fwd(y, dim), constraint(x)),
+        assert( FitsConstraintOnRef(back(y, dim), fwd(y, dim), &constraint(x)),
 		"MinSize: BreakObject failed to fit!" );
         back(x, dim) = back(y, dim);
 	fwd(x, dim)  = fwd(y, dim);
@@ -859,12 +859,12 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
       Child(y, Down(x));
       y = MinSize(y, dim, extras);
       if( dim == ROWM )
-      { if( !FitsConstraint(back(y, dim), fwd(y, dim), constraint(x)) )
+      { if( !FitsConstraintOnRef(back(y, dim), fwd(y, dim), &constraint(x)) )
         { Error(12, 1, "forced to enlarge %s from %s to %s", WARN, &fpos(x),
 	    KW_HIGH, EchoLength(bfc(constraint(x))), EchoLength(size(y, dim)));
 	  debug0(DSF, DD, "offending object was:");
 	  ifdebug(DSF, DD, DebugObject(y));
-	  SetConstraint(constraint(x), MAX_FULL_LENGTH, size(y, dim), MAX_FULL_LENGTH);
+	  SetConstraintOnRef(&constraint(x), MAX_FULL_LENGTH, size(y, dim), MAX_FULL_LENGTH);
         }
         back(x, dim) = back(y, dim);
 	fwd(x, dim)  = fwd(y, dim);
@@ -972,7 +972,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 		hspace(z) = hspace(g);
 		vspace(z) = 0;
 		setUnderline(z, UNDER_OFF);
-		GapCopy(gap(z), space_gap_ms(save_style(x)));
+		GapCopyOnRef(&gap(z), &space_gap_ms(save_style(x)));
 		if( display_style(&save_style(x)) == DISPLAY_ORAGGED_E )
 		  setWidth(&gap(z), outdent_len(&save_style(x)));
 		else
@@ -985,7 +985,7 @@ OBJECT MinSize(OBJECT x, int dim, OBJECT *extras)
 
 	      /* append a gap to res (recycle g) */
 	      MoveLink(Up(g), res, PARENT);
-	      GapCopy(gap(g), line_gap_ms(save_style(x)));
+	      GapCopyOnRef(&gap(g), &line_gap_ms(save_style(x)));
 	      /* *** old formula before blanklinescale 
 	      width(gap(g)) *= find_max(1, vspace(g));
 	      *** */

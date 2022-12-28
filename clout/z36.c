@@ -1156,7 +1156,7 @@ OBJECT Hyphenate(OBJECT x)
       Link(NextDown(link), z);
       New(z, GAP_OBJ);
       hspace(z) = vspace(z) = 0;
-      SetGap(gap(z), FALSE, FALSE, TRUE, FIXED_UNIT, HYPH_MODE, 0);
+      SetGapOnRef(&gap(z), FALSE, FALSE, TRUE, FIXED_UNIT, HYPH_MODE, 0);
       setUnderline(z, underline(y));
       Link(NextDown(link), z);
       Link(z, MakeWord(WORD, STR_GAP_ZERO_HYPH, &fpos(y)));
@@ -1276,7 +1276,7 @@ OBJECT Hyphenate(OBJECT x)
 	Link(NextDown(link), z);
 	New(z, GAP_OBJ);
 	hspace(z) = vspace(z) = 0;
-	SetGap(gap(z), FALSE, FALSE, TRUE, FIXED_UNIT, HYPH_MODE, 0);
+	SetGapOnRef(&gap(z), FALSE, FALSE, TRUE, FIXED_UNIT, HYPH_MODE, 0);
 	setUnderline(z, underline(y));
 	Link(NextDown(link), z);
 	Link(z, MakeWord(WORD, STR_GAP_ZERO_HYPH, &fpos(y)));

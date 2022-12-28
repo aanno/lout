@@ -1150,7 +1150,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 	else
 	{
 	  /* implicit & operator */
-	  GapCopy(gap(g), space_gap_m(style));
+	  GapCopyOnRef(&gap(g), &space_gap_m(style));
 	  switch( space_style(style).spacestyle )
 	  {
 	    case SPACE_LOUT_E:
@@ -1326,7 +1326,7 @@ OBJECT *enclose, BOOLEAN2 fcr)
 	&nenclose, fcr);
       y = ReplaceWithTidy(y, ACAT_TIDY);
       num1 = GetWidth(y, style);
-      SetConstraint(constraint(x), MAX_FULL_LENGTH, num1, MAX_FULL_LENGTH);
+      SetConstraintOnRef(&constraint(x), MAX_FULL_LENGTH, num1, MAX_FULL_LENGTH);
       DisposeChild(Down(x));
       goto ETC;		/* two cases down from here */
 

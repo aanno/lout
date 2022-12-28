@@ -628,7 +628,7 @@ static void KernWordLeftMargin(OBJECT first_on_line, OBJECT parent)
     else
       hspace(z) = 0;
     setUnderline(z, underline(first_on_line));
-    SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
+    SetGapOnRef(&gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
     Link(parent, z);
 
     /* Remove the first char from FIRST_ON_LINE and recompute its size.  */
@@ -719,7 +719,7 @@ static void KernWordRightMargin(OBJECT last_on_line, OBJECT parent)
     else
       hspace(z) = 0;
     setUnderline(z, underline(last_on_line));
-    SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
+    SetGapOnRef(&gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
     Link(parent, z);
 
     /* Add the last characters.  */
@@ -831,7 +831,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 
   /* add &1rt {} to end of paragraph */
   New(gp, GAP_OBJ);  hspace(gp) = 1;  vspace(gp) = 0;
-  SetGap(gap(gp), FALSE, FALSE, TRUE, AVAIL_UNIT, TAB_MODE, 1*FR);
+  SetGapOnRef(&gap(gp), FALSE, FALSE, TRUE, AVAIL_UNIT, TAB_MODE, 1*FR);
   tmp = MakeWord(WORD, STR_GAP_RJUSTIFY, &fpos(x));
   Link(gp, tmp);  Link(x, gp);
   tmp = MakeWord(WORD, STR_EMPTY, &fpos(x));
@@ -1041,7 +1041,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 	word_hyph(t1) = 0;
 	setUnderline(t1, UNDER_OFF);
 	New(t2, WIDE);
-	SetConstraint(constraint(t2), MAX_FULL_LENGTH, outdent_margin,
+	SetConstraintOnRef(&constraint(t2), MAX_FULL_LENGTH, outdent_margin,
 	  MAX_FULL_LENGTH);
 	back(t2, COLM) = 0;  fwd(t2, COLM) = outdent_margin;
 	setUnderline(t2, UNDER_OFF);
@@ -1049,7 +1049,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
 	Link(y, t2);
 	New(z, GAP_OBJ);
 	hspace(z) = vspace(z) = 0;
-	SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
+	SetGapOnRef(&gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0);
 	Link(y, z);
       }
 
@@ -1096,7 +1096,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
           hspace(z) = 0;
 	*** */
 	setUnderline(z, underline(tmp));
-	SetGap(gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, ADD_HYPH, 0);
+	SetGapOnRef(&gap(z), TRUE, FALSE, TRUE, FIXED_UNIT, ADD_HYPH, 0);
 	Link(x, z);
 
 	/* add hyphen */
@@ -1137,7 +1137,7 @@ OBJECT FillObject(OBJECT x, CONSTRAINT *c, OBJECT multi, BOOLEAN2 can_hyphenate,
       MoveLink(llink, NextDown(res), PARENT);
       hspace(lgap) = 0;
       vspace(lgap) = 1;
-      GapCopy(gap(lgap), line_gap_ms(save_style(x)));
+      GapCopyOnRef(&gap(lgap), &line_gap_ms(save_style(x)));
       if( Down(lgap) != lgap )  DisposeChild(Down(lgap));
 
       /* move on to previous line */

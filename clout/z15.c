@@ -25,7 +25,7 @@
 /*  FILE:         z15.c                                                      */
 /*  MODULE:       Size Constraints                                           */
 /*  EXTERNS:      MinConstraint(), EnlargeToConstraint(),                    */
-/*                ReflectConstraint(), SemiRotateConstraint(),               */
+/*                ReflectConstraintOnRef(), SemiRotateConstraint(),          */
 /*                RotateConstraint(), InvScaleConstraint(), Constrained(),   */
 /*                EchoConstraint(), DebugConstrained()                       */
 /*                                                                           */
@@ -85,13 +85,13 @@ void EnlargeToConstraint(FULL_LENGTH *b, FULL_LENGTH *f, CONSTRAINT *c)
 
 /*****************************************************************************/
 /*                                                                           */
-/*  ReflectConstraint(xc, yc)                                                */
+/*  ReflectConstraintOnRef(xc, yc)                                                */
 /*                                                                           */
 /*  Set xc to the constraint which is yc with its back and forward reversed. */
 /*                                                                           */
 /*****************************************************************************/
 
-#define ReflectConstraint(xc, yc)  SetConstraint(xc, fc(yc), bfc(yc), bc(yc))
+#define ReflectConstraintOnRef(xc, yc)  SetConstraintOnRef(xc, fc(yc), bfc(yc), bc(yc))
 
 
 /*@::ScaleToConstraint(), InvScaleConstraint(), etc@**************************/
@@ -162,9 +162,9 @@ float angle, CONSTRAINT *yc)
     EchoLength(u), EchoLength(v), buff, EchoConstraint(yc));
   cs = cos(angle);  sn = sin(angle);
   if( fabs(cs) < 1e-6 )
-    SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+    SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
   else
-    SetConstraint(*xc,
+    SetConstraintOnRef(xc,
       find_min(MAX_FULL_LENGTH, (bc(*yc) - u * sn) / cs),
       find_min(MAX_FULL_LENGTH, (bfc(*yc) - u * sn - v * sn) / cs),
       find_min(MAX_FULL_LENGTH, (fc(*yc) - v * sn) / cs ));
@@ -204,23 +204,23 @@ CONSTRAINT *hc, CONSTRAINT *vc, int dim)
   /* determine theta, c1, and c2 depending on which quadrant we are in */
   if( theta <= M_PI / 2.0 )   /* first quadrant */
   { // theta = theta;
-    CopyConstraint(c1, *hc);
-    CopyConstraint(c2, *vc);
+    CopyConstraintOnRef(&c1, hc);
+    CopyConstraintOnRef(&c2, vc);
   }
   else if ( theta <= M_PI )   /* second quadrant */
   { theta -= M_PI / 2.0;
-    ReflectConstraint(c1, *vc);
-    CopyConstraint(c2, *hc);
+    ReflectConstraintOnRef(&c1, *vc);
+    CopyConstraintOnRef(&c2, hc);
   }
   else if ( theta <= 3.0 * M_PI / 2.0 )   /* third quadrant */
   { theta -= M_PI;
-    ReflectConstraint(c1, *hc);
-    ReflectConstraint(c2, *vc);
+    ReflectConstraintOnRef(&c1, *hc);
+    ReflectConstraintOnRef(&c2, *vc);
   }
   else /* fourth quadrant */
   { theta -= 3.0 * M_PI / 2.0;
-    CopyConstraint(c1, *vc);
-    ReflectConstraint(c2, *hc);
+    CopyConstraintOnRef(&c1, vc);
+    ReflectConstraintOnRef(&c2, *hc);
   }
   psi = M_PI / 2.0 - theta;
   debug2(DSC, DD, "  c1: %s;  c2: %s", EchoConstraint(&c1), EchoConstraint(&c2));
@@ -228,7 +228,7 @@ CONSTRAINT *hc, CONSTRAINT *vc, int dim)
   /* return the minimum of the two constraints, rotated */
   if( dim == COLM )
   { SemiRotateConstraint(c, back(y, ROWM), fwd(y, ROWM), theta, &c1);
-    ReflectConstraint(c3, c2);
+    ReflectConstraintOnRef(&c3, c2);
     SemiRotateConstraint(&dc, fwd(y, ROWM), back(y, ROWM), psi, &c3);
     MinConstraint(c, &dc);
   }
@@ -388,8 +388,8 @@ OBJECT y, int dim, OBJECT *why)
 		Image4Constraints(side), EchoLength(backy), EchoLength(fwdy),
 		EchoLength(be), EchoLength(fe) );
 
-    if( !FitsConstraint(backy, fwdy, yc) )
-      SetConstraint(*xc, -1, -1, -1);
+    if( !FitsConstraintOnRef(backy, fwdy, &yc) )
+      SetConstraintOnRef(xc, -1, -1, -1);
     else switch( side )
     {
 
@@ -401,7 +401,7 @@ OBJECT y, int dim, OBJECT *why)
 	tb  = find_min(MAX_FULL_LENGTH, be + mxy);
 	tbf = find_min(MAX_FULL_LENGTH, be + fe + mxy);
 	tf  = find_min(MAX_FULL_LENGTH, fe + mxy);
-	SetConstraint(*xc, tb, tbf, tf);
+	SetConstraintOnRef(xc, tb, tbf, tf);
 	break;
 
 
@@ -415,7 +415,7 @@ OBJECT y, int dim, OBJECT *why)
 	tb  = find_min(MAX_FULL_LENGTH, be + mxy);
 	tbf = find_min(MAX_FULL_LENGTH, be + fe + tbfc);
 	tf  = find_min(MAX_FULL_LENGTH, fe + myz);
-	SetConstraint(*xc, tb, tbf, tf);
+	SetConstraintOnRef(xc, tb, tbf, tf);
 	break;
 	
 
@@ -427,12 +427,12 @@ OBJECT y, int dim, OBJECT *why)
 	tb  = find_min(MAX_FULL_LENGTH, be + mxy);
 	tbf = find_min(MAX_FULL_LENGTH, be + fe + mxy);
 	tf  = find_min(MAX_FULL_LENGTH, fe + mxy);
-	SetConstraint(*xc, tb, tbf, tf);
+	SetConstraintOnRef(xc, tb, tbf, tf);
 	break;
 	
     }
   } /* end if( constrained ) */
-  else SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+  else SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
 } /* end CatConstrained */
 
 
@@ -461,7 +461,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
   /* a CLOSURE which is external_hor is unconstrained in both directions   */
   if( objectOfType(x, CLOSURE) && ((dim==ROWM && external_ver(x)) || external_hor(x)) )
   {
-    SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+    SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
     debug1(DSC, DD, "] Constrained returning %s (external)",EchoConstraint(xc));
     return;
   }
@@ -509,7 +509,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       if( (dim == COLM) == (objectOfType(y, HMIRROR)) )
       {
         Constrained(y, &yc, dim, why);
-	FlipConstraint(*xc, yc);
+	FlipConstraintOnRef(xc, &yc);
       }
       else
         Constrained(y, xc, dim, why);
@@ -520,7 +520,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
     case VSCALE_E:
     
       if( (dim == COLM) != objectOfType(y, HSCALE) )  Constrained(y, xc, dim, why);
-      else SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+      else SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       break;
 
 
@@ -529,7 +529,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
     
       /* dubious, but not likely to arise anyway */
       if( (dim == COLM) != (objectOfType(y, HCOVER)) )  Constrained(y, xc, dim, why);
-      else SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+      else SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       break;
 
 
@@ -539,7 +539,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       if( dim == COLM && bc(constraint(y)) == 0 )
       {
 	/* Lout-supplied factor required later, could be tiny */
-	SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+	SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       }
       else
       { InvScaleConstraint(xc,
@@ -573,7 +573,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       {
 	BOOLEAN2 still_searching = TRUE;
 	z = y;
-	SetConstraint(*xc, back(z, dim), size(z, dim), fwd(z, dim));
+	SetConstraintOnRef(xc, back(z, dim), size(z, dim), fwd(z, dim));
 	debug2(DSC, D, "  [ %s (%s)", Image(type(z)), EchoConstraint(xc));
 	while( still_searching && Up(z) != z )
 	{
@@ -592,7 +592,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	    case START_VSPAN_E:
 	    case START_HSPAN_E:
 
-	      SetConstraint(*xc, back(z, dim), size(z, dim), fwd(z, dim));
+	      SetConstraintOnRef(xc, back(z, dim), size(z, dim), fwd(z, dim));
 	      debug2(DSC, DD, "    let s = %s (%s)", Image(type(z)),
 	        EchoConstraint(xc));
 	      break;
@@ -602,7 +602,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	    case VSPANNER_E:
 
 	      /* SpannerAvailableSpace(z, dim, &b, &f); */
-	      CopyConstraint(*xc, constraint(z));
+	      CopyConstraintOnRef(xc, &constraint(z));
 	      debug2(DSC, D, "  ] let s = %s (%s) and stop",
 		Image(type(z)), EchoConstraint(&constraint(z)));
 	      still_searching = FALSE;
@@ -630,9 +630,9 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 
       /* we're saying that a spanner has a fixed constraint that is */
       /* determined just once in its life                           */
-      CopyConstraint(*xc, constraint(y));
+      CopyConstraintOnRef(xc, &constraint(y));
       debug2(DSC, DD, "  Constrained(%s) = %s", Image(type(y)), EchoConstraint(xc));
-      /* SetConstraint(*xc, back(y, dim), size(y, dim), fwd(y, dim)); */
+      /* SetConstraintOnRef(xc, back(y, dim), size(y, dim), fwd(y, dim)); */
       break;
 
 
@@ -642,7 +642,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       if( (objectOfType(y, HSHIFT)) == (dim == COLM) )
       { Constrained(y, &yc, dim, why);
 	tf = FindShift(y, x, dim);
-	SetConstraint(*xc,
+	SetConstraintOnRef(xc,
 	  find_min(bc(yc), bfc(yc)) - tf, bfc(yc), find_min(fc(yc), bfc(yc)) + tf);
       }
       else Constrained(y, xc, dim, why);
@@ -652,9 +652,9 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
     case HEAD_E:
     
       if( dim == ROWM )
-	SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+	SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       else
-      {	CopyConstraint(yc, constraint(y));
+      {	CopyConstraintOnRef(&yc, &constraint(y));
 	debug1(DSC, DD, "  head: %s; val is:", EchoConstraint(&yc));
 	ifdebug(DSC, DD, DebugObject(y));
 	goto REST_OF_HEAD;   /* a few lines down */
@@ -671,7 +671,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       tb = find_min(bc(yc), tb);
       tf = bfc(yc) == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : bfc(yc) - back(y, dim);
       tf = find_min(fc(yc), tf);
-      SetConstraint(*xc, tb, bfc(yc), tf);
+      SetConstraintOnRef(xc, tb, bfc(yc), tf);
       break;
 
 
@@ -685,7 +685,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
       }
       Constrained(y, &yc, dim, why);
       if( !constrained(yc) )
-	SetConstraint(*xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+	SetConstraintOnRef(xc, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
       else
       {
 	REST_OF_HEAD:
@@ -706,7 +706,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
           tb = find_min(bc(yc), tb);
           tf = bfc(yc) == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : bfc(yc) - back(y, dim);
           tf = find_min(fc(yc), tf);
-          SetConstraint(*xc, tb, bfc(yc), tf);
+          SetConstraintOnRef(xc, tb, bfc(yc), tf);
 	}
 	else
 	{
@@ -723,7 +723,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, int dim, OBJECT *why)
 	  tbf = find_min(bfc(yc), fc(yc));
 	  tbc = tbf == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : tbf - xfwd;
 	  tfc = tbf == MAX_FULL_LENGTH ? MAX_FULL_LENGTH : tbf - xback;
-	  SetConstraint(*xc, tbc, tbf, tfc);
+	  SetConstraintOnRef(xc, tbc, tbf, tfc);
 	}
       }
       break;

@@ -430,7 +430,7 @@ static void DoAddGap(OBJECT new_acat)
   New(new_g, GAP_OBJ);
   FposCopy(fpos(new_g), fpos(new_acat));
   hspace(new_g) = vspace(new_g) = 0;
-  SetGap(gap(new_g), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0*IN);
+  SetGapOnRef(&gap(new_g), TRUE, FALSE, TRUE, FIXED_UNIT, EDGE_MODE, 0*IN);
   setUnderline(new_g, UNDER_OFF);
   Link(new_acat, new_g);
 }

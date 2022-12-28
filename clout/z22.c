@@ -224,7 +224,7 @@ void ExpandRecursives(OBJECT recs)
 { CONSTRAINT non_c, hc, vc;
   OBJECT target_index, target, z = nilobj, n1, inners, newrecs, hd, tmp, env, why;
   debug0(DCR, DDD, "ExpandRecursives(recs)");
-  SetConstraint(non_c, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
+  SetConstraintOnRef(&non_c, MAX_FULL_LENGTH, MAX_FULL_LENGTH, MAX_FULL_LENGTH);
   n1 = nilobj;
   assert(recs != nilobj, "ExpandRecursives: recs == nilobj!");
   while( Down(recs) != recs )
@@ -260,7 +260,7 @@ void ExpandRecursives(OBJECT recs)
       EchoObject(target), EchoConstraint(&hc));
     debug3(DCR, DDD, "    horizontal size: (%s, %s); constraint: %s",
       EchoLength(back(hd, COLM)), EchoLength(fwd(hd, COLM)), EchoConstraint(&hc));
-    if( !FitsConstraint(back(hd, COLM), fwd(hd, COLM), hc) )
+    if( !FitsConstraintOnRef(back(hd, COLM), fwd(hd, COLM), &hc) )
     { DisposeChild(Up(hd));
       if( inners != nilobj ) DisposeObject(inners);
       if( newrecs != nilobj ) DisposeObject(newrecs);
@@ -275,7 +275,7 @@ void ExpandRecursives(OBJECT recs)
       Child(z, LastDown(hd));
       debug3(DCR, DDD, "    vsize: (%s, %s); constraint: %s",
 	EchoLength(back(z, ROWM)), EchoLength(fwd(z, ROWM)), EchoConstraint(&vc));
-      if( !FitsConstraint(back(z, ROWM), fwd(z, ROWM), vc) )
+      if( !FitsConstraintOnRef(back(z, ROWM), fwd(z, ROWM), &vc) )
       {	DisposeChild(Up(hd));
 	if( inners != nilobj ) DisposeObject(inners);
 	if( newrecs != nilobj ) DisposeObject(newrecs);
@@ -504,7 +504,7 @@ void HandleHeader(OBJECT hd, OBJECT header)
         New(g, GAP_OBJ);
         setUnderline(g, UNDER_UNDEF /* FALSE */);
 	Link(g, CopyObject(gap_obj, &fpos(gap_obj)));
-        GapCopy(gap(g), line_gap_ms(save_style(header)));
+        GapCopyOnRef(&gap(g), &line_gap_ms(save_style(header)));
         setMark(&gap(g), FALSE);
         setJoin(&gap(g), FALSE);
 
@@ -615,11 +615,11 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
   { New(y, GAP_OBJ);
     FposCopy(fpos(y), fpos(hd));
     hspace(y) = 0;  vspace(y) = 1;
-    /* SetGap(gap(y), FALSE, FALSE, seen_nojoin(hd), FIXED_UNIT, NO_MODE, 0); */
-    /* SetGap(gap(y), FALSE, FALSE, threaded(dest), FIXED_UNIT, NO_MODE, 0); */
-    /* SetGap(gap(y), FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0); */
+    /* SetGapOnRef(&gap(y), FALSE, FALSE, seen_nojoin(hd), FIXED_UNIT, NO_MODE, 0); */
+    /* SetGapOnRef(&gap(y), FALSE, FALSE, threaded(dest), FIXED_UNIT, NO_MODE, 0); */
+    /* SetGapOnRef(&gap(y), FALSE, FALSE, TRUE, FIXED_UNIT, NO_MODE, 0); */
     /* ClearGap(gap(y)); */
-    SetGap(gap(y), FALSE, FALSE, join_after, FIXED_UNIT, NO_MODE, 0);
+    SetGapOnRef(&gap(y), FALSE, FALSE, join_after, FIXED_UNIT, NO_MODE, 0);
     Link(stop_link, y);
   }
 
@@ -648,7 +648,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	  FposCopy(fpos(last), fpos(y));
 	  debug2(DOG, DD, "  overwriting GAP_OBJ %s with %s",
 	    EchoGap(&gap(last)), EchoGap(&gap(y)));
-	  GapCopy(gap(last), gap(y));
+	  GapCopyOnRef(&gap(last), &gap(y));
 	  if( Down(last) != last )  DisposeChild(Down(last));
 	  if( Down(y) != y )
 	  { Child(tmp, Down(y));
@@ -663,7 +663,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
 	  opt_gazumped(hd) = FALSE;
 	  New(last, GAP_OBJ);
 	  FposCopy(fpos(last), fpos(y));
-	  GapCopy(gap(last), gap(y));
+	  GapCopyOnRef(&gap(last), &gap(y));
 	  setJoin(&gap(last), TRUE);  /* irrelevant but improves debug output */
 	  hspace(last) = 1;
 	  vspace(last) = 0;
@@ -727,7 +727,7 @@ void Promote(OBJECT hd, OBJECT stop_link, OBJECT dest_index, BOOLEAN2 join_after
     back(extra_null, ROWM) = fwd(extra_null, ROWM) = 0;
     New(extra_gap, GAP_OBJ);
     hspace(extra_gap) = vspace(extra_gap) = 0;
-    SetGap(gap(extra_gap), FALSE, FALSE, FALSE, FIXED_UNIT, EDGE_MODE, 0);
+    SetGapOnRef(&gap(extra_gap), FALSE, FALSE, FALSE, FIXED_UNIT, EDGE_MODE, 0);
     Link(Down(prnt), extra_gap);
     Link(Down(prnt), extra_null);
     debug0(DGS, DD, "  Promote adding extra nojoin gap");
