@@ -332,7 +332,7 @@ typedef struct {
     }									\
 									\
     /* find definite object which must lie just to the right of g */	\
-    NextDefinite(x, rlink, right);					\
+    NextDefinite(&x, &rlink, &right);					\
     assert( rlink != x, "IntervalShiftRightEnd: rlink == x!" );		\
 									\
     /* modify I to reflect the addition of g and right */		\
@@ -369,7 +369,7 @@ typedef struct {
 									\
   /* find left, the leftmost definite object of I */			\
   llink = I.llink;							\
-  NextDefinite(x, llink, left);						\
+  NextDefinite(&x, &llink, &left);						\
   assert( llink != x, "IntervalShiftLeftEnd: llink == x!" );		\
 									\
   /* find lgap, the first true breakpoint following left */		\

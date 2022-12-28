@@ -3628,24 +3628,23 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 /*                                                                           */
 /*****************************************************************************/
 
+/*
 #define NextDefinite(x, link, y)					\
-{ for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
-  { Child(y, link);							\
-    if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)) )	\
+{ for( *link = NextDown(*link);  *link != *x;  *link = NextDown(*link) )	\
+  { Child(*y, *link);							\
+    if( objectOfType(*y, SPLIT) ? SplitIsDefinite(*y) : is_definite(type(*y)) )	\
 	break;								\
   }									\
-} /* end NextDefinite */
-/*
-not working!
-INLINE void NextDefinite(OBJECT x, OBJECT link, OBJECT y) {
-    for( link = NextDown(link);  link != x;  link = NextDown(link) )
+} */ /* end NextDefinite */
+
+INLINE void NextDefinite(OBJECT* x, OBJECT* link, OBJECT* y) {
+    for( *link = NextDown(*link);  *link != *x;  *link = NextDown(*link) )
     {
-        Child(y, link);
-        if( type(y) == SPLIT ? SplitIsDefinite(y) : is_definite(type(y)) )
+        Child(*y, *link);
+        if( objectOfType(*y, SPLIT) ? SplitIsDefinite(*y) : is_definite(type(*y)) )
             break;
     }
 }
-*/
 
 /*****************************************************************************/
 /*                                                                           */
