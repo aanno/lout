@@ -60,7 +60,7 @@ BOOLEAN2 SplitIsDefinite(OBJECT x)
 /*****************************************************************************/
 
 static void DisposeSplitObject(OBJECT x)
-{ int i, count;
+{ unsigned i, count;
   OBJECT y, link, uplink;
   debug1(DOS, DDD, "[ DisposeSplitObject( %ld )", (long) x);
   assert(objectOfType(x, SPLIT), "DisposeSplitObject: type(x) != SPLIT!");
@@ -69,7 +69,7 @@ static void DisposeSplitObject(OBJECT x)
   assert(LastDown(x) == NextDown(Down(x)), "DisposeSplitObject: children!")
 
   /* handle first child */
-  CountChild(y, Down(x), count);
+  CountChild(y, Down(x), &count);
   if( objectOfType(y, COL_THR) )
   {
     /* find corresponding child link out of y and delete that link */
@@ -83,7 +83,7 @@ static void DisposeSplitObject(OBJECT x)
   DisposeChild(Down(x));
 
   /* handle second child */
-  CountChild(y, LastDown(x), count);
+  CountChild(y, LastDown(x), &count);
   if( objectOfType(y, ROW_THR) )
   {
     /* find corresponding child link out of y and delete that link */

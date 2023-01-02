@@ -172,13 +172,13 @@ static FULL_LENGTH FindAdjustIncrement(OBJECT x, FULL_LENGTH frame_size, DIM_TE 
 /*****************************************************************************/
 
 OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
-  FULL_LENGTH xf, DIM_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg, int count,
+  FULL_LENGTH xf, DIM_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg, unsigned count,
   FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd)
 { OBJECT y = nilobj, link, prev = nilobj, g, z, face, thr, res, uplink;
   /* OBJECT fixed_thr, tmp; */
   FULL_LENGTH mk, ymk, frame_size, back_edge, yb, yf, inc, f;
   FULL_LENGTH aback, afwd;
-  int i; float scale_factor;  BOOLEAN2 jn;
+  unsigned i; float scale_factor;  BOOLEAN2 jn;
   debug8(DGP, DD, "[ FixAndPrintObject(%s %s%s, %s, %s,%s, %s, %s, pg, count)",
     Image(type(x)),
     ((objectOfType(x, WORD) || objectOfType(x, QWORD)) ? string(x) : STR_EMPTY),
@@ -217,7 +217,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case START_HSPAN_E:
     case START_VSPAN_E:
 
-      CountChild(y, DownDim(x, dim), count);
+      CountChild(y, DownDim(x, dim), &count);
       if( objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER) )
       {
         Child(z, Down(y));
@@ -258,7 +258,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       /* do the fix on the last one */
       if( (sameDim(dim, COLM)) == (objectOfType(x, HSPAN)) )
       {
-        CountChild(y, DownDim(x, dim), count);
+        CountChild(y, DownDim(x, dim), &count);
 	assert(objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER), "FAPO HSPAN/VSPAN!");
 	debug2(DGP, DD, "  pre-inc spanner_fixed(y) = %d, spanner_count(y) = %d",
 	  spanner_fixed(y), spanner_count(y));
@@ -313,7 +313,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case WIDE_E:
     case HIGH_E:
     
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( (sameDim(dim, COLM)) == (objectOfType(x, WIDE)) )
       { yf = bfc(constraint(x)) - back(y, dim);
         y = FixAndPrintObject(y, xmk, back(y,dim), yf, dim, NO_SUPPRESS, pg,
@@ -330,7 +330,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case HSHIFT_E:
     case VSHIFT_E:
 
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( (sameDim(dim, COLM)) == (objectOfType(x, HSHIFT)) )
       {
 	/* work out the size of the shift depending on the units */
@@ -356,7 +356,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case HCONTRACT_E:
     case VCONTRACT_E:
     
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( (sameDim(dim, COLM)) == (objectOfType(x, HCONTRACT)) )
       {	y = FixAndPrintObject(y, xmk, back(y,dim), fwd(y,dim), dim,
 	  NO_SUPPRESS, pg, count, &aback, &afwd);
@@ -376,7 +376,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case HEXPAND_E:
     case VEXPAND_E:
     
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( (sameDim(dim, COLM)) == (objectOfType(x, ONE_COL) || objectOfType(x, HEXPAND)) )
       { y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 	      &aback, &afwd);
@@ -393,7 +393,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
       if( BackEnd->mirror_avail )
       {
-	CountChild(y, Down(x), count);
+	CountChild(y, Down(x), &count);
 	if( sameDim(dim, COLM) )
 	{
 	  save_mark(x) = xmk;
@@ -418,7 +418,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       debug0(DRS, DD, "FixAndPrintObject at VMIRROR");
       if( BackEnd->mirror_avail )
       {
-	CountChild(y, Down(x), count);
+	CountChild(y, Down(x), &count);
 	if( sameDim(dim, COLM) )
 	  y = FixAndPrintObject(y, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 		&aback, &afwd);
@@ -438,7 +438,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case VSCALE_E:
 
       debug0(DRS, DD, "FixAndPrintObject at VSCALE");
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( BackEnd->scale_avail )
       {
 	if( sameDim(dim, COLM) )
@@ -464,7 +464,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case HSCALE_E:
     
       debug0(DRS, DD, "FixAndPrintObject at HSCALE");
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( BackEnd->scale_avail )
       {	if( sameDim(dim, COLM) )
         { save_mark(x) = xmk;
@@ -494,7 +494,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case SCALE_E:
 
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( BackEnd->scale_avail )
       {
         if( sameDim(dim, COLM) )
@@ -533,7 +533,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case KERN_SHRINK_E:
 
-      CountChild(y, LastDown(x), count);
+      CountChild(y, LastDown(x), &count);
       if( sameDim(dim, COLM) )
       { y = FixAndPrintObject(y, xmk, back(y,dim), fwd(y,dim), dim,
 	  NO_SUPPRESS, pg, count, &aback, &afwd);
@@ -550,10 +550,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
  
       /* this object has the size of its second child; but its first */
       /* child gets printed too, in the same space                   */
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       y = FixAndPrintObject(y, xmk, xb, xf, dim, suppress, pg, count,
 	&aback, &afwd);
-      CountChild(y, LastDown(x), count);
+      CountChild(y, LastDown(x), &count);
       y = FixAndPrintObject(y, xmk, xb, xf, dim, suppress, pg, count,
 	&aback, &afwd);
       *actual_back = back(x, dim);  *actual_fwd = fwd(x, dim);
@@ -562,7 +562,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case ROTATE_E:
     
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( BackEnd->rotate_avail )
       {
         if( sameDim(dim, COLM) )
@@ -595,7 +595,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case PLAIN_GRAPHIC_E:
 
-      CountChild(y, LastDown(x), count);
+      CountChild(y, LastDown(x), &count);
       if( BackEnd->plaingraphic_avail )
       {
 	if( sameDim(dim, COLM) )
@@ -635,7 +635,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case GRAPHIC_E:
     
-      CountChild(y, LastDown(x), count);
+      CountChild(y, LastDown(x), &count);
       if( BackEnd->graphic_avail )
       {
 	if( sameDim(dim, COLM) )
@@ -698,7 +698,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	objectOfType(x, LINK_DEST_NULL) ? " (indef)" : "",
 	EchoLength(xmk), EchoLength(xb), EchoLength(xf), dimen(dim));
       );
-      CountChild(y, LastDown(x), count);
+      CountChild(y, LastDown(x), &count);
       if( sameDim(dim, COLM) )
 	save_mark(x) = xmk;
       else
@@ -739,7 +739,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case INCGRAPHIC_E:
     case SINCGRAPHIC_E:
 
-      CountChild(y, Down(x), count);
+      CountChild(y, Down(x), &count);
       if( BackEnd->incgraphic_avail )
       {
 	if( sameDim(dim, COLM) )
@@ -764,7 +764,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 
     case SPLIT_E:
     
-      link = DownDim(x, dim);  CountChild(y, link, count);
+      link = DownDim(x, dim);  CountChild(y, link, &count);
       y = FixAndPrintObject(y, xmk, find_max(back(y, dim), xb),
 	find_max(fwd(y, dim), xf), dim, suppress, pg, count,
 	actual_back, actual_fwd);
@@ -929,7 +929,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 		NO_SUPPRESS, pg, count, &aback, &afwd);
 	      b = back(m, dim);  f = fwd(m, dim);
 	      for( zlink = start_group;  zlink != link;  zlink=NextDown(zlink) )
-	      { CountChild(z, zlink, count);
+	      { CountChild(z, zlink, &count);
 		if( !is_definite(type(z)) || z == m )  continue;
 		z = FixAndPrintObject(z, xmk + b, b, xf - b, dim,
 		  SUPPRESS, pg, count, &aback, &afwd);
@@ -970,7 +970,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 		  count, &aback, &afwd);
 	    b = back(m, dim);  f = fwd(m, dim);
 	    for( zlink = start_group;  zlink != x;  zlink = NextDown(zlink) )
-	    { CountChild(z, zlink, count);
+	    { CountChild(z, zlink, &count);
 	      if( !is_definite(type(z)) || z == m )  continue;
 	      z = FixAndPrintObject(z, xmk+b, b, xf - b, dim, SUPPRESS, pg,
 		    count, &aback, &afwd);
@@ -987,7 +987,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    m = FixAndPrintObject(m, xmk, xb, xf, dim, NO_SUPPRESS, pg, count,
 	      &b, &f);
 	    for( zlink = start_group;  zlink != x;  zlink = NextDown(zlink) )
-	    { CountChild(z, zlink, count);
+	    { CountChild(z, zlink, &count);
 	      if( !is_definite(type(z)) || z == m )  continue;
 	      z = FixAndPrintObject(z, xmk, xb, xf, dim, SUPPRESS, pg, count,
 		    &aback, &afwd);
@@ -1386,7 +1386,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	link = NextDown(link), uplink = NextUp(uplink), i++ )
 	;
       assert( link != x && uplink != x, "FixAndPrintObject: link or uplink!" );
-      CountChild(y, link, count);
+      CountChild(y, link, &count);
       debug7(DGP, DD, "  fapo of %s (%s,%s) child %d %s (%s,%s)",
 	Image(type(x)),
 	EchoLength(back(x, dim)), EchoLength(fwd(x, dim)),

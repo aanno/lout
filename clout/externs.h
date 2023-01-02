@@ -3424,16 +3424,34 @@ INLINE OBJECT Delete(OBJECT x, DIR_TE dir) {
 #define	Child(y, link)							\
 for( y = pred(link, PARENT);  objectOfType(y, LINK);  y = pred(y, PARENT) ) \
 ;
+/*
+INLINE void Child(OBJECT y, OBJECT link) {
+  for( y = pred(link, PARENT);  objectOfType(y, LINK);  y = pred(y, PARENT) )
+  ;
+}
+*/
 
 // cannot inline
 #define CountChild(y, link, i)                                          \
-for( y=pred(link, PARENT), i=1; objectOfType(y, LINK);  y = pred(y, PARENT), i++ ) \
+for( y=pred(link, PARENT), *i = 1; objectOfType(y, LINK);  y = pred(y, PARENT), (*i)++ ) \
 ;
+/*
+INLINE void CountChild(OBJECT y, OBJECT link, unsigned *i) {
+  for( y=pred(link, PARENT), *i = 1; objectOfType(y, LINK);  y = pred(y, PARENT), (*i)++ )
+  ;
+}
+*/
 
 // cannot inline
 #define	Parent(y, link)							\
 for( y = pred(link, CHILD);   objectOfType(y, LINK);  y = pred(y, CHILD) ) \
 ;
+/*
+INLINE void Parent(OBJECT y, OBJECT link) {
+  for( y = pred(link, CHILD);   objectOfType(y, LINK);  y = pred(y, CHILD) ) \
+  ;
+}
+*/
 
 
 /*@::UpDim(), DownDim(), Link(), DeleteLink(), etc.@**************************/
@@ -3445,11 +3463,14 @@ for( y = pred(link, CHILD);   objectOfType(y, LINK);  y = pred(y, CHILD) ) \
 /*                                                                           */
 /*****************************************************************************/
 
-// cannot inline
-#define UpDim(x, dim)	( sameDim(dim, COLM) ? succ(x, PARENT) : pred(x, PARENT) )
-// cannot inline
-#define DownDim(x, dim)	( sameDim(dim, COLM) ? succ(x, CHILD) : pred(x, CHILD) )
-
+// #define UpDim(x, dim)	( sameDim(dim, COLM) ? succ(x, PARENT) : pred(x, PARENT) )
+INLINE OBJECT UpDim(OBJECT x, DIM_TE dim) {
+  return sameDim(dim, COLM) ? succ(x, PARENT) : pred(x, PARENT);
+}
+// #define DownDim(x, dim)	( sameDim(dim, COLM) ? succ(x, CHILD) : pred(x, CHILD) )
+INLINE OBJECT DownDim(OBJECT x, DIM_TE dim) {
+  return sameDim(dim, COLM) ? succ(x, CHILD) : pred(x, CHILD);
+}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -3966,7 +3987,7 @@ extern	int	  CheckComponentOrder(OBJECT preceder, OBJECT follower);
 /*****  z23.c	  Galley Printer	**************************************/
 extern	OBJECT	  FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 		    FULL_LENGTH xf, DIM_TE dim, BOOLEAN2 suppress, FULL_LENGTH pg,
-		    int count, FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd);
+		    unsigned count, FULL_LENGTH *actual_back, FULL_LENGTH *actual_fwd);
 
 /*****  z24.c	  Print Service         **************************************/
 extern	char	  *EightBitToPrintForm[];
