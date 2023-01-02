@@ -100,7 +100,7 @@ static void GatherUses(OBJECT x, OBJECT sym)
 static void GatherAllUses(OBJECT x)
 { OBJECT link, y;
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( objectOfType(y, LOCAL) )  GatherUses(y, y);
     GatherAllUses(y);
   }

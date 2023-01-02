@@ -89,7 +89,7 @@ static DBCHECK_TABLE dtab_rehash(DBCHECK_TABLE S, int newsize)
     { OBJECT ent = dtab_item(S, i);
       assert( objectOfType(ent, ACAT), "dtab_rehash: ACAT!" );
       for( link = Down(ent);  link != ent;  link = NextDown(link) )
-      { Child(z, link);
+      { Child(&z, link);
 	dtab_insert(z, &NewS);
       }
       DisposeObject(ent);
@@ -110,7 +110,7 @@ static void dtab_insert(OBJECT x, DBCHECK_TABLE *S)
   if( dtab_item(*S, pos) == nilobj )  New(dtab_item(*S, pos), ACAT);
   z = dtab_item(*S, pos);
   for( link = Down(z);  link != z;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( db_checksym(x) == db_checksym(y) && StringEqual(string(x), string(y)) )
     { assert(FALSE, "Dbcheck: entry inserted twice");
     }
@@ -124,7 +124,7 @@ static OBJECT dtab_retrieve(OBJECT sym, const FULL_CHAR *tag, DBCHECK_TABLE S)
   x = dtab_item(S, pos);
   if( x == nilobj )  return nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( sym == db_checksym(y) && StringEqual(tag, string(y)) )
       return y;
   }
@@ -144,7 +144,7 @@ static void dtab_debug(DBCHECK_TABLE S, FILE *fp)
     else if( !objectOfType(x, ACAT) )
       fprintf(fp, " not ACAT!");
     else for( link = Down(x);  link != x;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       fprintf(fp, " %s&&%s",
 	is_word(type(y)) ? SymName(db_checksym(y)) : AsciiToFull("?"),
 	is_word(type(y)) ? string(y) : AsciiToFull("not-WORD!"));
@@ -201,7 +201,7 @@ void DbInit(void)
 { OBJECT link, yy;  int count;						\
   count = 0;								\
   for( link = Down(db);  link != db;  link = NextDown(link) )		\
-  { Child(yy, link);							\
+  { Child(&yy, link);							\
     assert(objectOfType(yy, CROSS_SYM) || objectOfType(yy, ACAT), "SymToNum: yy!");	\
     if( !objectOfType(yy, CROSS_SYM) )  continue;				\
     if( symb(yy) == sym )  break;					\
@@ -231,7 +231,7 @@ void DbInit(void)
 #define NumToSym(db, num, sym)						\
 { OBJECT link, y = nilobj;						\
   for( link = Down(db);  link != db;  link = NextDown(link) )		\
-  { Child(y, link);							\
+  { Child(&y, link);							\
     if( objectOfType(y, CROSS_SYM) && number(link) == num )  break;		\
   }									\
   assert( link != db, "NumToSym: no sym");				\
@@ -380,7 +380,7 @@ void DbConvert(OBJECT db, BOOLEAN2 full_name)
     fprintf(db_filep(db), "00 %s %s%s", LOUT_VERSION, "database index file",
       (char *) STR_NEWLINE);
     for( link = Down(db);  link != db;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       assert( objectOfType(y, CROSS_SYM) || objectOfType(y, ACAT), "DbConvert: y!" );
       if( !objectOfType(y, CROSS_SYM) )  continue;
       fprintf(db_filep(db), "%s %d %s%s",
@@ -474,7 +474,7 @@ OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN2 create, OBJECT symbs,
       assert( symbs != nilobj, "DbLoad: create && symbs == nilobj!" );
       if( symbs != nilobj )
       {	for( link = Down(symbs);  link != symbs;  link = NextDown(link) )
-	{ Child(y, link);
+	{ Child(&y, link);
 	  if( objectOfType(y, CLOSURE) && actual(y) == actual(res) )  break;
 	}
 	if( link == symbs )
@@ -482,9 +482,9 @@ OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN2 create, OBJECT symbs,
 	    FATAL, &fpos(res), SymName(actual(res)), KW_DATABASE);
       }
       for( tag = nilobj, link = Down(res); link != res; link = NextDown(link) )
-      {	Child(par, link);
+      {	Child(&par, link);
 	if( objectOfType(par, PAR) && is_tag(actual(par)) && Down(par) != par )
-	{ Child(tag, Down(par));
+	{ Child(&tag, Down(par));
 	  break;
 	}
       }
@@ -576,7 +576,7 @@ OBJECT DbLoad(OBJECT stem, PATH_TYPE fpath, BOOLEAN2 create, OBJECT symbs,
       sym = nilobj;
       sscanf( (char *) &line[i+1], "%s", sym_name);
       for( link = Down(symbs);  link != symbs;  link = NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	assert( objectOfType(y, CLOSURE), "DbLoad: type(y) != CLOSURE!" );
 	if( StringEqual(sym_name, SymName(actual(y))) )
 	{ sym = actual(y);

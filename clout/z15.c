@@ -469,7 +469,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, DIM_TE dim, OBJECT *why)
   /* find y, the parent of x */
   link = UpDim(x, dim);  ratm = FALSE;
   for( tlink = NextDown(link);  objectOfType(tlink, LINK);  tlink = NextDown(tlink) )
-  { Child(g, tlink);
+  { Child(&g, tlink);
     if( objectOfType(g, GAP_OBJ) && mark(&gap(g)) )  ratm = TRUE;
   }
   y = tlink;
@@ -692,11 +692,11 @@ void Constrained(OBJECT x, CONSTRAINT *xc, DIM_TE dim, OBJECT *why)
 	/* let lp and rp be the links of the gaps delimiting */
 	/* the components joined to x (or parent if no such) */
 	for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
-	{ Child(z, lp);
+	{ Child(&z, lp);
 	  if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	}
 	for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
-	{ Child(z, rp);
+	{ Child(&z, rp);
 	  if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	}
 	if( lp == y && rp == y && !(objectOfType(y, HEAD) && seen_nojoin(y)) )
@@ -713,7 +713,7 @@ void Constrained(OBJECT x, CONSTRAINT *xc, DIM_TE dim, OBJECT *why)
 	  /* if // or || is present, do this */
 	  xback = xfwd = 0;
 	  for(link = NextDown(lp); link != rp;  link = NextDown(link) )
-	  { Child(z, link);
+	  { Child(&z, link);
 	    if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
 	    xback = find_max(xback, back(z, dim));
 	    xfwd = find_max(xfwd, fwd(z, dim));
@@ -812,7 +812,7 @@ void DebugConstrained(OBJECT x)
 
     case SPLIT_E:
     
-      link = DownDim(x, COLM);  Child(y, link);
+      link = DownDim(x, COLM);  Child(&y, link);
       DebugConstrained(y);
       break;
 
@@ -836,7 +836,7 @@ void DebugConstrained(OBJECT x)
     case WIDE_E:
     case HIGH_E:
     
-      link = Down(x);  Child(y, link);
+      link = Down(x);  Child(&y, link);
       DebugConstrained(y);
       break;
 
@@ -847,7 +847,7 @@ void DebugConstrained(OBJECT x)
     case ACAT_E:
     
       for( link = Down(x);  link != x;  link =NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	if( !objectOfType(y, GAP_OBJ) && !is_index(type(y)) )  DebugConstrained(y);
       }
       break;

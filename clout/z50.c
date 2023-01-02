@@ -669,7 +669,7 @@ static void PDF_PrintGraphicObject(OBJECT x)
     case ACAT_E:
     
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	if( objectOfType(y, GAP_OBJ) )
 	{
 	  if( vspace(y) > 0 )  PDFPage_Write(out_fp, (char *) STR_NEWLINE);
@@ -787,7 +787,7 @@ static void PDF_SaveTranslateDefineSave(OBJECT x, FULL_LENGTH xdist, FULL_LENGTH
 static void PDF_PrintGraphicInclude(OBJECT x, FULL_LENGTH colmark, FULL_LENGTH rowmark)
 { OBJECT y;
   debug0(DPF, D, "PDF_PrintGraphicInclude(x)");
-  Child(y, Down(x));
+  Child(&y, Down(x));
   Error(50, 4, "cannot include EPS file in PDF output; EPS file %s ignored",
       WARN, &fpos(x), string(y));
   debug0(DPF, D, "PDF_PrintGraphicInclude returning.");

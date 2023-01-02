@@ -156,7 +156,7 @@ void SpaceChange(STYLE *style, OBJECT x)
 
 
     case ACAT_E:	for( link = Down(x);  link != x;  link = NextDown(link) )
-		{ Child(y, link);
+		{ Child(&y, link);
 		  if( objectOfType(y, GAP_OBJ) || objectOfType(y, NULL_CLOS) )  continue;
 		  else if( is_word(type(y)) )
 		  { if( !StringEqual(string(y), STR_EMPTY) )
@@ -274,7 +274,7 @@ void BreakChange(STYLE *style, OBJECT x)
 
 
     case ACAT_E:	for( link = Down(x);  link != x;  link = NextDown(link) )
-		{ Child(y, link);
+		{ Child(&y, link);
 		  if( objectOfType(y, GAP_OBJ) || objectOfType(y, NULL_CLOS) )  continue;
 		  else if( is_word(type(y)) )
 		  { if( !StringEqual(string(y), STR_EMPTY) )
@@ -291,7 +291,7 @@ void BreakChange(STYLE *style, OBJECT x)
 			else
 			{
 			  link = NextDown(NextDown(link));
-			  Child(y, link);
+			  Child(&y, link);
 			  GetGap(y, style, &res_gap, &gap_inc);
 			  setOutdent_len(style, gap_inc == GAP_ABS ?
 			    width(&res_gap) : gap_inc == GAP_INC ?
@@ -311,7 +311,7 @@ void BreakChange(STYLE *style, OBJECT x)
 			{
 			  float val;
 			  link = NextDown(NextDown(link));
-			  Child(y, link);
+			  Child(&y, link);
 			  val = GetScaleFactor(y);
 			  setBlanklinescale(style, (int) (val * SF));
 			}

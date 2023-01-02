@@ -47,7 +47,7 @@ static void debug_targets(void)
 { int i;  OBJECT tmp;
   for( i = 0;  i <= itop;  i++ )
   { if( targets[i] == nilobj || Down(targets[i]) == targets[i] )  tmp = nilobj;
-    else Child(tmp, Down(targets[i]));
+    else Child(&tmp, Down(targets[i]));
     debug3(DGT, D, "  target[%d] %s = %s", i,
       EchoConstraint(&constraints[i]), EchoObject(tmp));
   }
@@ -147,7 +147,7 @@ void TransferInit(OBJECT InitEnv)
   Link(dest_index, root_galley);
 
   /* initialise target and constraint stacks */
-  Child(y, Down(root_galley));
+  Child(&y, Down(root_galley));
   assert( objectOfType(y, RECEPTIVE) && objectOfType(actual(y), CLOSURE) &&
 	actual(actual(y)) == InputSym, "TransferInit: initial galley!" );
   assert( external_ver(actual(y)), "TransferInit: input sym not external!" );
@@ -186,7 +186,7 @@ OBJECT TransferBegin(OBJECT x)
   /* construct new (inner) env chain */
   if( Down(targets[itop]) == targets[itop] )
     Error(18, 1, "cannot attach galley %s", FATAL,&fpos(x),SymName(actual(x)));
-  Child(target, Down(targets[itop]));
+  Child(&target, Down(targets[itop]));
   xsym = actual(x);
   env = GetEnv(actual(target));
   debug1(DGT, DD, "  current env chain: %s", EchoObject(env));
@@ -243,7 +243,7 @@ OBJECT TransferBegin(OBJECT x)
   { DeleteNode(index);
     DisposeObject(hold_env);
     if( LastDown(x) != x )
-    { Child(env, LastDown(x));
+    { Child(&env, LastDown(x));
       if( objectOfType(env, ENV) )  DisposeChild(LastDown(x));
     }
     debug1(DGT,D, "] TransferBegin returning failed, x: %s", EchoObject(x));
@@ -258,7 +258,7 @@ OBJECT TransferBegin(OBJECT x)
 	FATAL, &fpos(x), MAX_DEPTH);
     New(targets[itop], ACAT);  target = nilobj;
     for( link = Down(hd);  link != hd;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       if( objectOfType(y, RECEPTIVE) && actual(actual(y)) == InputSym )
       {
 	Constrained(actual(y), &constraints[itop], COLM, &why);
@@ -319,7 +319,7 @@ void TransferComponent(OBJECT x)
     debug0(DGT, D, "] TransferComponent returning (no target).");
     return;
   }
-  Child(dest_index, Down(targets[itop]));
+  Child(&dest_index, Down(targets[itop]));
   assert( external_ver(actual(dest_index)), "TransferComponent: internal!" );
 
   /* make the component into a galley */
@@ -351,12 +351,12 @@ void TransferComponent(OBJECT x)
   debug1(DSA, D, "  calling AdjustSize from TransferComponent %s (a)",
     EchoFilePos(&fpos(hd)));
   ifdebug(DSA, D,
-    Child(y, Down(hd));
-    while( objectOfType(y, VCAT) )  Child(y, Down(y));
+    Child(&y, Down(hd));
+    while( objectOfType(y, VCAT) )  Child(&y, Down(y));
     debug2(DSA, D, "  first component is %s at %s",
       Image(type(y)), EchoFilePos(&fpos(y)));
     if( NextDown(Down(hd)) != hd && NextDown(NextDown(Down(hd))) != hd )
-    { Child(y, NextDown(NextDown(Down(hd))));
+    { Child(&y, NextDown(NextDown(Down(hd))));
       debug2(DSA, D, "  second component is %s at %s",
         Image(type(y)), EchoFilePos(&fpos(y)));
     }
@@ -371,7 +371,7 @@ void TransferComponent(OBJECT x)
   { OBJECT tinners, index;
     New(tinners, ACAT);
     while( Down(dest_index) != dest_index )
-    { Child(y, Down(dest_index));
+    { Child(&y, Down(dest_index));
       assert( objectOfType(y, HEAD), "TransferComponent: input child!" );
       if( opt_components(y) != nilobj )
       { DisposeObject(opt_components(y));
@@ -427,7 +427,7 @@ void TransferEnd(OBJECT x)
     debug0(DGT, D, "] TransferEnd returning: no dest_index");
     return;
   }
-  Child(dest_index, Down(targets[itop]));
+  Child(&dest_index, Down(targets[itop]));
 
   /* make the component into a galley */
   New(hd, HEAD);  FposCopy(fpos(hd), fpos(x));
@@ -455,7 +455,7 @@ void TransferEnd(OBJECT x)
   debug0(DSA, D, "calling AdjustSize from TransferEnd (a)");
   AdjustSize(dest, back(hd, COLM), fwd(hd, COLM), COLM);
   if( !external_ver(dest) )
-  { Child(z, LastDown(hd));
+  { Child(&z, LastDown(hd));
     debug0(DSA, D, "calling AdjustSize from TransferEnd (b)");
     AdjustSize(dest, back(z, ROWM), fwd(z, ROWM), ROWM);
     Interpose(dest, VCAT, hd, z);
@@ -468,7 +468,7 @@ void TransferEnd(OBJECT x)
   { OBJECT tinners, index;
     New(tinners, ACAT);
     while( Down(dest_index) != dest_index )
-    { Child(y, Down(dest_index));
+    { Child(&y, Down(dest_index));
       assert( objectOfType(y, HEAD), "TransferEnd: input child!" );
       if( opt_components(y) != nilobj )
       { DisposeObject(opt_components(y));

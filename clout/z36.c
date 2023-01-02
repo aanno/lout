@@ -1077,13 +1077,13 @@ OBJECT Hyphenate(OBJECT x)
 
   /* for each word y of x, try to hyphenate it */
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( is_word(type(y)) && word_hyph(y) )
     {
       /* don't hyphenate a word preceding &<len>h */
       if( NextDown(link) != x )
       {
-	Child(z, NextDown(link));
+	Child(&z, NextDown(link));
 	if( objectOfType(z, GAP_OBJ) && spaceMode(&gap(z), HYPH_MODE) )
 	  word_hyph(y) = FALSE;
       }
@@ -1097,7 +1097,7 @@ OBJECT Hyphenate(OBJECT x)
 	/* don't hyphenate a word following &<len>h */
 	if( NextDown(link) != x )
 	{
-	  Child(z, NextDown(link));
+	  Child(&z, NextDown(link));
 	  if( is_word(type(z)) )
 	    word_hyph(z) = FALSE;
 	}

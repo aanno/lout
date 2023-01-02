@@ -63,7 +63,7 @@ static	BOOLEAN		debug_now = FALSE;	/* TRUE when want to debug   */
 
 static void check_yield(OBJECT y, OBJECT *res_yield, BOOLEAN *all_literals)
 { OBJECT s1, link, z;
-  Child(s1, Down(y));
+  Child(&s1, Down(y));
   debug1(DOP, DD, "  checkyield(%s)", EchoObject(y));
   if( is_word(type(s1)) )
   { if( StringEqual(string(s1), BackEnd->name) ||
@@ -72,7 +72,7 @@ static void check_yield(OBJECT y, OBJECT *res_yield, BOOLEAN *all_literals)
   }
   else if( objectOfType(s1, ACAT) )
   { for( link = Down(s1);  link != s1;  link = NextDown(link) )
-    { Child(z, link);
+    { Child(&z, link);
       if( objectOfType(z, GAP_OBJ) )  continue;
       if( is_word(type(z)) )
       { if( StringEqual(string(z), BackEnd->name) ||
@@ -99,7 +99,7 @@ static OBJECT OptimizeCase(OBJECT x)
   debug1(DOP, DD, "OptimizeCase(%s)", EchoObject(x));
   assert( objectOfType(x, CASE), "OptimizeCase:  type(x) != CASE!" );
 
-  Child(s2, LastDown(x));
+  Child(&s2, LastDown(x));
   all_literals = TRUE;  res_yield = nilobj;
   if( objectOfType(s2, YIELD) )
   { check_yield(s2, &res_yield, &all_literals);
@@ -107,7 +107,7 @@ static OBJECT OptimizeCase(OBJECT x)
   else if( objectOfType(s2, ACAT) )
   { for( link = Down(s2);  link != s2 && all_literals;  link = NextDown(link) )
     {
-      Child(y, link);
+      Child(&y, link);
       debug2(DOP, DD, "  OptimizeCase examining %s %s", Image(type(y)),
 	EchoObject(y));
       if( objectOfType(y, GAP_OBJ) )  continue;
@@ -126,7 +126,7 @@ static OBJECT OptimizeCase(OBJECT x)
   }
 
   if( all_literals && res_yield != nilobj )
-  { Child(res, LastDown(res_yield));
+  { Child(&res, LastDown(res_yield));
     DeleteLink(Up(res));
     DisposeObject(x);
   }
@@ -155,15 +155,15 @@ static void HuntCommandOptions(OBJECT x)
   for( colink = Down(CommandOptions);  colink != CommandOptions;
     colink = NextDown(NextDown(colink)) )
   {
-    Child(coname, colink);
-    Child(coval, NextDown(colink));
+    Child(&coname, colink);
+    Child(&coval, NextDown(colink));
     debug2(DOP, DD, "  hunting \"%s\" with value \"%s\"", string(coname),
       EchoObject(coval));
 
     /* set found to TRUE iff coname is the name of an option of x */
     found = FALSE;
     for( link = Down(sym);  link != sym;  link = NextDown(link) )
-    { Child(opt, link);
+    { Child(&opt, link);
       if( objectOfType(opt, NPAR) && StringEqual(SymName(opt), string(coname)) )
       { found = TRUE;
 	debug2(DOP, DD, "  %s is an option of %s", string(coname),SymName(sym));
@@ -176,7 +176,7 @@ static void HuntCommandOptions(OBJECT x)
       /* see whether this option is already set within x */
       found = FALSE;
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      { Child(y, link);
+      { Child(&y, link);
 	if( objectOfType(y, PAR) && actual(y) == opt )
 	{ found = TRUE;
 	  debug2(DOP, DD, "  %s is set in %s", string(coname), SymName(sym));
@@ -685,10 +685,10 @@ void SetScope(OBJECT env, int *count, BOOLEAN vis_only)
   debugcond2(DOP,DD, debug_now, "[ SetScope(%s, %d)", EchoObject(env), *count);
   assert( env != nilobj && objectOfType(env, ENV), "SetScope: type(env) != ENV!" );
   if( Down(env) != env )
-  { Child(y, Down(env));
+  { Child(&y, Down(env));
     assert( LastDown(y) != y, "SetScope: LastDown(y)!" );
     link = LastDown(env) != Down(env) ? LastDown(env) : LastDown(y);
-    Child(yenv, link);
+    Child(&yenv, link);
     assert( objectOfType(yenv, ENV), "SetScope: type(yenv) != ENV!" );
     SetScope(yenv, count, FALSE);
     visible_only = vis_only || (use_invocation(actual(y)) != nilobj);
@@ -776,7 +776,7 @@ static OBJECT ParseEnvClosure(OBJECT t, OBJECT encl)
   Dispose(t);
   if( Down(env) == env || Down(env) != LastDown(env) )
     Error(6, 13, "error in cross reference database", FATAL, &fpos(env));
-  Child(res, Down(env));
+  Child(&res, Down(env));
   DeleteNode(env);
   debugcond1(DOP, DDD, debug_now, "ParseEnvClosure ret. %s", EchoObject(res));
   assert( objectOfType(res, CLOSURE), "ParseEnvClosure: type(res) != CLOSURE!" );
@@ -857,7 +857,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	  y = Parse(&t, encl, FALSE, FALSE);
 	  if( is_cross(type(y)) )
 	  { OBJECT z;
-	    Child(z, Down(y));
+	    Child(&z, Down(y));
 	    if( objectOfType(z, CLOSURE) )
 	    { crs = nilobj;
 	      y = CrossExpand(y, env, &style, &crs, &res_env);
@@ -1301,7 +1301,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	    FATAL, &fpos(t), KW_USE);
 	x = CopyObject(use_invocation(xsym), no_fpos);
 	for( link = LastDown(x);  link != x;  link = PrevDown(link) )
-	{ Child(y, link);
+	{ Child(&y, link);
 	  if( objectOfType(y, ENV) )
 	  { DeleteLink(link);
 	    break;
@@ -1390,7 +1390,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	  imps = imports(actual(new_par));
 	  if( imps != nilobj )
 	  { for( link = Down(imps);  link != imps;  link = NextDown(link) )
-	    { Child(y, link);
+	    { Child(&y, link);
 	      PushScope(actual(y), FALSE, TRUE);
 	      scope_count++;
 	    }
@@ -1409,7 +1409,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 
 	  /* check that new_par has not already occurred, then link it to x */
 	  for( link = Down(x);  link != x;  link = NextDown(link) )
-	  { Child(y, link);
+	  { Child(&y, link);
 	    assert( objectOfType(y, PAR), "Parse: type(y) != PAR!" );
 	    if( actual(new_par) == actual(y) )
 	    { Error(6, 31, "named parameter %s of %s appears twice", WARN,
@@ -1441,10 +1441,10 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	if( compulsory_count < has_compulsory(xsym) )
 	{
 	  for( xlink = Down(xsym);  xlink != xsym;  xlink = NextDown(xlink) )
-	  { Child(tmp, xlink);
+	  { Child(&tmp, xlink);
 	    if( objectOfType(tmp, NPAR) && is_compulsory(tmp) )
 	    { for( link = Down(x);  link != x;  link = NextDown(link) )
-	      { Child(y, link);
+	      { Child(&y, link);
 		if( objectOfType(y, PAR) && actual(y) == tmp )
 		  break;
 	      }
@@ -1490,15 +1490,15 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	      x = TransferBegin(x);
 	      if( objectOfType(x, CLOSURE) )	/* failure: unReduce */
 	      {	if( has_rpar(xsym) )
-		{ Child(tmp, LastDown(x));
+		{ Child(&tmp, LastDown(x));
 		  assert(objectOfType(tmp, PAR) && objectOfType(actual(tmp), RPAR),
 				"Parse: cannot undo rpar" );
 		  DisposeChild(LastDown(x));
 		  if( has_lpar(xsym) )
-		  { Child(tmp, Down(x));
+		  { Child(&tmp, Down(x));
 		    assert(objectOfType(tmp, PAR) && objectOfType(actual(tmp), LPAR),
 				"Parse: cannot undo lpar" );
-		    Child(tmp, Down(tmp));
+		    Child(&tmp, Down(tmp));
 		    PushObj(tmp);
 		    DeleteLink(Up(tmp));
 		    DisposeChild(Down(x));
@@ -1558,7 +1558,7 @@ BOOLEAN defs_allowed, BOOLEAN transfer_allowed)
 	Shift(t, precedence(t), RIGHT_ASSOC, TRUE, TRUE);
 	if( objectOfType(ObjTop, CLOSURE) )  xsym = actual(ObjTop);
 	else if( is_cross(type(ObjTop)) && Down(ObjTop) != ObjTop )
-	{ Child(tmp, Down(ObjTop));
+	{ Child(&tmp, Down(ObjTop));
 	  if( objectOfType(tmp, CLOSURE) )  xsym = actual(tmp);
 	}
 	t = LexGetToken();

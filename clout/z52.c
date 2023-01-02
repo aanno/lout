@@ -123,7 +123,7 @@ static OBJECT ptab_retrieve(FULL_CHAR *str, TEXTURE_TABLE S)
   x = ptab_name(S, pos);
   if( x == nilobj )  return nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( StringEqual(str, string(y)) )  return y;
   }
   return nilobj;
@@ -149,7 +149,7 @@ static void ptab_debug(TEXTURE_TABLE S, FILE *fp)
     else if( !objectOfType(x, ACAT) )
       fprintf(fp, " not ACAT!");
     else for( link = Down(x);  link != x;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       fprintf(fp, " %s",
 	is_word(type(y)) ? string(y) : AsciiToFull("not-WORD!"));
     }

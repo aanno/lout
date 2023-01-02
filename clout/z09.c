@@ -51,7 +51,7 @@ OBJECT SearchEnv(OBJECT env, OBJECT sym)
     { debug0(DCE, DD, "] SearchEnv returning <nilobj>");
       return nilobj;
     }
-    Child(y, Down(env));
+    Child(&y, Down(env));
     assert( objectOfType(y, CLOSURE), "SearchEnv: type(y) != CLOSURE!" );
     if( actual(y) == sym )
     { debug1(DCE, DD, "] SearchEnv returning %s", EchoObject(y));
@@ -59,7 +59,7 @@ OBJECT SearchEnv(OBJECT env, OBJECT sym)
     }
     assert( LastDown(y) != y, "SearchEnv: LastDown(y) == y!" );
     link = LastDown(env) != Down(env) ? LastDown(env) : LastDown(y);
-    Child(env, link);
+    Child(&env, link);
   }
 } /* end SearchEnv */
 
@@ -114,7 +114,7 @@ OBJECT GetEnv(OBJECT x)
 { OBJECT env;
   assert( objectOfType(x, CLOSURE), "GetEnv: type(x) != CLOSURE!" );
   assert( LastDown(x) != x, "GetEnv: LastDown(x) == x!" );
-  Child(env, LastDown(x));
+  Child(&env, LastDown(x));
   assert( objectOfType(env, ENV), "GetEnv: type(env) != ENV!" );
   return env;
 } /* end GetEnv */
@@ -133,7 +133,7 @@ OBJECT DetachEnv(OBJECT x)
   debug1(DCE, DD, "DetachEnv( %s )", EchoObject(x));
   assert( objectOfType(x, CLOSURE), "DetachEnv: type(x) != CLOSURE!" );
   assert( LastDown(x) != x, "DetachEnv: LastDown(x) == x!" );
-  Child(env, LastDown(x));
+  Child(&env, LastDown(x));
   DeleteLink(LastDown(x));
   assert( objectOfType(env, ENV), "DetachEnv: type(env) != ENV!" );
   debug1(DCE, DD, "DetachEnv resturning %s", EchoObject(env));
@@ -178,10 +178,10 @@ OBJECT *crs, OBJECT *res_env)
     {
       prnt_env = GetEnv(prnt);
       for( link = Down(prnt);  link != prnt;  link = NextDown(link) )
-      { Child(par, link);
+      { Child(&par, link);
         if( objectOfType(par, PAR) && actual(par) == actual(x) )
         { assert( Down(par) != par, "ExpandCLosure: Down(par)!");
-	  Child(res, Down(par));
+	  Child(&res, Down(par));
 	  if( dirty(enclosing(actual(par))) || is_enclose(actual(par)) )
 	  { debug2(DCE, DD, "copy %s %s", SymName(actual(par)), EchoObject(res));
 	    // TODO: This seems to be the place that trigger strange switch default in units()
@@ -270,10 +270,10 @@ OBJECT ParameterCheck(OBJECT x, OBJECT env)
   }
   prnt_env = GetEnv(prnt);
   for( link = Down(prnt);  link != prnt;  link = NextDown(link) )
-  { Child(par, link);
+  { Child(&par, link);
     if( objectOfType(par, PAR) && actual(par) == actual(x) )
     {	assert( Down(par) != par, "ParameterCheck: Down(par)!");
-	Child(y, Down(par));
+	Child(&y, Down(par));
 	res = is_word(type(y)) ? CopyObject(y, no_fpos) : nilobj;
 	debug1(DCE, DD, "  ParameterCheck returning %s", EchoObject(res));
 	return res;

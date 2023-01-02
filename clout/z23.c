@@ -48,7 +48,7 @@
 #define FirstDefiniteLDN(x, link, y, jn, ymk, dim, sp, pg)		\
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
-  { Child(y, link);							\
+  { Child(&y, link);							\
     if( objectOfType(y, GAP_OBJ) )  jn = jn && join(&gap(y));			\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
@@ -60,7 +60,7 @@
 #define NextDefiniteWithGapLDN(x, link, y, g, jn, ymk, dim, sp, pg)	\
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
-  { Child(y, link);							\
+  { Child(&y, link);							\
     if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(&gap(y));		\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
@@ -220,7 +220,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       CountChild(y, DownDim(x, dim), &count);
       if( objectOfType(y, HSPANNER) || objectOfType(y, VSPANNER) )
       {
-        Child(z, Down(y));
+        Child(&z, Down(y));
 	Parent(thr, UpDim(x, dim));
 	save_mark(y) = xmk - back(thr, dim) + back(z, dim);
 
@@ -264,7 +264,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	  spanner_fixed(y), spanner_count(y));
 	if( ++spanner_fixed(y) == spanner_count(y) )
 	{
-          Child(z, Down(y));
+          Child(&z, Down(y));
 	  debug6(DGP, DD, "  last SPAN: yf = max(%s + %s - %s, %s, %s - %s)",
 	    EchoLength(xmk), EchoLength(xf), EchoLength(save_mark(y)),
 	    EchoLength(fwd(z, dim)),
@@ -610,10 +610,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	}
 	else
 	{ OBJECT tmp, pre, post;
-          Child(tmp, Down(x));
+          Child(&tmp, Down(x));
           if( objectOfType(tmp, VCAT) )
-          { Child(pre, Down(tmp));
-            Child(post, LastDown(tmp));
+          { Child(&pre, Down(tmp));
+            Child(&post, LastDown(tmp));
           }
           else pre = tmp, post = nilobj;
 	  setBack(x, dim, xb);
@@ -658,10 +658,10 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	}
 	else
 	{ OBJECT tmp, pre, post;
-          Child(tmp, Down(x));
+          Child(&tmp, Down(x));
           if( objectOfType(tmp, VCAT) )
-          { Child(pre, Down(tmp));
-            Child(post, LastDown(tmp));
+          { Child(&pre, Down(tmp));
+            Child(&post, LastDown(tmp));
           }
           else pre = tmp, post = nilobj;
 	  setBack(x, dim, xb);
@@ -691,7 +691,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
     case LINK_URL_E:
     
       ifdebug(DGP, D,
-	Child(z, Down(x));
+	Child(&z, Down(x));
 	debug7(DGP, D, "[ FixAndPrintObject(%s %s%s, %s, %s, %s, %s, -)",
 	Image(type(x)),
 	((objectOfType(x, LINK_DEST) || objectOfType(x, LINK_DEST_NULL)) ? string(z):STR_EMPTY),
@@ -702,7 +702,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       if( sameDim(dim, COLM) )
 	save_mark(x) = xmk;
       else
-      {	Child(z, Down(x));
+      {	Child(&z, Down(x));
 	switch( type(x).objtype )
 	{
 	  case LINK_SOURCE_E:
@@ -1094,7 +1094,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    /* the problem has just been fixed, by inserting a @Scale above x */
 	    OBJECT prnt;
 	    Parent(prnt, Up(x));
-	    Child(y, Down(x));
+	    Child(&y, Down(x));
 	    if( actual_size - frame_size < 1 * PT )
 	    {
 	      /* the correction is probably due to roundoff error, and */
@@ -1120,7 +1120,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
 	    /* fix the problem by refraining from printing the line */
 	    if( size(x, COLM) <= 0 )
 	      Error(23, 5, "oversize object has size 0 or less", INTERN, &fpos(x));
-	    Child(y, Down(x));
+	    Child(&y, Down(x));
 	    if( Down(x) == LastDown(x) && is_word(type(y)) )
 	    { Error(23, 6, "word %s deleted (too wide for %s paragraph)",
 		WARN, &fpos(y), string(y), EchoLength(frame_size));
@@ -1358,7 +1358,7 @@ OBJECT FixAndPrintObject(OBJECT x, FULL_LENGTH xmk, FULL_LENGTH xb,
       {
 	debug1(DGP, DD, "ACAT ROWM %s", EchoObject(x));
 	for( link = Down(x);  link != x;  link = NextDown(link) )
-	{ Child(y, link);
+	{ Child(&y, link);
 	  if( !is_definite(type(y)) && !objectOfType(y, LINK_DEST_NULL) )
 	  {
 	    if( objectOfType(y, UNDER_REC) )   /* generate an underline now */

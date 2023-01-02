@@ -37,7 +37,7 @@ FULL_CHAR *DebugInnersNames(OBJECT inners)
   StringCopy(buff, STR_EMPTY);
   if( inners != nilobj )
   { for( link = Down(inners);  link != inners;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       if( link != Down(inners) )  StringCat(buff, STR_SPACE);
       switch( type(y).objtype )
       {
@@ -46,7 +46,7 @@ FULL_CHAR *DebugInnersNames(OBJECT inners)
         case UNATTACHED_E:
       
 	  assert( Down(y) != y, "DebugInnersNames: UNATTACHED!");
-	  Child(z, Down(y));
+	  Child(&z, Down(y));
           StringCat(buff, SymName(actual(z)));
 	  break;
 
@@ -399,8 +399,8 @@ void FlushGalley(OBJECT hd)
 
   for( link = Down(hd);  link != hd;  link = NextDown(link) )
   {
-    Child(y, link);
-    if( objectOfType(y, SPLIT) )  Child(y, DownDim(y, dim));
+    Child(&y, link);
+    if( objectOfType(y, SPLIT) )  Child(&y, DownDim(y, dim));
     debug2(DGF, D, "  examining %s %s", Image(type(y)), EchoObject(y));
     switch( type(y).objtype )
     {
@@ -461,7 +461,7 @@ void FlushGalley(OBJECT hd)
 
       case FOLLOWS_E:
 	  
-	Child(tmp, Down(y));
+	Child(&tmp, Down(y));
 	if( Up(tmp) == LastUp(tmp) )
 	{ link = PrevDown(link);
 	  DisposeChild(NextDown(link));
@@ -554,7 +554,7 @@ void FlushGalley(OBJECT hd)
 	{
 	  /* make sure y is not joined to a target below (vertical case only) */
 	  for( zlink = NextDown(link); zlink != hd; zlink = NextDown(zlink) )
-	  { Child(z, zlink);
+	  { Child(&z, zlink);
 	    switch( type(z).objtype )
 	    {
 	      case RECEPTIVE_E:
@@ -666,7 +666,7 @@ void FlushGalley(OBJECT hd)
 
 		/* refresh the number of components permitted into the next target */
 		if( opt_counts(hd) != nilobj && Down(opt_counts(hd)) != opt_counts(hd) )
-		{ Child(z, Down(opt_counts(hd)));
+		{ Child(&z, Down(opt_counts(hd)));
 		  opt_comps_permitted(hd) += comp_count(z) - 1;
 		  DisposeChild(Up(z));
 		}
@@ -738,7 +738,7 @@ void FlushGalley(OBJECT hd)
 	  /* gap (if any) is breakable                                    */
 
 	  if( objectOfType(NextDown(link), LINK) )
-	  { Child(tgp, NextDown(link));
+	  { Child(&tgp, NextDown(link));
 	    assert( objectOfType(tgp, GAP_OBJ), "FlushGalley:  tgp!" );
 	    promotable = !nobreak(&gap(tgp));
 	  }
@@ -832,12 +832,12 @@ void FlushGalley(OBJECT hd)
     { OBJECT z, zlink, top_z;
       for( zlink = hd;  NextDown(zlink) != link;  )
       {
-	Child(z, NextDown(zlink));
+	Child(&z, NextDown(zlink));
 	top_z = z;
 	debug2(DGF, D, "FlushGalley(%s)/REJECT header-examining %s",
 	  SymName(actual(hd)), EchoObject(z));
 	if( objectOfType(z, SPLIT) )
-	  Child(z, DownDim(z, dim));
+	  Child(&z, DownDim(z, dim));
 	if( is_header(type(z)) )
 	{
 	  assert(top_z == z, "FlushGalley: header under SPLIT!");
@@ -860,7 +860,7 @@ void FlushGalley(OBJECT hd)
       assert( tmp != hd, "FlushGalley/REJECT: first_link!" );
       headers_count = 0;
       for( link=Down(headers(hd, i)); link != headers(hd, i); link=NextDown(link) )
-      { Child(y, link);
+      { Child(&y, link);
         debug2(DGS, D, "FlushGalley(%s)/REJECT linking %s",
 	  SymName(actual(hd)), EchoObject(y));
 	assert(!objectOfType(y, COL_THR) && !objectOfType(y, ROW_THR), "FlushGalley/REJECT THR!");
@@ -904,7 +904,7 @@ void FlushGalley(OBJECT hd)
       BOOLEAN2 found, gall;  FULL_CHAR newtag[MAX_BUFF], newseq[MAX_BUFF];
 
       /* get first ready galley in from cross reference database */
-      Child(eg, Down(ready_galls(hd)));
+      Child(&eg, Down(ready_galls(hd)));
       SwitchScope(nilobj);
       val = ReadFromFile(eg_fnum(eg), eg_fpos(eg), eg_lnum(eg));
       UnSwitchScope(nilobj);
@@ -936,7 +936,7 @@ void FlushGalley(OBJECT hd)
       Link(Up(y), index2);
 
       /* set up the next ready galley for reading next time */
-      Child(tag, Down(eg));  Child(seq, LastDown(eg));
+      Child(&tag, Down(eg));  Child(&seq, LastDown(eg));
       do /* skip duplicate seq values */
       {	found = DbRetrieveNext(OldCrossDb, &gall, &newsym, newtag, newseq,
 		&eg_fnum(eg), &eg_fpos(eg), &eg_lnum(eg), &eg_cont(eg));
@@ -1014,7 +1014,7 @@ void FlushGalley(OBJECT hd)
 	New(ins, GALL_TARG);
 	actual(ins) = cr;
 	Link(Up(y), ins);
-	Child(tag, LastDown(cr));
+	Child(&tag, LastDown(cr));
 	assert( is_word(type(tag)), "FlushGalley: cr is_word(type(tag))!" );
 	found = DbRetrieve(OldCrossDb, TRUE, sym, string(tag),
 		newseq, &tfnum, &tfpos, &tlnum, &tcont);
@@ -1049,7 +1049,7 @@ void FlushGalley(OBJECT hd)
       {	DeleteNode(y);
       }
       else
-      {	Child(z, Down(y));
+      {	Child(&z, Down(y));
 	if( opt_components(z) != nilobj )
 	  GazumpOptimize(z, actual(y));
 	DetachGalley(z);

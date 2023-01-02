@@ -130,7 +130,7 @@ static OBJECT ftab_retrieve(FULL_CHAR *str, FILE_TABLE S)
   x = ftab_name(S, pos);
   if( x == nilobj )  return nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( StringEqual(str, string(y)) )  return y;
   }
   return nilobj;
@@ -163,7 +163,7 @@ static void ftab_debug(FILE_TABLE S)
     {
       StringCopy(buff, STR_EMPTY);
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      { Child(y, link);
+      { Child(&y, link);
 	StringCat(buff, STR_SPACE);
 	StringCat(buff, is_word(type(y)) ? string(y):AsciiToFull("not-WORD!"));
       }
@@ -294,7 +294,7 @@ FILE_NUM FirstFile(FILE_TYPE ftype)
   link = Down(file_type[ftype.filetype]);
   if( objectOfType(link, ACAT) )  i = NO_FILE;
   else
-  { Child(y, link);
+  { Child(&y, link);
     i = file_number(y);
   }
   debug1(DFS, DD, "FirstFile returning %s", i==NO_FILE ? STR_NONE : FileName(i));
@@ -316,7 +316,7 @@ FILE_NUM NextFile(FILE_NUM i)
   link = NextDown(Up(ftab_num(file_tab, i)));
   if( objectOfType(link, ACAT) )  i = NO_FILE;
   else
-  { Child(y, link);
+  { Child(&y, link);
     i = file_number(y);
   }
   debug1(DFS, DD, "NextFile returning %s", i==NO_FILE ? STR_NONE : FileName(i));
@@ -438,7 +438,7 @@ FULL_CHAR *FileName(FILE_NUM fnum)
 { OBJECT x;
   x = ftab_num(file_tab, fnum);
   assert( x != nilobj, "FileName: x == nilobj!" );
-  if( Down(x) != x )  Child(x, Down(x));
+  if( Down(x) != x )  Child(&x, Down(x));
   return string(x);
 } /* end FileName */
 
@@ -452,7 +452,7 @@ FULL_CHAR *FullFileName(FILE_NUM fnum)
   assert( x != nilobj, "FileName: x == nilobj!" );
   if( used_suffix(x) )
   {
-    if( Down(x) != x )  Child(x, Down(x));
+    if( Down(x) != x )  Child(&x, Down(x));
     ffbp = (ffbp + 1) % 2;
     StringCopy(ffbuff[ffbp], string(x));
     StringCat(ffbuff[ffbp], SOURCE_SUFFIX);
@@ -460,7 +460,7 @@ FULL_CHAR *FullFileName(FILE_NUM fnum)
   }
   else
   {
-    if( Down(x) != x )  Child(x, Down(x));
+    if( Down(x) != x )  Child(&x, Down(x));
     return string(x);
   }
 } /* end FullFileName */
@@ -478,7 +478,7 @@ FILE_TYPE FileType(FILE_NUM fnum)
 { OBJECT x;
   x = ftab_num(file_tab, fnum);
   assert( x != nilobj, "FileType: x == nilobj!" );
-  if( Down(x) != x )  Child(x, Down(x));
+  if( Down(x) != x )  Child(&x, Down(x));
   return type_of_file(x);
 } /* end FileType */
 
@@ -682,7 +682,7 @@ BOOLEAN2 *used_source_suffix)
   /* try opening each path name in the search path */
   fp = null;
   for( link = Down(cpath);  fp == null && link != cpath;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
 
     /* set buff to the full path name */
     if( StringLength(string(y)) == 0 )
@@ -804,7 +804,7 @@ FILE *OpenFile(FILE_NUM fnum, BOOLEAN2 check_ld, BOOLEAN2 check_lt)
   debug2(DFS, DD, "[ OpenFile(%s, %s)", FileName(fnum), bool2s(check_ld));
   fname = ftab_num(file_tab, fnum);
   if( Down(fname) != fname )
-  { Child(y, Down(fname));
+  { Child(&y, Down(fname));
     /* fp = StringFOpen(string(y), file_mode[type_of_file(fname)]); */
     fp = StringFOpen(string(y), READ_FILE);
     debug1(DFS,DD,fp==null ? "  failed on %s" : "  succeeded on %s", string(y));

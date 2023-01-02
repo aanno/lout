@@ -410,7 +410,7 @@ static void ReadTokenList(OBJECT token, OBJECT res)
         imps = imports(actual(new_par));
         if( imps != nilobj )
         { for( link = Down(imps);  link != imps;  link = NextDown(link) )
-          { Child(y, link);
+          { Child(&y, link);
             PushScope(actual(y), FALSE, TRUE);
             scope_count++;
           }
@@ -850,7 +850,7 @@ void ReadDefinitions(OBJECT *token, OBJECT encl, OBJTYPE res_type)
 
       /* set visible flag of the exported symbols */
       for( link=Down(export_list);  link != export_list;  link=NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	z = SearchSym(string(y), StringLength(string(y)));
 	if( z == nilobj || enclosing(z) != res )
 	  Error(5, 43, "exported symbol %s is not defined in %s",

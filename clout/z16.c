@@ -108,12 +108,12 @@ OBJECT *sg, OBJECT *sdef, int *side)
   /* find preceding definite; if it exists, set *pg */
   *pg = nilobj;
   for( plink = PrevDown(link);  objectOfType(plink, LINK);  plink = PrevDown(plink) )
-  { Child(*pdef, plink);
+  { Child(pdef, plink);
     if( objectOfType(*pdef, SPLIT) ? SplitIsDefinite(*pdef) : is_definite(type(*pdef)) )
-    { Child(*pg, PrevDown(link));
+    { Child(pg, PrevDown(link));
       while( is_index(type(*pg)) )
       {	link = PrevDown(link);
-	Child(*pg, PrevDown(link));
+	Child(pg, PrevDown(link));
       }
       assert( objectOfType(*pg, GAP_OBJ), "SetNeighbours: type(*pg)!" );
       break;
@@ -123,12 +123,12 @@ OBJECT *sg, OBJECT *sdef, int *side)
   /* find succeeding definite; if it exists, set *sg */
   *sg = nilobj;
   for( slink = NextDown(link);  objectOfType(slink, LINK);  slink = NextDown(slink) )
-  { Child(*sdef, slink);
+  { Child(sdef, slink);
     if( objectOfType(*sdef, SPLIT) ? SplitIsDefinite(*sdef) : is_definite(type(*sdef)) )
-    { Child(*sg, PrevDown(slink));
+    { Child(sg, PrevDown(slink));
       while( is_index(type(*sg)) )
       {	slink = PrevDown(slink);
-	Child(*sg, PrevDown(slink));
+	Child(sg, PrevDown(slink));
       }
       assert( objectOfType(*sg, GAP_OBJ), "SetNeighbours: type(*sg)!" );
       break;
@@ -302,7 +302,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, DIM_TE dim)
 
     link = UpDim(x, dim);  ratm = FALSE;
     for( tlink=NextDown(link);  objectOfType(tlink, LINK);  tlink=NextDown(tlink) )
-    { Child(y, tlink);
+    { Child(&y, tlink);
       if( objectOfType(y, GAP_OBJ) && mark(&gap(y)) )  ratm = TRUE;
     }
     y = tlink;
@@ -332,11 +332,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, DIM_TE dim)
 	  /* let lp and rp be the gaps delimiting the          */
 	  /* components joined to x                            */
 	  for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
-	  { Child(z, lp);
+	  { Child(&z, lp);
 	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 	  for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
-	  { Child(z, rp);
+	  { Child(&z, rp);
 	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 
@@ -356,7 +356,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, DIM_TE dim)
 	      SymName(actual(y)));
 	    tb = tf = 0;
 	    for( link = NextDown(lp);  link != rp;  link = NextDown(link) )
-	    { Child(z, link);
+	    { Child(&z, link);
 	      debugcond1(DSA, D, objectOfType(z, GAP_OBJ),
 		"    gap %s", EchoCatOp(VCAT, mark(&gap(z)), join(&gap(z))));
 	      if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
@@ -576,11 +576,11 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, DIM_TE dim)
 	{
 	  /* let lp and rp be the gaps bracketing the components joined to x */
 	  for( lp = PrevDown(link);  lp != y;  lp = PrevDown(lp) )
-	  { Child(z, lp);
+	  { Child(&z, lp);
 	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 	  for( rp = NextDown(link);  rp != y;  rp = NextDown(rp) )
-	  { Child(z, rp);
+	  { Child(&z, rp);
 	    if( objectOfType(z, GAP_OBJ) && !join(&gap(z)) )  break;
 	  }
 
@@ -595,7 +595,7 @@ void AdjustSize(OBJECT x, FULL_LENGTH b, FULL_LENGTH f, DIM_TE dim)
 	  { /* if // or || is present, do this */
 	    tb = tf = 0;
 	    for( link = NextDown(lp); link != rp;  link = NextDown(link) )
-	    { Child(z, link);
+	    { Child(&z, link);
 	      if( objectOfType(z, GAP_OBJ) || is_index(type(z)) )  continue;
 	      tb = find_max(tb, back(z, dim));
 	      tf = find_max(tf, fwd(z, dim));

@@ -57,7 +57,7 @@ CONSTRAINT *c, FULL_LENGTH *res_back, FULL_LENGTH *res_fwd)
   /* work out a suitable constraint to apply to each component */
   sb = sf = 0;
   for( link = start;  link != NextDown(stop);  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( !is_definite(type(y)) )  continue;
     sb = find_max(sb, back(y, COLM));
     sf = find_max(sf, fwd(y, COLM));
@@ -88,7 +88,7 @@ CONSTRAINT *c, FULL_LENGTH *res_back, FULL_LENGTH *res_fwd)
   }
   else b = f = 0;
   for( link = start;  link != NextDown(stop);  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( !is_definite(type(y)) || y == m )  continue;
     debug1(DOB, DD, "  +++BreakJoinedGroup calling child, yc = %s",
       EchoConstraint(&yc));
@@ -128,7 +128,7 @@ static OBJECT BreakVcat(OBJECT x, CONSTRAINT *c)
   
   dble_found = FALSE;  dble_fwd = 0;  start_group = nilobj;
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( is_index(type(y)) )  continue;
     if( objectOfType(y, GAP_OBJ) )
     { assert( start_group != nilobj, "BreakVcat: start_group == nilobj!" );
@@ -246,7 +246,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
   /* Initialise csize, bcount, fcount, bwidth, fwidth and broken(y) */
   bcount = fcount = 0;  bwidth = fwidth = 0;  prev = nilobj;
   prev_col_size = 0;
-  Child(y, Down(x));
+  Child(&y, Down(x));
   assert( !objectOfType(y, GAP_OBJ), "BreakTable: GAP_OBJ!" );
   assert( !is_index(type(y)), "BreakTable: index!" );
   setBroken(y, is_indefinite(type(y)));
@@ -255,10 +255,10 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
   for( link = NextDown(Down(x));  link != x;  link = NextDown(NextDown(link)) )
   {
     /* find the next gap g and following child y */
-    Child(g, link);
+    Child(&g, link);
     assert( objectOfType(g, GAP_OBJ), "BreakTable: GAP_OBJ!" );
     assert( NextDown(link) != x, "BreakTable: GAP_OBJ is last!" );
-    Child(y, NextDown(link));
+    Child(&y, NextDown(link));
 
     assert( !objectOfType(y, GAP_OBJ), "BreakTable: GAP_OBJ!" );
     assert( !is_index(type(y)), "BreakTable: index!" );
@@ -286,7 +286,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
     Error(13, 2, "reducing column gaps to 0i (object is too wide)",
       WARN, &fpos(x));
     for( link = Down(x);  link != x;  link = NextDown(link) )
-    { Child(g, link);
+    { Child(&g, link);
       if( objectOfType(g, GAP_OBJ) )
       {	SetGapOnRef(&gap(g), nobreak(&gap(g)), mark(&gap(g)), join(&gap(g)),
 	  FIXED_UNIT, EDGE_MODE, 0);
@@ -304,7 +304,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
     /* find a minimal-width unbroken component my */
     my = nilobj;  msize = size(x, COLM);       /* an upper bound for size(y) */
     for( link = Down(x);  ;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       assert( !objectOfType(y, GAP_OBJ), "BreakTable: type(y) == GAP_OBJ!" );
       if( !broken(y) && (size(y, COLM) < msize || my == nilobj) )
       {	msize = size(y, COLM);
@@ -315,7 +315,7 @@ static OBJECT BreakTable(OBJECT x, CONSTRAINT *c)
       /* next gap */
       link = NextDown(link);
       if( link == x )  break;
-      Child(g, link);
+      Child(&g, link);
       assert( objectOfType(g, GAP_OBJ), "BreakTable: type(g) != GAP_OBJ!" );
       if( mark(&gap(g)) )  ratm = TRUE;
     }
@@ -510,7 +510,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     case SCALE_E:
 
       InvScaleConstraint(&yc, bc(constraint(x)), c);
-      Child(y, Down(x));
+      Child(&y, Down(x));
       y = BreakObject(y, &yc);
       setBack(x, COLM, (back(y, COLM) * bc(constraint(x))) / SF);
       setFwd(x, COLM, (fwd(y, COLM)  * bc(constraint(x))) / SF);
@@ -520,7 +520,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     case KERN_SHRINK_E:
 
       /* not really accurate, but there you go */
-      Child(y, LastDown(x));
+      Child(&y, LastDown(x));
       y = BreakObject(y, c);
       setBack(x, COLM, back(y, COLM));
       setFwd(x, COLM, fwd(y, COLM));
@@ -591,7 +591,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     case WIDE_E:
     
       MinConstraint(&constraint(x), c);
-      Child(y, Down(x));
+      Child(&y, Down(x));
       y = BreakObject(y, &constraint(x));
       setBack(x, COLM, back(y, COLM));
       setFwd(x, COLM, fwd(y, COLM));
@@ -626,7 +626,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     case HMIRROR_E:
 
       FlipConstraintOnRef(&yc, c);
-      Child(y, Down(x));
+      Child(&y, Down(x));
       y = BreakObject(y, &yc);
       setBack(x, COLM, fwd(y, COLM));
       setFwd(x, COLM, back(y, COLM));
@@ -649,7 +649,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     case HSPANNER_E:
     
       assert( Down(x) == LastDown(x), "BreakObject: downs!" );
-      Child(y, Down(x));
+      Child(&y, Down(x));
       y = BreakObject(y, c);
       setBack(x, COLM, back(y, COLM));
       setFwd(x, COLM, fwd(y, COLM));
@@ -658,9 +658,9 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 
     case BACKGROUND_E:
 
-      Child(y, Down(x));
+      Child(&y, Down(x));
       y = BreakObject(y, c);
-      Child(y, LastDown(x));
+      Child(&y, LastDown(x));
       y = BreakObject(y, c);
       setBack(x, COLM, back(y, COLM));
       setFwd(x, COLM, fwd(y, COLM));
@@ -680,7 +680,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
       /* going; the real break is deferred to the first ROWM touch,     */
       /* when we know that all contributing columns have been broken    */
       /* unless the child is not a spanner, in which case it's @OneCol  */
-      Child(y, Down(x));
+      Child(&y, Down(x));
       if( !objectOfType(y, HSPANNER) )
       {
         y = BreakObject(y, c);
@@ -697,7 +697,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 
     case HSHIFT_E:
 
-      Child(y, Down(x));
+      Child(&y, Down(x));
       f = FindShift(x, y, COLM);
       SetConstraintOnRef(&yc,
 	find_min(bc(*c), bfc(*c)) - f, bfc(*c), find_min(fc(*c), bfc(*c)) + f);
@@ -721,7 +721,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
       /* multiple copies, remember */
       for( link = NextDown(Down(x));  link != x;  link = NextDown(link) )
       {
-        Child(y, link);
+        Child(&y, link);
         y = BreakObject(y, c);
         setBack(x, COLM, back(y, COLM));
         setFwd(x, COLM, fwd(y, COLM));
@@ -738,7 +738,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
     case LINK_DEST_NULL_E:
     case LINK_URL_E:
     
-      Child(y, LastDown(x));
+      Child(&y, LastDown(x));
       y = BreakObject(y, c);
       setBack(x, COLM, back(y, COLM));
       setFwd(x, COLM, fwd(y, COLM));
@@ -747,7 +747,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 
     case SPLIT_E:
     
-      Child(y, DownDim(x, COLM));
+      Child(&y, DownDim(x, COLM));
       y = BreakObject(y, c);
       setBack(x, COLM, back(y, COLM));
       setFwd(x, COLM, fwd(y, COLM));
@@ -764,7 +764,7 @@ OBJECT BreakObject(OBJECT x, CONSTRAINT *c)
 	setBack(x, COLM, 0);
 	rpos = x;
 	for( link = Down(x);  link != x;  link = NextDown(link) )
-	{ Child(y, link);
+	{ Child(&y, link);
 	  if( objectOfType(y, GAP_OBJ) && mark(&gap(y)) )
 	  { setMark(&gap(y), FALSE);
 	    rpos = y;

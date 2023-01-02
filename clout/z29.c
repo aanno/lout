@@ -303,9 +303,9 @@ void LoadScopeSnapshot(OBJECT ss)
   assert( objectOfType(ss, ACAT), "LoadScopeSnapshot: type(ss)!" );
   PushScope(StartSym, FALSE, FALSE);
   for( link = LastDown(ss);  link != ss;  link = PrevDown(link) )
-  { Child(x, link);
+  { Child(&x, link);
     assert( objectOfType(x, SCOPE_SNAPSHOT), "LoadScopeSnapshot: type(x)!" );
-    Child(sym, Down(x));
+    Child(&sym, Down(x));
     PushScope(sym, ss_npars_only(x), ss_vis_only(x));
     body_ok[scope_top-1] = ss_body_ok(x);
   }
@@ -393,7 +393,7 @@ OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
   /* assign a code letter between a and z to any NPAR symbol */
   if( objectOfType(s, NPAR) )
   { if( LastDown(enclosing(s)) != enclosing(s) )
-    { Child(tmp, LastDown(enclosing(s)));
+    { Child(&tmp, LastDown(enclosing(s)));
       if( objectOfType(tmp, NPAR) )
       { if( npar_code(tmp) == 'z' || npar_code(tmp) == ' ' )
 	  npar_code(s) = ' ';
@@ -416,7 +416,7 @@ OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
     if( has_key(enclosing(s)) && xbody != nilobj && is_cross(type(xbody)) )
     { if( LastDown(xbody) != Down(xbody) )
       { OBJECT sym;
-	Child(sym, Down(xbody));
+	Child(&sym, Down(xbody));
 	if( objectOfType(sym, CLOSURE) )
 	{ is_extern_target(actual(sym)) = TRUE;
 	  uses_extern_target(actual(sym)) = TRUE;
@@ -443,10 +443,10 @@ OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
 
       /* if @Key is found after @Target, take note of external target */
       for( link=Down(enclosing(s));  link!=enclosing(s);  link=NextDown(link) )
-      { Child(p, link);
+      { Child(&p, link);
 	if( is_target(p) && sym_body(p)!=nilobj && is_cross(type(sym_body(p))) )
 	{ OBJECT sym;
-	  Child(sym, Down(sym_body(p)));
+	  Child(&sym, Down(sym_body(p)));
 	  if( objectOfType(sym, CLOSURE) )
 	  { is_extern_target(actual(sym)) = TRUE;
 	    uses_extern_target(actual(sym)) = TRUE;
@@ -489,10 +489,10 @@ OBJTYPE xpredefined, OBJECT xenclosing, OBJECT xbody)
   ifdebug(DST, D, sym_spread[sum]++;  sym_count++);
   entry = (OBJECT) &symtab[sum];
   for( plink = Down(entry);  plink != entry;  plink = NextDown(plink) )
-  { Child(p, plink);
+  { Child(&p, plink);
     if( length(p) == len && StringEqual(str, string(p)) )
     { for( link = Down(p);  link != p;  link = NextDown(link) )
-      {	Child(q, link);
+      {	Child(&q, link);
 	if( enclosing(s) == enclosing(q) )
 	{ Error(29, 7, "symbol %s previously defined at%s",
 	    WARN, &fpos(s), str, EchoFilePos(&fpos(q)) );
@@ -545,10 +545,10 @@ void InsertAlternativeName(FULL_CHAR *str, OBJECT s, FILE_POS *xfpos)
   ifdebug(DST, D, sym_spread[sum]++;  sym_count++);
   entry = (OBJECT) &symtab[sum];
   for( plink = Down(entry);  plink != entry;  plink = NextDown(plink) )
-  { Child(p, plink);
+  { Child(&p, plink);
     if( length(p) == len && StringEqual(str, string(p)) )
     { for( link = Down(p);  link != p;  link = NextDown(link) )
-      {	Child(q, link);
+      {	Child(&q, link);
 	if( enclosing(s) == enclosing(q) )
 	{ Error(29, 12, "symbol name %s previously defined at%s",
 	    WARN, &fpos(s), str, EchoFilePos(&fpos(q)) );
@@ -593,7 +593,7 @@ OBJECT SearchSym(FULL_CHAR *str, int len)
   rlen = len;
   entry = (OBJECT) &symtab[sum];
   for( plink = Down(entry);  plink != entry;  plink = NextDown(plink) )
-  { Child(p, plink);
+  { Child(&p, plink);
     if( rlen == length(p) )
     { x = str;  y = string(p);
       do; while( *x++ == *y++ && --rlen );
@@ -604,7 +604,7 @@ OBJECT SearchSym(FULL_CHAR *str, int len)
 	do
 	{ s--;
 	  for( link = Down(p);  link != p;  link = NextDown(link) )
-	  { Child(q, link);
+	  { Child(&q, link);
 	    { debugcond4(DST, DDD, enclosing(q) == scope[s],
 	       "  !npars_only[s] = %s, !vis_only[s] = %s, body_ok[s] = %s, !ss = %s",
 	       bool2s(!npars_only[s]), bool2s(!vis_only[s]), bool2s(body_ok[s]),
@@ -694,7 +694,7 @@ FULL_CHAR *FullSymName(OBJECT x, FULL_CHAR *str)
 OBJECT ChildSym(OBJECT s, OBJTYPE typ)
 { OBJECT link, y;
   for( link = Down(s);  link != s;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( objectOfType(y, typ) && enclosing(y) == s )  return y;
   }
   Error(29, 10, "symbol %s has missing %s", FATAL, &fpos(s),
@@ -714,7 +714,7 @@ OBJECT ChildSym(OBJECT s, OBJTYPE typ)
 OBJECT ChildSymWithCode(OBJECT s, unsigned char code)
 { OBJECT link, y;
   for( link = Down(actual(s));  link != actual(s);  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( objectOfType(y, NPAR) && enclosing(y) == actual(s) && npar_code(y) == code )
       return y;
   }
@@ -820,9 +820,9 @@ void DeleteEverySym(void)
   for( i = 0;  i < MAX_TAB;  i++ )
   { entry = (OBJECT) &symtab[i];
     for( plink = Down(entry);  plink != entry;  plink = NextDown(plink) )
-    { Child(p, plink);
+    { Child(&p, plink);
       for( link = Down(p);  link != p;  link = NextDown(link) )
-      {	Child(x, link);  DeleteSymBody(x);
+      {	Child(&x, link);  DeleteSymBody(x);
 	/* *** will not work now
 	while( base_uses(x) != nilobj )
 	{ tmp = base_uses(x);  base_uses(x) = next(tmp);

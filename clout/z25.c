@@ -465,7 +465,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	  { assert( Down(y) != y, "EchoObject: Down(PAR)!" );
 	    switch( type(actual(y)).objtype )
 	    {
-	     case LPAR_E:	Child(tmp, Down(y));
+	     case LPAR_E:	Child(&tmp, Down(y));
 			echo(tmp, (unsigned) precedence(sym), 1);
 			aprint(" ");
 			break;
@@ -486,7 +486,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 			newline();  aprint("  ");
 			cprint( SymName(actual(y)) );
 			aprint(" { ");
-			Child(tmp, Down(y));
+			Child(&tmp, Down(y));
 			echo(tmp, NO_PREC, 1);
 			aprint(" }");
 			npar_seen = TRUE;
@@ -507,7 +507,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 			}
 			if( npar_seen ) newline();
 			else aprint(" ");
-			Child(tmp, Down(y));
+			Child(&tmp, Down(y));
 			if( has_body(sym) )
 			{ aprint("{ ");
 			  echo(tmp, NO_PREC, 1);
@@ -548,7 +548,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	aprint(" COLM:");
 	echo(y, FORCE_PREC, count);
 	newline();
-	Child(y, DownDim(x, ROWM));
+	Child(&y, DownDim(x, ROWM));
 	aprint(" ROWM:");
 	echo(y, FORCE_PREC, count);
 	moveleft();
@@ -836,7 +836,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	else
 	{ newline();
 	  for( link = Down(y);  link != y;  link = NextDown(link) )
-	  { Child(z, link);
+	  { Child(&z, link);
 	    cprint(string(z));
 	    newline();
 	  }
@@ -866,7 +866,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 
 	aprint("[filtered ");
 	if( Down(x) != x )
-	{ Child(y, Down(x));
+	{ Child(&y, Down(x));
 	  if( !objectOfType(y, WORD) ) cprint(Image(type(y)));
 	  else cprint(string(y));
 	}
@@ -918,7 +918,7 @@ static void echo(OBJECT x, unsigned outer_prec, unsigned count)
 	}
 	newline();
 	for( link = Down(x);  link != x;  link = NextDown(link) )
-	{ Child(y, link);
+	{ Child(&y, link);
 	  aprint("   ");
 	  cprint(Image(cs_type(y)));
 	  aprint(": ");
@@ -1015,7 +1015,7 @@ FULL_CHAR *EchoIndex(OBJECT index)
     case UNATTACHED_E:
 
       if( Down(index) != index )
-      { Child(z, Down(index));
+      { Child(&z, Down(index));
       }
       else z = nilobj;
       sprintf(buff, "unattached %s",
@@ -1059,7 +1059,7 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
   debug3(ANY, D, "%sgalley %s into %s", istr,
     SymName(actual(hd)), SymName(whereto(hd)));
   for( link = Down(hd);  link != hd;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( y == pinpt || link == pinpt )
     {
       debug2(ANY, D, "++ %p %s ", y, Image(type(y)));
@@ -1074,7 +1074,7 @@ void DebugGalley(OBJECT hd, OBJECT pinpt, int indent)
     { OBJECT z = nilobj;
       if( objectOfType(actual(y), VEXPAND) || objectOfType(actual(y), HEXPAND) )
       {
-	Child(z, Down(actual(y)));
+	Child(&z, Down(actual(y)));
 	if( !is_word(type(z)) )
 	  z = nilobj;
       }

@@ -121,16 +121,16 @@ static void OptimizeParameterList(OBJECT x, OBJECT env)
   assert( objectOfType(x, CLOSURE), "OptimizeParameterList: type(x) != CLOSURE!" );
   if( env == nilobj )  return;
   for( link = Down(x);  link != x;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( objectOfType(y, PAR) )
-    { Child(z, Down(y));
+    { Child(&z, Down(y));
       if( objectOfType(z, CLOSURE) )
       {
 	Optimize(z, env);
       }
       else if( objectOfType(z, ACAT) )
       { for( tlink = Down(z);  tlink != z;  tlink = NextDown(tlink) )
-        { Child(t, Down(tlink));
+        { Child(&t, Down(tlink));
           if( objectOfType(t, CLOSURE) )
 	    Optimize(t, env);
         }
@@ -175,13 +175,13 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
   { npar_written = FALSE;  name_printed = FALSE;
     OptimizeParameterList(x, env);
     for( link = Down(x);  link != x;  link = NextDown(link) )
-    { Child(y, link);
+    { Child(&y, link);
       if( objectOfType(y, PAR) )  switch( type(actual(y)).objtype )
       {
         case LPAR_E:
       
 	  assert( Down(y) != y, "WriteObject/CLOSURE: LPAR!" );
-	  Child(z, Down(y));
+	  Child(&z, Down(y));
 	  WriteObject(z, (int) precedence(sym), linecount, fnum);
 	  StringFPuts(STR_SPACE, last_write_fp);
 	  break;
@@ -190,7 +190,7 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
         case NPAR_E:
       
 	  assert( Down(y) != y, "WriteObject/CLOSURE: NPAR!" );
-	  Child(z, Down(y));
+	  Child(&z, Down(y));
 	  if( !name_printed )
 	  { if( need_lvis(sym) )
 	    { StringFPuts(KW_LVIS, last_write_fp);
@@ -222,7 +222,7 @@ static void WriteClosure(OBJECT x, int *linecount, FILE_NUM fnum, OBJECT env)
         case RPAR_E:
       
 	  assert( Down(y) != y, "WriteObject/CLOSURE: RPAR!" );
-	  Child(z, Down(y));
+	  Child(&z, Down(y));
 	  if( !name_printed )
 	  { if( need_lvis(sym) )
 	    { StringFPuts(KW_LVIS, last_write_fp);
@@ -322,7 +322,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       if( prec < outer_prec )  StringFPuts(KW_LBR, last_write_fp);
       last_prec = prec;
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	if( objectOfType(y, GAP_OBJ) )
 	{ if( Down(y) == y )
 	  { assert( objectOfType(x, ACAT), "WriteObject: Down(y) == y!" );
@@ -334,7 +334,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	    last_prec = (vspace(y) + hspace(y) == 0) ? JUXTA_PREC : ACAT_PREC;
 	  }
 	  else
-	  { Child(gap_obj, Down(y));
+	  { Child(&gap_obj, Down(y));
 	    if( objectOfType(x, ACAT) )
 	      StringFPuts(STR_SPACE, last_write_fp);
 	    else
@@ -353,7 +353,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	{ if( objectOfType(x, ACAT) )
 	  { OBJECT next_gap;  int next_prec;
 	    if( NextDown(link) != x )
-	    { Child(next_gap, NextDown(link));
+	    { Child(&next_gap, NextDown(link));
 	      assert( objectOfType(next_gap, GAP_OBJ), "WriteObject: next_gap!" );
 	      next_prec = (vspace(next_gap) + hspace(next_gap) == 0)
 				? JUXTA_PREC : ACAT_PREC;
@@ -394,7 +394,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	if( Down(x) == LastDown(x) )
         {
 	  /* envt contains just one closure (with its environment) */
-	  Child(y, Down(x));
+	  Child(&y, Down(x));
 	  assert( objectOfType(y, CLOSURE), "WriteObject: ENV/CLOSURE!" );
 	  StringFPuts(KW_LBR, last_write_fp);
 	  StringFPuts(STR_SPACE, last_write_fp);
@@ -413,7 +413,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
         else
         {
 	  /* envt contains a closure (with envt) plus an environment */
-	  Child(env, LastDown(x));
+	  Child(&env, LastDown(x));
 	  assert( objectOfType(env, ENV), "WriteObject: ENV/ENV!" );
 	  StringFPuts(KW_LBR, last_write_fp);
 	  StringFPuts(STR_SPACE, last_write_fp);
@@ -426,7 +426,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 	  StringFPuts(KW_RBR, last_write_fp);
 	  StringFPuts(STR_NEWLINE, last_write_fp);
 	  *linecount += 1;
-	  Child(y, Down(x));
+	  Child(&y, Down(x));
 	  assert( objectOfType(y, CLOSURE), "WriteObject: ENV/ENV+CLOSURE!" );
 	  StringFPuts(KW_LBR, last_write_fp);
 	  WriteObject(y, NO_PREC, linecount, fnum);
@@ -444,7 +444,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 
       sym = actual(x);  env = nilobj;
       if( LastDown(x) != x )
-      {	Child(y, LastDown(x));
+      {	Child(&y, LastDown(x));
 	if( objectOfType(y, ENV) )  env = y;
       }
 
@@ -488,7 +488,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
     case CROSS_E:
     case FORCE_CROSS_E:
 
-      Child(y, Down(x));
+      Child(&y, Down(x));
       assert( objectOfType(y, CLOSURE), "WriteObject/CROSS: type(y) != CLOSURE!" );
       if( DEFAULT_PREC <= outer_prec )  StringFPuts(KW_LBR, last_write_fp);
       if( need_lvis(actual(y)) )
@@ -497,7 +497,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       }
       StringFPuts(SymName(actual(y)), last_write_fp);
       StringFPuts(objectOfType(x, CROSS) ? KW_CROSS : KW_FORCE_CROSS, last_write_fp);
-      Child(y, LastDown(x));
+      Child(&y, LastDown(x));
       WriteObject(y, FORCE_PREC, linecount, fnum);
       if( DEFAULT_PREC <= outer_prec )  StringFPuts(KW_RBR, last_write_fp);
       break;
@@ -584,7 +584,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       SETC:
       if( DEFAULT_PREC <= outer_prec )  StringFPuts(KW_LBR, last_write_fp);
       if( Down(x) != LastDown(x) )
-      {	Child(y, Down(x));
+      {	Child(&y, Down(x));
 	WriteObject(y, DEFAULT_PREC, linecount, fnum);
 	StringFPuts(STR_SPACE, last_write_fp);
       }
@@ -594,7 +594,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
 
       /* print right parameter, if present */
       if( LastDown(x) != x )
-      {	Child(y, LastDown(x));
+      {	Child(&y, LastDown(x));
 	StringFPuts(STR_SPACE, last_write_fp);
 	if( objectOfType(x, OPEN) )
 	{ StringFPuts(KW_LBR, last_write_fp);
@@ -614,7 +614,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       StringFPuts(STR_SPACE, last_write_fp);
       StringFPuts(KW_BEGIN, last_write_fp);
       StringFPuts(STR_NEWLINE, last_write_fp);
-      Child(y, Down(x));
+      Child(&y, Down(x));
       if( objectOfType(y, WORD) )
       {
 	StringFPuts(string(y), last_write_fp);
@@ -624,7 +624,7 @@ static void WriteObject(OBJECT x, int outer_prec, int *linecount, FILE_NUM fnum)
       {
 	assert( objectOfType(y, VCAT), "WriteObject/VERBATIM!" );
 	for( link = Down(y);  link != y;  link = NextDown(link) )
-	{ Child(z, link);
+	{ Child(&z, link);
 	  if( objectOfType(z, GAP_OBJ) )  continue;
 	  assert( objectOfType(z, WORD), "WriteObject/VERBATIM/WORD!");
 	  StringFPuts(string(z), last_write_fp);

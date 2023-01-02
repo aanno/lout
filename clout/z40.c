@@ -113,10 +113,10 @@ void FilterSetFileNames(OBJECT x)
   assert( objectOfType(x, FILTERED), "FilterSetFileNames: type(x)!" );
   assert( Down(x) != x, "FilterSetFileNames: x has no children!" );
   debug2(DFH, D, "FilterSetFileNames(%p %s)", x, EchoObject(x));
-  Child(y, Down(x));
+  Child(&y, Down(x));
   assert( objectOfType(y, WORD), "FilterSetFileNames: type(y)!" );
   sym_body(FilterInSym) = y;
-  Child(y, NextDown(Down(x)));
+  Child(&y, NextDown(Down(x)));
   assert( objectOfType(y, WORD), "FilterSetFileNames: type(y) (2)!" );
   sym_body(FilterOutSym) = y;
   debug0(DFH, D, "FilterSetFileNames returning.");
@@ -164,7 +164,7 @@ OBJECT FilterExecute(OBJECT x, FULL_CHAR *command, OBJECT env)
     if( status == 0 )
     {
       /* system command succeeded; read in its output as a Lout object */
-      Child(scope_snapshot, LastDown(x));
+      Child(&scope_snapshot, LastDown(x));
       LoadScopeSnapshot(scope_snapshot);
       debug0(DFS, D, "  calling DefineFile from FilterExecute");
       filter_out_file =
@@ -205,7 +205,7 @@ void FilterWrite(OBJECT x, FILE *fp, int *linecount)
 { FILE *in_fp;  OBJECT y;  int ch;
   assert( objectOfType(x, FILTERED), "FilterWrite: type(x)!" );
   debug2(DFH, D, "[ FilterWrite(%p %s, fp)", x, EchoObject(x));
-  Child(y, Down(x));
+  Child(&y, Down(x));
   in_fp = StringFOpen(string(y), READ_FILE);
   if( in_fp == NULL )
     Error(40, 5, "cannot read filter temporary file %s",
@@ -263,7 +263,7 @@ void FilterScavenge(BOOLEAN2 all)
   ifdebug(DFH, D, return);
   debug1(DFH, D, "FilterScavenge(%s)", bool2s(all));
   for( link = Down(filter_active);  link != filter_active;  link = nextlink )
-  { Child(y, link);
+  { Child(&y, link);
     nextlink = NextDown(link);
     if( all || Up(y) == LastUp(y) )
     { debug1(DFH, D, "FilterScavenge scavenging %s", string(y));

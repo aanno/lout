@@ -131,7 +131,7 @@ OBJECT Next(OBJECT x, int inc, BOOLEAN2 *done)
     case SET_CONTEXT_E:
     case GET_CONTEXT_E:
     
-      Child(y, LastDown(x));
+      Child(&y, LastDown(x));
       y = Next(y, inc, done);
       break;
 
@@ -157,7 +157,7 @@ OBJECT Next(OBJECT x, int inc, BOOLEAN2 *done)
     
       link = LastDown(x);
       while( link != x && !*done )
-      {	Child(y, link);
+      {	Child(&y, link);
 	if( is_index(type(y)) )  continue;
 	y = Next(y, inc, done);
 	if( !*done )  link = PrevDown(link);

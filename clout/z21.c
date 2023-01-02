@@ -75,7 +75,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   ifdebug(DGM, D, DebugObject(hd));
 
   /* manifest the child of hd, making sure it is simply joined if required */
-  Child(y, Down(hd));
+  Child(&y, Down(hd));
   tmp1 = target;
   tmp2 = enclose;
   crs = nilobj;
@@ -97,7 +97,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
       &tmp2, FALSE);
     assert( Down(bt[COLM_E]) != bt[COLM_E] && Down(ft[COLM_E]) != ft[COLM_E],
 	"SizeGalley: threads!" );
-    Child(tmp1, Down(bt[COLM_E]));  Child(tmp2, Down(ft[COLM_E]));
+    Child(&tmp1, Down(bt[COLM_E]));  Child(&tmp2, Down(ft[COLM_E]));
     if( Down(bt[COLM_E]) != LastDown(bt[COLM_E]) ||
 	  Down(ft[COLM_E]) != LastDown(ft[COLM_E]) || tmp1 != tmp2 )
       Error(21, 1, "galley %s must have just one column mark",
@@ -159,7 +159,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   { /* OBJECT prev_gap = nilobj; */
     debug0(DGM, DD, "SizeGalley cleaning up rows of hd:");
     for( link = hd;  NextDown(link) != hd;  link = NextDown(link) )
-    { Child(y, NextDown(link));
+    { Child(&y, NextDown(link));
       switch( type(y).objtype )
       {
 	case GAP_OBJ_E:
@@ -198,7 +198,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
           debug1(DGM, DD, "  cleaning %s:", Image(type(y)));
           ifdebug(DGM, DD, DebugObject(y));
 	  assert(Up(y)==LastUp(y), "SizeGalley COL_THR: Up(y)!=LastUp(y)!");
-	  Child(z, DownDim(y, ROWM));
+	  Child(&z, DownDim(y, ROWM));
 	  if( is_indefinite(type(z)) )
 	  {
 	    debug1(DGT, D, "SizeGalley setting external_ver(%s) to TRUE (a)",
@@ -207,14 +207,14 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  }
 	  else if( objectOfType(z, VCAT) )
 	  { OBJECT hor, thor, clink, dlink;
-	    Child(hor, DownDim(y, COLM));
+	    Child(&hor, DownDim(y, COLM));
 	    assert( objectOfType(hor, COL_THR), "SizeGalley: missing COL_THR!" );
 	    Parent(thor, UpDim(z, COLM));
 	    assert( hor == thor, "SizeGalley/SPLIT: hor != thor!" );
 	    clink = DownDim(y, COLM);
 	    dlink = UpDim(z, COLM);
 	    for( tlink = LastDown(z);  tlink != z;  tlink = PrevDown(tlink) )
-	    { Child(t, tlink);
+	    { Child(&t, tlink);
 	      if( objectOfType(t, GAP_OBJ) )
 	      { Link(NextDown(link), t);
 	      }
@@ -262,7 +262,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   /* determine a scale factor for {} @Scale objects */
   /* NB AdjustSize cannot be done correctly until after seen_nojoin is set */
   for( link = Down(extras);  link != extras;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
     if( objectOfType(y, SCALE_IND) )
     {
       /* check that all is in order */
@@ -271,7 +271,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
       assert( objectOfType(z, SCALE), "SizeObject: type(z) != SCALE!" );
       assert( bc(constraint(z)) == 0, "SizeObject: bc(constraint(z)) != 0" );
       assert( Down(z) != z, "SizeObject SCALE: Down(z) == z!" );
-      Child(t, Down(z));
+      Child(&t, Down(z));
 
       /* use @Scale COLM size constraint to determine a suitable scale factor */
       /* check that @Scale is not in a horizontal galley */
@@ -361,7 +361,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
   *recs = *inners = *dest_index = nilobj;
   after_target = FALSE;
   for( link = Down(hd);  link != hd;  link = NextDown(link) )
-  { Child(y, link);
+  { Child(&y, link);
 
     if( objectOfType(y, GAP_OBJ) || is_index(type(y)) )  continue;
     debug0(DGM, DDD, "  ROWM sizing:");
@@ -375,7 +375,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 
     /* now attach indexes in front of y */
     for( zlink = Down(extras);  zlink != extras;  zlink = NextDown(zlink) )
-    { Child(z, zlink);
+    { Child(&z, zlink);
       blocked(z) = FALSE;
       /* debug1(DCR, DD, "  extra: %s", EchoObject(z)); */
       debug2(DGM, DD, "  extra%s: %s",
@@ -409,7 +409,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	  { if( *inners == nilobj )  New(*inners, ACAT);
 	    Link(*inners, z);
 	  }
-	  Child(tmp, Down(z));
+	  Child(&tmp, Down(z));
 	  debug2(DGA, D, "SizeGalley %s%s", actual(tmp) == NULL ? "null" :
 	    (char*) SymName(actual(tmp)), after_target ? " (after_target)" : "");
 	  break;
@@ -458,7 +458,7 @@ OBJECT *dest_index, OBJECT *recs, OBJECT *inners, OBJECT enclose)
 	    Parent(prnt, UpDim(cover, dirn));
 	    while( objectOfType(prnt, SPLIT) || objectOfType(prnt, thr_type) )
 	      Parent(prnt, UpDim(prnt, dirn));
-	    Child(chld, Down(cover));
+	    Child(&chld, Down(cover));
 	    if( !objectOfType(prnt, ok1) && !objectOfType(prnt, ok2) )
 	    {
 	      Error(21, 8, "%s replaced by %s (mark not shared)",

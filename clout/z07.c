@@ -44,8 +44,8 @@
 BOOLEAN2 SplitIsDefinite(OBJECT x)
 { OBJECT y1, y2;
   assert( objectOfType(x, SPLIT), "SplitIsDefinite: x not a SPLIT!" );
-  Child(y1, DownDim(x, COLM));
-  Child(y2, DownDim(x, ROWM));
+  Child(&y1, DownDim(x, COLM));
+  Child(&y2, DownDim(x, ROWM));
   return is_definite(type(y1)) && is_definite(type(y2));
 } /* end SplitIsDefinite */
 
@@ -227,7 +227,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       hspace(res) = hspace(x);
       vspace(res) = vspace(x);
       if( Down(x) != x )
-      {	Child(y, Down(x));
+      {	Child(&y, Down(x));
 	tmp = CopyObject(y, pos);
 	Link(res, tmp);
       }
@@ -326,7 +326,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       setBack(res, ROWM, 0);
       setBack(res, COLM, 0);
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	tmp = CopyObject(y, pos);
 	Link(res, tmp);
       }
@@ -337,7 +337,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
 
       New(res, type(x));
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	Link(res, y);	/* do not copy children of FILTERED */
       }
       debug3(DFH, D, "copying FILTERED %p into %p %s", x, res, EchoObject(res));
@@ -355,7 +355,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
       New(res, PAR);
       actual(res) = actual(x);
       assert( Down(x) != x, "CopyObject: PAR child!" );
-      Child(y, Down(x));
+      Child(&y, Down(x));
       tmp = CopyObject(y, pos);
       Link(res, tmp);
       break;
@@ -365,7 +365,7 @@ OBJECT CopyObject(OBJECT x, FILE_POS *pos)
     
       New(res, CLOSURE);
       for( link = Down(x);  link != x;  link = NextDown(link) )
-      {	Child(y, link);
+      {	Child(&y, link);
 	assert( !objectOfType(y, CLOSURE), "CopyObject: CLOSURE!" );
 	tmp = CopyObject(y, pos);
 	Link(res, tmp);
@@ -442,7 +442,7 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
     case SPLIT_E:
 
       for( link = Down(x);  link != x && *ins != nilobj;  link = NextDown(link) )
-      { Child(y, link);
+      { Child(&y, link);
 	y = InsertObject(y, ins, style);
       }
       res = x;
@@ -484,7 +484,7 @@ OBJECT InsertObject(OBJECT x, OBJECT *ins, STYLE *style)
     case START_HSPAN_E:
     case START_VSPAN_E:
 
-      Child(y, LastDown(x));
+      Child(&y, LastDown(x));
       y = InsertObject(y, ins, style);
       res = x;
       break;
@@ -751,8 +751,8 @@ static BOOLEAN2 EqualChildren(OBJECT x, OBJECT y)
   xl = Down(x), yl = Down(y);
   for( ; xl != x && yl != y;  xl = NextDown(xl), yl = NextDown(yl) )
   {
-    Child(xc, xl);
-    Child(yc, yl);
+    Child(&xc, xl);
+    Child(&yc, yl);
     if( !EqualManifested(xc, yc) )
       return FALSE;
   }
@@ -850,8 +850,8 @@ BOOLEAN2 EqualManifested(OBJECT x, OBJECT y)
     case LINK_SOURCE_E:
 
       /* objects are equal if right children are equal */
-      Child(xc, LastDown(x));
-      Child(yc, LastDown(y));
+      Child(&xc, LastDown(x));
+      Child(&yc, LastDown(y));
       return EqualManifested(xc, yc);
       break;
 

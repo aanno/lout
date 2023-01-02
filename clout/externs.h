@@ -3420,16 +3420,10 @@ INLINE OBJECT Delete(OBJECT x, DIR_TE dir) {
 #define	LastUp(x)	pred(x, PARENT)
 #define	PrevUp(x)	pred(x, PARENT)
 
-// cannot inline
-#define	Child(y, link)							\
-for( y = pred(link, PARENT);  objectOfType(y, LINK);  y = pred(y, PARENT) ) \
-;
-/*
-INLINE void Child(OBJECT y, OBJECT link) {
-  for( y = pred(link, PARENT);  objectOfType(y, LINK);  y = pred(y, PARENT) )
+INLINE void Child(OBJECT* y, OBJECT link) {
+  for( *y = pred(link, PARENT);  objectOfType(*y, LINK);  *y = pred(*y, PARENT) )
   ;
 }
-*/
 
 // cannot inline
 #define CountChild(y, link, i)                                          \
@@ -3626,7 +3620,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 #define FirstDefinite(x, link, y, jn)					\
 { jn = TRUE;								\
   for( link = Down(x);  link != x;  link = NextDown(link) )		\
-  { Child(y, link);							\
+  { Child(&y, link);							\
     if( objectOfType(y, GAP_OBJ) )  jn = jn && join(&gap(y));			\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)))\
       break;								\
@@ -3661,7 +3655,7 @@ INLINE void ReplaceNode(OBJECT x, OBJECT y) {
 INLINE void NextDefinite(OBJECT* x, OBJECT* link, OBJECT* y) {
     for( *link = NextDown(*link);  *link != *x;  *link = NextDown(*link) )
     {
-        Child(*y, *link);
+        Child(y, *link);
         if( objectOfType(*y, SPLIT) ? SplitIsDefinite(*y) : is_definite(type(*y)) )
             break;
     }
@@ -3689,7 +3683,7 @@ INLINE void NextDefinite(OBJECT* x, OBJECT* link, OBJECT* y) {
 #define NextDefiniteWithGap(x, link, y, g, jn)				\
 { g = nilobj;  jn = TRUE;						\
   for( link = NextDown(link);  link != x;  link = NextDown(link) )	\
-  { Child(y, link);							\
+  { Child(&y, link);							\
     if( objectOfType(y, GAP_OBJ) )  g = y, jn = jn && join(&gap(y));		\
     else if( objectOfType(y, SPLIT) ? SplitIsDefinite(y):is_definite(type(y)) )	\
     {									\
@@ -3720,7 +3714,7 @@ INLINE void NextDefinite(OBJECT* x, OBJECT* link, OBJECT* y) {
 INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = LastDown(x);  link != x;  link = PrevDown(link) )
     {
-        Child(y, link);
+        Child(&y, link);
         if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)) )
             break;
     }
@@ -3744,7 +3738,7 @@ INLINE void LastDefinite(OBJECT x, OBJECT link, OBJECT y) {
 INLINE void PrevDefinite(OBJECT x, OBJECT link, OBJECT y) {
     for( link = PrevDown(link);  link != x;  link = PrevDown(link) )
     {
-        Child(y, link);
+        Child(&y, link);
         if( objectOfType(y, SPLIT) ? SplitIsDefinite(y) : is_definite(type(y)) )
             break;
     }
